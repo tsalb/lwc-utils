@@ -1,7 +1,9 @@
-jsconfig.json
-AppSwitcher.appMenu
-.eslintrc.json
-*LightningService*
+**/AppSwitcher.appMenu
+
+**/LightningService
+
+**/standard__LightningService
+
 **/jsconfig.json
 
 **/.eslintrc.json

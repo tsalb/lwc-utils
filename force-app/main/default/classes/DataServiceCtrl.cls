@@ -5,7 +5,7 @@
 
 public with sharing class DataServiceCtrl {
 
-  @AuraEnabled
+  @AuraEnabled (cacheable=true)
   public static String getAccountOptions() {
     Data valueLabels = new Data();
     List<AggregateResult> aggList = new List<AggregateResult>([

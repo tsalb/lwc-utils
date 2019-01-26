@@ -1,0 +1,24 @@
+<aura:component implements="flexipage:availableForAllPageTypes">
+
+  <!-- Service Components boilerplate -->
+  <c:DataService aura:id="service"/>
+  <c:EventService aura:id="eventService"/>
+  <c:MessageService aura:id="messageService"/>
+
+  <aura:attribute name="contactList" type="Object"/>
+  <aura:attribute name="singleContactListId" type="String"/>
+  <aura:attribute name="initComplete" type="Boolean" default="false"/>
+
+  <aura:handler name="init" value="{! this }" action="{! c.doInit }" />
+
+  <!-- recordEditForm requires recordId set OR undefined prior to render cycle -->
+  <aura:if isTrue="{! v.initComplete }">
+    <lightning:recordEditForm aura:id="contactAddressForm"
+      recordId="{! v.singleContactListId }"
+      objectApiName="Contact">
+      <lightning:messages />
+      <lightning:inputField aura:id="mailing-address" fieldName="MailingAddress" />
+    </lightning:recordEditForm>
+  </aura:if>
+
+</aura:component>

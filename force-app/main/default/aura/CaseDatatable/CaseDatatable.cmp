@@ -1,0 +1,32 @@
+<aura:component>
+
+  <!-- Service Components boilerplate -->
+  <c:DataTableService aura:id="tableService"/>
+  <c:EventService aura:id="eventService"/>
+  <c:MessageService aura:id="messageService"/>
+
+  <aura:attribute name="contactRecordId" type="String"/>
+
+  <!-- table data -->
+  <aura:attribute name="tableData" type="Object" access="private"/>
+  <aura:attribute name="tableColumns" type="List" default="[]" access="private"/>
+
+  <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
+
+  <lightning:card>
+    <aura:set attribute="title">
+    </aura:set>
+    <aura:set attribute="body">
+      <div class="slds-border_top slds-border_left slds-border_right slds-is-relative">
+        <lightning:datatable aura:id="case-datatable"
+          class="slds-table_bordered"
+          data="{! v.tableData }"
+          columns="{! v.tableColumns }"
+          keyField="Id"
+          showRowNumberColumn="true"
+          hideCheckboxColumn="true"/>
+      </div>
+    </aura:set>
+  </lightning:card>
+  
+</aura:component>

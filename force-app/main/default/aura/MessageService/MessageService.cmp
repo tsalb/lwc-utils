@@ -1,0 +1,50 @@
+<aura:component>
+
+  <c:EventService aura:id="eventService"/>
+  <lightning:overlayLibrary aura:id="overlayLib"/>
+  <lightning:notificationsLibrary aura:id="notificationsLib"/>
+
+  <aura:method name="showToast" action="{! c.handleShowToast }">
+    <aura:attribute name="configObj" type="Object"/>
+  </aura:method>
+
+  <aura:method name="modal" action="{! c.createOverlayModal }">
+    <aura:attribute name="auraId" type="String" default="modal"/>
+    <aura:attribute name="headerLabel" type="String"/>
+    <aura:attribute name="body" type="String"/>
+    <aura:attribute name="bodyParams" type="Object"/>
+    <aura:attribute name="mainActionReference" type="String"/>
+    <aura:attribute name="mainActionLabel" type="String" default="Save"/>
+    <aura:attribute name="callback" type="function"/> <!-- for modal promise -->
+  </aura:method>
+
+  <aura:method name="modalLarge" action="{! c.createOverlayModal }">
+    <aura:attribute name="auraId" type="String" default="modal"/>
+    <aura:attribute name="headerLabel" type="String"/>
+    <aura:attribute name="body" type="String"/>
+    <aura:attribute name="bodyParams" type="Object"/>
+    <aura:attribute name="mainActionReference" type="String"/>
+    <aura:attribute name="mainActionLabel" type="String" default="Save"/>
+    <aura:attribute name="callback" type="function"/> <!-- for modal promise -->
+    <aura:attribute name="isLargeModal" type="Boolean" default="true"/>
+  </aura:method>
+
+  <aura:method name="bodyModal" action="{! c.createOverlayModalWithoutFooter }">
+    <aura:attribute name="auraId" type="String" default="modal"/>
+    <aura:attribute name="headerLabel" type="String"/>
+    <aura:attribute name="body" type="String"/>
+    <aura:attribute name="bodyParams" type="Object"/>
+    <aura:attribute name="callback" type="function"/> <!-- for modal promise -->
+    <aura:attribute name="isLargeModal" type="Boolean" default="false"/>
+  </aura:method>
+
+  <aura:method name="bodyModalLarge" action="{! c.createOverlayModalWithoutFooter }">
+    <aura:attribute name="auraId" type="String" default="modal"/>
+    <aura:attribute name="headerLabel" type="String"/>
+    <aura:attribute name="body" type="String"/>
+    <aura:attribute name="bodyParams" type="Object"/>
+    <aura:attribute name="callback" type="function"/> <!-- for modal promise -->
+    <aura:attribute name="isLargeModal" type="Boolean" default="true"/>
+  </aura:method>
+
+</aura:component>

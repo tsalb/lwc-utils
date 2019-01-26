@@ -1,0 +1,5 @@
+<aura:event type="APPLICATION" description="Generic Key Value event framework, scoped to a string. Typically a recordId.">
+  <aura:attribute name="recordEventKey" type="String" required="true"/>
+  <aura:attribute name="recordEventValue" type="Object"/>
+  <aura:attribute name="recordEventScope" type="String" required="true"/>
+</aura:event>

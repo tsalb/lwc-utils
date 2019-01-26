@@ -1,0 +1,19 @@
+<aura:component implements="flexipage:availableForAllPageTypes">
+
+  <!-- Service Components boilerplate -->
+  <c:MessageService aura:id="messageService"/>
+  <c:EventService aura:id="eventService" channel="/event/Contact_DML__e" onMessage="{! c.handleContactDmlEvent }"/>
+
+  <aura:attribute name="payloadJSON" type="String" access="PRIVATE"/>
+
+  <lightning:card title="Contact DML Platform Event">
+    <lightning:layout>
+      <lightning:layoutItem flexibility="grow" padding="around-medium">
+        <div class="slds-align_absolute-center">
+          {! v.payloadJSON }
+        </div>
+      </lightning:layoutItem>
+    </lightning:layout>
+  </lightning:card>
+
+</aura:component>

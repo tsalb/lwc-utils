@@ -1,0 +1,41 @@
+<aura:component>
+
+   <!-- Service Component boilerplate -->
+  <c:MessageService aura:id="messageService"/>
+
+  <aura:method name="LDS_Update" action="{! c.initUpdatePromiseChain }">
+    <aura:attribute name="configObject" type="Object" description="recordId, fieldUpdates, and other attributes needed for LDS"/>
+    <aura:attribute name="callback" type="function"/>
+  </aura:method>
+
+  <aura:attribute name="useSpinner" type="Boolean" default="true"/>
+
+  <!-- private attributes -->
+  <aura:attribute name="fieldUpdates" type="Object" access="private"/>
+  <aura:attribute name="fieldApiNameToUpdateValueMap" type="Map" access="private"/>
+
+  <!-- private LDS attributes -->
+  <aura:attribute name="recordId" type="String" access="private"/>
+  <aura:attribute name="fields" type="String[]" access="private"/>
+  <aura:attribute name="simpleRecord" type="Object" access="private"/>
+  <aura:attribute name="simpleRecordError" type="String" access="private"/>
+
+  <!-- update flow control -->
+  <aura:attribute name="lightningDataServiceLoaded" type="Boolean" default="false" access="private"/>
+  <aura:attribute name="transactionInProgress" type="Boolean" default="false" access="private"
+    description="allows aura:if to initialize and destroy force:recordData"/>
+
+  <aura:if isTrue="{! v.transactionInProgress }">
+    <aura:if isTrue="{! v.useSpinner }">
+      <lightning:spinner variant="brand" size="large" alternativeText="Updating with Lightning Data Service"/>
+    </aura:if>
+    <force:recordData aura:id="lds"
+      recordId="{! v.recordId }"
+      fields="{! v.fields }"
+      targetFields="{! v.simpleRecord }"
+      targetError="{! v.simpleRecordError }"
+      recordUpdated="{! c.handleRecordUpdated }"
+      mode="EDIT"/>
+  </aura:if>
+
+</aura:component>

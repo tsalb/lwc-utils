@@ -1,2 +1,14 @@
-# lwc-utils
-LWC version of useful modules and re-write of an aura sample app
+# SFDX  App
+
+## Dev, Build and Test
+
+
+## Resources
+
+
+## Description of Files and Directories
+
+
+## Issues
+
+

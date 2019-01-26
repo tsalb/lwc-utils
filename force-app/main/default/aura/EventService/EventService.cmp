@@ -1,0 +1,32 @@
+<aura:component >
+
+  <lightning:empApi aura:id="empApi"/>
+
+  <aura:attribute name="channel" type="String" access="GLOBAL" description="Channel to listen for Platform Event, including /event/ prefix"/>
+  <aura:attribute name="sub" type="Object" access="GLOBAL" description="See lightning:empApi"/>
+  <aura:attribute name="replayIdStream" type="Integer" access="GLOBAL" default="-1" description="See lightning:empApi"/>
+  <aura:attribute name="recordEventScope" type="String" access="GLOBAL" description="Typically a RecordId for scoping app events in Lightning Console."/>
+
+  <aura:registerEvent name="onMessage" type="c:onMessage"/>
+  <aura:registerEvent name="ServiceAppEvent" type="c:ServiceAppEvent"/>
+  <aura:registerEvent name="ServiceCompEvent" type="c:ServiceCompEvent"/>
+
+  <aura:method name="fireAppEvent" action="{! c.handleFireApplicationEvent }">
+    <aura:attribute name="eventKey" type="String"/>
+    <aura:attribute name="eventValue" type="Object"/>
+  </aura:method>
+
+  <aura:method name="fireRecordEvent" action="{! c.handleFireRecordEvent }">
+    <aura:attribute name="eventKey" type="String"/>
+    <aura:attribute name="eventValue" type="Object"/>
+  </aura:method>
+
+  <aura:method name="fireCompEvent" action="{! c.handleFireComponentEvent }">
+    <aura:attribute name="eventKey" type="String"/>
+    <aura:attribute name="eventValue" type="Object"/>
+  </aura:method>
+
+  <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
+  <aura:handler name="destroy" value="{! this }" action="{! c.handleDestroy }"/>
+
+</aura:component>

@@ -1,0 +1,5 @@
+<!--c:ServiceCompEvent-->
+<aura:event type="COMPONENT">
+  <aura:attribute name="compEventKey" type="String"/>
+  <aura:attribute name="compEventValue" type="Object"/>
+</aura:event>

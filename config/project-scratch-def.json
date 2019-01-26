@@ -1,0 +1,15 @@
+{
+  "orgName": "tsalb world",
+  "edition": "Developer",
+  "hasSampleData": "true",
+  "features": [
+    "ForceComPlatform",
+    "ProcessBuilder",
+    "LightningServiceConsole"
+  ],
+  "settings": {
+    "orgPreferenceSettings": {
+      "s1DesktopEnabled": true
+    }
+  }
+}

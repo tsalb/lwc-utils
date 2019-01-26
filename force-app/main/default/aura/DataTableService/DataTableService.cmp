@@ -1,0 +1,8 @@
+<aura:component controller="DataTableService">
+
+  <aura:method name="fetchData" action="{! c.handleFetchData }">
+    <aura:attribute name="tableRequest" type="Object"/>
+    <aura:attribute name="callback" type="function" description="returns object with lightning:datatable formatted data and columns"/>
+  </aura:method>
+  
+</aura:component>

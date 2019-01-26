@@ -1,3 +1,7 @@
+jsconfig.json
+AppSwitcher.appMenu
+.eslintrc.json
+*LightningService*
 **/jsconfig.json
 
 **/.eslintrc.json

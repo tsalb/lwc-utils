@@ -10,6 +10,7 @@
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
     <label>Service Components</label>
     <navType>Standard</navType>
+    <tabs>Sample_App_LWC</tabs>
     <tabs>SC_Sample_App</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Service_Components_UtilityBar</utilityBar>

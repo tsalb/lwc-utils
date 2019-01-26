@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Sample app in LWC</description>
+    <flexiPage>LWC_Hello_World</flexiPage>
+    <label>Sample App (LWC)</label>
+    <mobileReady>false</mobileReady>
+    <motif>Custom8: Diamond</motif>
+</CustomTab>

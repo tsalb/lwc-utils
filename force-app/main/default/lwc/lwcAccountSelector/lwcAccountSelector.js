@@ -24,10 +24,10 @@ export default class LwcAccountSelector extends LightningElement {
   }
 
   handleAccountOptionSelected(event) {
-    fireEvent(this.pageRef, 'account_id_seleted', event.target.value);
+    fireEvent(this.pageRef, 'accountSelected', event.target.value);
   }
 
-  handleClearTableOnly() {
-    fireEvent(this.pageRef, 'header_clear_table');
+  handleClearTable() {
+    fireEvent(this.pageRef, 'clearTable');
   }
 }

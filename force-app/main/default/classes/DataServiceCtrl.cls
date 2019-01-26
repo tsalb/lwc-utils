@@ -29,7 +29,7 @@ public with sharing class DataServiceCtrl {
     return JSON.serialize(valueLabels);
   }
 
-  @AuraEnabled
+  @AuraEnabled (cacheable=true)
   public static List<Contact> getContactsByAccountId(String accountId) {
     try {
       return [

@@ -1,0 +1,20 @@
+<template>=
+  <lightning-card title="Contacts">
+    <div if:true={tableData} class="slds-border_top">
+      <lightning-datatable
+        data={tableData}
+        columns={_tableColumns}
+        onrowaction={handleRowAction}
+        key-field="Id">
+      </lightning-datatable>
+    </div>
+    <div slot="actions">
+      <div if:true={tableData}>
+        <lightning-button
+          label="Update Mailing Address" 
+          onclick={handleOpenUpdateAddressModal}>
+        </lightning-button>
+      </div>
+    </div>
+  </lightning-card>
+</template>

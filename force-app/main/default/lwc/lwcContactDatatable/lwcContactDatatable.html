@@ -1,20 +1,24 @@
-<template>=
+<template>
   <lightning-card title="Contacts">
-    <div if:true={tableData} class="slds-border_top">
+    <div if:true={contacts.data} class="slds-border_top">
       <lightning-datatable
-        data={tableData}
-        columns={_tableColumns}
+        data={contacts.data}
+        columns={columns}
         onrowaction={handleRowAction}
         key-field="Id">
       </lightning-datatable>
     </div>
     <div slot="actions">
-      <div if:true={tableData}>
+      <!-- 
+      LWC has no overlayLibrary yet,
+      so this is omitted until a native overlay can be provided
+      -->
+      <!-- <div if:true={contacts.data}>
         <lightning-button
           label="Update Mailing Address" 
           onclick={handleOpenUpdateAddressModal}>
         </lightning-button>
-      </div>
+      </div> -->
     </div>
   </lightning-card>
 </template>

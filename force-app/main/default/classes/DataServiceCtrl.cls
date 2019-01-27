@@ -30,6 +30,11 @@ public with sharing class DataServiceCtrl {
   }
 
   @AuraEnabled (cacheable=true)
+  public static List<Contact> wireContactsByAccountId(String accountId) {
+    return DataServiceCtrl.getContactsByAccountId(accountId);
+  }
+
+  @AuraEnabled
   public static List<Contact> getContactsByAccountId(String accountId) {
     try {
       return [

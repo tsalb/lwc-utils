@@ -16,7 +16,7 @@ export default class LwcAccountSelector extends LightningElement {
     } else if (error) {
       this.dispatchEvent(
         new ShowToastEvent({
-          message: error,
+          message: String(error),
           variant: "error",
         })
       );

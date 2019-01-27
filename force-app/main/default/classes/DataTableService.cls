@@ -44,8 +44,8 @@ public with sharing class DataTableService {
  * Experimental wire for creating tableCache
  */
   @AuraEnabled (cacheable=true)
-  public static Map<String, Object> wireTableCache(Map<String, Object> tableRequest) {
-    return DataTableService.getTableCache(tableRequest);
+  public static Map<String, Object> wireTableCache(String tableRequest) {
+    return DataTableService.getTableCache((Map<String, Object>)JSON.deserializeUntyped(tableRequest));
   }
 
 /**

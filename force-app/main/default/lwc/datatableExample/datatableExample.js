@@ -15,16 +15,17 @@ export default class DatatableExample extends LightningElement {
 
   connectedCallback() {
     this.query = _defaultQueryString;
-    this.tableRequest = _defaultConfig;
+    this.tableRequest = JSON.stringify(_defaultConfig);
   }
 
   handleKeyChange(event) {
     window.clearTimeout(this.delayTimeout);
     this.query = event.target.value;
     this.delayTimeout = setTimeout(() => {
-      this.tableRequest = {
+      let newRequest = {
         queryString: this.query
-      };
+      }
+      this.tableRequest = JSON.stringify(newRequest);
     }, DELAY);
   }
   
@@ -34,7 +35,7 @@ export default class DatatableExample extends LightningElement {
   }
 
   handleError(event) {
-    console.log(event);
+    console.log(JSON.parse(JSON.stringify(event.detail)));
     this.data = null;
     this.columns = null;
   }

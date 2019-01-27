@@ -12,7 +12,7 @@
     <navType>Standard</navType>
     <tabs>Sample_App_LWC</tabs>
     <tabs>SC_Sample_App</tabs>
-    <tabs>Datatable_Service</tabs>
+    <tabs>Datatable_Service_LWC</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Service_Components_UtilityBar</utilityBar>
 </CustomApplication>

@@ -4,6 +4,9 @@
         <componentInstances>
             <componentName>lwcAccountSelector</componentName>
         </componentInstances>
+        <componentInstances>
+            <componentName>lwcContactDatatable</componentName>
+        </componentInstances>
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>

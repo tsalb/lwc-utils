@@ -1,0 +1,23 @@
+<template>
+
+  <!-- Service Compoentn Wire -->
+  <c-lwc-datatable-service 
+    request-config={tableRequest}
+    onsuccess={handleSuccess}>
+  </c-lwc-datatable-service>
+
+  <lightning-card title="Dynamic Datatable">
+    <lightning-layout multiple-rows="true">
+      <lightning-layout-item size="12">
+        
+      </lightning-layout-item>
+      <lightning-layout-item if:true={data} padding="around-small" size="12">
+        <lightning-datatable
+          data={data}
+          columns={columns}
+          key-field="Id">
+        </lightning-datatable>
+      </lightning-layout-item>
+    </lightning-layout>
+  </lightning-card>
+</template>

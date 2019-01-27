@@ -1,4 +1,4 @@
-**/AppSwitcher.appMenu
+AppSwitcher.appMenu
 
 **/LightningService
 
@@ -7,3 +7,5 @@
 **/jsconfig.json
 
 **/.eslintrc.json
+
+**/Admin.profile

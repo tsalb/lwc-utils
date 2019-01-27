@@ -13,9 +13,9 @@ public with sharing class DataTableService {
   public static final String TABLE_DATA_KEY     = 'tableData';
   public static final String TABLE_COLUMNS_KEY  = 'tableColumns';
 
-  // lightning:datatable type translation map
+  // lightning-datatable type translation map
   // https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_enum_Schema_DisplayType.htm
-  // https://developer.salesforce.com/docs/component-library/bundle/lightning:datatable/documentation
+  // https://developer.salesforce.com/docs/component-library/bundle/lightning-datatable/documentation
   public static final Map<Schema.DisplayType, String> DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP = new Map<Schema.DisplayType, String>{
     Schema.DisplayType.address        => 'text',
     Schema.DisplayType.anytype        => 'text',
@@ -41,14 +41,22 @@ public with sharing class DataTableService {
   };
 
 /**
- * Creates a lightning:datatable ready object keys:
+ * Experimental wire for creating tableCache
+ */
+  @AuraEnabled (cacheable=true)
+  public static Map<String, Object> wireTableCache(Map<String, Object> tableRequest) {
+    return DataTableService.getTableCache(tableRequest);
+  }
+
+/**
+ * Creates a lightning-datatable ready object keys:
  * tableData and tableColumns can be used as attributes directly clientside.
  * 
  * @param  tableRequest [Object with configs, see DataTableService.cmp]
  * @return              [Object with tableCache.tableData, tableCache.tableColumns]
  */
   @AuraEnabled
-  public static Map<String, Object> createTableCache(Map<String, Object> tableRequest) {
+  public static Map<String, Object> getTableCache(Map<String, Object> tableRequest) {
     if (!tableRequest.containsKey(QUERY_STRING_KEY)) {
       throw new AuraHandledException('tableService queryString is missing.');
     }
@@ -123,7 +131,7 @@ public with sharing class DataTableService {
   }
 
 /**
- * Creates lightning:datatable ready tableColumns using the queryString and the queried object's schema.
+ * Creates lightning-datatable ready tableColumns using the queryString and the queried object's schema.
  * 
  * @param  queryString    [Dynamic SOQL String, to parse out fields]
  * @param  queriedSObject [To grab full schema of fields, primarily for labels]

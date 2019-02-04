@@ -30,11 +30,14 @@ Coming later (maybe)...
 
 See [Readme](https://github.com/tsalb/sfdc-lightning-service-components#dataservice-usage-example) for any Aura component usage.
 
-## Datatable Service (LWC)
+## Datatable Service (LWC @wire and imperative)
 
-Right now there is a sample using `@wire` with a reactive attribute. Parent relationships (1 level up) are working okay. It's safer to use formulas still, for now.
+Two samples:
 
-It's possible to call this LWC service module with `async await` but that will be coming later.
+1) An `@wire` child template component fed by a reactive attribute that emits events on success/error. 
+2) An imperative callout using `async await` that uses promises in the returning tableResults.
+
+Parent relationships (1 level up) are working okay. It's safer to use formulas still, for now.
 
 ![side-by-side](/readme-images/datatable.gif?raw=true)
 

@@ -1,0 +1,23 @@
+<template>
+  <lightning-card title="Dynamic Datatable">
+    <lightning-layout multiple-rows="true">
+      <lightning-layout-item padding="around-large" size="12">
+        <lightning-input
+          label="SOQL String"
+          value={query}
+          onchange={handleKeyChange}>
+        </lightning-input>
+      </lightning-layout-item>
+      <lightning-layout-item size="12">
+        <div if:true={data} class="slds-border_top">
+          <lightning-datatable
+            hide-checkbox-column="true"
+            data={data}
+            columns={columns}
+            key-field="Id">
+          </lightning-datatable>
+        </div>
+      </lightning-layout-item>
+    </lightning-layout>
+  </lightning-card>
+</template>

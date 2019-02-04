@@ -42,6 +42,7 @@ public with sharing class DataTableService {
 
 /**
  * Experimental wire for creating tableCache
+ * For now, new POJO passed through @wire aren't triggering change event unless as JSON.
  */
   @AuraEnabled (cacheable=true)
   public static Map<String, Object> wireTableCache(String tableRequest) {
@@ -51,7 +52,6 @@ public with sharing class DataTableService {
 /**
  * Creates a lightning-datatable ready object keys:
  * tableData and tableColumns can be used as attributes directly clientside.
- * 
  * @param  tableRequest [Object with configs, see DataTableService.cmp]
  * @return              [Object with tableCache.tableData, tableCache.tableColumns]
  */
@@ -73,7 +73,6 @@ public with sharing class DataTableService {
 
 /**
  * Routing method to see if there are any Binding Variables (BIND_VAR_KEY) to scope the dynamic query
- * 
  * @param  tableRequest [Object with configs]
  */
   private static List<SObject> getSObjectData(Map<String, Object> tableRequest) {
@@ -86,7 +85,6 @@ public with sharing class DataTableService {
 
 /**
  * No dynamic binding vars, returns everything specific directly from SOQL string
- * 
  * @param  queryString [Dynamic SOQL string]
  * @return             [List of dynamically queried SObjects]
  */
@@ -101,7 +99,6 @@ public with sharing class DataTableService {
 
 /**
  * Contains dynamic binding vars, returns everything bound to the dynamic variable
- * 
  * @param  queryString     [Dynamic SOQL string]
  * @param  orderedBindVars [Currently only an ID_SET_KEY, containing a list of sObject Ids to scope the query]
  * @return                 [List of dynamically queried SObjects scoped by some BIND_VAR]
@@ -132,7 +129,6 @@ public with sharing class DataTableService {
 
 /**
  * Creates lightning-datatable ready tableColumns using the queryString and the queried object's schema.
- * 
  * @param  queryString    [Dynamic SOQL String, to parse out fields]
  * @param  queriedSObject [To grab full schema of fields, primarily for labels]
  * @return                [List of individual tableColumn, i.e. tableColumns]

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
     <description>Created by Lightning App Builder</description>
-    <flexiPage>Datatable_Service_LWC</flexiPage>
-    <label>Datatable Service (LWC)</label>
+    <flexiPage>Datatable_Service_LWC_wire</flexiPage>
+    <label>Datatable Service (LWC @wire)</label>
     <mobileReady>false</mobileReady>
     <motif>Custom73: Highway Sign</motif>
 </CustomTab>

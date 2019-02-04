@@ -1,11 +1,11 @@
 <template>
 
   <!-- Service Component Wire -->
-  <c-lwc-datatable-service 
-    request-config={tableRequest}
+  <c-table-service-wire
+    request={tableRequest}
     onsuccess={handleSuccess}
     onerror={handleError}>
-  </c-lwc-datatable-service>
+  </c-table-service-wire>
 
   <lightning-card title="Dynamic Datatable">
     <lightning-layout multiple-rows="true">
@@ -19,6 +19,7 @@
       <lightning-layout-item size="12">
         <div if:true={data} class="slds-border_top">
           <lightning-datatable
+            hide-checkbox-column="true"
             data={data}
             columns={columns}
             key-field="Id">

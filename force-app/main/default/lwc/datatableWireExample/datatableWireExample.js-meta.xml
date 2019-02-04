@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="datatableExample">
-    <masterLabel>Datatable Example (LWC)</masterLabel>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="datatableWireExample">
+    <masterLabel>Datatable Example (LWC @wire)</masterLabel>
     <apiVersion>45.0</apiVersion>
     <isExposed>true</isExposed>
     <targets>

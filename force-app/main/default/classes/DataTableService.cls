@@ -107,7 +107,7 @@ public with sharing class DataTableService {
     Set<Id> idSet = new Set<Id>();
     System.debug('getSObjectDataFromQueryString orderedBindVars '+orderedBindVars);
 
-    Map<Object, Object> reconstructedBindVars = (Map<Object, Object>) orderedBindVars;
+    Map<String, Object> reconstructedBindVars = (Map<String, Object>) orderedBindVars;
 
     if (reconstructedBindVars.get(ID_SET_KEY) != null) {
       List<String> idList = (List<String>) JSON.deserialize(

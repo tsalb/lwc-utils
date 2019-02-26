@@ -8,6 +8,7 @@ public with sharing class DataTableService {
   public static final String QUERY_STRING_KEY   = 'queryString';
   public static final String BIND_VAR_KEY       = 'bindVars';
   public static final String ID_SET_KEY         = 'idSet';
+  public static final String LINKIFY_KEY        = 'linkify';
 
   // tableCache
   public static final String TABLE_DATA_KEY     = 'tableData';
@@ -58,16 +59,20 @@ public with sharing class DataTableService {
   @AuraEnabled
   public static Map<String, Object> getTableCache(Map<String, Object> tableRequest) {
     if (!tableRequest.containsKey(QUERY_STRING_KEY)) {
-      throw new AuraHandledException('tableService queryString is missing.');
+      throw new AuraHandledException('Missing Query.');
     }
+    // Configurations
     Map<String, Object> tableServiceResponse = new Map<String, Object>();
+    List<Object> linkify = (List<Object>)tableRequest.get(LINKIFY_KEY);
+    // Derived Data
     List<SObject> tableData = DataTableService.getSObjectData(tableRequest);
+    // Derived Columns
     String queryString = (String)tableRequest.get(QUERY_STRING_KEY);
     String sObjectName = queryString.substringAfterLast(' FROM ').split(' ').get(0); // don't depend on if there is a WHERE, also in case FROM is in a field name
     SObject queryObject = Schema.getGlobalDescribe().get(sObjectName).newSObject();
 
     tableServiceResponse.put(TABLE_DATA_KEY, tableData);
-    tableServiceResponse.put(TABLE_COLUMNS_KEY, DataTableService.getColumnData(queryString, queryObject));
+    tableServiceResponse.put(TABLE_COLUMNS_KEY, DataTableService.getColumnData(queryString, queryObject, linkify));
     return tableServiceResponse;
   }
 
@@ -89,6 +94,7 @@ public with sharing class DataTableService {
  * @return             [List of dynamically queried SObjects]
  */
   private static List<SObject> getSObjectDataFromQueryString(String queryString) {
+    String.escapeSingleQuotes(queryString);
     try {
       System.debug('getSObjectDataFromQueryString queryString is: '+queryString);
       return Database.query(queryString);
@@ -131,13 +137,28 @@ public with sharing class DataTableService {
  * Creates lightning-datatable ready tableColumns using the queryString and the queried object's schema.
  * @param  queryString    [Dynamic SOQL String, to parse out fields]
  * @param  queriedSObject [To grab full schema of fields, primarily for labels]
+ * @param  linkifyConfig  [Configure which fields are linkified in apex, rather than JS]
  * @return                [List of individual tableColumn, i.e. tableColumns]
  */
-  private static List<Map<String, Object>> getColumnData(String queryString, SObject queriedSObject) {
+  private static List<Map<String, Object>> getColumnData(String queryString, SObject queriedSObject, List<Object> linkify) {
     String soqlFields = queryString.subString(queryString.indexOfIgnoreCase('select') + 6, queryString.indexOfIgnoreCase('from')).trim();
     List<String> soqlColumns = soqlFields.split('[,]{1}[\\s]?'); // sanitizes the spacing between commas
     List<Map<String, Object>> tableColumns = new List<Map<String, Object>>();
     Map<String, Schema.SObjectField> fieldMap = queriedSObject.getSObjectType().getDescribe().fields.getMap();
+
+    // Fields were requested to be turned into hyperlinks
+    Map<String, DataTableService.LinkField> linkFieldMap = new Map<String, DataTableService.LinkField>();
+    if (linkify != null && !linkify.isEmpty()) {
+      System.debug('getColumnData linkify is: '+linkify);
+      for (Object linkField : linkify) {
+        Map<String, Object> reconstructedLinkField = (Map<String, Object>) linkField;
+        linkFieldMap.put(
+          (String)reconstructedLinkField.get('fieldName'),
+          (DataTableService.LinkField)JSON.deserialize(JSON.serialize(reconstructedLinkField), DataTableService.LinkField.class)
+        );
+      }
+      System.debug('getColumnData linkFieldMap is: '+linkFieldMap);
+    }
 
     for (String fieldName : soqlColumns){
       Schema.DescribeFieldResult field;
@@ -147,9 +168,9 @@ public with sharing class DataTableService {
       if (fieldname == 'created') {
         continue;
       }
+
       // Handles parent relationships, to a degree
       if (fieldName.contains('.')) {
-        System.debug(fieldName);
         String parentReference = fieldName.contains('__r')
           ? fieldName.substringBeforeLast('__r.') + '__c' // custom objects
           : fieldName.substringBeforeLast('.') + 'Id'; // standard objects typical schema
@@ -159,6 +180,7 @@ public with sharing class DataTableService {
         field = fieldMap.get(fieldName).getDescribe();
       }
       System.debug('getColumnData field info: '+fieldName+' : '+field.getType());
+
       // Minor validations
       if (
         field.getType() == Schema.DisplayType.ID  // IDs are usually keyFields, so we skip display of this
@@ -167,6 +189,7 @@ public with sharing class DataTableService {
       ) {
         continue;
       }
+
       // Handles parent relationships, to a degree
       if (fieldName.contains('.')) {
         fieldColumn.put('label', fieldName.substringBeforeLast('.') +' '+ field.getLabel());
@@ -175,11 +198,39 @@ public with sharing class DataTableService {
         fieldColumn.put('label', field.getLabel());
         fieldColumn.put('fieldName', fieldName);
       }
+
       // Final assembly
       fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(field.getType()));
+
+      // Linkification overrides, when required
+      if (linkFieldMap.containsKey(fieldName)) {
+        // Undo the above
+        fieldColumn.remove('label');
+        fieldColumn.remove('fieldName');
+        fieldColumn.remove('type');
+        // Then we recreate from here on
+        DataTableService.LinkField config = linkFieldMap.get(fieldName);
+        fieldColumn.put('label', fieldName);
+        fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(Schema.DisplayType.URL));
+        fieldColumn.put('fieldName', config.recordIdField);
+        // granular config
+        Map<String, Object> typeAttributes = new Map<String, Object>();
+        typeAttributes.put('label', new Map<String, Object>{'fieldName' => config.fieldName}); // neat trick to pass reference to an existing column
+        typeAttributes.put('target', config.target);
+        fieldColumn.put('typeAttributes', typeAttributes);
+      }
       tableColumns.add(fieldColumn);
     }
     return tableColumns;
+  }
+
+  /**
+   * Minor wraper to help with linkification process
+   */
+  public class LinkField {
+    public String fieldName;
+    public String recordIdField;
+    public String target;
   }
 
 }

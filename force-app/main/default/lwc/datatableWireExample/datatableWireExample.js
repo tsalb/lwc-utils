@@ -2,7 +2,10 @@ import { LightningElement, track } from 'lwc';
 
 const _defaultQueryString = 'SELECT Id, Name, UserName, Email FROM User';
 const _defaultConfig = {
-  queryString: _defaultQueryString
+  queryString: _defaultQueryString,
+  linkify: [
+    {fieldName: 'Name', recordIdField: 'Id', target: '_parent'}
+  ]
 }
 const DELAY = 2000;
 
@@ -28,8 +31,9 @@ export default class DatatableExample extends LightningElement {
       this.tableRequest = JSON.stringify(newRequest);
     }, DELAY);
   }
-  
+
   handleSuccess(event) {
+    console.log(JSON.parse(JSON.stringify(event.detail)));
     this.data = event.detail.tableData;
     this.columns = event.detail.tableColumns;
   }
@@ -39,5 +43,5 @@ export default class DatatableExample extends LightningElement {
     this.data = null;
     this.columns = null;
   }
-  
+
 }

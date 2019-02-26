@@ -37,6 +37,18 @@ const flattenQueryResult = (listOfObjects) => {
   return finalArr;
 }
 
+const applyLinks = (flatData, linkify) => {
+  const linkMap = new Map(linkify.map(obj => { return [obj.recordIdField, obj] }));
+  let dataClone = JSON.parse(JSON.stringify(flatData));
+  for (let row of dataClone) {
+    for (let key of linkMap.keys()) {
+      row[key] = '/'+row[key];
+    }
+  }
+  return dataClone;
+}
+
 export {
-  flattenQueryResult
+  flattenQueryResult,
+  applyLinks
 }

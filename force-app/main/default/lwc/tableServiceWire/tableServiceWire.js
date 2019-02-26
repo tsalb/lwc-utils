@@ -8,9 +8,13 @@ export default class TableServiceWire extends LightningElement {
   @wire(wireTableCache, { tableRequest: '$request' })
   wiredCache({ error, data }) {
     if (data) {
-      let response = {
-        tableData: tableUtils.flattenQueryResult(data.tableData),
-        tableColumns: data.tableColumns
+      let flatData = tableUtils.flattenQueryResult(data.tableData);
+      const originalRequest = JSON.parse(this.request);
+      const response = {
+        tableColumns: data.tableColumns,
+        tableData: originalRequest.linkify
+          ? tableUtils.applyLinks(flatData, originalRequest.linkify)
+          : flatData
       }
       this.dispatchEvent(
         new CustomEvent('success', {detail: response})

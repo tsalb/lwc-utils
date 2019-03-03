@@ -192,7 +192,7 @@ public with sharing class DataTableService {
 
       // Handles parent relationships, to a degree
       if (fieldName.contains('.')) {
-        fieldColumn.put('label', fieldName.substringBeforeLast('.') +' '+ field.getLabel());
+        fieldColumn.put('label', field.getLabel()); // Let field labels be handled by parent
         fieldColumn.put('fieldName', fieldName.replace('.', '_')); // handled clientside by DataTableServiceHelper.js
       } else {
         fieldColumn.put('label', field.getLabel());
@@ -202,7 +202,7 @@ public with sharing class DataTableService {
       // Final assembly
       fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(field.getType()));
 
-      // Linkification overrides, when required
+      // Experimenting with linkification overrides
       if (linkFieldMap.containsKey(fieldName)) {
         // Undo the above
         fieldColumn.remove('label');

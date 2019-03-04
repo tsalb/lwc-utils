@@ -1,12 +1,8 @@
 import { LightningElement, track } from 'lwc';
 
 const _defaultQueryString = 'SELECT Id, Name, UserName, Email FROM User';
-// I have not figured out a good schema for this yet, so let's call this experimental
 const _defaultConfig = {
   queryString: _defaultQueryString,
-  linkify: [
-    {fieldName: 'Name', recordIdField: 'Id', target: '_parent'}
-  ]
 }
 const DELAY = 2000;
 

@@ -172,38 +172,4 @@ private class DataTableServiceTests {
     System.assert(String.isNotEmpty(errorMessage));
   }
 
-  @isTest
-  static void test_request_has_linkify_configuration() {
-    Map<String, Object> tableServiceRequest = new Map<String, Object>();
-    Map<String, Object> tableServiceResponse = new Map<String, Object>();
-    List<Map<String, Object>> linkify = new List<Map<String, Object>>();
-    String queryString = 'SELECT Id, Name FROM User';
-
-    // Set up the linkify like this, which is an array of objects in Javascript.
-    //
-    // const linkify = [
-    //   {fieldName: 'Name', recordIdField: 'Id', target: '_parent'},
-    //   {fieldName: 'Lookup__r.Name', recordIdField: 'Lookup__c', target: '_parent'} // TODO THIS TYPE LATER
-    // ];
-    //
-    // This will unpack into a DataTableService.LinkField datatype
-
-    Map<String, Object> linkifiedNameField = new Map<String, Object>();
-    linkifiedNameField.put('fieldName', 'Name');
-    linkifiedNameField.put('recordIdField', 'Id');
-    linkifiedNameField.put('target', '_parent');
-    linkify.add(linkifiedNameField);
-
-    tableServiceRequest.put(DataTableService.QUERY_STRING_KEY, queryString);
-    tableServiceRequest.put(DataTableService.LINKIFY_KEY, linkify);
-
-    Test.startTest();
-      tableServiceResponse = DataTableService.getTableCache(tableServiceRequest);
-    Test.stopTest();
-
-    List<User> users = (List<User>) tableServiceResponse.get(DataTableService.TABLE_DATA_KEY);
-    System.assert(!users.isEmpty());
-    // TODO better asserts for checking how the column was reconstructed
-  }
-
 }

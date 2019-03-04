@@ -5,7 +5,6 @@ const flattenObject = (propName, obj) => {
       //if this property is an object, we need to flatten again
       let propIsNumber = isNaN(propName);
       let preAppend = propIsNumber ? propName+'_' : '';
-
       if (typeof obj[prop] == 'object') {
         flatObject[preAppend+prop] = {...flatObject, ...flattenObject(preAppend+prop,obj[prop])};
       } else {
@@ -37,13 +36,14 @@ const flattenQueryResult = (listOfObjects) => {
   return finalArr;
 }
 
-const applyLinks = (flatData, linkify) => {
-  const linkMap = new Map(linkify.map(obj => { return [obj.recordIdField, obj] }));
+const applyLinks = (flatData) => {
   let dataClone = JSON.parse(JSON.stringify(flatData));
   for (let row of dataClone) {
-    for (let key of linkMap.keys()) {
-      row[key] = '/'+row[key];
-    }
+    Object.keys(row).forEach(key => {
+      if (key.endsWith('Id')) {
+        row[key] = '/'+row[key];
+      }
+    });
   }
   return dataClone;
 }

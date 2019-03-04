@@ -34,7 +34,7 @@ public with sharing class DataTableService {
     Schema.DisplayType.Percent        => 'percent',
     Schema.DisplayType.Phone          => 'text',
     Schema.DisplayType.Picklist       => 'text',
-    Schema.DisplayType.Reference      => 'text',
+    Schema.DisplayType.Reference      => 'url',
     Schema.DisplayType.String         => 'text',
     Schema.DisplayType.TextArea       => 'text',
     Schema.DisplayType.Time           => 'text',
@@ -146,20 +146,6 @@ public with sharing class DataTableService {
     List<Map<String, Object>> tableColumns = new List<Map<String, Object>>();
     Map<String, Schema.SObjectField> fieldMap = queriedSObject.getSObjectType().getDescribe().fields.getMap();
 
-    // Fields were requested to be turned into hyperlinks
-    Map<String, DataTableService.LinkField> linkFieldMap = new Map<String, DataTableService.LinkField>();
-    if (linkify != null && !linkify.isEmpty()) {
-      System.debug('getColumnData linkify is: '+linkify);
-      for (Object linkField : linkify) {
-        Map<String, Object> reconstructedLinkField = (Map<String, Object>) linkField;
-        linkFieldMap.put(
-          (String)reconstructedLinkField.get('fieldName'),
-          (DataTableService.LinkField)JSON.deserialize(JSON.serialize(reconstructedLinkField), DataTableService.LinkField.class)
-        );
-      }
-      System.debug('getColumnData linkFieldMap is: '+linkFieldMap);
-    }
-
     for (String fieldName : soqlColumns){
       Schema.DescribeFieldResult field;
       Map<String, Object> fieldColumn = new Map<String, Object>();
@@ -190,47 +176,36 @@ public with sharing class DataTableService {
         continue;
       }
 
-      // Handles parent relationships, to a degree
-      if (fieldName.contains('.')) {
-        fieldColumn.put('label', field.getLabel()); // Let field labels be handled by parent
-        fieldColumn.put('fieldName', fieldName.replace('.', '_')); // handled clientside by DataTableServiceHelper.js
-      } else {
-        fieldColumn.put('label', field.getLabel());
-        fieldColumn.put('fieldName', fieldName);
-      }
-
-      // Final assembly
+      // Defaults. Can be overridden as needed
+      String flatFieldName = fieldName.contains('.')
+        ? fieldName.replace('.', '_') // parent fields handled by clientside flattener
+        : fieldName;
+      fieldColumn.put('label', field.getLabel());
       fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(field.getType()));
+      fieldColumn.put('fieldName', flatFieldName);
 
-      // Experimenting with linkification overrides
-      if (linkFieldMap.containsKey(fieldName)) {
-        // Undo the above
-        fieldColumn.remove('label');
-        fieldColumn.remove('fieldName');
-        fieldColumn.remove('type');
-        // Then we recreate from here on
-        DataTableService.LinkField config = linkFieldMap.get(fieldName);
-        fieldColumn.put('label', fieldName);
-        fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(Schema.DisplayType.URL));
-        fieldColumn.put('fieldName', config.recordIdField);
-        // granular config
+      // Fields with Name are typically hyperlinkeda
+      if (
+        fieldName.equalsIgnoreCase('name')
+        || fieldName.substringAfterLast('.').equalsIgnoreCase('name')
+      ) {
+        // Override previous key
+        fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(Schema.DisplayType.Reference));
+        
+        // Override the fieldName with a url to the id
+        fieldColumn.put('fieldName', flatFieldName.replace('Name', 'Id'));
+
+        // For the field label, given by URL typeAttribute
         Map<String, Object> typeAttributes = new Map<String, Object>();
-        typeAttributes.put('label', new Map<String, Object>{'fieldName' => config.fieldName}); // neat trick to pass reference to an existing column
-        typeAttributes.put('target', config.target);
+        typeAttributes.put('label', new Map<String, Object>{'fieldName' => flatFieldName}); // neat trick to pass reference to an existing column
+        typeAttributes.put('target', '_parent');
         fieldColumn.put('typeAttributes', typeAttributes);
       }
+
+      // Finally
       tableColumns.add(fieldColumn);
     }
     return tableColumns;
-  }
-
-  /**
-   * Minor wraper to help with linkification process
-   */
-  public class LinkField {
-    public String fieldName;
-    public String recordIdField;
-    public String target;
   }
 
 }

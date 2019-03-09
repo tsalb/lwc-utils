@@ -20,7 +20,7 @@ git clone https://github.com/tsalb/lwc-utils
 
 3) Use Command Palette to `SFDX: Push Source to Default Scratch Org`.
 
-4) Use Command Pellete to `SFDX: Open Default Org`.
+4) Use Command Palette to `SFDX: Open Default Org`.
 
 ## Install with unlocked package
 

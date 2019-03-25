@@ -35,12 +35,13 @@ Two samples:
 
 Parent relationships (1 level up) are working okay. It's safer to use formulas still, for now.
 
-![datatable](/readme-images/datatable.gif?raw=true)
+![datatable](/readme-images/datatable-optimized.gif?raw=true)
 
 ## LWC to Aura MessageBroker
 
 Leverages the lwc-recipe pubsub to provide an API for all LWC to access Aura only service modules, such as `lightning:overlayLibrary`.
+
 This simple example uses `MessageService` to dynamically create a LWC (using `$A.createComponent`).
 
-![lwc-modal](/readme-images/lwc-modal.gif?raw=true)
+![lwc-modal](/readme-images/lwc-modal-optimized.gif?raw=true)
 

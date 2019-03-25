@@ -4,6 +4,8 @@
   <lightning:overlayLibrary aura:id="overlayLib"/>
   <lightning:notificationsLibrary aura:id="notificationsLib"/>
 
+  <aura:attribute name="overlayPromise" type="Object"/>
+
   <aura:method name="showToast" action="{! c.handleShowToast }">
     <aura:attribute name="configObj" type="Object"/>
   </aura:method>

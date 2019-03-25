@@ -48,6 +48,7 @@
                               modalBody.set(valueProviderAdded, params.bodyParams[v]);
                             });
                         }
+                        component.set("v.overlayPromise", overlay);
                         helper.eventService(component).fireAppEvent("MODAL_READY");
                         if (!$A.util.isEmpty(params.callback)) {
                           params.callback(overlay);
@@ -89,6 +90,7 @@
                   modalBody.set(valueProviderAdded, params.bodyParams[v]);
                 });
               }
+              component.set("v.overlayPromise", overlay);
               helper.eventService(component).fireAppEvent("MODAL_READY");
               if (!$A.util.isEmpty(params.callback)) {
                 params.callback(overlay);

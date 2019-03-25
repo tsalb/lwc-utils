@@ -7,6 +7,9 @@
         <componentInstances>
             <componentName>lwcContactDatatable</componentName>
         </componentInstances>
+        <componentInstances>
+            <componentName>AuraLwcBroker</componentName>
+        </componentInstances>
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>

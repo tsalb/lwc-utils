@@ -1,0 +1,7 @@
+<aura:component implements="flexipage:availableForAllPageTypes">
+    <!-- Service Component boilerplate -->
+    <c:EventService aura:id="eventService"/>
+    <c:MessageService aura:id="messageService"/>
+    <!-- This is pub-subbed directly to any LWC needing access to Aura only api/services-->
+    <c:messageBroker onmessage="{! c.handleMessageService }"></c:messageBroker>
+</aura:component>	

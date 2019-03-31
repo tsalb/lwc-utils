@@ -10,6 +10,14 @@
     <aura:attribute name="configObj" type="Object"/>
   </aura:method>
 
+  <aura:method name="showPopover" action="{! c.createOverlayPopover }">
+    <aura:attribute name="body" type="String"/>
+    <aura:attribute name="bodyParams" type="Object"/>
+    <aura:attribute name="referenceSelector" type="Object"/>
+    <aura:attribute name="cssClass" type="String"/>
+    <aura:attribute name="callback" type="function"/> <!-- for popover promise -->
+  </aura:method>
+
   <aura:method name="modal" action="{! c.createOverlayModal }">
     <aura:attribute name="auraId" type="String" default="modal"/>
     <aura:attribute name="headerLabel" type="String"/>

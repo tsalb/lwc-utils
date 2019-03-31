@@ -3,6 +3,32 @@
     // pass the config object through
     helper.notificationsLib(component).showToast(event.getParam("arguments")["configObj"]);
   },
+  createOverlayPopover : function(component, event, helper) {
+    let params = event.getParam("arguments");
+
+    helper.createBody(params,
+      $A.getCallback((error, popoverBody) => {
+        if (error) {
+          alert("createOverlayPopover createBody error: "+error);
+          return;
+        }
+        if (popoverBody.isValid() && !$A.util.isUndefinedOrNull(popoverBody)) {
+          component.find("overlayLib").showCustomPopover({
+            body: popoverBody,
+            referenceSelector: params.referenceSelector,
+            cssClass: params.cssClass
+          })
+          .then($A.getCallback((overlay) => {
+            if (!$A.util.isEmpty(params.callback)) {
+              params.callback(overlay);
+            }
+          }));
+        } else {
+          console.log("popoverBody error is: "+error[0].message);
+        }
+      })
+    ); // end helper
+  },
   createOverlayModal : function(component, event, helper) {
     let params = event.getParam("arguments");
     // Creating the body first - this can be a custom component or text wrapped in formattedText

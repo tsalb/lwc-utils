@@ -5,15 +5,20 @@
   <c:EventService aura:id="eventService" channel="/event/Contact_DML__e" onMessage="{! c.handleContactDmlEvent }"/>
 
   <aura:attribute name="payloadJSON" type="String" access="PRIVATE"/>
+  <aura:attribute name="showSection" type="Boolean" access="PRIVATE" default="false"/>
+  <aura:attribute name="popover" type="Object" access="PRIVATE"/>
+  <aura:attribute name="timer" type="Integer" description="Use with debounce"/>
 
   <lightning:card title="Contact DML Platform Event">
-    <lightning:layout>
-      <lightning:layoutItem flexibility="grow" padding="around-medium">
-        <div class="slds-align_absolute-center">
-          {! v.payloadJSON }
-        </div>
-      </lightning:layoutItem>
-    </lightning:layout>
+    <aura:if isTrue="{! v.showSection }">
+      <lightning:layout horizontalAlign="center" verticalAlign="center">
+        <span class="platform-event-span" 
+          onmouseover="{! c.handleOpenPopover }"
+          onmouseleave="{! c.handleClosePopover }">
+          <lightning:button label="Hover to see"/>
+        </span>
+      </lightning:layout>
+    </aura:if> 
   </lightning:card>
 
 </aura:component>

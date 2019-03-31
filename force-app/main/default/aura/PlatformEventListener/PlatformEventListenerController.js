@@ -24,10 +24,11 @@
         }
       }), 350
     );
+    component.set("v.timer", timer);
   },
   handleClosePopover : function(component, event, helper) {
     let timer = component.get("v.timer");
-    
+
     window.clearTimeout(timer);
     timer = window.setTimeout(
       $A.getCallback(() => {
@@ -35,5 +36,6 @@
         component.set("v.popover", null);
       }), 500
     );
+    component.set("v.timer", timer);
   },
 })

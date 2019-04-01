@@ -7,35 +7,51 @@
   handleOpenPopover : function(component, event, helper) {
     const popover = component.get("v.popover");
     let timer = component.get("v.timer");
-
     window.clearTimeout(timer);
-    timer = window.setTimeout(
-      $A.getCallback(() => {
-        if (popover === null || !popover) {
+    if (!popover) {
+      timer = window.setTimeout(
+        $A.getCallback(() => {
           helper.messageService(component).showPopover(
-            component.get("v.payloadJSON"),
-            null, // no params
+            "c:PopoverBody",
+            {
+              value: component.get("v.payloadJSON")
+            },
             ".platform-event-span",
             "cPlatformEventListener,slds-popover_large,popoverclass,slds-nubbin_left",
-            $A.getCallback(popover => {
-              component.set("v.popover", popover);
+            $A.getCallback(result => {
+              component.find("eventService").fireAppEvent("SET_ABORT_CLOSE", false);
+              component.set("v.popover", result.popover);
             })
-          );
-        }
-      }), 350
-    );
+          )
+        }), 350
+      );
+    }
     component.set("v.timer", timer);
   },
   handleClosePopover : function(component, event, helper) {
     let timer = component.get("v.timer");
-
     window.clearTimeout(timer);
     timer = window.setTimeout(
       $A.getCallback(() => {
-        component.get("v.popover").close();
-        component.set("v.popover", null);
+        if (!component.get("v.abortClose")) {
+          component.get("v.popover").close();
+          component.set("v.popover", null);
+        }
       }), 500
     );
     component.set("v.timer", timer);
+  },
+  handleApplicationEvent : function(component, event, helper) {
+    let params = event.getParams();
+    switch(params.appEventKey) {
+      case "SET_ABORT_CLOSE":
+        const value = $A.util.getBooleanValue(params.appEventValue);
+        component.set("v.abortClose", value);
+        break;
+      case "CLOSE_POPOVER":
+        component.get("v.popover").close();
+        component.set("v.popover", null);
+        break;
+    }
   },
 })

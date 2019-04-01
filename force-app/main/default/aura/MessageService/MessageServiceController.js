@@ -20,7 +20,10 @@
           })
           .then($A.getCallback((overlay) => {
             if (!$A.util.isEmpty(params.callback)) {
-              params.callback(overlay);
+              params.callback({
+                popover: overlay,
+                popoverBody: popoverBody
+              });
             }
           }));
         } else {

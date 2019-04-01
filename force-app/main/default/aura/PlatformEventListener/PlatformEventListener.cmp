@@ -6,8 +6,13 @@
 
   <aura:attribute name="payloadJSON" type="String" access="PRIVATE"/>
   <aura:attribute name="showSection" type="Boolean" access="PRIVATE" default="false"/>
-  <aura:attribute name="popover" type="Object" access="PRIVATE"/>
-  <aura:attribute name="timer" type="Integer" description="Use with debounce"/>
+  <aura:attribute name="popover" type="Aura.Component" access="PRIVATE" description="The overlay"/>
+
+  <!-- Finite tuning for popover UX-->
+  <aura:attribute name="abortClose" type="Boolean" access="PRIVATE" default="false"/>
+  <aura:attribute name="timer" type="Integer" access="PRIVATE" description="Use with debounce"/>
+
+  <aura:handler event="c:ServiceAppEvent" action="{! c.handleApplicationEvent }"/>
 
   <lightning:card title="Contact DML Platform Event">
     <aura:if isTrue="{! v.showSection }">

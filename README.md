@@ -1,6 +1,11 @@
-# LWC Service Modules
+# LWC Utils and Design Patterns
 
-Rewrite of [Service Components Framework (Aura)](https://github.com/tsalb/sfdc-lightning-service-components) but with Lightning Web Components (LWC). This repository includes all my previous Service Components for easy side-by-side comparison.
+This repo highlights the following production proven design patterns:
+
+* Design custom LWC into a service component architecture, i.e. making "utils".
+* Showcase a bi-directional event / payload brokering system between Aura and LWC.
+* Highlight the versatility of the Flexipage SPA.
+* Showcase an apples-to-apples comparison of "Aura vs LWC" with an LWC re-write of my [Aura Service Components Sample App](https://github.com/tsalb/sfdc-lightning-service-components).
 
 ![side-by-side](/readme-images/side-by-side.png?raw=true)
 
@@ -10,21 +15,23 @@ SFDX CLI and VSCode has matured enough for general usage so I will be moving my 
 
 For VSCode and SFDX setup see steps (1 and 2) from the [official lwc-recipes repo](https://github.com/trailheadapps/lwc-recipes#installing-recipes-using-salesforce-dx). Once you have the SFDX CLI set up and Authed into a Dev Hub you can then:
 
-1) Open VSCode, then open terminal with `` ctrl+` `` then clone lwc-utils.
+1) Clone this repo to a desired directory.
 
 ```
 git clone https://github.com/tsalb/lwc-utils
 ```
 
-2) Use [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) to `SFDX: Create a Default Scratch Org` .
+2) Open VSCode (with a Dev Hub already connected), and open the `lwc-utils` folder.
 
-3) Use Command Palette to `SFDX: Push Source to Default Scratch Org`.
+3) Use [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) to `SFDX: Create a Default Scratch Org` .
 
-4) Use Command Palette to `SFDX: Open Default Org`.
+4) Use Command Palette to `SFDX: Push Source to Default Scratch Org`.
+
+5) Use Command Palette to `SFDX: Open Default Org`.
 
 ## Service Components Framework (Aura)
 
-See [Readme](https://github.com/tsalb/sfdc-lightning-service-components#dataservice-usage-example) for any Aura component usage.
+See the [readme](https://github.com/tsalb/sfdc-lightning-service-components#dataservice-usage-example) on the old repository.
 
 ## Datatable Service (LWC @wire and imperative)
 

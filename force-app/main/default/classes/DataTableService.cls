@@ -8,7 +8,6 @@ public with sharing class DataTableService {
   public static final String QUERY_STRING_KEY   = 'queryString';
   public static final String BIND_VAR_KEY       = 'bindVars';
   public static final String ID_SET_KEY         = 'idSet';
-  public static final String LINKIFY_KEY        = 'linkify';
 
   // tableCache
   public static final String TABLE_DATA_KEY     = 'tableData';
@@ -63,7 +62,6 @@ public with sharing class DataTableService {
     }
     // Configurations
     Map<String, Object> tableServiceResponse = new Map<String, Object>();
-    List<Object> linkify = (List<Object>)tableRequest.get(LINKIFY_KEY);
     // Derived Data
     List<SObject> tableData = DataTableService.getSObjectData(tableRequest);
     // Derived Columns
@@ -72,7 +70,7 @@ public with sharing class DataTableService {
     SObject queryObject = Schema.getGlobalDescribe().get(sObjectName).newSObject();
 
     tableServiceResponse.put(TABLE_DATA_KEY, tableData);
-    tableServiceResponse.put(TABLE_COLUMNS_KEY, DataTableService.getColumnData(queryString, queryObject, linkify));
+    tableServiceResponse.put(TABLE_COLUMNS_KEY, DataTableService.getColumnData(queryString, queryObject));
     return tableServiceResponse;
   }
 
@@ -137,10 +135,9 @@ public with sharing class DataTableService {
  * Creates lightning-datatable ready tableColumns using the queryString and the queried object's schema.
  * @param  queryString    [Dynamic SOQL String, to parse out fields]
  * @param  queriedSObject [To grab full schema of fields, primarily for labels]
- * @param  linkifyConfig  [Configure which fields are linkified in apex, rather than JS]
  * @return                [List of individual tableColumn, i.e. tableColumns]
  */
-  private static List<Map<String, Object>> getColumnData(String queryString, SObject queriedSObject, List<Object> linkify) {
+  private static List<Map<String, Object>> getColumnData(String queryString, SObject queriedSObject) {
     String soqlFields = queryString.subString(queryString.indexOfIgnoreCase('select') + 6, queryString.indexOfIgnoreCase('from')).trim();
     List<String> soqlColumns = soqlFields.split('[,]{1}[\\s]?'); // sanitizes the spacing between commas
     List<Map<String, Object>> tableColumns = new List<Map<String, Object>>();
@@ -184,7 +181,7 @@ public with sharing class DataTableService {
       fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(field.getType()));
       fieldColumn.put('fieldName', flatFieldName);
 
-      // Fields with Name are typically hyperlinkeda
+      // Fields with Name are typically hyperlinked
       if (
         fieldName.equalsIgnoreCase('name')
         || fieldName.substringAfterLast('.').equalsIgnoreCase('name')

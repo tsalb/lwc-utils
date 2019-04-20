@@ -19,6 +19,7 @@ export default class DatatableExample extends LightningElement {
       this.data = tableResults.tableData;
       this.columns = tableResults.tableColumns;
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
     }
   }
@@ -26,6 +27,7 @@ export default class DatatableExample extends LightningElement {
   handleKeyChange(event) {
     window.clearTimeout(this.delayTimeout);
     this.query = event.target.value;
+    // eslint-disable-next-line @lwc/lwc/no-async-operation
     this.delayTimeout = setTimeout(() => {
       this.fetchTableService(this.query);
     }, DELAY);

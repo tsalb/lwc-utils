@@ -21,6 +21,7 @@ export default class DatatableExample extends LightningElement {
   handleKeyChange(event) {
     window.clearTimeout(this.delayTimeout);
     this.query = event.target.value;
+    // eslint-disable-next-line @lwc/lwc/no-async-operation
     this.delayTimeout = setTimeout(() => {
       let newRequest = {
         queryString: this.query
@@ -30,12 +31,14 @@ export default class DatatableExample extends LightningElement {
   }
 
   handleSuccess(event) {
+    // eslint-disable-next-line no-console
     console.log(JSON.parse(JSON.stringify(event.detail)));
     this.data = event.detail.tableData;
     this.columns = event.detail.tableColumns;
   }
 
   handleError(event) {
+    // eslint-disable-next-line no-console
     console.log(JSON.parse(JSON.stringify(event.detail)));
     this.data = null;
     this.columns = null;

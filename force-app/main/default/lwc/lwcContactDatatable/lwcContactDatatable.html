@@ -1,4 +1,8 @@
 <template>
+  <!-- Service components -->
+  <c-event-broker></c-event-broker>
+  <c-message-broker></c-message-broker>
+
   <lightning-card title="Contacts">
     <div if:true={contacts.data} class="slds-border_top">
       <lightning-datatable
@@ -7,15 +11,6 @@
         onrowaction={handleRowAction}
         key-field="Id">
       </lightning-datatable>
-    </div>
-    <div slot="actions">
-      <!-- LWC has no overlayLibrary yet,so this is omitted until a native overlay can be provided -->
-      <!-- <div if:true={contacts.data}>
-        <lightning-button
-          label="Update Mailing Address" 
-          onclick={handleOpenUpdateAddressModal}>
-        </lightning-button>
-      </div> -->
     </div>
   </lightning-card>
 </template>

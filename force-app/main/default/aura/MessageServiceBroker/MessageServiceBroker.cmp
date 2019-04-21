@@ -1,0 +1,12 @@
+<aura:component implements="flexipage:availableForAllPageTypes">
+
+    <!-- Service Component boilerplate -->
+    <c:MessageService aura:id="messageService"/>
+    
+    <!-- LWC to Aura -->
+    <c:messageBrokerHandler
+      onmessage="{! c.handleMessageService }"
+      onnotifyclose="{! c.handleNotifyClose }"
+    ></c:messageBrokerHandler>
+
+</aura:component>	

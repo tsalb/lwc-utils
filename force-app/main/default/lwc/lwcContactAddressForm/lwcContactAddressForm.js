@@ -12,7 +12,7 @@ export default class LwcContactAddressForm extends LightningElement {
       message: 'Updated Mailing Address Successfully.',
       variant: 'success'
     }));
-    fireEvent(this.pageRef, 'reloadTable');
+    fireEvent(this.pageRef, 'forceRefreshView');
     fireEvent(this.pageRef, 'notifyClose');
   }
 }

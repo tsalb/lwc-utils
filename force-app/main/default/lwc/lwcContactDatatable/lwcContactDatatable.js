@@ -1,12 +1,12 @@
-import { LightningElement, track, wire } from 'lwc';
+import { LightningElement, api, track, wire } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { fireEvent, registerListener, unregisterAllListeners } from 'c/pubsub';
+import { registerListener, unregisterAllListeners } from 'c/pubsub';
 import { updateRecord } from 'lightning/uiRecordApi';
 import wireContactsByAccountId  from '@salesforce/apex/DataServiceCtrl.wireContactsByAccountId';
 import getContactsByAccountId  from '@salesforce/apex/DataServiceCtrl.getContactsByAccountId';
 
-const _tableColumns = [
+const TABLE_COLUMNS = [
   {label: 'Name', fieldName: 'Name', type: 'text', initialWidth: 110},
   {label: 'Email', fieldName: 'Email', type: 'email', initialWidth: 170},
   {label: 'Phone', fieldName: 'Phone', type: 'phone', initialWidth: 130},
@@ -22,7 +22,14 @@ const _tableColumns = [
 ];
 
 export default class LwcContactDatatable extends LightningElement {
-  @track columns = _tableColumns;
+  @api
+  get recordId() {
+    return this._accountId;
+  }
+  set recordId(value) {
+    this._accountId = value;
+  }
+  @track columns = TABLE_COLUMNS;
 
   @wire(CurrentPageReference)pageRef;
 
@@ -34,7 +41,7 @@ export default class LwcContactDatatable extends LightningElement {
 
   connectedCallback() {
     registerListener('accountSelected', this.handleAccountSelected, this);
-    registerListener('reloadTable', this.reloadTable, this);
+    registerListener('forceRefreshView', this.reloadTable, this);
     registerListener('clearTable', this.handleClearTable, this);
   }
 
@@ -71,7 +78,7 @@ export default class LwcContactDatatable extends LightningElement {
             }
           }
         }
-        fireEvent(this.pageRef, 'messageService', messageServicePayload);
+        this.template.querySelector('c-message-broker').messageService(messageServicePayload);
         break;
       }
       default:
@@ -103,8 +110,8 @@ export default class LwcContactDatatable extends LightningElement {
     }
   }
 
-  // TODO use refreshApex here
   async reloadTable() {
+    console.log('reloadTable');
     try {
       this.contacts.data = await getContactsByAccountId({accountId: this._accountId});
     } catch (error) {
@@ -114,6 +121,8 @@ export default class LwcContactDatatable extends LightningElement {
           variant: 'error',
         })
       );
+    } finally {
+      this.template.querySelector('c-event-broker').forceRefreshView();
     }
   }
 }

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<AuraDefinitionBundle xmlns="urn:metadata.tooling.soap.sforce.com" fqn="AuraLwcBroker">
-    <apiVersion>45.0</apiVersion>
-    <description>Headless Aura LWC Wrapper. Connects a pub-subbed LWC to provide LWC an api into Aura only events/services</description>
-</AuraDefinitionBundle>

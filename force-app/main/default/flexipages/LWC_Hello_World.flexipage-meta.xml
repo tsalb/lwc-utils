@@ -8,7 +8,7 @@
             <componentName>lwcContactDatatable</componentName>
         </componentInstances>
         <componentInstances>
-            <componentName>AuraLwcBroker</componentName>
+            <componentName>MessageServiceBroker</componentName>
         </componentInstances>
         <name>main</name>
         <type>Region</type>

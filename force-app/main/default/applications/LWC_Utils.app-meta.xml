@@ -4,11 +4,11 @@
         <headerColor>#0070D2</headerColor>
         <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
     </brand>
-    <description>github.com/tsalb/lwc-utils</description>
+    <description>Aura vs LWC with some design patterns sprinkled in</description>
     <formFactors>Large</formFactors>
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
-    <label>Service Components</label>
+    <label>LWC Utils</label>
     <navType>Standard</navType>
     <tabs>Sample_App_LWC</tabs>
     <tabs>SC_Sample_App</tabs>

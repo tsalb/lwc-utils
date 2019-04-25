@@ -24,10 +24,11 @@ const TABLE_COLUMNS = [
 export default class LwcContactDatatable extends LightningElement {
   @api
   get recordId() {
-    return this._accountId;
+    return this._recordId;
   }
   set recordId(value) {
     this._accountId = value;
+    this._recordId = value;
   }
   @track columns = TABLE_COLUMNS;
 
@@ -37,7 +38,8 @@ export default class LwcContactDatatable extends LightningElement {
   contacts;
 
   // private
-  _accountId;
+  _accountId; // app flexipages
+  _recordId;  // record flexipage
 
   connectedCallback() {
     registerListener('accountSelected', this.handleAccountSelected, this);
@@ -74,7 +76,8 @@ export default class LwcContactDatatable extends LightningElement {
             component: 'c:lwcContactAddressForm',
             componentParams: {
               contact: row,
-              pageRef: this.pageRef
+              pageRef: this.pageRef,
+              scopedId: this._recordId // null for app page is fine
             }
           }
         }
@@ -111,7 +114,6 @@ export default class LwcContactDatatable extends LightningElement {
   }
 
   async reloadTable() {
-    console.log('reloadTable');
     try {
       this.contacts.data = await getContactsByAccountId({accountId: this._accountId});
     } catch (error) {

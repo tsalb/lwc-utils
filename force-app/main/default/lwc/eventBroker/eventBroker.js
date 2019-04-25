@@ -3,6 +3,7 @@ import { CurrentPageReference } from 'lightning/navigation';
 import { fireEvent } from 'c/pubsub';
 
 export default class EventBroker extends LightningElement {
+  @api scopedId;
   @wire(CurrentPageReference) pageRef;
 
   /* Utilities */
@@ -23,7 +24,7 @@ export default class EventBroker extends LightningElement {
     const finalPayload = {
       type: 'refreshView'
     }
-    this._brokerMessageToAura(finalPayload);
+    this._brokerEventToAura(finalPayload);
   }
   @api
   fireAppEvent(payload) {
@@ -32,7 +33,7 @@ export default class EventBroker extends LightningElement {
       key: payload.key,
       value: payload.value
     }
-    this._brokerMessageToAura(finalPayload);
+    this._brokerEventToAura(finalPayload);
   }
   @api
   fireRecordEvent(payload) {
@@ -42,12 +43,12 @@ export default class EventBroker extends LightningElement {
       value: payload.value,
       recordId: payload.recordId // if provided, overrides recordId on GC_MessageBrokerHandler_LwcWrapper
     }
-    this._brokerMessageToAura(finalPayload);
+    this._brokerEventToAura(finalPayload);
   }
 
   // PRIVATE
-  _brokerMessageToAura(finalPayload) {
-    //console.log(JSON.parse(JSON.stringify(finalPayload)));
-    fireEvent(this.pageRef, 'brokerMessageToAuraEventService', finalPayload);
+  _brokerEventToAura(finalPayload) {
+    const boundary = { scopedId: this.scopedId };
+    fireEvent(this.pageRef, 'brokerEventToAuraEventService', { ...finalPayload, ...boundary } );
   }
 }

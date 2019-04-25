@@ -1,4 +1,7 @@
 <template>
+  <!-- Service components -->
+  <c-message-broker scoped-id={scopedId}></c-message-broker>
+
   <template if:true={contact}>
     <lightning-record-edit-form 
       record-id={contact.Id} 

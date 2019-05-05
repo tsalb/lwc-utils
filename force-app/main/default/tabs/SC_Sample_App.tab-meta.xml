@@ -3,6 +3,5 @@
     <description>Sample app written in Aura Components</description>
     <flexiPage>Service_Components_Hello_World</flexiPage>
     <label>Sample App (Aura Components)</label>
-    <mobileReady>false</mobileReady>
     <motif>Custom56: Bottle</motif>
 </CustomTab>

@@ -3,6 +3,5 @@
     <description>Created by Lightning App Builder</description>
     <flexiPage>Datatable_Service_LWC_wire</flexiPage>
     <label>Datatable Service (LWC @wire)</label>
-    <mobileReady>false</mobileReady>
     <motif>Custom73: Highway Sign</motif>
 </CustomTab>

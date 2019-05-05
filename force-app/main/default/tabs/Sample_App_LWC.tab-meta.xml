@@ -3,6 +3,5 @@
     <description>Sample app in LWC</description>
     <flexiPage>LWC_Hello_World</flexiPage>
     <label>Sample App (LWC)</label>
-    <mobileReady>false</mobileReady>
     <motif>Custom8: Diamond</motif>
 </CustomTab>

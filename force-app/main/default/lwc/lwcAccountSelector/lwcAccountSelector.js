@@ -2,14 +2,14 @@ import { LightningElement, track, wire } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { fireEvent } from 'c/pubsub';
-import getAccountOptions from '@salesforce/apex/DataServiceCtrl.getAccountOptions';
+import getAccountOptionsCache from '@salesforce/apex/DataServiceCtrl.getAccountOptionsCache';
 
 export default class LwcAccountSelector extends LightningElement {
   @track topAccounts;
 
   @wire(CurrentPageReference) pageRef;
 
-  @wire(getAccountOptions)
+  @wire(getAccountOptionsCache)
   wiredTopAccounts({ error, data }) {
     if (data) {
       this.topAccounts = data.items;

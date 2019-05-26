@@ -1,7 +1,7 @@
 {
   "orgName": "tsalb world",
   "edition": "Developer",
-  "hasSampleData": "true",
+  "hasSampleData": true,
   "features": [
     "ForceComPlatform",
     "ProcessBuilder",

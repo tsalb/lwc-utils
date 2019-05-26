@@ -12,7 +12,7 @@ export default class LwcAccountSelector extends LightningElement {
   @wire(getAccountOptions)
   wiredTopAccounts({ error, data }) {
     if (data) {
-      this.topAccounts = JSON.parse(data).items;
+      this.topAccounts = data.items;
     } else if (error) {
       this.dispatchEvent(
         new ShowToastEvent({

@@ -4,7 +4,7 @@
       $A.getCallback((error, data) => {
         // This returns whatever datatype is specified in the controller
         if (!$A.util.isEmpty(data)) {
-          component.set("v.topAccounts", JSON.parse(data).items);
+          component.set("v.topAccounts", data.items);
         } else {
           helper.messageService(component).showToast({
             message: "No Accounts in org!",

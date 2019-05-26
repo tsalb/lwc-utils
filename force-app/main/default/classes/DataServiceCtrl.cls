@@ -6,7 +6,7 @@
 public with sharing class DataServiceCtrl {
 
   @AuraEnabled (cacheable=true)
-  public static String getAccountOptions() {
+  public static Data getAccountOptions() {
     Data valueLabels = new Data();
     List<AggregateResult> aggList = new List<AggregateResult>([
       SELECT
@@ -25,8 +25,7 @@ public with sharing class DataServiceCtrl {
     for (AggregateResult ar : aggList) {
       valueLabels.items.add(new Item((String)ar.get('accId'), (String)ar.get('accName')));
     }
-    //we need to serialize this because lightning cant have @AuraEnabled on inner classes
-    return JSON.serialize(valueLabels);
+    return valueLabels;
   }
 
   @AuraEnabled (cacheable=true)
@@ -83,8 +82,8 @@ public with sharing class DataServiceCtrl {
   }
 
   public class Item {
-    public String value;
-    public String label;
+    @AuraEnabled public String value;
+    @AuraEnabled public String label;
 
     public Item(String value, String label) {
       this.value = value;
@@ -93,7 +92,7 @@ public with sharing class DataServiceCtrl {
   }
 
   public class Data {
-    public List<Item> items;
+    @AuraEnabled public List<Item> items;
 
     public Data() {
       this.items = new List<Item>();

@@ -2,9 +2,18 @@
   handleMessageService : function(component, event, helper) {
     let payload = event.getParam("payload");
     let messageService = component.find("messageService");
+    let config = payload.config;
+
     switch (payload.method) {
       case "bodyModal":
-        let config = payload.config;
+        messageService.bodyModal(
+          config.auraId,
+          config.headerLabel,
+          config.component,
+          config.componentParams
+        );
+        break;
+      case "bodyModalLarge":
         messageService.bodyModal(
           config.auraId,
           config.headerLabel,

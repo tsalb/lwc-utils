@@ -2,7 +2,10 @@
 
   <!-- Service Components boilerplate -->
   <c:MessageService aura:id="messageService"/>
-  <c:EventService aura:id="eventService" channel="/event/Contact_DML__e" onMessage="{! c.handleContactDmlEvent }"/>
+  <c:EventService aura:id="eventService"/>
+
+  <!-- emp api abstraction -->
+  <c:empApi channel="/event/Contact_DML__e" connect="true" onmessage="{! c.handleContactDmlEvent }"></c:empApi>
 
   <aura:attribute name="payloadJSON" type="String" access="PRIVATE"/>
   <aura:attribute name="showSection" type="Boolean" access="PRIVATE" default="false"/>

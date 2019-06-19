@@ -1,14 +1,4 @@
 ({
-  doInit : function(component, event, helper) {
-    if (!$A.util.isEmpty(component.get("v.channel"))) {
-      helper.subscribe(component, event);
-    }
-  },
-  handleDestroy : function(component, event, helper) {
-    if (!$A.util.isEmpty(component.get("v.channel")) && component.isValid()) {
-      helper.unsubscribe(component, event);
-    }
-  },
   handleFireApplicationEvent : function(component, event) {
     let params = event.getParam("arguments");
     let appEvent = $A.get("e.c:ServiceAppEvent");
@@ -19,7 +9,7 @@
     });
     appEvent.fire();
   },
-  handleFireRecordEvent : function(component, event, helper) {
+  handleFireRecordEvent : function(component, event) {
     let recordEventScope = component.get("v.recordEventScope");
 
     if ($A.util.isUndefinedOrNull(recordEventScope)) {

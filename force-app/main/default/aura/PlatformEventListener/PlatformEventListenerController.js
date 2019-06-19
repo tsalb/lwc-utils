@@ -1,11 +1,12 @@
 ({
   handleContactDmlEvent : function(component, event, helper) {
-    const payloadJSON = JSON.stringify(event.getParam("payload"));
-    component.set("v.payloadJSON", payloadJSON);
+    let params = event.getParams();
+    console.log(params.channel);
+    component.set("v.payloadJSON", JSON.stringify(params.payload));
     component.set("v.showSection", true);
   },
   handleOpenPopover : function(component, event, helper) {
-    const popover = component.get("v.popover");
+    let popover = component.get("v.popover");
     let timer = component.get("v.timer");
     window.clearTimeout(timer);
     if (!popover) {
@@ -45,7 +46,7 @@
     let params = event.getParams();
     switch(params.appEventKey) {
       case "SET_ABORT_CLOSE":
-        const value = $A.util.getBooleanValue(params.appEventValue);
+        let value = $A.util.getBooleanValue(params.appEventValue);
         component.set("v.abortClose", value);
         break;
       case "CLOSE_POPOVER":

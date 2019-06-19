@@ -6,7 +6,9 @@
   createOverlayPopover : function(component, event, helper) {
     let params = event.getParam("arguments");
 
-    helper.createBody(params,
+    helper.createBody(
+      component,
+      params,
       $A.getCallback((error, popoverBody) => {
         if (error) {
           alert("createOverlayPopover createBody error: "+error);
@@ -35,7 +37,9 @@
   createOverlayModal : function(component, event, helper) {
     let params = event.getParam("arguments");
     // Creating the body first - this can be a custom component or text wrapped in formattedText
-    helper.createBody(params,
+    helper.createBody(
+      component,
+      params,
       $A.getCallback((error, modalBody) => {
         if (error) {
           alert(error);
@@ -99,7 +103,9 @@
   },
   createOverlayModalWithoutFooter : function(component, event, helper) {
     let params = event.getParam("arguments");
-    helper.createBody(params,
+    helper.createBody(
+      component,
+      params,
       $A.getCallback((error, modalBody) => {
         if (error) {
           alert(error);

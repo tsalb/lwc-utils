@@ -8,9 +8,18 @@
   notificationsLib : function(component) {
     return component.find("notificationsLib");
   },
-  createBody : function(params, ctrlCallback) {
+  createBody : function(component, params, ctrlCallback) {
     let componentType = params.body.split(":")[0];
     let componentParams = {};
+    let singleton = component.find("singleton");
+
+    if (singleton.getIsCreatingModal()) {
+      return;
+    }
+
+    // $A.createComponent callback will set it back to false
+    singleton.setIsCreatingModal(true);
+
     // if we had some bodyParams, let's set the target modal body with their data
     if (!$A.util.isEmpty(params.bodyParams)) {
       Object.keys(params.bodyParams)
@@ -24,6 +33,7 @@
           params.body,
           componentParams,
           (newModalBody, status, errorMessage) => {
+            singleton.setIsCreatingModal(false);
             if (status === "SUCCESS") {
               ctrlCallback(null, newModalBody);
             } else {
@@ -40,6 +50,7 @@
             "class": "slds-align_absolute-center"
           },
           (formattedText, status, errorMessage) => {
+            singleton.setIsCreatingModal(false);
             if (status === "SUCCESS") {
               ctrlCallback(null, formattedText);
             } else {

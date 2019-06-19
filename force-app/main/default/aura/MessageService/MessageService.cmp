@@ -5,6 +5,7 @@
   <lightning:notificationsLibrary aura:id="notificationsLib"/>
 
   <aura:attribute name="overlayPromise" type="Object"/>
+  <c:singleton aura:id="singleton"></c:singleton>
 
   <aura:method name="showToast" action="{! c.handleShowToast }">
     <aura:attribute name="configObj" type="Object"/>

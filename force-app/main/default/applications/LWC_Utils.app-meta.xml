@@ -14,6 +14,7 @@
     <tabs>SC_Sample_App</tabs>
     <tabs>Datatable_Service_LWC_imperative</tabs>
     <tabs>Datatable_Service_LWC_wire</tabs>
+    <tabs>Flow_Wizard_LWC</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Service_Components_UtilityBar</utilityBar>
 </CustomApplication>

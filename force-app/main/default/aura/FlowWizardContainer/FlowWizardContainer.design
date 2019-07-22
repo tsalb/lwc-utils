@@ -1,0 +1,6 @@
+<design:component label="Flow Wizard Container">
+  <design:attribute name="wizardTemplateName" label="Wizard Template Name" description="Name of render template to inject at runtime."/>
+  <design:attribute name="screenName" label="Flow Screen Name" description="For the rendered template, this furthur controls which template block to show."/>
+  <design:attribute name="recordId" label="SObject Record Id" description="Optional, if the flow screen is Record Flexipage specific."/>
+  <design:attribute name="flowCacheJSON" label="Flow Cache JSON" description="For now, events are bounced to this so the Aura Component can persist state."/>
+</design:component>

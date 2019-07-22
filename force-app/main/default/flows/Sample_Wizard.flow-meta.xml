@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <choices>
+        <name>IsDateParser</name>
+        <choiceText>Date Parser</choiceText>
+        <dataType>Boolean</dataType>
+        <value>
+            <booleanValue>true</booleanValue>
+        </value>
+    </choices>
+    <choices>
+        <name>IsDefault</name>
+        <choiceText>Default</choiceText>
+        <dataType>Boolean</dataType>
+        <value>
+            <booleanValue>true</booleanValue>
+        </value>
+    </choices>
+    <decisions>
+        <name>Choose_Wizard</name>
+        <label>Choose Wizard</label>
+        <locationX>253</locationX>
+        <locationY>175</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Date_Parser_Selected</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>IsDateParser</leftValueReference>
+                <operator>WasSelected</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Date_Parser_1</targetReference>
+            </connector>
+            <label>Date Parser Selected</label>
+        </rules>
+        <rules>
+            <name>Default_Selected</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>IsDefault</leftValueReference>
+                <operator>WasSelected</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Default</targetReference>
+            </connector>
+            <label>Default Selected</label>
+        </rules>
+    </decisions>
+    <interviewLabel>Sample Wizard {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Sample Wizard</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Choose_Wizard_Type</name>
+        <label>Choose Wizard Type</label>
+        <locationX>174</locationX>
+        <locationY>50</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Choose_Wizard</targetReference>
+        </connector>
+        <fields>
+            <name>WizardType</name>
+            <choiceReferences>IsDateParser</choiceReferences>
+            <choiceReferences>IsDefault</choiceReferences>
+            <dataType>Boolean</dataType>
+            <fieldText>Wizard Type</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Date_Parser_1</name>
+        <label>Date Parser - 1</label>
+        <locationX>378</locationX>
+        <locationY>52</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Date_Parser_intro</name>
+            <extensionName>c:FlowWizardContainer</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>flowCacheJSON</name>
+                <value>
+                    <elementReference>flowCacheJson</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>screenName</name>
+                <value>
+                    <stringValue>intro</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>wizardTemplateName</name>
+                <value>
+                    <stringValue>dateParserMenu</stringValue>
+                </value>
+            </inputParameters>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>false</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Default</name>
+        <label>Default</label>
+        <locationX>51</locationX>
+        <locationY>187</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>false</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Default_Message</name>
+            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;b&gt;No LWC Template was selected&lt;/b&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <startElementReference>Choose_Wizard_Type</startElementReference>
+    <status>Active</status>
+    <variables>
+        <description>Stateful storage backing this series of flow screens</description>
+        <name>flowCacheJson</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+</Flow>

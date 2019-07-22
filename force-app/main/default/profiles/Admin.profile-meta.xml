@@ -63,4 +63,8 @@
         <tab>Sample_App_LWC</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
+    <tabVisibilities>
+        <tab>Flow_Wizard_LWC</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
 </Profile>

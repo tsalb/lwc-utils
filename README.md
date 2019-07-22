@@ -50,5 +50,43 @@ Leverages the lwc-recipe pubsub to provide an API for all LWC to access Aura onl
 
 This simple example uses `MessageService` to dynamically create a LWC (using `$A.createComponent`).
 
+`MessageService` is also able to dynamically start flows, as shown in the next section.
+
 ![lwc-modal](/readme-images/lwc-modal-optimized.gif?raw=true)
+
+## Dynamic Flow Modal in LWC
+
+Leverages both `MessageBroker` and `MessageService` to dynamically start flows from an LWC.
+
+This simple example brokers a payload to `lightning:flow` (Aura only in Summer 19) to start a flow with a given `flowName` and `inputVariables`.
+
+![flow-wizard](/readme-images/flow-wizard-optimized.gif?raw=true)
+
+## Dynamic Templating in LWC Wizard Body
+
+To be built on in future updates, the `flowWizardRouter` LWC is able to dynamically `render()` a chosen `template` based on an @api attribute.
+
+```javascript
+import { LightningElement, api, track } from 'lwc';
+import { DateTime } from 'c/luxon';
+import { default as dateParserMenu } from './templates/dateParserMenu.html';
+
+export default class FlowWizardRouter extends LightningElement {
+  @api wizardTemplate;
+  @track localTime;
+
+  connectedCallback() {
+    this.localTime = DateTime.local().toISO();
+  }
+
+  render() { 
+    switch (this.wizardTemplate) {
+      case 'dateParserMenu':
+        return dateParserMenu;
+      default:
+        return null;
+    }
+  }
+}
+```
 

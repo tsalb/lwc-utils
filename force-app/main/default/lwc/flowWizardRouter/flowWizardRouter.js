@@ -10,9 +10,7 @@ export default class FlowWizardRouter extends LightningElement {
   @api recordId;
   @api flowCacheJson;
 
-  // Non tracked
   @track localTime;
-  @track utcTime;
 
   connectedCallback() {
     this.localTime = DateTime.local().toISO();

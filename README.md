@@ -60,6 +60,8 @@ Leverages both `MessageBroker` and `MessageService` to dynamically start flows f
 
 This simple example brokers a payload to `lightning:flow` (Aura only in Summer 19) to start a flow with a given `flowName` and `inputVariables`.
 
+![flow-screen](/readme-images/flow-screen.png?raw=true)
+
 ![flow-wizard](/readme-images/flow-wizard-optimized.gif?raw=true)
 
 ## Dynamic Templating in LWC Wizard Body

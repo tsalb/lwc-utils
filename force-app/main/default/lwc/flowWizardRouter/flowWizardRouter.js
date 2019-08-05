@@ -3,6 +3,7 @@ import { DateTime } from 'c/luxon';
 
 // Known templates
 import { default as dateParserMenu } from './templates/dateParserMenu.html';
+import { default as defaultTemplate } from './templates/default.html';
 
 export default class FlowWizardRouter extends LightningElement {
   @api wizardTemplate;
@@ -21,7 +22,7 @@ export default class FlowWizardRouter extends LightningElement {
       case 'dateParserMenu':
         return dateParserMenu;
       default:
-        return null;
+        return defaultTemplate;
     }
   }
 

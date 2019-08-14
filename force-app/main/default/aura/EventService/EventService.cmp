@@ -4,7 +4,7 @@
 
   <aura:registerEvent name="onMessage" type="c:onMessage"/>
   <aura:registerEvent name="ServiceAppEvent" type="c:ServiceAppEvent"/>
-  <aura:registerEvent name="ServiceRecordEvent" type="c:ServiceAppEvent"/>
+  <aura:registerEvent name="ServiceRecordEvent" type="c:ServiceRecordEvent"/>
   <aura:registerEvent name="ServiceCompEvent" type="c:ServiceCompEvent"/>
 
   <aura:method name="fireAppEvent" action="{! c.handleFireApplicationEvent }">

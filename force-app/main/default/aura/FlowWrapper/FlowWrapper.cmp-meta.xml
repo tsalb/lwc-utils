@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AuraDefinitionBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>46.0</apiVersion>
+    <apiVersion>47.0</apiVersion>
     <description>Generic Flow launcher. The flow base component is only aura in Summer 19</description>
 </AuraDefinitionBundle>

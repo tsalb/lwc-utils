@@ -5,9 +5,9 @@ export default class FlowWizardLauncherExample extends LightningElement {
     const messageServicePayload = {
       method: 'flow',
       config: {
-        flowHeaderLabel: 'Sample Wizard',
+        flowHeaderLabel: 'Sample LWC Wizard',
         componentParams: {
-          flowApiName: 'Sample_Wizard',
+          flowApiName: 'Sample_LWC_Wizard',
           inputVariables: [] // no inputs
         }
       }

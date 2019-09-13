@@ -1,6 +1,7 @@
 {
   "orgName": "tsalb world",
   "edition": "Developer",
+  "release": "Preview",
   "hasSampleData": true,
   "features": [
     "ForceComPlatform",

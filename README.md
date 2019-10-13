@@ -71,22 +71,19 @@ To be built on in future updates, the `flowWizardRouter` LWC is able to dynamica
 ```javascript
 import { LightningElement, api, track } from 'lwc';
 import { DateTime } from 'c/luxon';
+// Known templates
 import { default as dateParserMenu } from './templates/dateParserMenu.html';
+import { default as defaultTemplate } from './templates/default.html';
 
 export default class FlowWizardRouter extends LightningElement {
-  @api wizardTemplate;
-  @track localTime;
-
-  connectedCallback() {
-    this.localTime = DateTime.local().toISO();
-  }
+  @api templateName;
 
   render() { 
-    switch (this.wizardTemplate) {
+    switch (this.templateName) {
       case 'dateParserMenu':
         return dateParserMenu;
       default:
-        return null;
+        return defaultTemplate;
     }
   }
 }

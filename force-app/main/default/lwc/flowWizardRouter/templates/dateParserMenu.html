@@ -1,12 +1,44 @@
 <template>
-  <lightning-layout multiple-rows="true">
-    <lightning-layout-item padding="around-small">
-      <lightning-input
-        type="datetime"
-        label="Local"
-        value={localTime}
-        disabled
-      ></lightning-input>
-    </lightning-layout-item>
+  <lightning-layout multiple-rows="true" vertical-align="end" pull-to-boundary="small">
+
+    <template if:true={isDateParserOne}>
+      <lightning-layout-item padding="around-small" size="12">
+        <lightning-input
+          type="datetime"
+          label="Current DateTime"
+          value={flowCache.localTime}
+          disabled
+        ></lightning-input>
+      </lightning-layout-item>
+      <lightning-layout-item padding="horizontal-small" flexibility="shrink">
+        <lightning-input
+          label="Add Number of..."
+          type="number"
+          value={flowCache.luxonNumber}
+          onchange={numberChanged}
+        ></lightning-input>
+      </lightning-layout-item>
+      <lightning-layout-item flexibility="shrink">
+        <lightning-combobox
+          dropdown-alignment="auto"
+          label="...Years, Months, or Days"
+          options={flowCache.options}
+          value={flowCache.luxonMode}
+          onchange={modeChanged}
+        ></lightning-combobox>
+      </lightning-layout-item>
+    </template>
+
+    <template if:true={isDateParserTwo}>
+      <lightning-layout-item padding="around-small">
+        <lightning-input
+          type="datetime"
+          label="Newly Calculated DateTime"
+          value={flowCache.calculatedDateTime}
+          disabled
+        ></lightning-input>
+      </lightning-layout-item>
+    </template>
+
   </lightning-layout>
 </template>

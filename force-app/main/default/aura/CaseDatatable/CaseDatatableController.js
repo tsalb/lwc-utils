@@ -20,7 +20,7 @@
             component.set("v.tableColumns", data.tableColumns);
           } else {
             if (!$A.util.isEmpty(error) && error[0].hasOwnProperty("message")) {
-              helper.messageService(component).showToast({
+              helper.dialogService(component).showToast({
                 message: error[0].message,
                 variant: "error"
               });

@@ -3,12 +3,12 @@
   <!-- Service Components boilerplate -->
   <c:DataService aura:id="service"/>
   <c:EventService aura:id="eventService"/>
-  <c:MessageService aura:id="messageService"/>
+  <c:DialogService aura:id="dialogService"/>
   <c:QuickUpdateService aura:id="quickUpdateService"/>
 
   <aura:attribute name="tableData" type="Object"/>
   <aura:attribute name="tableColumns" type="List" default="[]"/>
-  
+
   <aura:handler event="c:ServiceAppEvent" action="{! c.handleApplicationEvent }"/>
 
   <lightning:card title="Contacts">
@@ -16,8 +16,8 @@
       <aura:if isTrue="{! not(empty( v.tableData )) }">
         <div class="slds-border_top">
           <lightning:datatable aura:id="searchTable"
-            data="{! v.tableData }" 
-            columns="{! v.tableColumns }" 
+            data="{! v.tableData }"
+            columns="{! v.tableColumns }"
             onrowaction="{! c.handleRowAction }"
             keyField="Id"/>
         </div>

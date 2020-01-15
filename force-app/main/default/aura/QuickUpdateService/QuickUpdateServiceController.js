@@ -6,7 +6,7 @@
         }))
         .catch((error) => {
           $A.reportError("Promise Error", error);
-          helper.messageService(component).showToast({
+          helper.dialogService(component).showToast({
             message: error,
             variant: "error",
             mode: "pester"
@@ -17,7 +17,7 @@
     let changeType = event.getParams().changeType;
     switch(changeType.toUpperCase()) {
       case "ERROR":
-        helper.messageService(component).showToast({
+        helper.dialogService(component).showToast({
           title: "Error in LDS",
           message: component.get("v.simpleRecordError"),
           variant: "error",

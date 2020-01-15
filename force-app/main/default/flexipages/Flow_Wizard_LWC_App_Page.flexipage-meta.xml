@@ -5,7 +5,7 @@
             <componentName>flowWizardLauncherExample</componentName>
         </componentInstances>
         <componentInstances>
-            <componentName>MessageServiceBroker</componentName>
+            <componentName>DialogServiceBroker</componentName>
         </componentInstances>
         <name>main</name>
         <type>Region</type>

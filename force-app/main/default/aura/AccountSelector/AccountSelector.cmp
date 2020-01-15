@@ -3,12 +3,12 @@
   <!-- Service Components boilerplate -->
   <c:DataService aura:id="service"/>
   <c:EventService aura:id="eventService"/>
-  <c:MessageService aura:id="messageService"/>
+  <c:DialogService aura:id="dialogService"/>
 
   <aura:attribute name="topAccounts" type="List" default="[]"/>
 
   <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
-  
+
   <lightning:card >
     <aura:set attribute="title">
       Top Accounts with Contacts
@@ -18,7 +18,7 @@
       </lightning:layoutItem>
       <lightning:layoutItem padding="horizontal-medium" size="5">
         <lightning:combobox aura:id="selectItem"
-          name="Accounts" 
+          name="Accounts"
           label="Accounts"
           placeholder="Choose an Account"
           onchange="{! c.handleAccountOptionSelected }"

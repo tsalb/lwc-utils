@@ -1,7 +1,7 @@
 <aura:component>
 
    <!-- Service Component boilerplate -->
-  <c:MessageService aura:id="messageService"/>
+  <c:DialogService aura:id="dialogService"/>
 
   <aura:method name="LDS_Update" action="{! c.initUpdatePromiseChain }">
     <aura:attribute name="configObject" type="Object" description="recordId, fieldUpdates, and other attributes needed for LDS"/>

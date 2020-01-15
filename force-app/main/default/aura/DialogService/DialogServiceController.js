@@ -68,7 +68,7 @@
                     if (status === "SUCCESS") {
                       helper.overlayLib(component).showCustomModal({
                         header: params.headerLabel,
-                        body: modalBody, 
+                        body: modalBody,
                         footer: completedFooter,
                         showCloseButton: helper.defineShowCLoseButtonAttribute(params.showCloseButton),
                         cssClass: helper.defineLargeModalAttribute(params.isLargeModal)
@@ -114,7 +114,7 @@
         if (modalBody.isValid() && !$A.util.isEmpty(modalBody)) {
             helper.overlayLib(component).showCustomModal({
               header: params.headerLabel,
-              body: modalBody, 
+              body: modalBody,
               showCloseButton: true,
               cssClass: helper.defineLargeModalAttribute(params.isLargeModal)
             })

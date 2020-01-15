@@ -2,8 +2,8 @@
   service : function(component) {
     return component.find("service");
   },
-  messageService : function(component) {
-    return component.find("messageService");
+  dialogService : function(component) {
+    return component.find("dialogService");
   },
   eventService : function(component) {
     return component.find("eventService");
@@ -94,14 +94,14 @@
       $A.getCallback((saveResult) => {
         switch(saveResult.state.toUpperCase()) {
           case "SUCCESS":
-            _self.messageService(component).showToast({
+            _self.dialogService(component).showToast({
               message: "Cleared Mailing Address.",
               variant: "success"
             });
             _self.loadContactTable(component, row["AccountId"]);
             break;
           case "ERROR":
-            _self.messageService(component).showToast({
+            _self.dialogService(component).showToast({
               title: "Error Clearing Mailing Address",
               message: JSON.stringify(saveResult.error[0].message),
               variant: "error",
@@ -114,7 +114,7 @@
   },
   openViewCasesModal : function(component, row) {
     let _self = this;
-    _self.messageService(component).bodyModalLarge(
+    _self.dialogService(component).bodyModalLarge(
       "view-cases-modal",
       "Cases For "+row["Name"],
       "c:CaseDatatable",
@@ -133,7 +133,7 @@
           component.set("v.tableColumns", _self.getTableColumnDefinition());
         } else {
           if (!$A.util.isEmpty(error) && error[0].hasOwnProperty("message")) {
-            _self.messageService(component).showToast({
+            _self.dialogService(component).showToast({
               message: error[0].message,
               variant: "error",
               mode: "pester"

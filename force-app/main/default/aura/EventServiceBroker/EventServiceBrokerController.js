@@ -32,7 +32,7 @@
         break;
       case "notifyClose":
         // Close from the promise directly since from LWC the notifyClose() doesn"t seem to work, even on the source overlayLib
-        let overlayPromise = component.find("messageService").get("v.overlayPromise");
+        let overlayPromise = component.find("dialogService").get("v.overlayPromise");
         overlayPromise.close();
         break;
       default:

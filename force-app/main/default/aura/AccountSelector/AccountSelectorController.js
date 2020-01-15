@@ -6,7 +6,7 @@
         if (!$A.util.isEmpty(data)) {
           component.set("v.topAccounts", data.items);
         } else {
-          helper.messageService(component).showToast({
+          helper.dialogService(component).showToast({
             message: "No Accounts in org!",
             variant: "error"
           });

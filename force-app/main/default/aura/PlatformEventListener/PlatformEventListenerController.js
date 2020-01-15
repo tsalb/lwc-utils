@@ -15,7 +15,7 @@
     if (!popover) {
       timer = window.setTimeout(
         $A.getCallback(() => {
-          helper.messageService(component).showPopover(
+          helper.dialogService(component).showPopover(
             "c:PopoverBody",
             {
               value: component.get("v.payloadJSON")

@@ -1,6 +1,6 @@
 ({
-  messageService : function(component) {
-    return component.find("messageService");
+  dialogService : function(component) {
+    return component.find("dialogService");
   },
   initializeLightningDataService : function(component, event) {
     return new Promise($A.getCallback((resolve, reject) => {

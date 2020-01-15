@@ -45,7 +45,7 @@
       default:
         $A.createComponent(
           "lightning:formattedText",
-          { 
+          {
             "value": params.body,
             "class": "slds-align_absolute-center"
           },

@@ -1,7 +1,7 @@
 <aura:component implements="flexipage:availableForAllPageTypes">
 
   <!-- Service Components boilerplate -->
-  <c:MessageService aura:id="messageService"/>
+  <c:DialogService aura:id="dialogService"/>
   <c:EventService aura:id="eventService"/>
   <c:empApi channel="/event/Contact_DML__e" connect="{! v.isEmpApiConnected }" onmessage="{! c.handleContactDmlEvent }"/>
 

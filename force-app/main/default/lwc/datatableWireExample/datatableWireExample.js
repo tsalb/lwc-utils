@@ -1,4 +1,4 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement } from 'lwc';
 
 const _defaultQueryString = 'SELECT Id, Name, UserName, Email FROM User';
 const _defaultConfig = {
@@ -7,11 +7,11 @@ const _defaultConfig = {
 const DELAY = 2000;
 
 export default class DatatableExample extends LightningElement {
-  @track data;
-  @track columns;
-  @track tableRequest;
-  @track tableResponse;
-  @track query;
+  data;
+  columns;
+  tableRequest;
+  tableResponse;
+  query;
 
   connectedCallback() {
     this.query = _defaultQueryString;

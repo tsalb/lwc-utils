@@ -1,4 +1,4 @@
-import { LightningElement, api, track, wire } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { registerListener, unregisterAllListeners } from 'c/pubsub';
@@ -30,7 +30,7 @@ export default class LwcContactDatatable extends LightningElement {
     this._accountId = value;
     this._recordId = value;
   }
-  @track columns = TABLE_COLUMNS;
+  columns = TABLE_COLUMNS;
 
   @wire(CurrentPageReference)pageRef;
 

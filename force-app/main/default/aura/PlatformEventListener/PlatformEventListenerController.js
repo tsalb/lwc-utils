@@ -1,4 +1,7 @@
 ({
+  doInit: function (component, event, helper) {
+    component.set("v.isEmpApiConnected", true);
+  },
   handleContactDmlEvent : function(component, event, helper) {
     let params = event.getParams();
     console.log(params.channel);

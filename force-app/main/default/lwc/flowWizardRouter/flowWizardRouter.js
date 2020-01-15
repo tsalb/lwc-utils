@@ -1,4 +1,4 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement, api } from 'lwc';
 import { DateTime } from 'c/luxon';
 // Known templates
 import { default as dateParserMenu } from './templates/dateParserMenu.html';
@@ -15,12 +15,12 @@ export default class FlowWizardRouter extends LightningElement {
     this.flowCache = JSON.parse(value);
   }
 
-  @track flowCache = {};
+  flowCache = {};
 
   // private
   _isRendered;
 
-  render() { 
+  render() {
     switch (this.templateName) {
       case 'dateParserMenu':
         return dateParserMenu;

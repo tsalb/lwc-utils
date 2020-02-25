@@ -3,7 +3,7 @@
   <!-- Service Components boilerplate -->
   <c:DataTableService aura:id="tableService"/>
   <c:EventService aura:id="eventService"/>
-  <c:MessageService aura:id="messageService"/>
+  <c:DialogService aura:id="dialogService"/>
 
   <aura:attribute name="contactRecordId" type="String"/>
 
@@ -28,5 +28,5 @@
       </div>
     </aura:set>
   </lightning:card>
-  
+
 </aura:component>

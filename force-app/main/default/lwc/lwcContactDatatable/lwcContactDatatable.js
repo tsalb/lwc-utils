@@ -1,7 +1,8 @@
-import { LightningElement, api, track, wire } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { registerListener, unregisterAllListeners } from 'c/pubsub';
+import { subscribe, MessageContext, APPLICATION_SCOPE } from 'lightning/messageService';
+import OPEN_CHANNEL from "@salesforce/messageChannel/OpenChannel__c";
 import { updateRecord } from 'lightning/uiRecordApi';
 import wireContactsByAccountId  from '@salesforce/apex/DataServiceCtrl.wireContactsByAccountId';
 import getContactsByAccountId  from '@salesforce/apex/DataServiceCtrl.getContactsByAccountId';
@@ -30,25 +31,40 @@ export default class LwcContactDatatable extends LightningElement {
     this._accountId = value;
     this._recordId = value;
   }
-  @track columns = TABLE_COLUMNS;
+  columns = TABLE_COLUMNS;
 
-  @wire(CurrentPageReference)pageRef;
-
-  @wire(wireContactsByAccountId, { accountId: '$_accountId' })
-  contacts;
+  @wire(CurrentPageReference) pageRef;
+  @wire(MessageContext) messageContext;
+  @wire(wireContactsByAccountId, { accountId: '$_accountId' }) contacts;
 
   // private
   _accountId; // app flexipages
   _recordId;  // record flexipage
+  _subscription;
 
   connectedCallback() {
-    registerListener('accountSelected', this.handleAccountSelected, this);
-    registerListener('forceRefreshView', this.reloadTable, this);
-    registerListener('clearTable', this.handleClearTable, this);
-  }
-
-  disconnectedCallback() {
-    unregisterAllListeners(this);
+    this._subscription = subscribe(
+      this.messageContext,
+      OPEN_CHANNEL,
+      (message) => {
+        let payload = {};
+        // messageChannel payload has immutable props, undo them here
+        if (message.value) {
+          payload = JSON.parse(JSON.stringify(message.value));
+        }
+        // List of acceptable keys to be parsed in this component
+        if (message.key === 'accountSelected') {
+          this.handleAccountSelected(payload);
+        }
+        if (message.key === 'forceRefreshView') {
+          this.reloadTable();
+        }
+        if (message.key === 'clearTable') {
+          this.handleClearTable();
+        }
+      },
+      {scope: APPLICATION_SCOPE}
+    );
   }
 
   handleAccountSelected(accountId) {
@@ -68,7 +84,7 @@ export default class LwcContactDatatable extends LightningElement {
         break;
       }
       case 'update_address': {
-        const messageServicePayload = {
+        const dialogServicePayload = {
           method: 'bodyModal',
           config: {
             auraId: 'update-address-single-row',
@@ -81,7 +97,7 @@ export default class LwcContactDatatable extends LightningElement {
             }
           }
         }
-        this.template.querySelector('c-message-broker').messageService(messageServicePayload);
+        this.template.querySelector('c-message-broker').dialogService(dialogServicePayload);
         break;
       }
       default:

@@ -1,9 +1,9 @@
 ({
-  messageService : function(component) {
-    return component.find("messageService");
+  dialogService : function(component) {
+    return component.find("dialogService");
   },
   bodyModal : function(component, config) {
-    this.messageService(component).bodyModal(
+    this.dialogService(component).bodyModal(
       config.auraId,
       config.headerLabel,
       config.component,
@@ -11,7 +11,7 @@
     );
   },
   bodyModalLarge : function(component, config) {
-    this.messageService(component).bodyModalLarge(
+    this.dialogService(component).bodyModalLarge(
       config.auraId,
       config.headerLabel,
       config.component,

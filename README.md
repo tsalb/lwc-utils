@@ -37,7 +37,7 @@ See the [readme](https://github.com/tsalb/sfdc-lightning-service-components#data
 
 Two samples:
 
-1) An `@wire` child template component fed by a reactive attribute that emits events on success/error. 
+1) An `@wire` child template component fed by a reactive attribute that emits events on success/error.
 2) An imperative callout using `async await` that uses promises in the returning tableResults.
 
 Parent relationships (1 level up) are working okay. It's safer to use formulas still, for now.
@@ -46,17 +46,17 @@ Parent relationships (1 level up) are working okay. It's safer to use formulas s
 
 ## LWC to Aura MessageBroker
 
-Leverages the lwc-recipe pubsub to provide an API for all LWC to access Aura only service modules, such as `lightning:overlayLibrary`.
+Leverages a generic `OPEN_CHANNEL` LightningMessageChannel with `DialogService` for all LWC to access Aura only service modules, such as `lightning:overlayLibrary`.
 
-This simple example uses `MessageService` to dynamically create a LWC (using `$A.createComponent`).
+This simple example uses `DialogService` to dynamically create a LWC (using `$A.createComponent`).
 
-`MessageService` is also able to dynamically start flows, as shown in the next section.
+`DialogService` is also able to dynamically start flows, as shown in the next section.
 
 ![lwc-modal](/readme-images/lwc-modal-optimized.gif?raw=true)
 
 ## Dynamic Flow Modal in LWC
 
-Leverages both `MessageBroker` and `MessageService` to dynamically start flows from an LWC.
+Leverages both `MessageBroker` and `DialogService` to dynamically start flows from an LWC.
 
 This simple example brokers a payload to `lightning:flow` (Aura only in Summer 19) to start a flow with a given `flowName` and `inputVariables`.
 
@@ -78,7 +78,7 @@ import { default as defaultTemplate } from './templates/default.html';
 export default class FlowWizardRouter extends LightningElement {
   @api templateName;
 
-  render() { 
+  render() {
     switch (this.templateName) {
       case 'dateParserMenu':
         return dateParserMenu;
@@ -88,4 +88,3 @@ export default class FlowWizardRouter extends LightningElement {
   }
 }
 ```
-

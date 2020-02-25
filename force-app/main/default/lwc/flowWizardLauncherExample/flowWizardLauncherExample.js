@@ -2,7 +2,7 @@ import { LightningElement } from 'lwc';
 
 export default class FlowWizardLauncherExample extends LightningElement {
   openModal() {
-    const messageServicePayload = {
+    const dialogServicePayload = {
       method: 'flow',
       config: {
         flowHeaderLabel: 'Sample LWC Wizard',
@@ -12,6 +12,6 @@ export default class FlowWizardLauncherExample extends LightningElement {
         }
       }
     }
-    this.template.querySelector('c-message-broker').messageService(messageServicePayload);
+    this.template.querySelector('c-message-broker').dialogService(dialogServicePayload);
   }
 }

@@ -1,5 +1,5 @@
 ({
-  handleMessageService : function(component, event, helper) {
+  handleDialogService : function(component, event, helper) {
     let payload = event.getParam("payload");
     let config = payload.config;
     let flowModalConfig;
@@ -33,6 +33,6 @@
     }
   },
   handleNotifyClose : function(component, event, helper) {
-    helper.messageService(component).get("v.overlayPromise").close();
+    helper.dialogService(component).get("v.overlayPromise").close();
   },
 })

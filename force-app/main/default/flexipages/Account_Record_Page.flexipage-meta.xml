@@ -78,7 +78,7 @@
             <componentName>flexipage:tabset</componentName>
         </componentInstances>
         <componentInstances>
-            <componentName>MessageServiceBroker</componentName>
+            <componentName>DialogServiceBroker</componentName>
         </componentInstances>
         <componentInstances>
             <componentName>EventServiceBroker</componentName>

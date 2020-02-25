@@ -1,11 +1,13 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { fireEvent } from 'c/pubsub';
+import { publish, MessageContext } from 'lightning/messageService';
+import OPEN_CHANNEL from "@salesforce/messageChannel/OpenChannel__c";
 
 export default class LwcContactAddressForm extends LightningElement {
   @api contact;
   @api pageRef;
   @api scopedId;
+  @wire(MessageContext) messageContext;
 
   handleSuccess() {
     this.dispatchEvent(new ShowToastEvent({
@@ -13,7 +15,7 @@ export default class LwcContactAddressForm extends LightningElement {
       message: 'Updated Mailing Address Successfully.',
       variant: 'success'
     }));
-    fireEvent(this.pageRef, 'forceRefreshView'); // actually targets the datatable for the refresh.
+    publish(this.messageContext, OPEN_CHANNEL, { key: 'forceRefreshView' }); // actually targets the datatable for the refresh.
     this.template.querySelector('c-message-broker').notifyClose(); // consistent to use the @api in case implementation changes. do not fire event directly.
   }
 }

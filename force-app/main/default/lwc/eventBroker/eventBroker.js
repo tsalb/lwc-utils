@@ -1,10 +1,12 @@
 import { LightningElement, api, wire } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
-import { fireEvent } from 'c/pubsub';
+import { publish, MessageContext } from 'lightning/messageService';
+import OPEN_CHANNEL from "@salesforce/messageChannel/OpenChannel__c";
 
 export default class EventBroker extends LightningElement {
   @api scopedId;
   @wire(CurrentPageReference) pageRef;
+  @wire(MessageContext) messageContext;
 
   /* Utilities */
   @api
@@ -15,7 +17,7 @@ export default class EventBroker extends LightningElement {
   /* Aura broker to LWC */
   @api
   brokerMessageToLWC(payload) {
-    fireEvent(this.pageRef, payload.key, payload.value);
+    publish(this.messageContext, OPEN_CHANNEL, { key: payload.key, value: payload.value });
   }
 
   /* LWC broker to Aura */
@@ -49,6 +51,6 @@ export default class EventBroker extends LightningElement {
   // PRIVATE
   _brokerEventToAura(finalPayload) {
     const boundary = { scopedId: this.scopedId };
-    fireEvent(this.pageRef, 'brokerEventToAuraEventService', { ...finalPayload, ...boundary } );
+    publish(this.messageContext, OPEN_CHANNEL, { key: 'brokerEventToAura', value: { ...finalPayload, ...boundary } });
   }
 }

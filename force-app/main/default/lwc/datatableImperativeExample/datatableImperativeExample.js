@@ -1,13 +1,13 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement } from 'lwc';
 import { getTableRequest } from 'c/tableService';
 
 const _defaultQueryString = 'SELECT Id, Name, UserName, Email FROM User';
 const DELAY = 2000;
 
 export default class DatatableExample extends LightningElement {
-  @track data;
-  @track columns;
-  @track query = _defaultQueryString;
+  data;
+  columns;
+  query = _defaultQueryString;
 
   async connectedCallback() {
     await this.fetchTableService(this.query);
@@ -32,5 +32,5 @@ export default class DatatableExample extends LightningElement {
       this.fetchTableService(this.query);
     }, DELAY);
   }
-  
+
 }

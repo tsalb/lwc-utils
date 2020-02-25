@@ -3,7 +3,7 @@
   <!-- Service Components boilerplate -->
   <c:DataService aura:id="service"/>
   <c:EventService aura:id="eventService"/>
-  <c:MessageService aura:id="messageService"/>
+  <c:DialogService aura:id="dialogService"/>
 
   <aura:attribute name="contactList" type="Object"/>
   <aura:attribute name="singleContactListId" type="String"/>

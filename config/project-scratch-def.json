@@ -1,16 +1,12 @@
 {
-  "orgName": "tsalb world",
+  "orgName": "tsalb-world",
   "edition": "Developer",
   "release": "Preview",
   "hasSampleData": true,
-  "features": [
-    "ForceComPlatform",
-    "ProcessBuilder",
-    "LightningServiceConsole"
-  ],
+  "features": ["ProcessBuilder", "ForceComPlatform", "LightningServiceConsole"],
   "settings": {
-    "orgPreferenceSettings": {
-      "s1DesktopEnabled": true
-    }
+      "lightningExperienceSettings": {
+          "enableS1DesktopEnabled": true
+      }
   }
 }

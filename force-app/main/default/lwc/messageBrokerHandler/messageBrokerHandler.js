@@ -1,21 +1,38 @@
 import { LightningElement, api, wire } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
-import { registerListener, unregisterAllListeners } from 'c/pubsub';
+import { subscribe, MessageContext, APPLICATION_SCOPE } from 'lightning/messageService';
+import OPEN_CHANNEL from "@salesforce/messageChannel/OpenChannel__c";
 
 export default class MessageBrokerHandler extends LightningElement {
   @api scopedId;
   @wire(CurrentPageReference) pageRef;
+  @wire(MessageContext) messageContext;
+
+  _subscription;
 
   connectedCallback() {
-    registerListener('messageService', this.messageServiceEmitter, this);
-    registerListener('notifyClose', this.notifyCloseEmitter, this);
+    this._subscription = subscribe(
+      this.messageContext,
+      OPEN_CHANNEL,
+      (message) => {
+        let payload = {};
+        // messageChannel payload has immutable props, undo them here
+        if (message.value) {
+          payload = JSON.parse(JSON.stringify(message.value));
+        }
+        // List of acceptable keys to be parsed in this component
+        if (message.key === 'dialogService') {
+          this.dialogServiceEmitter(payload);
+        }
+        if (message.key === 'notifyClose') {
+          this.notifyCloseEmitter();
+        }
+      },
+      {scope: APPLICATION_SCOPE}
+    );
   }
 
-  disconnectedCallback() {
-    unregisterAllListeners(this);
-  }
-
-  messageServiceEmitter(payload) {
+  dialogServiceEmitter(payload) {
     // There seems to be a bug in the pageRef scoping in lightning console app for Spring 19
     // Will double check again when Summer 19 is GA, after the rounds of post GA hotfix.
     if (

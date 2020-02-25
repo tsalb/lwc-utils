@@ -1,21 +1,23 @@
 import { LightningElement, api, wire } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
-import { fireEvent } from 'c/pubsub';
+import { publish, MessageContext } from 'lightning/messageService';
+import OPEN_CHANNEL from "@salesforce/messageChannel/OpenChannel__c";
 
 export default class MessageBroker extends LightningElement {
   @api scopedId;
   @wire(CurrentPageReference) pageRef;
+  @wire(MessageContext) messageContext;
 
   /* LWC broker to Aura */
   @api
-  messageService(payload) {
+  dialogService(payload) {
     const boundary = { scopedId: this.scopedId };
-    fireEvent(this.pageRef, 'messageService', { ...payload, ...boundary } );
+    publish(this.messageContext, OPEN_CHANNEL, { key: 'dialogService', value: { ...payload, ...boundary } });
   }
 
   @api
   notifyClose() {
-    fireEvent(this.pageRef, 'notifyClose');
+    publish(this.messageContext, OPEN_CHANNEL, { key: 'notifyClose' });
   }
-  
+
 }

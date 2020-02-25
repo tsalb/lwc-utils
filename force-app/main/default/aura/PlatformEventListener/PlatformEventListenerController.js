@@ -1,4 +1,7 @@
 ({
+  doInit: function (component, event, helper) {
+    component.set("v.isEmpApiConnected", true);
+  },
   handleContactDmlEvent : function(component, event, helper) {
     let params = event.getParams();
     console.log(params.channel);
@@ -12,7 +15,7 @@
     if (!popover) {
       timer = window.setTimeout(
         $A.getCallback(() => {
-          helper.messageService(component).showPopover(
+          helper.dialogService(component).showPopover(
             "c:PopoverBody",
             {
               value: component.get("v.payloadJSON")

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <masterLabel>OpenChannel</masterLabel>
+    <isExposed>true</isExposed>
+    <description>This channel is used for generic key value eventing.</description>
+    <lightningMessageFields>
+        <fieldName>key</fieldName>
+        <description>Generic key to be utilized by any component</description>
+    </lightningMessageFields>
+    <lightningMessageFields>
+        <fieldName>value</fieldName>
+        <description>Generic value to be utilized by any component</description>
+    </lightningMessageFields>
+</LightningMessageChannel>

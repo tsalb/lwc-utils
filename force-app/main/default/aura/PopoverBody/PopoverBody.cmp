@@ -1,13 +1,11 @@
 <aura:component>
+    <!-- Service Components boilerplate -->
+    <c:EventService aura:id="eventService" />
 
-  <!-- Service Components boilerplate -->
-  <c:EventService aura:id="eventService"/>
+    <aura:attribute name="value" type="String" access="PUBLIC" />
+    <aura:attribute name="timer" type="Integer" access="PRIVATE" />
 
-  <aura:attribute name="value" type="String" access="PUBLIC"/>
-  <aura:attribute name="timer" type="Integer" access="PRIVATE"/>
-
-  <span onmouseover="{! c.handleEnterPopover }" onmouseleave="{! c.handleLeavePopover }">
-    <lightning:formattedText value="{! v.value }" class="slds-align_absolute-center"/>
-  </span>
-
-</aura:component>	
+    <span onmouseover="{! c.handleEnterPopover }" onmouseleave="{! c.handleLeavePopover }">
+        <lightning:formattedText value="{! v.value }" class="slds-align_absolute-center" />
+    </span>
+</aura:component>

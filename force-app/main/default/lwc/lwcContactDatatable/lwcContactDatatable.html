@@ -1,16 +1,12 @@
 <template>
-  <!-- Service components -->
-  <c-event-broker scoped-id={recordId}></c-event-broker>
-  <c-message-broker scoped-id={recordId}></c-message-broker>
+    <!-- Service components -->
+    <c-event-broker scoped-id={recordId}></c-event-broker>
+    <c-message-broker scoped-id={recordId}></c-message-broker>
 
-  <lightning-card title="Contacts">
-    <div if:true={contacts.data} class="slds-border_top">
-      <lightning-datatable
-        data={contacts.data}
-        columns={columns}
-        onrowaction={handleRowAction}
-        key-field="Id">
-      </lightning-datatable>
-    </div>
-  </lightning-card>
+    <lightning-card title="Contacts">
+        <div if:true={contacts.data} class="slds-border_top">
+            <lightning-datatable data={contacts.data} columns={columns} onrowaction={handleRowAction} key-field="Id">
+            </lightning-datatable>
+        </div>
+    </lightning-card>
 </template>

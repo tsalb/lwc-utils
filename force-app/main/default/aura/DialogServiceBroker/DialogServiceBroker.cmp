@@ -1,13 +1,11 @@
 <aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId">
-
     <!-- Service Component boilerplate -->
-    <c:DialogService aura:id="dialogService"/>
+    <c:DialogService aura:id="dialogService" />
 
     <!-- LWC to Aura -->
     <c:messageBrokerHandler
-      scopedId="{! v.recordId }"
-      onmessage="{! c.handleDialogService }"
-      onnotifyclose="{! c.handleNotifyClose }"
+        scopedId="{! v.recordId }"
+        onmessage="{! c.handleDialogService }"
+        onnotifyclose="{! c.handleNotifyClose }"
     ></c:messageBrokerHandler>
-
 </aura:component>

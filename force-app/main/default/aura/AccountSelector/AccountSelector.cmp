@@ -1,33 +1,32 @@
 <aura:component implements="flexipage:availableForAllPageTypes">
+    <!-- Service Components boilerplate -->
+    <c:DataService aura:id="service" />
+    <c:EventService aura:id="eventService" />
+    <c:DialogService aura:id="dialogService" />
 
-  <!-- Service Components boilerplate -->
-  <c:DataService aura:id="service"/>
-  <c:EventService aura:id="eventService"/>
-  <c:DialogService aura:id="dialogService"/>
+    <aura:attribute name="topAccounts" type="List" default="[]" />
 
-  <aura:attribute name="topAccounts" type="List" default="[]"/>
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }" />
 
-  <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
-
-  <lightning:card >
-    <aura:set attribute="title">
-      Top Accounts with Contacts
-    </aura:set>
-    <lightning:layout horizontalAlign="center" multipleRows="true">
-      <lightning:layoutItem class="slds-m-bottom_medium" size="10">
-      </lightning:layoutItem>
-      <lightning:layoutItem padding="horizontal-medium" size="5">
-        <lightning:combobox aura:id="selectItem"
-          name="Accounts"
-          label="Accounts"
-          placeholder="Choose an Account"
-          onchange="{! c.handleAccountOptionSelected }"
-          options="{! v.topAccounts }"/>
-      </lightning:layoutItem>
-    </lightning:layout>
-    <aura:set attribute="actions">
-      <lightning:button label="Clear Table" onclick="{! c.handleClearTableOnly }"/>
-    </aura:set>
-  </lightning:card>
-
+    <lightning:card>
+        <aura:set attribute="title">
+            Top Accounts with Contacts
+        </aura:set>
+        <lightning:layout horizontalAlign="center" multipleRows="true">
+            <lightning:layoutItem class="slds-m-bottom_medium" size="10"> </lightning:layoutItem>
+            <lightning:layoutItem padding="horizontal-medium" size="5">
+                <lightning:combobox
+                    aura:id="selectItem"
+                    name="Accounts"
+                    label="Accounts"
+                    placeholder="Choose an Account"
+                    onchange="{! c.handleAccountOptionSelected }"
+                    options="{! v.topAccounts }"
+                />
+            </lightning:layoutItem>
+        </lightning:layout>
+        <aura:set attribute="actions">
+            <lightning:button label="Clear Table" onclick="{! c.handleClearTableOnly }" />
+        </aura:set>
+    </lightning:card>
 </aura:component>

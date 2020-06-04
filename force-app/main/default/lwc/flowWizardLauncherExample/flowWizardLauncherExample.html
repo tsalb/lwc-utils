@@ -1,16 +1,13 @@
 <template>
-  <!-- Service components -->
-  <c-message-broker></c-message-broker>
+    <!-- Service components -->
+    <c-message-broker></c-message-broker>
 
-  <lightning-card>
-    <div class="slds-align_absolute-center">
-      Simple example using an LWC button to launch a flow in a modal
-    </div>
-    <div slot="actions">
-      <lightning-button
-        label="Open Flow Wizard Modal"
-        onclick={openModal}
-      ></lightning-button>
-    </div>
-  </lightning-card>
+    <lightning-card>
+        <div class="slds-align_absolute-center">
+            Simple example using an LWC button to launch a flow in a modal
+        </div>
+        <div slot="actions">
+            <lightning-button label="Open Flow Wizard Modal" onclick={openModal}></lightning-button>
+        </div>
+    </lightning-card>
 </template>

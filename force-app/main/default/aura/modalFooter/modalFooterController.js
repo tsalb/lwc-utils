@@ -1,5 +1,5 @@
 ({
-  handleCancel : function(component, event, helper) {
-    component.find("overlayLib").notifyClose();
-  }
-})
+    handleCancel: function(component, event, helper) {
+        component.find('overlayLib').notifyClose();
+    }
+});

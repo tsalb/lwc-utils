@@ -1,13 +1,13 @@
 import { LightningElement } from 'lwc';
 import { getTableRequest } from 'c/tableService';
 
-const _defaultQueryString = 'SELECT Id, Name, UserName, Email FROM User';
+const DEFAULT_QUERY = 'SELECT Id, Name, UserName, Email FROM User';
 const DELAY = 2000;
 
 export default class DatatableExample extends LightningElement {
     data;
     columns;
-    query = _defaultQueryString;
+    query = DEFAULT_QUERY;
 
     async connectedCallback() {
         await this.fetchTableService(this.query);

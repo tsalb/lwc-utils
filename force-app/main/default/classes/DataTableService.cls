@@ -186,6 +186,7 @@ public with sharing class DataTableService {
             fieldColumn.put('label', field.getLabel());
             fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(field.getType()));
             fieldColumn.put('fieldName', flatFieldName);
+            fieldColumn.put('column-widths-mode', 'auto');
 
             // Fields with Name are typically hyperlinked
             if (fieldName.equalsIgnoreCase('name') || fieldName.substringAfterLast('.').equalsIgnoreCase('name')) {

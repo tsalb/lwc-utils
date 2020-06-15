@@ -14,7 +14,7 @@
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>Flow Wizard (LWC)</masterLabel>
+    <masterLabel>LWC Launching Flow</masterLabel>
     <template>
         <name>flexipage:defaultAppHomeTemplate</name>
     </template>

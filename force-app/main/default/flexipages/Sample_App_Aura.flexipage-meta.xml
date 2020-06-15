@@ -3,7 +3,17 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>datatableImperativeExample</componentName>
+                <componentName>AccountSelector</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>ContactDatatable</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>PlatformEventListener</componentName>
             </componentInstance>
         </itemInstances>
         <name>region1</name>
@@ -17,7 +27,7 @@
         <name>region3</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>Datatable Service (LWC)</masterLabel>
+    <masterLabel>Sample App (Aura)</masterLabel>
     <template>
         <name>flexipage:appHomeTemplateHeaderTwoColumns</name>
     </template>

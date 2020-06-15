@@ -36,23 +36,23 @@
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
     <tabSettings>
-        <tab>Datatable_Service_LWC_imperative</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
-    <tabSettings>
-        <tab>Datatable_Service_LWC_wire</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
-    <tabSettings>
-        <tab>Flow_Wizard_LWC</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
-    <tabSettings>
-        <tab>SC_Sample_App</tab>
+        <tab>Sample_App_Aura</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
         <tab>Sample_App_LWC</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>SOQL_Datatable</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>Collection_Datatable</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>LWC_Launching_Flow</tab>
         <visibility>Visible</visibility>
     </tabSettings>
 </PermissionSet>

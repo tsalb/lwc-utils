@@ -1,0 +1,50 @@
+<template>
+    <c-message-broker scoped-id={recordId}></c-message-broker>
+    <lightning-card>
+        <div slot="title">
+            <slot name="title">
+                <template if:true={showRecordCount}>
+                    {title} ({recordCount})
+                </template>
+                <template if:false={showRecordCount}>
+                    {title}
+                </template>
+            </slot>
+        </div>
+        <div class="slds-border_top slds-border_bottom slds-border_left slds-border_right slds-is-relative">
+            <template if:true={showSpinner}>
+                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+            </template>
+            <c-datatable-extension
+                key-field={keyField}
+                hide-checkbox-column={isHideCheckbox}
+                max-row-selection={maxRowSelection}
+                data={tableData}
+                columns={tableColumns}
+                column-widths-mode={columnWidthsMode}
+                onrowselection={handleRowSelection}
+                onsort={handleColumnSorting}
+                sorted-by={sortedBy}
+                sorted-direction={sortedDirection}
+                draft-values={draftValues}
+                oncellchange={handleCellChange}
+                oncancel={handleCancel}
+                onsave={handleSave}
+                errors={saveErrors}
+            ></c-datatable-extension>
+        </div>
+        <div slot="actions">
+            <lightning-layout if:true={hasActions} horizontal-align="end" vertical-align="end" pull-to-boundary="small">
+                <template if:true={showRefreshButton}>
+                    <lightning-layout-item class="slds-p-horizontal_x-small">
+                        <lightning-button-icon
+                            alternative-text="Refresh"
+                            icon-name="utility:refresh"
+                            onclick={reloadTable}
+                        ></lightning-button-icon>
+                    </lightning-layout-item>
+                </template>
+            </lightning-layout>
+        </div>
+    </lightning-card>
+</template>

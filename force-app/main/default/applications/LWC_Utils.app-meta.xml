@@ -4,17 +4,17 @@
         <headerColor>#0070D2</headerColor>
         <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
     </brand>
-    <description>Aura vs LWC with some design patterns sprinkled in</description>
+    <description>Design patterns and sample components</description>
     <formFactors>Large</formFactors>
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
     <label>LWC Utils</label>
     <navType>Standard</navType>
+    <tabs>Sample_App_Aura</tabs>
     <tabs>Sample_App_LWC</tabs>
-    <tabs>SC_Sample_App</tabs>
-    <tabs>Datatable_Service_LWC_imperative</tabs>
-    <tabs>Datatable_Service_LWC_wire</tabs>
-    <tabs>Flow_Wizard_LWC</tabs>
+    <tabs>SOQL_Datatable</tabs>
+    <tabs>Collection_Datatable</tabs>
+    <tabs>LWC_Launching_Flow</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Service_Components_UtilityBar</utilityBar>
 </CustomApplication>

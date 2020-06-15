@@ -2,15 +2,16 @@
  *  @author: James Hou, james@sparkworks.io
  **************************************************************/
 
-public with sharing class DataTableService {
-    // tableRequest
+public inherited sharing class DataTableService {
+    // Request
     public static final String QUERY_STRING_KEY = 'queryString';
     public static final String BIND_VAR_KEY = 'bindVars';
     public static final String ID_SET_KEY = 'idSet';
 
-    // tableCache
+    // Response
     public static final String TABLE_DATA_KEY = 'tableData';
     public static final String TABLE_COLUMNS_KEY = 'tableColumns';
+    public static final String SOBJECT_API_NAME = 'objectApiName';
 
     // lightning-datatable type translation map
     // https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_enum_Schema_DisplayType.htm
@@ -22,8 +23,8 @@ public with sharing class DataTableService {
         Schema.DisplayType.Boolean => 'boolean',
         Schema.DisplayType.Combobox => 'text',
         Schema.DisplayType.Currency => 'currency',
-        Schema.DisplayType.Date => 'date-local', // my preference
-        Schema.DisplayType.DateTime => 'date-local', // my preference
+        Schema.DisplayType.Date => 'date',
+        Schema.DisplayType.DateTime => 'date-local',
         Schema.DisplayType.Double => 'number',
         Schema.DisplayType.Email => 'email',
         Schema.DisplayType.ID => 'text',
@@ -39,6 +40,15 @@ public with sharing class DataTableService {
         Schema.DisplayType.URL => 'url'
     };
 
+    @AuraEnabled(cacheable=true)
+    public static Map<String, String> getDisplayTypeMap() {
+        Map<String, String> result = new Map<String, String>();
+        for (Schema.DisplayType type : DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.keySet()) {
+            result.put(String.valueOf(type), DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(type));
+        }
+        return result;
+    }
+
     /**
      * Experimental wire for creating tableCache
      * For now, new POJO passed through @wire aren't triggering change event unless as JSON.
@@ -51,8 +61,8 @@ public with sharing class DataTableService {
     /**
      * Creates a lightning-datatable ready object keys:
      * tableData and tableColumns can be used as attributes directly clientside.
-     * @param  tableRequest [Object with configs, see DataTableService.cmp]
-     * @return              [Object with tableCache.tableData, tableCache.tableColumns]
+     * @param  tableRequest [Object with keys listed at top of this class]
+     * @return              [Object with keys listed at top of this class]
      */
     @AuraEnabled
     public static Map<String, Object> getTableCache(Map<String, Object> tableRequest) {
@@ -65,11 +75,12 @@ public with sharing class DataTableService {
         List<SObject> tableData = DataTableService.getSObjectData(tableRequest);
         // Derived Columns
         String queryString = (String) tableRequest.get(QUERY_STRING_KEY);
-        String sObjectName = queryString.substringAfterLast(' FROM ').split(' ').get(0); // don't depend on if there is a WHERE, also in case FROM is in a field name
-        SObject queryObject = Schema.getGlobalDescribe().get(sObjectName).newSObject();
+        String objectName = queryString.substringAfterLast(' FROM ').split(' ').get(0); // don't depend on if there is a WHERE, also in case FROM is in a field name
+        SObject queryObject = Schema.getGlobalDescribe().get(objectName).newSObject();
 
         tableServiceResponse.put(TABLE_DATA_KEY, tableData);
         tableServiceResponse.put(TABLE_COLUMNS_KEY, DataTableService.getColumnData(queryString, queryObject));
+        tableServiceResponse.put(SOBJECT_API_NAME, objectName);
         return tableServiceResponse;
     }
 
@@ -141,15 +152,16 @@ public with sharing class DataTableService {
      */
     private static List<Map<String, Object>> getColumnData(String queryString, SObject queriedSObject) {
         String soqlFields = queryString.subString(
-                queryString.indexOfIgnoreCase('select') + 6,
-                queryString.indexOfIgnoreCase('from')
+                queryString.indexOfIgnoreCase('select') + 7,
+                queryString.indexOfIgnoreCase(' from ')
             )
             .trim();
-        List<String> soqlColumns = soqlFields.split('[,]{1}[\\s]?'); // sanitizes the spacing between commas
+        List<String> soqlColumns = soqlFields.split('[,]{1}[\\s]*'); // sanitizes the spacing between commas
         List<Map<String, Object>> tableColumns = new List<Map<String, Object>>();
         Map<String, Schema.SObjectField> fieldMap = queriedSObject.getSObjectType().getDescribe().fields.getMap();
 
         for (String fieldName : soqlColumns) {
+            Schema.SObjectType currentSObjectType = queriedSObject.getSObjectType();
             Schema.DescribeFieldResult field;
             Map<String, Object> fieldColumn = new Map<String, Object>();
 
@@ -164,41 +176,38 @@ public with sharing class DataTableService {
                     ? fieldName.substringBeforeLast('__r.') + '__c' // custom objects
                     : fieldName.substringBeforeLast('.') + 'Id'; // standard objects typical schema
                 Schema.SObjectType referenceTo = fieldMap.get(parentReference).getDescribe().getReferenceTo().get(0);
+                currentSObjectType = referenceTo;
                 field = referenceTo.getDescribe().fields.getMap().get(fieldName.substringAfterLast('.')).getDescribe();
             } else {
                 field = fieldMap.get(fieldName).getDescribe();
             }
             System.debug('getColumnData field info: ' + fieldName + ' : ' + field.getType());
 
-            // Minor validations
-            if (
-                field.getType() == Schema.DisplayType.ID || // IDs are usually keyFields, so we skip display of this
-                field.getType() == Schema.DisplayType.Reference || // References are lookups, need granular formatting so left to UI implementation
-                !field.isAccessible() // Respect FLS
-            ) {
+            // Respect FLS
+            if (!field.isAccessible()) {
                 continue;
             }
 
-            // Defaults. Can be overridden as needed
+            // Default column props and typeAttributes are assigned here
             String flatFieldName = fieldName.contains('.')
                 ? fieldName.replace('.', '_') // parent fields handled by clientside flattener
                 : fieldName;
             fieldColumn.put('label', field.getLabel());
             fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(field.getType()));
             fieldColumn.put('fieldName', flatFieldName);
-            fieldColumn.put('column-widths-mode', 'auto');
 
-            // Fields with Name are typically hyperlinked
+            // TODO
+            if (field.getType() === Schema.DisplayType.REFERENCE) {
+                continue;
+            }
+
+            // Fields with Name are typically hyperlinked, so we replace it with a custom datatype
             if (fieldName.equalsIgnoreCase('name') || fieldName.substringAfterLast('.').equalsIgnoreCase('name')) {
-                // Override previous key
-                fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(Schema.DisplayType.Reference));
-
-                // Override the fieldName with a url to the id
-                fieldColumn.put('fieldName', flatFieldName.replace('Name', 'Id'));
-
-                // For the field label, given by URL typeAttribute
+                String objectName = currentSObjectType.getDescribe().getName();
+                fieldColumn.put('type', 'customName');
                 Map<String, Object> typeAttributes = new Map<String, Object>();
-                typeAttributes.put('label', new Map<String, Object>{ 'fieldName' => flatFieldName }); // neat trick to pass reference to an existing column
+                // This is a trick to set reference to a value and allow tableServiceUtils.js deal with this
+                typeAttributes.put('href', new Map<String, Object>{ 'fieldName' => objectName + '_Id' });
                 typeAttributes.put('target', '_parent');
                 fieldColumn.put('typeAttributes', typeAttributes);
             }

@@ -3,33 +3,25 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>AccountSelector</componentName>
+                <componentName>lwcAccountSelector</componentName>
             </componentInstance>
         </itemInstances>
         <itemInstances>
             <componentInstance>
-                <componentName>ContactDatatable</componentName>
+                <componentName>lwcContactDatatable</componentName>
             </componentInstance>
         </itemInstances>
         <itemInstances>
             <componentInstance>
-                <componentName>PlatformEventListener</componentName>
+                <componentName>DialogServiceBroker</componentName>
             </componentInstance>
         </itemInstances>
-        <name>region1</name>
+        <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
-    <flexiPageRegions>
-        <name>region2</name>
-        <type>Region</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <name>region3</name>
-        <type>Region</type>
-    </flexiPageRegions>
-    <masterLabel>Service Components Hello World</masterLabel>
+    <masterLabel>Sample App (LWC)</masterLabel>
     <template>
-        <name>flexipage:appHomeTemplateHeaderTwoColumns</name>
+        <name>flexipage:defaultAppHomeTemplate</name>
     </template>
     <type>AppPage</type>
 </FlexiPage>

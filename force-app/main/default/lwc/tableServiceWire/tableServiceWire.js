@@ -10,7 +10,7 @@ export default class TableServiceWire extends LightningElement {
         if (data) {
             const response = {
                 tableColumns: data.tableColumns,
-                tableData: tableUtils.applyLinks(tableUtils.flattenQueryResult(data.tableData))
+                tableData: tableUtils.flattenQueryResult(data.tableData, data.sObjectApiName)
             };
             this.dispatchEvent(new CustomEvent('success', { detail: response }));
         } else if (error) {

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>editableFields</name>
+                    <value>Email, Phone</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>queryString</name>
+                    <value>SELECT Id, Name, Email, Phone, Account.Name, Account.BillingState, Account.Type FROM Contact</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showRecordCount</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showRefreshButton</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>sortableFields</name>
+                    <value>Name, Email, Phone, Account_Name, Account_BillingState, Account_Type</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>sortedBy</name>
+                    <value>Name</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>sortedDirection</name>
+                    <value>asc</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>title</name>
+                    <value>Queried Contacts</value>
+                </componentInstanceProperties>
+                <componentName>soqlDatatable</componentName>
+            </componentInstance>
+        </itemInstances>
+        <name>main</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <masterLabel>SOQL Datatable</masterLabel>
+    <template>
+        <name>flexipage:defaultAppHomeTemplate</name>
+    </template>
+    <type>AppPage</type>
+</FlexiPage>

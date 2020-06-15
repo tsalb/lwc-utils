@@ -16,6 +16,7 @@
             <property name="showRecordCount" label="Show Record Count" type="Boolean"/>
             <property name="showRefreshButton" label="Show Refresh" type="Boolean"/>
             <property name="queryString" label="SOQL String" type="String" placeholder="SELECT Id, Name FROM Account LIMIT 10" required="true"/>
+            <property name="checkboxType" label="Checkbox Type" type="String" default="None" datasource="None,Multi,Single"/>
             <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of field api names for inline editing. Does not support parent fieldNames"/>
             <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API Names. If parent fieldNames, use _ instaed of . (e.g. Account_Name)"/>
             <property name="sortedBy" label="Default Sort Field" type="String" description="Field API name, if parent fieldName use _ instead of . (e.g. Account_Name)"/>
@@ -27,6 +28,7 @@
             <property name="showRecordCount" label="Show Record Count" type="Boolean"/>
             <property name="showRefreshButton" label="Show Refresh" type="Boolean"/>
             <property name="queryString" label="SOQL String" type="String" placeholder="SELECT Id, Name FROM Account LIMIT 10" required="true"/>
+            <property name="checkboxType" label="Checkbox Type" type="String" default="None" datasource="None,Multi,Single"/>
             <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of field api names for inline editing. Does not support parent fieldNames"/>
             <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API Names. If parent fieldNames, use _ instaed of . (e.g. Account_Name)"/>
             <property name="sortedBy" label="Default Sort Field" type="String" description="Field API name, if parent fieldName use _ instead of . (e.g. Account_Name)"/>

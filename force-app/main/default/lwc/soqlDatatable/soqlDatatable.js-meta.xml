@@ -16,9 +16,9 @@
             <property name="showRecordCount" label="Show Record Count" type="Boolean"/>
             <property name="showRefreshButton" label="Show Refresh" type="Boolean"/>
             <property name="queryString" label="SOQL String" type="String" placeholder="SELECT Id, Name FROM Account LIMIT 10" required="true"/>
-            <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of field api names for inline editing"/>
-            <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API Names."/>
-            <property name="sortedBy" label="Default Sort Field" type="String" description="Field API name, if parent name use _ instead of ."/>
+            <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of field api names for inline editing. Does not support parent fieldNames"/>
+            <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API Names. If parent fieldNames, use _ instaed of . (e.g. Account_Name)"/>
+            <property name="sortedBy" label="Default Sort Field" type="String" description="Field API name, if parent fieldName use _ instead of . (e.g. Account_Name)"/>
             <property name="sortedDirection" label="Default Sort Direction" type="String" datasource="asc,desc" default="asc"/>
         </targetConfig>
         <targetConfig targets="lightning__RecordPage">
@@ -27,9 +27,9 @@
             <property name="showRecordCount" label="Show Record Count" type="Boolean"/>
             <property name="showRefreshButton" label="Show Refresh" type="Boolean"/>
             <property name="queryString" label="SOQL String" type="String" placeholder="SELECT Id, Name FROM Account LIMIT 10" required="true"/>
-            <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of field api names for inline editing"/>
-            <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API Names."/>
-            <property name="sortedBy" label="Default Sort Field" type="String" description="Field API name, if parent name use _ instead of ."/>
+            <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of field api names for inline editing. Does not support parent fieldNames"/>
+            <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API Names. If parent fieldNames, use _ instaed of . (e.g. Account_Name)"/>
+            <property name="sortedBy" label="Default Sort Field" type="String" description="Field API name, if parent fieldName use _ instead of . (e.g. Account_Name)"/>
             <property name="sortedDirection" label="Default Sort Direction" type="String" datasource="asc,desc" default="asc"/>
         </targetConfig>
         <targetConfig targets="lightning__FlowScreen">
@@ -39,9 +39,9 @@
             <property name="showRecordCount" label="Show Record Count" type="Boolean" role="inputOnly"/>
             <property name="queryString" label="SOQL String" type="String" default="SELECT ... FROM ..." description="Use 'recordId' (no quotes) to bind to recordId property." required="true" role="inputOnly"/>
             <property name="checkboxType" label="Checkbox Type" type="String" description="None, Multi, or Single" role="inputOnly"/>
-            <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of field api names for inline editing" role="inputOnly"/>
-            <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API Names." role="inputOnly"/>
-            <property name="sortedBy" label="Default Sort Field" type="String" description="Field API name, if parent name use _ instead of ." role="inputOnly"/>
+            <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of field api names for inline editing. Does not support parent fieldNames" role="inputOnly"/>
+            <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API Names. If parent fieldNames, use _ instaed of . (e.g. Account_Name)" role="inputOnly"/>
+            <property name="sortedBy" label="Default Sort Field" type="String" description="Field API name, if parent fieldName use _ instead of . (e.g. Account_Name)" role="inputOnly"/>
             <property name="sortedDirection" label="Default Sort Direction" type="String" default="asc" description="asc or desc" role="inputOnly"/>
             <!-- OUTPUTS -->
             <property name="selectedRows" label="Selected Rows" type="{sObj[]}" role="outputOnly"/>

@@ -3,6 +3,23 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentInstanceProperties>
+                    <name>decorate</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>richTextValue</name>
+                    <value>&lt;ol&gt;&lt;li&gt;&lt;span style=&quot;font-family: courier;&quot;&gt;lightning-button&lt;/span&gt; (LWC) creates a JSON &lt;span style=&quot;font-family: courier;&quot;&gt;payload&lt;/span&gt; with some Flow details &lt;span style=&quot;font-family: courier;&quot;&gt;onclick&lt;/span&gt;&lt;span style=&quot;color: rgb(107, 109, 112);&quot;&gt;.&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;font-family: courier;&quot;&gt;payload&lt;/span&gt; is then handed to &lt;span style=&quot;font-family: courier;&quot;&gt;messageBroker&lt;/span&gt;.&lt;/li&gt;&lt;li&gt;Which, in turn, passes it to a hidden Aura component called &lt;span style=&quot;font-family: courier;&quot;&gt;DialogServiceBroker&lt;/span&gt;&lt;span style=&quot;color: rgb(107, 109, 112);&quot;&gt;.&lt;/span&gt;&lt;ol&gt;&lt;li&gt;The mechanism for going from LWC =&amp;gt; Aura is &lt;span style=&quot;font-family: courier;&quot;&gt;Lightning Message Channel &lt;/span&gt;(&lt;span style=&quot;font-family: courier;&quot;&gt;LMS&lt;/span&gt;)&lt;span style=&quot;color: rgb(107, 109, 112);&quot;&gt;.&lt;/span&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt;Once inside aura, it dynamically creates an LWC dialog body via &lt;span style=&quot;font-family: courier;&quot;&gt;lightning:overlayLibrary&lt;/span&gt;&lt;span style=&quot;color: rgb(107, 109, 112);&quot;&gt;.&lt;/span&gt;&lt;/li&gt;&lt;/ol&gt;</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:richText</componentName>
+            </componentInstance>
+        </itemInstances>
+        <name>column1</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
                 <componentName>flowWizardLauncherExample</componentName>
             </componentInstance>
         </itemInstances>
@@ -11,12 +28,12 @@
                 <componentName>DialogServiceBroker</componentName>
             </componentInstance>
         </itemInstances>
-        <name>main</name>
+        <name>column2</name>
         <type>Region</type>
     </flexiPageRegions>
     <masterLabel>LWC Launching Flow</masterLabel>
     <template>
-        <name>flexipage:defaultAppHomeTemplate</name>
+        <name>flexipage:appHomeTemplateTwoColumns</name>
     </template>
     <type>AppPage</type>
 </FlexiPage>

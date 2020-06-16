@@ -27,8 +27,11 @@ git clone https://github.com/tsalb/lwc-utils
 
 4) Use Command Palette to `SFDX: Push Source to Default Scratch Org`.
 
-5) Use the `sfdx-cli` to assign a required permission set: `sfdx force:user:permset:assign -n LWC_Utils_Access`.
-    - I've moved permissions from profiles to permission set due to an odd summer 20 preview scratch org bug.
+5) Use the `sfdx-cli` to assign a required permission set.
+
+```
+sfdx force:user:permset:assign -n LWC_Utils_Access
+```
 
 6) Use Command Palette to `SFDX: Open Default Org`.
 
@@ -36,16 +39,32 @@ git clone https://github.com/tsalb/lwc-utils
 
 See the [readme](https://github.com/tsalb/sfdc-lightning-service-components#dataservice-usage-example) on the old repository.
 
-## Datatable Service (LWC @wire and imperative)
+## SOQL Datatable
 
-Two samples:
+This component can dynamically create tables from just a SOQL String fed into its design attributes in the App Builder. For example: 
 
-1) An `@wire` child template component fed by a reactive attribute that emits events on success/error.
-2) An imperative callout using `async await` that uses promises in the returning tableResults.
+```
+SELECT Id, Name, Email, Phone, Account.Name, Account.BillingState, Account.Type FROM Contact
+```
 
-Parent relationships (1 level up) are working okay. It's safer to use formulas still, for now.
+![soql-datatable](/readme-images/soql-datatable.png?raw=true)
 
-![datatable](/readme-images/datatable-optimized.gif?raw=true)
+Clicking Edit Page on the App Page, you can see that there are only a handful of design attributes.
+
+![soql-datatable-app-builder](/readme-images/soql-datatable-app-builder.png?raw=true)
+
+But that's not all, when used on a Record Flexipage, you have access to a property called `isRecordBind` which will merge field in the `recordId` into the SOQL String like this the following examples:
+
+```
+SELECT Id, Name, Email, Phone FROM Contact WHERE AccountId = recordId
+
+or
+
+SELECT Id, Name FROM CustomObject__c WHERE Account__c IN (SELECT Id FROM Account WHERE Id = recordId)
+```
+
+If that's not flexible enough, you can access this component directly from LWC and do something like in the bottom right example using the `MessageBroker` described in the next section.
+
 
 ## LWC to Aura MessageBroker
 
@@ -55,23 +74,45 @@ This simple example uses `DialogService` to dynamically create a LWC (using `$A.
 
 `DialogService` is also able to dynamically start flows, as shown in the next section.
 
-![lwc-modal](/readme-images/lwc-modal-optimized.gif?raw=true)
+## Collection Datatable
 
-## Dynamic Flow Modal in LWC
+```
+// TODO
+```
+
+## Launch a flow from an LWC
 
 Leverages both `MessageBroker` and `DialogService` to dynamically start flows from an LWC.
 
 This simple example brokers a payload to `lightning:flow` (Aura only in Summer 19) to start a flow with a given `flowName` and `inputVariables`.
 
-![flow-screen](/readme-images/flow-screen.png?raw=true)
+In psuedo-code:
 
-![flow-wizard](/readme-images/flow-wizard-optimized.gif?raw=true)
+1) `lightning-button` creates a JSON payload with some Flow details `onclick`.
+2) payload is then handed to `messageBroker`.
+3) Which, in turn, passes it to a hidden Aura component called `DialogServiceBroker`.
+4) The mechanism for going from LWC => Aura is `Lightning Message Channel` (aka `LMS`).
+5) Once inside aura, `DialogServiceBroker` dynamically creates an LWC dialog body via `lightning:overlayLibrary` (yes, back in Aura).
 
-## Dynamic Templating in LWC Wizard Body
+Below is the actual flow this will be using:
 
-To be built on in future updates, the `flowWizardRouter` LWC is able to dynamically `render()` a chosen `template` based on an @api attribute.
+<p align="center">
+    <img src="./readme-images/flow-screen.png" width="640">
+</p>
 
-```javascript
+Which looks like this when clicked:
+
+![launch-flow-example](/readme-images/launch-flow-example.gif?raw=true)
+
+To understand the mechanics of what is happening in the wizard itself, see the next section.
+
+## Dynamic Templating in LWC Wizard Body, inside a flow
+
+This flow in this example uses a single LWC to back multiple screens. In essence, this is using flow as a navigation tool for switching between various `template if:true` checks on the LWC itself.
+
+In other words, `flowWizardRouter` is able to dynamically `render()` a chosen `template` based on an `@api` attribute.
+
+```js
 import { LightningElement, api, track } from 'lwc';
 import { DateTime } from 'c/luxon';
 // Known templates
@@ -79,15 +120,66 @@ import { default as dateParserMenu } from './templates/dateParserMenu.html';
 import { default as defaultTemplate } from './templates/default.html';
 
 export default class FlowWizardRouter extends LightningElement {
-  @api templateName;
-
-  render() {
-    switch (this.templateName) {
-      case 'dateParserMenu':
-        return dateParserMenu;
-      default:
-        return defaultTemplate;
+    @api templateName;
+    @api
+    get flowCacheJSON() {
+        return JSON.stringify(this.flowCache);
     }
-  }
+    set flowCacheJSON(value) {
+        this.flowCache = JSON.parse(value);
+    }
+
+    ...
+
+    render() {
+        switch (this.templateName) {
+            case 'dateParserMenu':
+                return dateParserMenu;
+            default:
+                return defaultTemplate;
+        }
+    }
+
+    ...
+
+    get isDateParser() {
+        return this.templateName === 'dateParserMenu';
+    }
+
+    get isDateParserOne() {
+        return this.isDateParser && this.templateStep === 1;
+    }
+
+    get isDateParserTwo() {
+        return this.isDateParser && this.templateStep === 2;
+    }
 }
 ```
+
+While doing so, it leverages flow as a state storage:
+
+```js
+notifyFlow() {
+    // The prop name needs to be the LWC one, not the variable name in flow itself
+    // Also, manual variable assignment MUST be used for this to persist across screens
+    this.dispatchEvent(new FlowAttributeChangeEvent('flowCacheJSON', JSON.stringify(this.flowCache)));
+}
+```
+
+And on the selected template:
+
+```html
+<!-- flowWizardRouter/templates/dateParserMenu.html -->
+<template if:true={isDateParserOne}>
+
+    <!-- template to show when configured to one -->
+
+</template>
+<template if:true={isDateParserTwo}>
+
+    <!-- template to show when configured to two -->
+
+</template>
+```
+
+

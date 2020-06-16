@@ -70,7 +70,9 @@ If that's not flexible enough, you can access this component directly from LWC a
 
 Leverages a generic `OPEN_CHANNEL` LightningMessageChannel with `DialogService` for all LWC to access Aura only service modules, such as `lightning:overlayLibrary`.
 
-This simple example uses `DialogService` to dynamically create a LWC (using `$A.createComponent`).
+This simple example uses `DialogService` to dynamically create a LWC (using `$A.createComponent`) when the `Launch a SOQL Datatable in a Dialog` button is clicked:
+
+![soql-datatable-in-dialog](/readme-images/soql-datatable-in-dialog.gif?raw=true)
 
 `DialogService` is also able to dynamically start flows, as shown in the next section.
 

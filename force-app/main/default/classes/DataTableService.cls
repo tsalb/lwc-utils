@@ -103,7 +103,7 @@ public inherited sharing class DataTableService {
         List<SObject> tableData = DataTableService.getSObjectData(tableRequest);
         // Derived Columns
         String queryString = (String) tableRequest.get(QUERY_STRING_KEY);
-        String objectName = queryString.substringAfterLast(' FROM ').split(' ').get(0); // don't depend on if there is a WHERE, also in case FROM is in a field name
+        String objectName = queryString.substringAfter(' FROM ').split(' ').get(0); // don't depend on if there is a WHERE, also in case FROM is in a field name
         SObject queryObject = Schema.getGlobalDescribe().get(objectName).newSObject();
 
         tableServiceResponse.put(TABLE_DATA_KEY, tableData);

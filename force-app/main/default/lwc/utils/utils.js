@@ -73,6 +73,27 @@ const createSetFromDelimitedString = (string, delimiter) => {
     return new Set(string.replace(/\s+/g, '').split(delimiter));
 };
 
+// https://muffinresearch.co.uk/removing-leading-whitespace-in-es6-template-strings/
+const convertToSingleLineString = (strings, ...values) => {
+    // Interweave the strings with the substitution vars first.
+    let output = '';
+    for (let i = 0; i < values.length; i++) {
+        output += strings[i] + values[i];
+    }
+    output += strings[values.length];
+
+    // Split on newlines.
+    let lines = output.split(/(?:\r\n|\n|\r)/);
+
+    // Rip out the leading whitespace.
+    return lines
+        .map(line => {
+            return line.replace(/^\s+/gm, '');
+        })
+        .join(' ')
+        .trim();
+};
+
 /**
  * Reduces one or more LDS errors into a string[] of error messages.
  * @param {FetchResponse|FetchResponse[]} errors
@@ -158,5 +179,6 @@ export {
     // Trusted Site URL:	https://data-faker.herokuapp.com
     fetchFakeDataHelper,
     createSetFromDelimitedString,
+    convertToSingleLineString,
     reduceErrors
 };

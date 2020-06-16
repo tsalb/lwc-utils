@@ -14,7 +14,7 @@ export default class FlowWizardLauncherExample extends LightningElement {
         return getFieldValue(this.user.data, USERNAME_FIELD);
     }
 
-    openModal() {
+    handleOpenDialog() {
         const dialogServicePayload = {
             method: 'flow',
             config: {

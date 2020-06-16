@@ -42,9 +42,6 @@ import { reduceErrors, createSetFromDelimitedString } from 'c/utils';
 const MAX_ROW_SELECTION = 200;
 
 export default class Datatable extends LightningElement {
-    /**
-     * Public props
-     */
     @api recordId;
     @api
     get keyField() {
@@ -63,6 +60,7 @@ export default class Datatable extends LightningElement {
     // Misc
     @api columnWidthsMode = 'auto'; // override salesforce default
     @api showRefreshButton = false;
+    @api showSpinner = false;
 
     // Sorting
     @api sortedBy;
@@ -106,11 +104,8 @@ export default class Datatable extends LightningElement {
         this._editableFields = createSetFromDelimitedString(value, ',');
     }
 
-    /**
-     * Template props
-     */
+    /* Template props and getters */
 
-    showSpinner = false;
     isHideCheckbox = true;
     maxRowSelection = MAX_ROW_SELECTION;
 
@@ -119,9 +114,7 @@ export default class Datatable extends LightningElement {
     draftValues = []; // this is to feed into the datatable to clear stuff out
     saveErrors = {};
 
-    /**
-     * Template getters
-     */
+    pageRef;
 
     get recordCount() {
         return this.tableData ? this.tableData.length : 0;
@@ -132,21 +125,25 @@ export default class Datatable extends LightningElement {
         return this.showRefreshButton;
     }
 
-    /**
-     * Public Methods
-     */
-
-    @api
-    async reloadTable() {
-        const data = await this.fetchTableService();
-        this._setTableData(data.tableData, true);
-    }
+    /* Public Methods */
 
     @api
     initializeTable(objectApiName, columns, data) {
+        this.showSpinner = true;
         this._objectApiName = objectApiName;
         this._setTableColumns(columns);
         this._setTableData(data);
+        // for inline-edit success
+        if (this._draftSuccessIds.size) {
+            this._clearDraftValues([...this._draftSuccessIds.keys()]);
+        }
+        this.showSpinner = false;
+    }
+
+    @api
+    refreshTable() {
+        this.showSpinner = true;
+        this.dispatchEvent(new CustomEvent('refresh'));
     }
 
     /**
@@ -155,17 +152,12 @@ export default class Datatable extends LightningElement {
 
     _isRendered;
     _messageBroker;
-
-    // For public getters
-    _keyField;
-    _checkboxType;
-    _sortableFields;
-    _editableFields;
+    _objectApiName;
+    _objectInfo;
 
     // In-line Edit
     _draftValuesMap = new Map();
-    _objectApiName;
-    _objectInfo;
+    _draftSuccessIds = new Set();
 
     // For future if object info data is needed
     @wire(getObjectInfo, { objectApiName: '$_objectApiName' })
@@ -183,39 +175,13 @@ export default class Datatable extends LightningElement {
         }
     }
 
-    async connectedCallback() {
-        if (this.isRecordBind || this.queryString) {
-            const data = await this.fetchTableService();
-            console.log(JSON.parse(JSON.stringify(data)));
-            this._objectApiName = data.objectApiName;
-            this._setTableColumns(data.tableColumns);
-            this._setTableData(data.tableData, false);
-        }
-    }
-
     renderedCallback() {
         if (this._isRendered) {
             return;
         }
         this._isRendered = true;
         this._messageBroker = this.template.querySelector('c-message-broker');
-    }
-
-    async fetchTableService() {
-        let results = {};
-        const finalQueryString = this.isRecordBind
-            ? this.queryString.replace('recordId', "'" + this.recordId + "'")
-            : this.queryString;
-
-        this.showSpinner = true;
-        try {
-            results = await tableService.getTableRequest({ queryString: finalQueryString });
-        } catch (error) {
-            this._messageBroker.notifySingleError('fetchTableService error', error);
-        } finally {
-            this.showSpinner = false;
-        }
-        return results;
+        this.pageRef = this._messageBroker.pageRef;
     }
 
     /* Event Handlers */
@@ -267,9 +233,10 @@ export default class Datatable extends LightningElement {
         }
         if (saveResults.success && saveResults.success.length) {
             const cleanRowKey = this.keyField === 'Id' ? 'id' : this.keyField; // LDS response lowercases this
-            const successRowKeys = saveResults.success.map(recordInput => recordInput[cleanRowKey]);
-            await this.reloadTable();
-            this._clearDraftValues(successRowKeys);
+            saveResults.success.forEach(recordInput => {
+                this._draftSuccessIds.add(recordInput[cleanRowKey]);
+            });
+            this.refreshTable();
         }
         // In case there are only error rows
         this.showSpinner = false;
@@ -286,15 +253,15 @@ export default class Datatable extends LightningElement {
         let finalColumns = [];
         for (let col of tableColumns) {
             // Sorting
-            if (this._sortableFields && this._sortableFields.size) {
+            if (this.sortableFields && this.sortableFields.size) {
                 // If parent fields require sorting, use _ in place of . for the fieldName.
-                if (this._sortableFields.has(col.fieldName)) {
+                if (this.sortableFields.has(col.fieldName)) {
                     col.sortable = true;
                 }
             }
             // Inline edit
-            if (this._editableFields && this._editableFields.size) {
-                col.editable = this._editableFields.has(col.fieldName);
+            if (this.editableFields && this.editableFields.size) {
+                col.editable = this.editableFields.has(col.fieldName);
             }
             finalColumns.push(col);
         }
@@ -359,6 +326,7 @@ export default class Datatable extends LightningElement {
         // Removes both table and row errors from `lightning-datatable`
         if (this._draftValuesMap.size === 0 && this.draftValues.length === 0) {
             this.saveErrors = [];
+            this._draftSuccessIds = new Set();
         }
     }
 

@@ -1,4 +1,5 @@
 <template>
+    <c-message-broker scoped-id={recordId}></c-message-broker>
     <c-datatable
         key-field="Id"
         title={title}
@@ -13,5 +14,7 @@
         sorted-by={sortedBy}
         sorted-direction={sortedDirection}
         onrowselection={handleRowSelection}
+        onrefresh={handleRefresh}
+        show-spinner={showSpinner}
     ></c-datatable>
 </template>

@@ -31,9 +31,14 @@
  */
 
 import { LightningElement, api } from 'lwc';
+import * as tableService from 'c/tableService';
 
 // Flow specific imports
 import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
+
+// Toast and Errors
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { reduceErrors } from 'c/utils';
 
 export default class SoqlDatatable extends LightningElement {
     // Pass through inputs
@@ -52,7 +57,82 @@ export default class SoqlDatatable extends LightningElement {
     // Pass through outputs for flow
     @api selectedRows;
 
+    showSpinner;
+
+    // private
+    _isRendered;
+    _messageBroker;
+    _finalQueryString;
+    _datatable;
+    _objectApiName;
+
+    @api
+    async refreshTable() {
+        const cache = await this.fetchTableCache();
+        this.initializeTable(cache);
+    }
+
+    async connectedCallback() {
+        if (this.isRecordBind && !tableService.isRecordId(this.recordId)) {
+            this._notifySingleError('Invalid recordId', 'Must be 15 or 18 digit Salesforce Object recordId');
+            return;
+        }
+        if (this.queryString) {
+            this._finalQueryString = this.isRecordBind
+                ? this.queryString.replace('recordId', `'${this.recordId}'`)
+                : this.queryString;
+
+            const cache = await this.fetchTableCache();
+            this.initializeTable(cache);
+        }
+    }
+
+    renderedCallback() {
+        if (this._isRendered) {
+            return;
+        }
+        this._isRendered = true;
+        this._messageBroker = this.template.querySelector('c-message-broker');
+        this._datatable = this.template.querySelector('c-datatable');
+    }
+
+    async fetchTableCache() {
+        this.showSpinner = true;
+        try {
+            return await tableService.fetchTableCache({ queryString: this._finalQueryString });
+        } catch (error) {
+            this._notifySingleError('fetchTableCache error', error);
+        }
+    }
+
+    initializeTable(cache) {
+        this._datatable.initializeTable(cache.objectApiName, cache.tableColumns, cache.tableData);
+    }
+
+    // Event Handlers
+
     handleRowSelection(event) {
         this.dispatchEvent(new FlowAttributeChangeEvent('selectedRows', event.detail.selectedRows));
+    }
+
+    handleRefresh() {
+        this.refreshTable();
+    }
+
+    // Private Functions
+
+    _notifySingleError(title, error) {
+        if (this._messageBroker) {
+            this._messageBroker.notifySingleError(title, error);
+        } else {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: title,
+                    message: reduceErrors(error)[0],
+                    variant: 'error',
+                    mode: 'sticky'
+                })
+            );
+        }
     }
 }

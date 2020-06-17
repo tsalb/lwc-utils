@@ -2,10 +2,9 @@
 
 This repo highlights the following production proven design patterns:
 
-* Design custom LWC into a service component architecture, i.e. making "utils".
-* Showcase a bi-directional event / payload brokering system between Aura and LWC.
-* Highlight the versatility of the Flexipage SPA.
-* Showcase an apples-to-apples comparison of "Aura vs LWC" with an LWC re-write of my [Aura Service Components Sample App](https://github.com/tsalb/sfdc-lightning-service-components).
+1) Design custom LWC into a service component architecture, i.e. making "utils".
+2) Showcase complex datatable components like `SOQL Datatable` and `Collection Datatable` which can be used on App Flexipage, Record Flexipage, and even Flow Screens!
+3) Showcase a bi-directional payload brokering system between Aura and LWC, aka `MessageBroker`.
 
 ![side-by-side](/readme-images/side-by-side.png?raw=true)
 
@@ -53,7 +52,7 @@ Clicking Edit Page on the App Page, you can see that there are only a handful of
 
 ![soql-datatable-app-builder](/readme-images/soql-datatable-app-builder.png?raw=true)
 
-But that's not all, when used on a Record Flexipage, you have access to a property called `isRecordBind` which will merge field in the `recordId` into the SOQL String like this the following examples:
+But that's not all, when used on a Record Flexipage, you have access to a property called `isRecordBind` which will merge field in the `recordId` into the SOQL String like in the following examples:
 
 ```
 SELECT Id, Name, Email, Phone FROM Contact WHERE AccountId = recordId
@@ -63,23 +62,86 @@ or
 SELECT Id, Name FROM CustomObject__c WHERE Account__c IN (SELECT Id FROM Account WHERE Id = recordId)
 ```
 
-If that's not flexible enough, you can access this component directly from LWC and do something like in the bottom right example using the `MessageBroker` described in the next section.
+If that's not flexible enough, you can access this component directly from LWC and do something like in `Launch a SOQL Datatable in a Dialog` which dynamically creates a `soqlDatatable` on the fly!
 
+## SOQL Datatable - Dynamic Creation via MessageBroker
 
-## LWC to Aura MessageBroker
-
-Leverages a generic `OPEN_CHANNEL` LightningMessageChannel with `DialogService` for all LWC to access Aura only service modules, such as `lightning:overlayLibrary`.
-
-This simple example uses `DialogService` to dynamically create a LWC (using `$A.createComponent`) when the `Launch a SOQL Datatable in a Dialog` button is clicked:
+This example uses `DialogService` to dynamically create a LWC on the fly when the `Launch a SOQL Datatable in a Dialog` button is clicked:
 
 ![soql-datatable-in-dialog](/readme-images/soql-datatable-in-dialog.gif?raw=true)
 
-`DialogService` is also able to dynamically start flows, as shown in the next section.
+In psuedo-code for the `messageBroker`:
 
-## Collection Datatable
+1) `lightning-button` creates a JSON payload with some `lightning:overlayLibrary` details `onclick`.
+    - Yes, that API is an `Aura` one!
+2) JSON payload passes through `Lightning Message Channel`, eventually, to `overlayLibrary`.
+3) The full payload path is: 
+    ```
+    button.js 
+        => messageBroker.js 
+            => LMS 
+                => messageBrokerHandler.js (LWC in DialogServiceBroker.cmp - yes Aura) 
+                    => onmessage (bubbled CustomEvent)
+                        => DialogServiceBrokerController.js 
+                            => DialogService.cmp
+                                => DialogServiceController.js
+                                    => $A.createComponent('c:soqlDatatable')
+                                        => lightning:overlayLibrary
+    ```
+
+Yep, it's possible to parameterize the payload (eventually) back to Aura's `$A.createComponent` API to instantiate a public properties against a LWC!
+
+And here's the actual payload used in the above code flow:
+
+```js
+handleOpenDialog() {
+    const query = convertToSingleLineString`
+        SELECT Title, Name, Email
+        FROM Contact
+        WHERE AccountId IN (SELECT Id FROM Account)
+        LIMIT 5
+    `;
+    const dialogServicePayload = {
+        method: 'bodyModalLarge',
+        config: {
+            auraId: 'soql-datatable-example',
+            headerLabel: 'Dynamically Created SOQL Datatable',
+            component: 'c:soqlDatatable',
+            componentParams: {
+                isRecordBind: false,
+                recordId: this.recordId,
+                queryString: query
+            }
+        }
+    };
+    this.template.querySelector('c-message-broker').dialogService(dialogServicePayload);
+}
+```
+
+If you've read this far, you might be connecting the dots that `DialogService`, an `Aura` component, is completely capable of creating any LWC on the fly and putting it into a modal / dialog!
+
+## SOQL Datatable - Display a Selection to Collection Datatable in Flow
 
 ```
 // TODO
+```
+
+## Collection Datatable - Displaying a Record Collection
+
+```
+// TODO
+```
+
+## Combining SOQL and Collection Datatable with Flow inputs
+
+```
+// TODO
+```
+
+## Collection Datatable - Using Apex Wrappers
+
+```
+// Future Roadmap
 ```
 
 ## Launch a flow from an LWC

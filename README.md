@@ -2,9 +2,9 @@
 
 This repo highlights the following production proven design patterns:
 
-1) Design custom LWC into a service component architecture, i.e. making "utils".
-2) Showcase complex datatable components like `SOQL Datatable` and `Collection Datatable` which can be used on App Flexipage, Record Flexipage, and even Flow Screens!
-3) Showcase a bi-directional payload brokering system between Aura and LWC, aka `MessageBroker`.
+- Design custom LWC into a service component architecture, i.e. making "utils".
+- Showcase complex datatable components like `SOQL Datatable` and `Collection Datatable` which can be used on App Flexipage, Record Flexipage, and even Flow Screens!
+- Showcase a bi-directional payload brokering system between Aura and LWC, aka `MessageBroker`.
 
 ![side-by-side](/readme-images/side-by-side.png?raw=true)
 
@@ -33,6 +33,15 @@ sfdx force:user:permset:assign -n LWC_Utils_Access
 ```
 
 6) Use Command Palette to `SFDX: Open Default Org`.
+
+## Install via Deploy to Salesforce
+
+<a href="https://githubsfdeploy.herokuapp.com?owner=tsalb&repo=lwc-utils&ref=summer-20">
+  <img alt="Deploy to Salesforce"
+       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
+</a>
+
+> **NOTE:** This button will deploy this current `summer-20` branch to a target sandbox ONLY if that sandbox is also on summer 20.
 
 ## Service Components Framework (Aura)
 

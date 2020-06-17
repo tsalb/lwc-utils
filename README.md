@@ -147,7 +147,10 @@ This Screen Flow uses `Collection Datatable` as a standalone way to display the 
 ```
 // TODO description
 ```
-![combine-soql-and-collection-datatable-flow](/readme-images/combine-soql-and-collection-datatable-flow.png?raw=true)
+
+<p align="center">
+    <img src="./readme-images/combine-soql-and-collection-datatable-flow.png" width="640">
+</p>
 
 ```
 // TODO gif

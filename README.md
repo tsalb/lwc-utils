@@ -145,7 +145,12 @@ This Screen Flow uses `Collection Datatable` as a standalone way to display the 
 ## Combining SOQL and Collection Datatable with Flow inputs
 
 ```
-// TODO
+// TODO description
+```
+![combine-soql-and-collection-datatable-flow](/readme-images/combine-soql-and-collection-datatable-flow.png?raw=true)
+
+```
+// TODO gif
 ```
 
 ## Collection Datatable - Using Apex Wrappers

@@ -1,21 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <assignments>
-        <name>Cast_Selected_Contacts_to_Records</name>
-        <label>Cast Selected Contacts to Records</label>
-        <locationX>314</locationX>
-        <locationY>197</locationY>
-        <assignmentItems>
-            <assignToReference>ContactRecordList</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Queried_Contacts_Table.selectedRows</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Confirm_Selected_Contacts</targetReference>
-        </connector>
-    </assignments>
     <interviewLabel>SOQL Datatable to Collection Datatable {!$Flow.CurrentDateTime}</interviewLabel>
     <label>SOQL Datatable to Collection Datatable</label>
     <processMetadataValues>
@@ -34,7 +18,7 @@
     <screens>
         <name>Confirm_Selected_Contacts</name>
         <label>Confirm Selected Contacts</label>
-        <locationX>447</locationX>
+        <locationX>347</locationX>
         <locationY>197</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -50,7 +34,13 @@
             <inputParameters>
                 <name>recordCollection</name>
                 <value>
-                    <elementReference>ContactRecordList</elementReference>
+                    <elementReference>SelectedContacts</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>shownFields</name>
+                <value>
+                    <stringValue>Name, Email</stringValue>
                 </value>
             </inputParameters>
             <isRequired>true</isRequired>
@@ -68,7 +58,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>Cast_Selected_Contacts_to_Records</targetReference>
+            <targetReference>Confirm_Selected_Contacts</targetReference>
         </connector>
         <fields>
             <name>Queried_Contacts_Table</name>
@@ -81,7 +71,7 @@
             <inputParameters>
                 <name>queryString</name>
                 <value>
-                    <stringValue>SELECT Id, Name, Email, Phone, Account.Name, Account.BillingState, Account.Type FROM Contact</stringValue>
+                    <stringValue>SELECT Name, Email, Account.Name, Account.Type FROM Contact</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -91,7 +81,10 @@
                 </value>
             </inputParameters>
             <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <outputParameters>
+                <assignToReference>SelectedContacts</assignToReference>
+                <name>selectedRows</name>
+            </outputParameters>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -105,7 +98,7 @@
     </start>
     <status>Active</status>
     <variables>
-        <name>ContactRecordList</name>
+        <name>SelectedContacts</name>
         <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>false</isInput>

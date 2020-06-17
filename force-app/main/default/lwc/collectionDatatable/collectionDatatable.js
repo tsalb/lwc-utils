@@ -70,15 +70,33 @@ export default class CollectionDatatable extends LightningElement {
         return this.shownFields && this.shownFields.size;
     }
 
-    // Supports the wire functions, which is where the real parsing happens
     async connectedCallback() {
+        if (!this.recordCollection || !this.recordCollection.length) {
+            return;
+        }
+        // Use the serverside configured display map for column creation client-side
         this._displayTypeMap = new Map(Object.entries(await getDisplayTypeMap()));
-        if (this.recordCollection && this.recordCollection.length) {
-            this._singleRecordId = this.recordCollection.find(row => row.hasOwnProperty('Id')).Id;
+
+        // Collections can be either from a getRecord (which will contain Ids) or Record (Single) collection.
+        const recordIdRow = this.recordCollection.find(row => row.hasOwnProperty('Id'));
+
+        // TODO
+        console.log(JSON.parse(JSON.stringify(this.recordCollection)));
+
+        // Should ever only be one or the other, unless I learn some new things about how flow works
+        if (recordIdRow) {
+            this.initializeFromWire(recordIdRow.Id);
         }
     }
 
-    // Extracts the correct apiName
+    initializeFromWire(recordId) {
+        this._singleRecordId = recordId;
+    }
+
+    initializeFromCollection(objectApiName) {
+        this._objectApiName = objectApiName;
+    }
+
     @wire(getRecord, { recordId: '$_singleRecordId', layoutTypes: 'Compact' })
     wiredSingleRecord({ error, data }) {
         if (error) {
@@ -88,7 +106,6 @@ export default class CollectionDatatable extends LightningElement {
         }
     }
 
-    // Provides data about fields for this object type
     @wire(getObjectInfo, { objectApiName: '$_objectApiName' })
     wiredObjectInfo({ error, data }) {
         if (error) {

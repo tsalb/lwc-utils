@@ -9,7 +9,6 @@ export default class SoqlDatatableLauncherExample extends LightningElement {
             WHERE AccountId IN (SELECT Id FROM Account)
             LIMIT 5
         `;
-        console.log(query);
         const dialogServicePayload = {
             method: 'bodyModalLarge',
             config: {

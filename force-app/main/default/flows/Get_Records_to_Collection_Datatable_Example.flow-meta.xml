@@ -53,15 +53,9 @@
                 </value>
             </inputParameters>
             <inputParameters>
-                <name>showRecordCount</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
                 <name>shownFields</name>
                 <value>
-                    <stringValue>Name, Email, Phone</stringValue>
+                    <stringValue>Title, Department, Name, Email</stringValue>
                 </value>
             </inputParameters>
             <isRequired>true</isRequired>

@@ -9,7 +9,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>richTextValue</name>
-                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;The Screen Flow below uses a &lt;/span&gt;&lt;b style=&quot;color: rgb(0, 0, 0);&quot;&gt;SOQL Datatable&lt;/b&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt; to create a Record Collection to feed into a &lt;/span&gt;&lt;b style=&quot;color: rgb(0, 0, 0);&quot;&gt;Collection Datatable &lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;</value>
+                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;The Screen Flow below uses a &lt;/span&gt;&lt;b style=&quot;color: rgb(0, 0, 0);&quot;&gt;SOQL Datatable&lt;/b&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt; to show the selected results in &lt;/span&gt;&lt;b style=&quot;color: rgb(0, 0, 0);&quot;&gt;Collection Datatable ﻿&lt;/b&gt;&lt;/p&gt;</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:richText</componentName>
             </componentInstance>
@@ -35,7 +35,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>richTextValue</name>
-                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;The Screen Flow below uses a &lt;/span&gt;&lt;b style=&quot;color: rgb(0, 0, 0);&quot;&gt;Get Records&lt;/b&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt; node to feed into a &lt;/span&gt;&lt;b style=&quot;color: rgb(0, 0, 0);&quot;&gt;Collection Datatable &lt;/b&gt;&lt;/p&gt;</value>
+                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;The Screen Flow below uses a &lt;/span&gt;&lt;b style=&quot;color: rgb(0, 0, 0);&quot;&gt;Get Records&lt;/b&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt; to show in &lt;/span&gt;&lt;b style=&quot;color: rgb(0, 0, 0);&quot;&gt;Collection Datatable &lt;/b&gt;&lt;/p&gt;</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:richText</componentName>
             </componentInstance>
@@ -53,12 +53,42 @@
                 <componentName>flowruntime:interview</componentName>
             </componentInstance>
         </itemInstances>
-        <name>main</name>
+        <name>column1</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>decorate</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>richTextValue</name>
+                    <value>&lt;p&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;The Screen Flow below uses a &lt;/span&gt;&lt;b style=&quot;color: rgb(0, 0, 0);&quot;&gt;SOQL Datatable&lt;/b&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt; to get selected contacts through an account re-assignment flow&lt;/span&gt;&lt;/p&gt;</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:richText</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>flowLayout</name>
+                    <value>oneColumn</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>flowName</name>
+                    <value>SOQL_Datatable_assigning_new_Accounts_to_Contacts</value>
+                </componentInstanceProperties>
+                <componentName>flowruntime:interview</componentName>
+            </componentInstance>
+        </itemInstances>
+        <name>column2</name>
         <type>Region</type>
     </flexiPageRegions>
     <masterLabel>Collection Datatable</masterLabel>
     <template>
-        <name>flexipage:defaultAppHomeTemplate</name>
+        <name>flexipage:appHomeTemplateTwoColumns</name>
     </template>
     <type>AppPage</type>
 </FlexiPage>

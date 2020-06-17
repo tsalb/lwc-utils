@@ -122,15 +122,25 @@ If you've read this far, you might be connecting the dots that `DialogService`, 
 
 ## SOQL Datatable - Display a Selection to Collection Datatable in Flow
 
-```
-// TODO
-```
+This Screen Flow uses the ability for `SOQL Datatable` to output a `List<SObject>` directly in Flow.
+
+Another component called `Collection Datatable` is able to display any Flow `Record Collection`.
+
+<p align="center">
+    <img src="./readme-images/soql-datatable-to-collection-datatable-flow.png" width="480">
+</p>
+
+![soql-datatable-to-collection-datatable](/readme-images/soql-datatable-to-collection-datatable.gif?raw=true)
 
 ## Collection Datatable - Displaying a Record Collection
 
-```
-// TODO
-```
+This Screen Flow uses `Collection Datatable` as a standalone way to display the output of a `Get Record` node in flow.
+
+<p align="center">
+    <img src="./readme-images/collection-datatable-flow.png" width="480">
+</p>
+
+![collection-datatable](/readme-images/collection-datatable.png?raw=true)
 
 ## Combining SOQL and Collection Datatable with Flow inputs
 

@@ -4,25 +4,12 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>decorate</name>
-                    <value>true</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>richTextValue</name>
-                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;The Screen Flow below uses a &lt;/span&gt;&lt;b style=&quot;color: rgb(0, 0, 0);&quot;&gt;SOQL Datatable&lt;/b&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt; to show the selected results in &lt;/span&gt;&lt;b style=&quot;color: rgb(0, 0, 0);&quot;&gt;Collection Datatable ﻿&lt;/b&gt;&lt;/p&gt;</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:richText</componentName>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
                     <name>flowLayout</name>
                     <value>oneColumn</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>flowName</name>
-                    <value>SOQL_Datatable_to_Collection_Datatable</value>
+                    <value>SOQL_Datatable_Display_a_Selection_to_Collection_Datatable_in_Flow</value>
                 </componentInstanceProperties>
                 <componentName>flowruntime:interview</componentName>
             </componentInstance>
@@ -30,25 +17,12 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>decorate</name>
-                    <value>true</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>richTextValue</name>
-                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;The Screen Flow below uses a &lt;/span&gt;&lt;b style=&quot;color: rgb(0, 0, 0);&quot;&gt;Get Records&lt;/b&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt; to show in &lt;/span&gt;&lt;b style=&quot;color: rgb(0, 0, 0);&quot;&gt;Collection Datatable &lt;/b&gt;&lt;/p&gt;</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:richText</componentName>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
                     <name>flowLayout</name>
                     <value>oneColumn</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>flowName</name>
-                    <value>Get_Records_to_Collection_Datatable_Example</value>
+                    <value>Collection_Datatable_Displaying_a_Record_Collection</value>
                 </componentInstanceProperties>
                 <componentName>flowruntime:interview</componentName>
             </componentInstance>
@@ -60,25 +34,12 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>decorate</name>
-                    <value>true</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>richTextValue</name>
-                    <value>&lt;p&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;The Screen Flow below uses a &lt;/span&gt;&lt;b style=&quot;color: rgb(0, 0, 0);&quot;&gt;SOQL Datatable&lt;/b&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt; to get selected contacts through an account re-assignment flow&lt;/span&gt;&lt;/p&gt;</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:richText</componentName>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
                     <name>flowLayout</name>
                     <value>oneColumn</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>flowName</name>
-                    <value>SOQL_Datatable_assigning_new_Accounts_to_Contacts</value>
+                    <value>Combining_SOQL_and_Collection_Datatable_with_Flow_inputs</value>
                 </componentInstanceProperties>
                 <componentName>flowruntime:interview</componentName>
             </componentInstance>

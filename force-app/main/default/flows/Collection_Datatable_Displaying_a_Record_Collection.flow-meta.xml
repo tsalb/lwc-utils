@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <interviewLabel>Get Records to Collection Datatable Example {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Get Records to Collection Datatable Example</label>
+    <interviewLabel>Collection Datatable - Displaying a Record Collection {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Collection Datatable - Displaying a Record Collection</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>

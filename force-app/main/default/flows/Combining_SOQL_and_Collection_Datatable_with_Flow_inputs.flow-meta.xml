@@ -70,8 +70,8 @@
             <targetReference>Calculate_Formulas</targetReference>
         </connector>
     </assignments>
-    <interviewLabel>SOQL Datatable assigning new Accounts to Contacts {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>SOQL Datatable assigning new Accounts to Contacts</label>
+    <interviewLabel>Combining SOQL and Collection Datatable with Flow inputs {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Combining SOQL and Collection Datatable with Flow inputs</label>
     <loops>
         <name>Selected_Contact</name>
         <label>Selected Contact</label>
@@ -156,7 +156,7 @@
             </outputParameters>
         </fields>
         <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
+        <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>Show_Confirmation</name>
@@ -189,7 +189,7 @@
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
+        <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>Show_Contacts</name>
@@ -213,7 +213,7 @@
             <inputParameters>
                 <name>queryString</name>
                 <value>
-                    <stringValue>SELECT Title, Name, Email, Phone, AccountId, Account.Name, Account_Information__c FROM Contact LIMIT 50</stringValue>
+                    <stringValue>SELECT Title, Name, Email, AccountId, Account.Name, Account_Information__c FROM Contact LIMIT 50</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -229,7 +229,7 @@
             </outputParameters>
         </fields>
         <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
+        <showHeader>true</showHeader>
     </screens>
     <start>
         <locationX>50</locationX>

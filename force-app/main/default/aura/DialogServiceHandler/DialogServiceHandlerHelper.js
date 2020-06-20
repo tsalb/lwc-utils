@@ -34,6 +34,53 @@
     dialogService: function(component) {
         return component.find('dialogService');
     },
+    messageService: function(component) {
+        return component.find('messageService');
+    },
+    executeDialogService: function(component, payload) {
+        let flowModalConfig;
+        if (payload.method.startsWith('flow')) {
+            flowModalConfig = {
+                auraId: 'flow-wizard-container',
+                headerLabel: config.flowHeaderLabel,
+                component: 'c:FlowWrapper',
+                componentParams: {
+                    flowApiName: config.componentParams.flowApiName,
+                    inputVariables: config.componentParams.inputVariables
+                }
+            };
+        }
+        switch (payload.method) {
+            case 'modal':
+                this.modal(component, payload.config);
+                break;
+            case 'bodyModal':
+                this.bodyModal(component, payload.config);
+                break;
+            case 'bodyModalLarge':
+                this.bodyModalLarge(component, payload.config);
+                break;
+            case 'flow':
+                this.bodyModal(component, flowModalConfig);
+                break;
+            case 'flowLarge':
+                this.bodyModalLarge(component, flowModalConfig);
+                break;
+            default:
+            // nothing
+        }
+    },
+    // mainActionReference only works for aura components
+    modal: function(component, config) {
+        this.dialogService(component).modal(
+            config.auraId,
+            config.headerLabel,
+            config.component,
+            config.componentParams,
+            config.mainActionReference,
+            config.mainActionLabel
+        );
+    },
     bodyModal: function(component, config) {
         this.dialogService(component).bodyModal(
             config.auraId,

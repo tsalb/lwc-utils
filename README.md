@@ -3,8 +3,8 @@
 This repo highlights the following production proven design patterns:
 
 - Design custom LWC into a service component architecture, i.e. making "utils".
-- Showcase complex datatable components like `SOQL Datatable` and `Collection Datatable` which can be used on App Flexipage, Record Flexipage, and even Flow Screens!
-- Showcase a bi-directional payload brokering system between Aura and LWC, aka `MessageBroker`.
+- Showcase complex datatable components like `SOQL Datatable` and `Collection Datatable` which can be used on App Flexipage, Record Flexipage, and even Flow Screens.
+- Showcase `Lightning Message Channel` wrapped in a service component, `messageService`.
 
 ![side-by-side](/readme-images/side-by-side.png?raw=true)
 
@@ -43,9 +43,13 @@ sfdx force:user:permset:assign -n LWC_Utils_Access
 
 > **NOTE:** This button will deploy this current `summer-20` branch to a target sandbox ONLY if that sandbox is also on summer 20.
 
-## Service Components Framework (Aura)
+## Aura Service Components
 
-See the [readme](https://github.com/tsalb/sfdc-lightning-service-components#dataservice-usage-example) on the old repository.
+`DialogService.cmp` wraps Aura only APIs right now:
+- `overlayLibrary` which is responsible for creating dialogs (modals)
+- `workspaceApi` which is responsible for controlling service console tab/sub-tabs
+
+This component is connected via `Lightning Message Service`.
 
 ## SOQL Datatable
 

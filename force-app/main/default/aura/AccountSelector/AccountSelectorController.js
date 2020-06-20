@@ -6,18 +6,19 @@
                 if (!$A.util.isEmpty(data)) {
                     component.set('v.topAccounts', data.items);
                 } else {
-                    helper.dialogService(component).showToast({
-                        message: 'No Accounts in org!',
-                        variant: 'error'
-                    });
+                    helper.messageService(component).notifySingleError('No Accounts in org!');
                 }
             })
         );
     },
     handleAccountOptionSelected: function(component, event, helper) {
-        helper.eventService(component).fireAppEvent('ACCOUNT_ID_SELECTED', event.getParam('value'));
+        const payload = {
+            key: 'accountselected',
+            value: event.getParam('value')
+        };
+        helper.messageService(component).publish(payload);
     },
     handleClearTableOnly: function(component, event, helper) {
-        helper.eventService(component).fireAppEvent('HEADER_CLEARTABLE');
+        helper.messageService(component).publish({ key: 'cleartable' });
     }
 });

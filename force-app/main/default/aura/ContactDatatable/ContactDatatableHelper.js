@@ -2,14 +2,11 @@
     service: function(component) {
         return component.find('service');
     },
-    dialogService: function(component) {
-        return component.find('dialogService');
-    },
-    eventService: function(component) {
-        return component.find('eventService');
-    },
     quickUpdateService: function(component) {
         return component.find('quickUpdateService');
+    },
+    messageService: function(component) {
+        return component.find('messageService');
     },
     getTableColumnDefinition: function() {
         let tableColumns = [
@@ -95,19 +92,13 @@
             $A.getCallback(saveResult => {
                 switch (saveResult.state.toUpperCase()) {
                     case 'SUCCESS':
-                        _self.dialogService(component).showToast({
-                            message: 'Cleared Mailing Address.',
-                            variant: 'success'
-                        });
+                        _self.messageService(component).notifySuccess('Cleared Mailing Address.');
                         _self.loadContactTable(component, row['AccountId']);
                         break;
                     case 'ERROR':
-                        _self.dialogService(component).showToast({
-                            title: 'Error Clearing Mailing Address',
-                            message: JSON.stringify(saveResult.error[0].message),
-                            variant: 'error',
-                            mode: 'pester'
-                        });
+                        _self
+                            .messageService(component)
+                            .notifySingleError('Error Clearing Mailing Address', saveResult.error);
                         break;
                 }
             })
@@ -115,11 +106,18 @@
     },
     openViewCasesModal: function(component, row) {
         let _self = this;
-        _self
-            .dialogService(component)
-            .bodyModalLarge('view-cases-modal', 'Cases For ' + row['Name'], 'c:CaseDatatable', {
-                contactRecordId: row['Id']
-            });
+        const dialogServicePayload = {
+            method: 'bodyModalLarge',
+            config: {
+                auraId: 'view-cases',
+                headerLabel: 'Cases For ' + row.Name,
+                component: 'c:CaseDatatable',
+                componentParams: {
+                    contactRecordId: row.Id
+                }
+            }
+        };
+        _self.messageService(component).dialogService(dialogServicePayload);
     },
     loadContactTable: function(component, accountId) {
         let _self = this;
@@ -131,11 +129,7 @@
                     component.set('v.tableColumns', _self.getTableColumnDefinition());
                 } else {
                     if (!$A.util.isEmpty(error) && error[0].hasOwnProperty('message')) {
-                        _self.dialogService(component).showToast({
-                            message: error[0].message,
-                            variant: 'error',
-                            mode: 'pester'
-                        });
+                        _self.messageService(component).notifySingleError('Error Loading Contact Table', error);
                     }
                 }
             })

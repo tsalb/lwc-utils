@@ -11,11 +11,6 @@
                 <componentName>ContactDatatable</componentName>
             </componentInstance>
         </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentName>PlatformEventListener</componentName>
-            </componentInstance>
-        </itemInstances>
         <name>region1</name>
         <type>Region</type>
     </flexiPageRegions>

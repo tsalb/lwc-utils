@@ -112,11 +112,6 @@
                 <componentName>flexipage:tabset</componentName>
             </componentInstance>
         </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentName>EventServiceBroker</componentName>
-            </componentInstance>
-        </itemInstances>
         <mode>Replace</mode>
         <name>sidebar</name>
         <type>Region</type>

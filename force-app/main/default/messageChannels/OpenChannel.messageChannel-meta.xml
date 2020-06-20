@@ -4,6 +4,10 @@
     <isExposed>true</isExposed>
     <description>This channel is used for generic eventing.</description>
     <lightningMessageFields>
+        <fieldName>boundary</fieldName>
+        <description>Optional boundary which acts like a namespace for events</description>
+    </lightningMessageFields>
+    <lightningMessageFields>
         <fieldName>key</fieldName>
         <description>Generic key, usually an event name</description>
     </lightningMessageFields>

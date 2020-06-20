@@ -2,11 +2,8 @@
     service: function(component) {
         return component.find('service');
     },
-    dialogService: function(component) {
-        return component.find('dialogService');
-    },
-    eventService: function(component) {
-        return component.find('eventService');
+    messageService: function(component) {
+        return component.find('messageService');
     },
     updateMultiAddress: function(component) {
         let _self = this;
@@ -21,21 +18,13 @@
             addressObject.MailingCountry,
             $A.getCallback((error, data) => {
                 if ($A.util.getBooleanValue(data)) {
-                    _self.dialogService(component).showToast({
-                        message: 'Updated Successfully',
-                        variant: 'success'
-                    });
-                    _self.eventService(component).fireAppEvent('CONTACTS_UPDATED', contactList[0].AccountId);
-                    _self
-                        .dialogService(component)
-                        .find('overlayLib')
-                        .notifyClose(); // must be last, as this destroys this component
+                    const accountId = contactList[0].AccountId;
+                    _self.messageService(component).notifySuccess('Updated Successfully');
+                    _self.messageService(component).publish({ key: 'contactsupdated', value: accountId });
+                    _self.messageService(component).notifyClose();
                 } else {
                     if (!$A.util.isEmpty(error) && error[0].hasOwnProperty('message')) {
-                        _self.dialogService(component).showToast({
-                            message: error[0].message,
-                            variant: 'error'
-                        });
+                        _self.messageService(component).notifySingleError('Error Updating Contacts', error);
                     }
                 }
             })

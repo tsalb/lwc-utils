@@ -1,6 +1,5 @@
 <aura:component>
-    <!-- Service Component boilerplate -->
-    <c:EventService aura:id="eventService" />
+    <c:messageService aura:id="messageService" />
 
     <!-- Flow variables from MessageBroker -->
     <aura:attribute name="flowApiName" type="String" access="PUBLIC" />

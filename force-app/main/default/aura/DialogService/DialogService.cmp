@@ -1,10 +1,10 @@
 <aura:component>
-    <c:EventService aura:id="eventService" />
     <lightning:overlayLibrary aura:id="overlayLib" />
     <lightning:notificationsLibrary aura:id="notificationsLib" />
+    <c:messageService aura:id="messageService" />
 
     <aura:attribute name="overlayPromise" type="Object" />
-    <c:singleton aura:id="singleton"></c:singleton>
+    <c:singleton aura:id="singleton" />
 
     <aura:method name="showToast" action="{! c.handleShowToast }">
         <aura:attribute name="configObj" type="Object" />

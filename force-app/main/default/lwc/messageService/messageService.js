@@ -31,8 +31,7 @@
  */
 
 import { LightningElement, api, wire } from 'lwc';
-import { CurrentPageReference } from 'lightning/navigation';
-import { publish, MessageContext } from 'lightning/messageService';
+import { subscribe, unsubscribe, publish, MessageContext } from 'lightning/messageService';
 import OPEN_CHANNEL from '@salesforce/messageChannel/OpenChannel__c';
 
 // Toast
@@ -40,20 +39,49 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { reduceErrors } from 'c/utils';
 
 export default class MessageService extends LightningElement {
-    @api scopedId;
-    @wire(CurrentPageReference) pageRef;
+    @api boundary;
+    subscription = null;
     @wire(MessageContext) messageContext;
 
-    /* LWC broker to Aura */
+    connectedCallback() {
+        if (this.subscription) {
+            return;
+        }
+        this.subscription = subscribe(this.messageContext, OPEN_CHANNEL, payload => {
+            if (payload.hasOwnProperty('boundary') && payload.boundary !== this.boundary) {
+                return;
+            }
+            this.dispatchEvent(new CustomEvent(payload.key, { detail: { value: payload.value } }));
+        });
+    }
+
+    disconnectedCallback() {
+        unsubscribe(this.subscription);
+        this.subscription = null;
+    }
+
     @api
     dialogService(payload) {
-        const boundary = { scopedId: this.scopedId };
-        publish(this.messageContext, OPEN_CHANNEL, { key: 'dialogService', value: { ...payload, ...boundary } });
+        this._messageServicePublish({ key: 'opendialog', value: payload });
     }
 
     @api
     notifyClose() {
-        publish(this.messageContext, OPEN_CHANNEL, { key: 'notifyClose' });
+        this._messageServicePublish({ key: 'closefooter' });
+    }
+
+    @api
+    publish(payload) {
+        if (this.boundary) {
+            this._messageServicePublishWithBoundary(payload);
+        } else {
+            this._messageServicePublish(payload);
+        }
+    }
+
+    @api
+    publishOpen(payload) {
+        this._messageServicePublish(payload);
     }
 
     @api
@@ -68,7 +96,7 @@ export default class MessageService extends LightningElement {
     }
 
     @api
-    notifySingleError(title, error) {
+    notifySingleError(title, error = '') {
         this.dispatchEvent(
             new ShowToastEvent({
                 title: title,
@@ -77,5 +105,26 @@ export default class MessageService extends LightningElement {
                 mode: 'sticky'
             })
         );
+    }
+
+    @api
+    notifyInfo(title, message = null) {
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: title,
+                message: message,
+                variant: 'info'
+            })
+        );
+    }
+
+    // private
+
+    _messageServicePublish(payload) {
+        publish(this.messageContext, OPEN_CHANNEL, { key: payload.key, value: payload.value });
+    }
+
+    _messageServicePublishWithBoundary(payload) {
+        publish(this.messageContext, OPEN_CHANNEL, { boundary: this.boundary, key: payload.key, value: payload.value });
     }
 }

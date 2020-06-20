@@ -41,7 +41,7 @@
         let payload = event.getParams();
         console.log(JSON.parse(JSON.stringify(payload)));
         if (status === 'FINISHED') {
-            helper.eventService(component).fireAppEvent('FLOW_WRAPPER_FINISHED');
+            helper.messageService(component).publish({ key: 'flowfinish' });
         }
     }
 });

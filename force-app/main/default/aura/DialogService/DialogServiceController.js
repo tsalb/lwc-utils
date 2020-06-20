@@ -123,7 +123,8 @@
                                                             });
                                                         }
                                                         component.set('v.overlayPromise', overlay);
-                                                        helper.eventService(component).fireAppEvent('MODAL_READY');
+                                                        // prettier-ignore
+                                                        helper.messageService(component).publish({ key: 'dialogready' });
                                                         if (!$A.util.isEmpty(params.callback)) {
                                                             params.callback(overlay);
                                                         }
@@ -171,7 +172,7 @@
                                     });
                                 }
                                 component.set('v.overlayPromise', overlay);
-                                helper.eventService(component).fireAppEvent('MODAL_READY');
+                                helper.messageService(component).publish({ key: 'dialogready' });
                                 if (!$A.util.isEmpty(params.callback)) {
                                     params.callback(overlay);
                                 }

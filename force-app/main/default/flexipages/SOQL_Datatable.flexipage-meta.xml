@@ -94,11 +94,6 @@
                 <componentName>soqlDatatableLauncherExample</componentName>
             </componentInstance>
         </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentName>DialogServiceBroker</componentName>
-            </componentInstance>
-        </itemInstances>
         <name>region3</name>
         <type>Region</type>
     </flexiPageRegions>

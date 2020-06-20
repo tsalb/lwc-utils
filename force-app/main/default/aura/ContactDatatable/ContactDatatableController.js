@@ -14,32 +14,29 @@
     handleOpenUpdateAddressModal: function(component, event, helper) {
         let selectedArr = component.find('searchTable').getSelectedRows();
         if ($A.util.isEmpty(selectedArr)) {
-            helper.dialogService(component).showToast({
-                message: 'Please choose at least one Contact.'
-            });
+            helper.messageService(component).notifyInfo('Please choose at least one Contact.');
         } else {
-            helper.dialogService(component).modal(
-                'update-address-modal',
-                'Update Address: ' + selectedArr.length + ' Row(s)',
-                'c:ContactAddressForm',
-                {
-                    contactList: selectedArr
-                },
-                'c.handleUpdateMultiAddress',
-                'Update'
-            );
+            const dialogServicePayload = {
+                method: 'modal',
+                config: {
+                    auraId: 'update-address-modal',
+                    headerLabel: 'Update Address: ' + selectedArr.length + ' Row(s)',
+                    component: 'c:ContactAddressForm',
+                    componentParams: {
+                        contactList: selectedArr
+                    },
+                    mainActionReference: 'c.handleUpdateMultiAddress',
+                    mainActionLabel: 'Update'
+                }
+            };
+            helper.messageService(component).dialogService(dialogServicePayload);
         }
     },
-    handleApplicationEvent: function(component, event, helper) {
-        let params = event.getParams();
-        switch (params.appEventKey) {
-            case 'ACCOUNT_ID_SELECTED': // fallthrough
-            case 'CONTACTS_UPDATED':
-                helper.loadContactTable(component, params.appEventValue);
-                break;
-            case 'HEADER_CLEARTABLE':
-                component.set('v.tableData', null);
-                break;
-        }
+    handleAccountSelected: function(component, event, helper) {
+        const value = event.getParam('value');
+        helper.loadContactTable(component, value);
+    },
+    handleClearTable: function(component, event, helper) {
+        component.set('v.tableData', null);
     }
 });

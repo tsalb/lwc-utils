@@ -31,14 +31,14 @@
  */
 
 ({
-    eventService: function(component) {
-        return component.find('eventService');
-    },
     overlayLib: function(component) {
         return component.find('overlayLib');
     },
     notificationsLib: function(component) {
         return component.find('notificationsLib');
+    },
+    messageService: function(component) {
+        return component.find('messageService');
     },
     createBody: function(component, params, ctrlCallback) {
         let componentType = params.body.split(':')[0];

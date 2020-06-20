@@ -1,0 +1,4 @@
+<aura:component implements="lightning:utilityItem">
+    <c:DialogService aura:id="dialogService" />
+    <c:messageService aura:id="messageService" onopendialog="{! c.handleDialogService }" />
+</aura:component>

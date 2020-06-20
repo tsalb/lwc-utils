@@ -23,11 +23,6 @@
                 <componentName>flowWizardLauncherExample</componentName>
             </componentInstance>
         </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentName>DialogServiceBroker</componentName>
-            </componentInstance>
-        </itemInstances>
         <name>column2</name>
         <type>Region</type>
     </flexiPageRegions>

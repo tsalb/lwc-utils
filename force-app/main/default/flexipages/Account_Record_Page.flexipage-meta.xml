@@ -93,16 +93,6 @@
                 <componentName>flexipage:tabset</componentName>
             </componentInstance>
         </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentName>DialogServiceBroker</componentName>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentName>EventServiceBroker</componentName>
-            </componentInstance>
-        </itemInstances>
         <mode>Replace</mode>
         <name>header</name>
         <type>Region</type>

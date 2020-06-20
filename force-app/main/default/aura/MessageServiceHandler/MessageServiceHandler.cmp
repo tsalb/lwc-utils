@@ -1,0 +1,4 @@
+<aura:component implements="lightning:utilityBar">
+    <c:DialogService aura:id="dialogService" />
+    <lightning:messageChannel aura:id="openChannel" type="OpenChannel__c" onMessage="{ !c.handleMessage }" />
+</aura:component>

@@ -42,11 +42,11 @@
         if (payload.method.startsWith('flow')) {
             flowModalConfig = {
                 auraId: 'flow-wizard-container',
-                headerLabel: config.flowHeaderLabel,
+                headerLabel: payload.config.flowHeaderLabel,
                 component: 'c:FlowWrapper',
                 componentParams: {
-                    flowApiName: config.componentParams.flowApiName,
-                    inputVariables: config.componentParams.inputVariables
+                    flowApiName: payload.config.componentParams.flowApiName,
+                    inputVariables: payload.config.componentParams.inputVariables
                 }
             };
         }

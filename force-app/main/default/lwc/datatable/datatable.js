@@ -114,8 +114,6 @@ export default class Datatable extends LightningElement {
     draftValues = []; // this is to feed into the datatable to clear stuff out
     saveErrors = {};
 
-    pageRef;
-
     get recordCount() {
         return this.tableData ? this.tableData.length : 0;
     }
@@ -151,7 +149,7 @@ export default class Datatable extends LightningElement {
      */
 
     _isRendered;
-    _messageBroker;
+    _messageService;
     _objectApiName;
     _objectInfo;
 
@@ -180,8 +178,7 @@ export default class Datatable extends LightningElement {
             return;
         }
         this._isRendered = true;
-        this._messageBroker = this.template.querySelector('c-message-broker');
-        this.pageRef = this._messageBroker.pageRef;
+        this._messageService = this.template.querySelector('c-message-service');
     }
 
     /* Event Handlers */

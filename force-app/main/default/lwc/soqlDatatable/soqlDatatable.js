@@ -61,7 +61,7 @@ export default class SoqlDatatable extends LightningElement {
 
     // private
     _isRendered;
-    _messageBroker;
+    _messageService;
     _finalQueryString;
     _datatable;
     _objectApiName;
@@ -92,7 +92,7 @@ export default class SoqlDatatable extends LightningElement {
             return;
         }
         this._isRendered = true;
-        this._messageBroker = this.template.querySelector('c-message-broker');
+        this._messageService = this.template.querySelector('c-message-service');
         this._datatable = this.template.querySelector('c-datatable');
     }
 
@@ -122,8 +122,8 @@ export default class SoqlDatatable extends LightningElement {
     // Private Functions
 
     _notifySingleError(title, error) {
-        if (this._messageBroker) {
-            this._messageBroker.notifySingleError(title, error);
+        if (this._messageService) {
+            this._messageService.notifySingleError(title, error);
         } else {
             this.dispatchEvent(
                 new ShowToastEvent({

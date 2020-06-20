@@ -22,6 +22,6 @@ export default class SoqlDatatableLauncherExample extends LightningElement {
                 }
             }
         };
-        this.template.querySelector('c-message-broker').dialogService(dialogServicePayload);
+        this.template.querySelector('c-message-service').dialogService(dialogServicePayload);
     }
 }

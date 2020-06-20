@@ -1,6 +1,5 @@
 <template>
-    <!-- Service components -->
-    <c-message-broker scoped-id={scopedId}></c-message-broker>
+    <c-message-service boundary={boundary}></c-message-service>
 
     <template if:true={contact}>
         <lightning-record-edit-form record-id={contact.Id} object-api-name="Contact" onsuccess={handleSuccess}>

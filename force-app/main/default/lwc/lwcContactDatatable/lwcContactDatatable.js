@@ -1,8 +1,5 @@
 import { LightningElement, api, wire } from 'lwc';
-import { CurrentPageReference } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { subscribe, MessageContext, APPLICATION_SCOPE } from 'lightning/messageService';
-import OPEN_CHANNEL from '@salesforce/messageChannel/OpenChannel__c';
 import { updateRecord } from 'lightning/uiRecordApi';
 import wireContactsByAccountId from '@salesforce/apex/DataServiceCtrl.wireContactsByAccountId';
 import getContactsByAccountId from '@salesforce/apex/DataServiceCtrl.getContactsByAccountId';
@@ -43,46 +40,34 @@ export default class LwcContactDatatable extends LightningElement {
     }
     columns = TABLE_COLUMNS;
 
-    @wire(CurrentPageReference) pageRef;
-    @wire(MessageContext) messageContext;
-    @wire(wireContactsByAccountId, { accountId: '$_accountId' }) contacts;
+    @wire(wireContactsByAccountId, { accountId: '$_accountId' })
+    contacts;
 
     // private
+    _isRendered;
+    _messageService;
     _accountId; // app flexipages
     _recordId; // record flexipage
-    _subscription;
 
-    connectedCallback() {
-        this._subscription = subscribe(
-            this.messageContext,
-            OPEN_CHANNEL,
-            message => {
-                let payload = {};
-                // messageChannel payload has immutable props, undo them here
-                if (message.value) {
-                    payload = JSON.parse(JSON.stringify(message.value));
-                }
-                // List of acceptable keys to be parsed in this component
-                if (message.key === 'accountSelected') {
-                    this.handleAccountSelected(payload);
-                }
-                if (message.key === 'forceRefreshView') {
-                    this.reloadTable();
-                }
-                if (message.key === 'clearTable') {
-                    this.handleClearTable();
-                }
-            },
-            { scope: APPLICATION_SCOPE }
-        );
+    renderedCallback() {
+        if (this._isRendered) {
+            return;
+        }
+        this._messageService = this.template.querySelector('c-message-service');
     }
 
-    handleAccountSelected(accountId) {
-        this._accountId = accountId;
-    }
+    // Event handlers
 
     handleClearTable() {
         this.contacts = [];
+    }
+
+    handleAccountSelected(event) {
+        this._accountId = event.detail.value;
+    }
+
+    handleRefreshContacts() {
+        this.reloadTable();
     }
 
     handleRowAction(event) {
@@ -101,13 +86,12 @@ export default class LwcContactDatatable extends LightningElement {
                         headerLabel: 'Update Address',
                         component: 'c:lwcContactAddressForm',
                         componentParams: {
-                            contact: row,
-                            pageRef: this.pageRef,
-                            scopedId: this._recordId // null for app page is fine
+                            boundary: this._recordId, // null for app page is fine
+                            contact: row
                         }
                     }
                 };
-                this.template.querySelector('c-message-broker').dialogService(dialogServicePayload);
+                this._messageService.dialogService(dialogServicePayload);
                 break;
             }
             default:
@@ -128,12 +112,7 @@ export default class LwcContactDatatable extends LightningElement {
         try {
             await updateRecord(recordObject);
         } catch (error) {
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    message: String(error),
-                    variant: 'error'
-                })
-            );
+            this._messageService.notifySingleError('Error Clearing Mailing Address', error);
         } finally {
             this.reloadTable();
         }
@@ -143,14 +122,7 @@ export default class LwcContactDatatable extends LightningElement {
         try {
             this.contacts.data = await getContactsByAccountId({ accountId: this._accountId });
         } catch (error) {
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    message: String(error),
-                    variant: 'error'
-                })
-            );
-        } finally {
-            this.template.querySelector('c-event-broker').forceRefreshView();
+            this._messageService.notifySingleError('Error Reloading Table', error);
         }
     }
 }

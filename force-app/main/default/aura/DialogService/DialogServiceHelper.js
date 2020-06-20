@@ -105,6 +105,15 @@
             }
         );
     },
+    createEventFooter: function(ctrlCallback) {
+        $A.createComponent('c:eventFooter', {}, (eventFooter, status, errorMessage) => {
+            if (status === 'SUCCESS') {
+                ctrlCallback(null, eventFooter);
+            } else {
+                ctrlCallback(errorMessage);
+            }
+        });
+    },
     defineLargeModalAttribute: function(isLargeModalVal) {
         if ($A.util.isUndefinedOrNull(isLargeModalVal)) {
             return null;

@@ -85,6 +85,11 @@ export default class MessageService extends LightningElement {
     }
 
     @api
+    forceRefreshView() {
+        eval("$A.get('e.force:refreshView').fire();");
+    }
+
+    @api
     notifySuccess(title, message = null) {
         this.dispatchEvent(
             new ShowToastEvent({

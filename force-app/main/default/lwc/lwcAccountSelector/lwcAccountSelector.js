@@ -1,14 +1,13 @@
 import { LightningElement, wire } from 'lwc';
-import { CurrentPageReference } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { publish, MessageContext } from 'lightning/messageService';
-import OPEN_CHANNEL from '@salesforce/messageChannel/OpenChannel__c';
 import getAccountOptionsCache from '@salesforce/apex/DataServiceCtrl.getAccountOptionsCache';
 
 export default class LwcAccountSelector extends LightningElement {
     topAccounts;
-    @wire(CurrentPageReference) pageRef;
-    @wire(MessageContext) messageContext;
+
+    // private
+    _isRendered;
+    _messageService;
 
     @wire(getAccountOptionsCache)
     wiredTopAccounts({ error, data }) {
@@ -24,11 +23,18 @@ export default class LwcAccountSelector extends LightningElement {
         }
     }
 
+    renderedCallback() {
+        if (this._isRendered) {
+            return;
+        }
+        this._messageService = this.template.querySelector('c-message-service');
+    }
+
     handleAccountOptionSelected(event) {
-        publish(this.messageContext, OPEN_CHANNEL, { key: 'accountSelected', value: event.target.value });
+        this._messageService.publish({ key: 'accountselected', value: event.target.value });
     }
 
     handleClearTable() {
-        publish(this.messageContext, OPEN_CHANNEL, { key: 'clearTable' });
+        this._messageService.publish({ key: 'cleartable' });
     }
 }

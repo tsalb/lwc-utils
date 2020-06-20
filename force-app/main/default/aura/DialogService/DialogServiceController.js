@@ -144,7 +144,7 @@
             })
         ); // end helper.createBody
     },
-    createOverlayModalWithoutFooter: function(component, event, helper) {
+    createOverlayModalWithEventFooter: function(component, event, helper) {
         let params = event.getParam('arguments');
         helper.createBody(
             component,
@@ -155,29 +155,34 @@
                     return;
                 }
                 if (modalBody.isValid() && !$A.util.isEmpty(modalBody)) {
-                    helper
-                        .overlayLib(component)
-                        .showCustomModal({
-                            header: params.headerLabel,
-                            body: modalBody,
-                            showCloseButton: true,
-                            cssClass: helper.defineLargeModalAttribute(params.isLargeModal)
+                    helper.createEventFooter(
+                        $A.getCallback((error, eventFooter) => {
+                            helper
+                                .overlayLib(component)
+                                .showCustomModal({
+                                    header: params.headerLabel,
+                                    body: modalBody,
+                                    footer: eventFooter,
+                                    showCloseButton: true,
+                                    cssClass: helper.defineLargeModalAttribute(params.isLargeModal)
+                                })
+                                .then(
+                                    $A.getCallback(overlay => {
+                                        if (!$A.util.isEmpty(params.bodyParams)) {
+                                            Object.keys(params.bodyParams).forEach((v, i, a) => {
+                                                let valueProviderAdded = 'v.' + v;
+                                                modalBody.set(valueProviderAdded, params.bodyParams[v]);
+                                            });
+                                        }
+                                        component.set('v.overlayPromise', overlay);
+                                        helper.messageService(component).publish({ key: 'dialogready' });
+                                        if (!$A.util.isEmpty(params.callback)) {
+                                            params.callback(overlay);
+                                        }
+                                    })
+                                );
                         })
-                        .then(
-                            $A.getCallback(overlay => {
-                                if (!$A.util.isEmpty(params.bodyParams)) {
-                                    Object.keys(params.bodyParams).forEach((v, i, a) => {
-                                        let valueProviderAdded = 'v.' + v;
-                                        modalBody.set(valueProviderAdded, params.bodyParams[v]);
-                                    });
-                                }
-                                component.set('v.overlayPromise', overlay);
-                                helper.messageService(component).publish({ key: 'dialogready' });
-                                if (!$A.util.isEmpty(params.callback)) {
-                                    params.callback(overlay);
-                                }
-                            })
-                        );
+                    );
                 } else {
                     console.log('modalBody error is: ' + error[0].message);
                 }

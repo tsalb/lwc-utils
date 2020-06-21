@@ -4,7 +4,7 @@ This repo highlights the following production proven design patterns:
 
 - Design custom LWC into a service component architecture, i.e. making "utils".
 - Showcase complex datatable components like `SOQL Datatable` and `Collection Datatable` which can be used on App Flexipage, Record Flexipage, and even Flow Screens.
-- Showcase `Lightning Message Channel` wrapped in a service component, `messageService`.
+- Showcase a unified messaging platform for both aura and lwc via `messageService`.
 
 ![side-by-side](/readme-images/side-by-side.png?raw=true)
 
@@ -43,13 +43,19 @@ sfdx force:user:permset:assign -n LWC_Utils_Access
 
 > **NOTE:** This button will deploy this current `summer-20` branch to a target sandbox ONLY if that sandbox is also on summer 20.
 
-## Aura Service Components
+## Reusable Components used in lwc-utils
 
-`DialogService.cmp` wraps Aura only APIs right now:
-- `overlayLibrary` which is responsible for creating dialogs (modals)
-- `workspaceApi` which is responsible for controlling service console tab/sub-tabs
-
-This component is connected via `Lightning Message Service`.
+| Component Name         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Component Type                                        |
+|------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|
+| `messageService`       | Unifies communication between Aura and LWC with a `Lightning Message Service` (LMS) to `OpenChannel__c`.<br><br>Use this component instead of manually subscribing / publishing to LMS.<br><br>Has a psuedo-namespacing property called `boundary` which can separate subscribers by string, `recordId` etc.<br><br>Subscribers can choose to listen to any event by just enabling event handling like:<br><br>LWC: `<c-messageService onmycoolevent={handleCoolEvent}>`<br><br>Aura: `<c:messageService onmycoolevent="{! c.handleCoolEvent }">` | LWC:<br>`Service`<br><br>[spec]()                     |
+| `DialogService`        | Provides access to `lightning:overlayLibrary` to create dialogs (modals) via LMS                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Aura:<br>`Service`<br><br>[spec]()                    |
+| `DialogServiceHandler` | Utility bar (empty label) component wrapping `messageService`.<br><br>Provides universal access to `DialogService` by handling the `opendialog` LMS event.                                                                                                                                                                                                                                                                                                                                                                                        | Aura:<br>`Service`, `Utility Bar`<br><br>[spec]()     |
+| `eventFooter`          | Dynamic footer for lwc dialogs.<br><br>Contains an instance of `messageService` listening for the `closefooter` LMS Event.<br><br>Unfortunately, `component.getReference()` does not work on LWCs. Write your own action button in the dialog body.                                                                                                                                                                                                                                                                                               | Aura:<br>`UI`<br><br>[spec]()                         |
+| `modalFooter`          | Dynamic footer for aura dialogs.<br><br>Connects a primary action on the target dialog body to the footer's main action via `component.getReference()`<br><br>Enables writing functions directly on the dialog body and `DialogService.modal()` will connect it to a primary action.                                                                                                                                                                                                                                                              | Aura:<br>`UI`<br><br>[spec]()                         |
+| `FlowWrapper`          | Enables `DialogService` to create flows inside a dialog body dynamically.<br><br><br>Can be used with `dialogAutoCloser` (LWC flow component) to automatically close a dialog launched by this component.<br><br>See `flowWizardLauncherExample` (LWC).                                                                                                                                                                                                                                                                                           | Aura:<br>`Service`<br><br>[spec]()                    |
+| `dialogAutoCloser`     | Contains a progress bar and timer message before automatically closing a `DialogService` dialog with the `closerfooter` LMS event                                                                                                                                                                                                                                                                                                                                                                                                                 | LWC:<br>`Service`, `Flow`<br><br>[spec]()             |
+| `soqlDatatable`        | // TODO                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | LWC:<br>`UI`, `App`, `Record`, `Flow`<br><br>[spec]() |
+| `collectionDatatable`  | // TODO                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | LWC `UI`, `Flow`<br><br>[spec]()                      |
 
 ## SOQL Datatable
 
@@ -65,7 +71,7 @@ Clicking Edit Page on the App Page, you can see that there are only a handful of
 
 ![soql-datatable-app-builder](/readme-images/soql-datatable-app-builder.png?raw=true)
 
-But that's not all, when used on a Record Flexipage, you have access to a property called `isRecordBind` which will merge field in the `recordId` into the SOQL String like in the following examples:
+On a Record Flexipage you have access to a property called `isRecordBind` which will merge field in the `recordId` into the SOQL String like in the following examples:
 
 ```
 SELECT Id, Name, Email, Phone FROM Contact WHERE AccountId = recordId
@@ -75,36 +81,29 @@ or
 SELECT Id, Name FROM CustomObject__c WHERE Account__c IN (SELECT Id FROM Account WHERE Id = recordId)
 ```
 
-If that's not flexible enough, you can access this component directly from LWC and do something like in `Launch a SOQL Datatable in a Dialog` which dynamically creates a `soqlDatatable` on the fly!
+## SOQL Datatable - Dynamic Creation via MessageService & DialogService
 
-## SOQL Datatable - Dynamic Creation via MessageBroker
+Dynamically create a `soqlDatatable` when clicking the `Launch a SOQL Datatable in a Dialog` button.
 
-This example uses `DialogService` to dynamically create a LWC on the fly when the `Launch a SOQL Datatable in a Dialog` button is clicked:
+<p align="center">
+    <img src="./readme-images/soql-datatable-in-dialog.gif" width="900">
+</p>
 
-![soql-datatable-in-dialog](/readme-images/soql-datatable-in-dialog.gif?raw=true)
+This is the psuedo-code of what happens:
 
-In psuedo-code for the `messageBroker`:
+```
+button.js calls messageService.dialogService(payload)
+    => button.js composed instance of messageService uses LMS to...
+        => Another composed instance of messageService in DialogServiceHandler.cmp (label-less in utility bar)
+            =>  CustomEvent opendialog is bubbled and handled in...
+                => DialogServiceHandler.cmp component.finds()...
+                    => DialogService.cmp
+                        => DialogServiceController.js
+                            => $A.createComponent('c:soqlDatatable')
+                                => lightning:overlayLibrary
+```
 
-1) `lightning-button` creates a JSON payload with some `lightning:overlayLibrary` details `onclick`.
-    - Yes, that API is an `Aura` one!
-2) JSON payload passes through `Lightning Message Channel`, eventually, to `overlayLibrary`.
-3) The full payload path is: 
-    ```
-    button.js 
-        => messageBroker.js 
-            => LMS 
-                => messageBrokerHandler.js (LWC in DialogServiceBroker.cmp - yes Aura) 
-                    => onmessage (bubbled CustomEvent)
-                        => DialogServiceBrokerController.js 
-                            => DialogService.cmp
-                                => DialogServiceController.js
-                                    => $A.createComponent('c:soqlDatatable')
-                                        => lightning:overlayLibrary
-    ```
-
-Yep, it's possible to parameterize the payload (eventually) back to Aura's `$A.createComponent` API to instantiate a public properties against a LWC!
-
-And here's the actual payload used in the above code flow:
+Here's the actual payload used in the above code flow:
 
 ```js
 handleOpenDialog() {
@@ -127,11 +126,11 @@ handleOpenDialog() {
             }
         }
     };
-    this.template.querySelector('c-message-broker').dialogService(dialogServicePayload);
+    this.template.querySelector('c-message-service').dialogService(dialogServicePayload);
 }
 ```
 
-If you've read this far, you might be connecting the dots that `DialogService`, an `Aura` component, is completely capable of creating any LWC on the fly and putting it into a modal / dialog!
+As you can see, it's possible to parameterize a payload back to Aura's `$A.createComponent` API to instantiate a public properties against an LWC.
 
 ## SOQL Datatable - Display a Selection to Collection Datatable in Flow
 
@@ -140,20 +139,23 @@ This Screen Flow uses the ability for `SOQL Datatable` to output a `List<SObject
 Another component called `Collection Datatable` is able to display any Flow `Record Collection`.
 
 <p align="center">
-    <img src="./readme-images/soql-datatable-to-collection-datatable-flow.png" width="480">
+    <img src="./readme-images/soql-datatable-to-collection-datatable-flow.png" width="320">
+</p>
+<p align="center">
+    <img src="./readme-images/soql-datatable-to-collection-datatable.gif" width="600">
 </p>
 
-![soql-datatable-to-collection-datatable](/readme-images/soql-datatable-to-collection-datatable.gif?raw=true)
 
 ## Collection Datatable - Displaying a Record Collection
 
 This Screen Flow uses `Collection Datatable` as a standalone way to display the output of a `Get Record` node in flow.
 
 <p align="center">
-    <img src="./readme-images/collection-datatable-flow.png" width="480">
+    <img src="./readme-images/collection-datatable-flow.png" width="320">
 </p>
-
-![collection-datatable](/readme-images/collection-datatable.png?raw=true)
+<p align="center">
+    <img src="./readme-images/collection-datatable.png" width="600">
+</p>
 
 ## Combining SOQL and Collection Datatable with Flow inputs
 
@@ -162,7 +164,7 @@ This Screen Flow uses `Collection Datatable` as a standalone way to display the 
 ```
 
 <p align="center">
-    <img src="./readme-images/combine-soql-and-collection-datatable-flow.png" width="640">
+    <img src="./readme-images/combine-soql-and-collection-datatable-flow.png" width="600">
 </p>
 
 ```
@@ -177,27 +179,26 @@ This Screen Flow uses `Collection Datatable` as a standalone way to display the 
 
 ## Launch a flow from an LWC
 
-Leverages both `MessageBroker` and `DialogService` to dynamically start flows from an LWC.
-
-This simple example brokers a payload to `lightning:flow` (Aura only in Summer 19) to start a flow with a given `flowName` and `inputVariables`.
-
 In psuedo-code:
 
-1) `lightning-button` creates a JSON payload with some Flow details `onclick`.
-2) payload is then handed to `messageBroker`.
-3) Which, in turn, passes it to a hidden Aura component called `DialogServiceBroker`.
-4) The mechanism for going from LWC => Aura is `Lightning Message Channel` (aka `LMS`).
-5) Once inside aura, `DialogServiceBroker` dynamically creates an LWC dialog body via `lightning:overlayLibrary` (yes, back in Aura).
+```
+lightning-button creates a JSON payload with some Flow details onclick
+    => payload is then handed to messageService
+        => messageService passes it to a label-less (but rendered) Aura component in the utility bar called DialogServiceHandler
+            => Once inside aura, it dynamically creates an LWC dialog body via lightning:overlayLibrary
+```
 
 Below is the actual flow this will be using:
 
 <p align="center">
-    <img src="./readme-images/flow-screen.png" width="640">
+    <img src="./readme-images/flow-screen.png" width="600">
 </p>
 
 Which looks like this when clicked:
 
-![launch-flow-example](/readme-images/launch-flow-example.gif?raw=true)
+<p align="center">
+    <img src="./readme-images/launch-flow-example.gif" width="900">
+</p>
 
 To understand the mechanics of what is happening in the wizard itself, see the next section.
 

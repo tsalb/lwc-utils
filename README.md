@@ -43,19 +43,77 @@ sfdx force:user:permset:assign -n LWC_Utils_Access
 
 > **NOTE:** This button will deploy this current `summer-20` branch to a target sandbox ONLY if that sandbox is also on summer 20.
 
-## Reusable Components used in lwc-utils
+## LWC Utils Overview
 
-| Component Name         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Component Type                                        |
-|------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|
-| `messageService`       | Unifies communication between Aura and LWC with a `Lightning Message Service` (LMS) to `OpenChannel__c`.<br><br>Use this component instead of manually subscribing / publishing to LMS.<br><br>Has a psuedo-namespacing property called `boundary` which can separate subscribers by string, `recordId` etc.<br><br>Subscribers can choose to listen to any event by just enabling event handling like:<br><br>LWC: `<c-messageService onmycoolevent={handleCoolEvent}>`<br><br>Aura: `<c:messageService onmycoolevent="{! c.handleCoolEvent }">` | LWC:<br>`Service`<br><br>[spec]()                     |
-| `DialogService`        | Provides access to `lightning:overlayLibrary` to create dialogs (modals) via LMS                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Aura:<br>`Service`<br><br>[spec]()                    |
-| `DialogServiceHandler` | Utility bar (empty label) component wrapping `messageService`.<br><br>Provides universal access to `DialogService` by handling the `opendialog` LMS event.                                                                                                                                                                                                                                                                                                                                                                                        | Aura:<br>`Service`, `Utility Bar`<br><br>[spec]()     |
-| `eventFooter`          | Dynamic footer for lwc dialogs.<br><br>Contains an instance of `messageService` listening for the `closefooter` LMS Event.<br><br>Unfortunately, `component.getReference()` does not work on LWCs. Write your own action button in the dialog body.                                                                                                                                                                                                                                                                                               | Aura:<br>`UI`<br><br>[spec]()                         |
-| `modalFooter`          | Dynamic footer for aura dialogs.<br><br>Connects a primary action on the target dialog body to the footer's main action via `component.getReference()`<br><br>Enables writing functions directly on the dialog body and `DialogService.modal()` will connect it to a primary action.                                                                                                                                                                                                                                                              | Aura:<br>`UI`<br><br>[spec]()                         |
-| `FlowWrapper`          | Enables `DialogService` to create flows inside a dialog body dynamically.<br><br><br>Can be used with `dialogAutoCloser` (LWC flow component) to automatically close a dialog launched by this component.<br><br>See `flowWizardLauncherExample` (LWC).                                                                                                                                                                                                                                                                                           | Aura:<br>`Service`<br><br>[spec]()                    |
-| `dialogAutoCloser`     | Contains a progress bar and timer message before automatically closing a `DialogService` dialog with the `closerfooter` LMS event                                                                                                                                                                                                                                                                                                                                                                                                                 | LWC:<br>`Service`, `Flow`<br><br>[spec]()             |
-| `soqlDatatable`        | // TODO                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | LWC:<br>`UI`, `App`, `Record`, `Flow`<br><br>[spec]() |
-| `collectionDatatable`  | // TODO                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | LWC `UI`, `Flow`<br><br>[spec]()                      |
+| Component Name | Description | Component Type |
+|-|-|-|
+| `messageService`<br><br>[Example](#MessageService)<br>[Spec](#MessageService-Specification)<br>[Code](./force-app/main/default/lwc/messageService/messageService.js) | Use one API to communicate **within** or **across** both Aura and LWC technologies.<br><br>Use this component instead of manually publishing / subscribing to `Lightning Message Service` (LMS).<br><br>Provides a psuedo-namespacing property called `boundary` which can separate subscribers by string, `recordId` etc.<br><br>Subscribers can choose to listen to any event by just enabling event handling like:<br><br>LWC: `<c-messageService onmycoolevent={handleCoolEvent}>`<br><br>Aura: `<c:messageService onmycoolevent="{! c.handleCoolEvent }">` | LWC:<br>`Service` |
+| `DialogService`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/aura/DialogService) | Provides access to `lightning:overlayLibrary` to create dialogs (modals) via LMS.<br><br>Both Aura and LWCs can be created dynamically and injected as the dialog body.<br><br>Both Aura's public `attributes` and LWC's `@api` properties can be passed in. | Aura:<br>`Service` |
+| `DialogServiceHandler`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/aura/DialogServiceHandler) | Utility bar (empty label) component wrapping `messageService`.<br><br>Provides universal access to `DialogService` by handling the `opendialog` LMS event. | Aura:<br>`Service`, `Utility Bar` |
+| `eventFooter`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/aura/eventFooter) | Dynamic footer for lwc dialogs.<br><br>Contains an instance of `messageService` listening for the `closedialog` LMS Event.<br><br>Unfortunately, `component.getReference()` does not work on LWCs. Write your own action button in the dialog body. | Aura:<br>`UI` |
+| `modalFooter`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/aura/modalFooter) | Dynamic footer for aura dialogs.<br><br>Connects a primary action on the target dialog body to the footer's main action via `component.getReference()`<br><br>Enables writing functions directly on the dialog body and `DialogService.modal()` will connect it to a primary action. | Aura:<br>`UI` |
+| `FlowWrapper`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/aura/FlowWrapper) | Enables `DialogService` to create flows inside a dialog body dynamically.<br><br><br>Can be used with `dialogAutoCloser` (LWC flow component) to automatically close a dialog launched by this component.<br><br>See `flowWizardLauncherExample` (LWC). | Aura:<br>`Service` |
+| `dialogAutoCloser`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/lwc/dialogAutoCloser) | Contains a progress bar and timer message before automatically closing a `DialogService` dialog with the `closerfooter` LMS event | LWC:<br>`Service`, `Flow` |
+| `soqlDatatable`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/lwc/soqlDatatable) | // TODO | LWC:<br>`UI`, `App`, `Record`, `Flow` |
+| `collectionDatatable`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/lwc/collectionDatatable) | // TODO | LWC:<br>`UI`, `Flow` |
+
+## MessageService
+
+Leverages `Lightning Message Service` on `OpenChannel__c` to message `payloads` in a key/value format like this:
+
+```js
+const payload = { 
+    key: 'coolevent',
+    value: {
+        hello: 'world',
+        foo: 'bar'
+    }
+}
+this.template.querySelector('c-message-service').publish(payload);
+```
+
+This component is meant to be composed on the template like this:
+
+```html
+<!-- Has listeners enabled -->
+<c-message-service
+    boundary="sample_app_lwc"
+    oncleartable={handleClearTable}
+    onaccountselected={handleAccountSelected}
+    onrefreshcontacts={handleRefreshContacts}
+></c-message-service>
+
+...or
+
+<!-- No listeners, but has a boundary set for any publish() calls -->
+<c-message-service boundary={recordId}></c-message-service>
+
+...or
+
+<!-- No listeners, no boundary set for any publish() calls -->
+<c-message-service></c-message-service>
+```
+
+#### MessageService Specification
+
+**Attributes**
+
+| name | type | access | required | default | description |
+|-|-|-|-|-|-|
+| boundary | string | public | no |  | Filter subscription messages like a namespace.<br><br>e.g. `recordId` if you only want same components on same record flexipage to handle the publish.<br><br>e.g. `sample_app_lwc` as reference among various components that share the same functionality.<br><br>Enablement of `APPLICATION_SCOPE` like in [this diagram](/readme-images/rn_lc_lms_scope.png) is not currently enabled. |
+
+**Public Methods**
+
+| name | arguments | description |
+|-|-|-|
+| dialogService | (`payload`) | `payload` is in the shape required by `DialogService`. Examples:<br>[`flowWizardLauncherExample`](./force-app/main/default/lwc/flowWizardLauncherExample/flowWizardLauncherExample.js#L18)<br>[`lwcContactDatatable`](./force-app/main/default/lwc/lwcContactDatatable/lwcContactDatatable.js#L73)<br>[`soqlDatatableLauncherExample`](./force-app/main/default/lwc/soqlDatatableLauncherExample/soqlDatatableLauncherExample.js#L12) |
+| notifyClose |  | Uses `publishOpen` to fire a `closedialog` LMS Event which will close any dialog opened by `DialogService` |
+| publish | (`payload`) | Leverages LMS's `publish` functionality.<br>Defaults to no `boundary`.<br>If `boundary` is set, all subscribers will require the same `boundary`. |
+| publishOpen | (`payload`) | Leverage LMS's `publish` functionality without `boundary`. Any subscriber can react to this event.<br>// TODO Useful for `closedialog` unless this [critical update](https://releasenotes.docs.salesforce.com/en-us/winter20/release-notes/rn_console_dialogs.htm) is enabled.<br>// TODO When a user can simultaneously open multiple dialogs in service console, it's better to set a `boundary`. |
+| forceRefreshView |  | Uses `eval("$A.get('e.force:refreshView').fire();");` directly. |
+| notifySuccess | (`title`, `message` = null) | Convenience function for `ShowToastEvent` |
+| notifyInfo | (`title`, `message` = null) | Convenience function for `ShowToastEvent` |
+| notifySingleError | (`title`, `error` = '') | Convenience function for `ShowToastEvent`.<br>`error` object can be passed directly in, it will be reduced/parsed by `c-utils.reduceError`. |
 
 ## SOQL Datatable
 

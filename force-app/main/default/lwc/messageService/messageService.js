@@ -67,7 +67,7 @@ export default class MessageService extends LightningElement {
 
     @api
     notifyClose() {
-        this._messageServicePublish({ key: 'closefooter' });
+        this._messageServicePublish({ key: 'closedialog' });
     }
 
     @api
@@ -101,6 +101,17 @@ export default class MessageService extends LightningElement {
     }
 
     @api
+    notifyInfo(title, message = null) {
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: title,
+                message: message,
+                variant: 'info'
+            })
+        );
+    }
+
+    @api
     notifySingleError(title, error = '') {
         this.dispatchEvent(
             new ShowToastEvent({
@@ -108,17 +119,6 @@ export default class MessageService extends LightningElement {
                 message: reduceErrors(error)[0],
                 variant: 'error',
                 mode: 'sticky'
-            })
-        );
-    }
-
-    @api
-    notifyInfo(title, message = null) {
-        this.dispatchEvent(
-            new ShowToastEvent({
-                title: title,
-                message: message,
-                variant: 'info'
             })
         );
     }

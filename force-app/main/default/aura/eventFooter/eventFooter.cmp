@@ -1,4 +1,4 @@
 <aura:component>
     <lightning:overlayLibrary aura:id="overlayLib" />
-    <c:messageService aura:id="messageService" onclosefooter="{! c.handleCancel }" />
+    <c:messageService aura:id="messageService" onclosedialog="{! c.handleCancel }" />
 </aura:component>

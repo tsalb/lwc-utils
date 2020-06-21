@@ -33,8 +33,17 @@
 ({
     handleDialogService: function(component, event, helper) {
         const payload = event.getParam('value');
-        console.log('handleDialogService payload: ');
-        console.log(JSON.parse(JSON.stringify(payload)));
+        const singleton = helper.singleton(component);
+
+        if (singleton.getIsCreatingModal()) {
+            return;
+        }
+        // DialogServiceHelper.js will turn this off
+        singleton.setIsCreatingModal(true);
+
+        // Left in here so you can see the shape of the payloads
+        // console.log('handleDialogService payload: ');
+        // console.log(JSON.parse(JSON.stringify(payload)));
         helper.executeDialogService(component, payload);
     }
 });

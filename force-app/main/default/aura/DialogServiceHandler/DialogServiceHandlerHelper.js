@@ -37,6 +37,9 @@
     messageService: function(component) {
         return component.find('messageService');
     },
+    singleton: function(component) {
+        return component.find('singleton');
+    },
     executeDialogService: function(component, payload) {
         let flowModalConfig;
         if (payload.method.startsWith('flow')) {

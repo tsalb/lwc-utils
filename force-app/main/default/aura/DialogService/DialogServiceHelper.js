@@ -45,13 +45,6 @@
         let componentParams = {};
         let singleton = component.find('singleton');
 
-        if (singleton.getIsCreatingModal()) {
-            return;
-        }
-
-        // $A.createComponent callback will set it back to false
-        singleton.setIsCreatingModal(true);
-
         // if we had some bodyParams, let's set the target modal body with their data
         if (!$A.util.isEmpty(params.bodyParams)) {
             Object.keys(params.bodyParams).forEach((v, i, a) => {

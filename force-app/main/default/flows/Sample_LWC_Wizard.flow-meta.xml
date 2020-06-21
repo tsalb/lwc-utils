@@ -106,8 +106,27 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Confirmation_Message</name>
-            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;Thanks for playing with &lt;a href=&quot;https://moment.github.io/luxon/index.html&quot; target=&quot;_blank&quot;&gt;Luxon&lt;/a&gt;,&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;You can close this dialog anytime.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;Thanks for playing with &lt;a href=&quot;https://moment.github.io/luxon/index.html&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;Luxon&lt;/a&gt;.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>Dialog_Auto_Close</name>
+            <extensionName>c:dialogAutoCloser</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>timer</name>
+                <value>
+                    <numberValue>3.0</numberValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>messageTemplate</name>
+                <value>
+                    <stringValue>This wizard will auto close in {timer} seconds</stringValue>
+                </value>
+            </inputParameters>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <showFooter>false</showFooter>
         <showHeader>false</showHeader>

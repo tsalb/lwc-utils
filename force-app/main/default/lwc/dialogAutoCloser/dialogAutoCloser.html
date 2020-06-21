@@ -1,0 +1,12 @@
+<template>
+    <c-message-service></c-message-service>
+
+    <lightning-layout horizontal-align="center" multiple-rows>
+        <lightning-layout-item flexibility="shrink">
+            {messageTemplate}
+        </lightning-layout-item>
+        <lightning-layout-item size="12">
+            <lightning-progress-bar value={progress}></lightning-progress-bar>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

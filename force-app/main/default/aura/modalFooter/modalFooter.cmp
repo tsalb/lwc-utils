@@ -1,9 +1,0 @@
-<aura:component>
-    <!-- Service Components -->
-    <lightning:overlayLibrary aura:id="overlayLib" />
-    <c:messageService aura:id="messageService" onclosedialog="{! c.handleCancel }" />
-
-    <aura:attribute name="actions" type="Aura.Component[]" />
-    <lightning:button name="cancel" label="Cancel" onclick="{! c.handleCancel }" />
-    {! v.actions }
-</aura:component>

@@ -47,17 +47,17 @@ sfdx force:user:permset:assign -n LWC_Utils_Access
 
 | Component Name | Description | Component Type |
 |-|-|-|
-| `messageService`<br><br>[Example](#MessageService)<br>[Spec](#MessageService-Specification)<br>[Code](./force-app/main/default/lwc/messageService/messageService.js) | Use one API to communicate **within** or **across** both Aura and LWC technologies.<br><br>Use this component instead of manually publishing / subscribing to `Lightning Message Service` (LMS).<br><br>Provides a psuedo-namespacing property called `boundary` which can separate subscribers by string, `recordId` etc.<br><br>Subscribers can choose to listen to any event by just enabling event handling like:<br><br>LWC: `<c-messageService onmycoolevent={handleCoolEvent}>`<br><br>Aura: `<c:messageService onmycoolevent="{! c.handleCoolEvent }">` | LWC:<br>`Service` |
-| `DialogService`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/aura/DialogService) | Provides access to `lightning:overlayLibrary` to create dialogs (modals) via LMS.<br><br>Both Aura and LWCs can be created dynamically and injected as the dialog body.<br><br>Both Aura's public `attributes` and LWC's `@api` properties can be passed in. | Aura:<br>`Service` |
+| `messageService`<br><br>[Example](#messageService)<br>[Spec](#messageService-Specification)<br>[Code](./force-app/main/default/lwc/messageService/messageService.js#L41) | Use one API to communicate **within** or **across** both Aura and LWC technologies.<br><br>Use this component instead of manually publishing / subscribing to `Lightning Message Service` (LMS).<br><br>Provides a psuedo-namespacing property called `boundary` which can separate subscribers by string, `recordId` etc.<br><br>Subscribers can choose to listen to any event by just enabling event handling like:<br><br>LWC: `<c-messageService onmycoolevent={handleCoolEvent}>`<br><br>Aura: `<c:messageService onmycoolevent="{! c.handleCoolEvent }">` | LWC:<br>`Service` |
+| `DialogService`<br><br>[Example](#DialogService)<br>[Spec](#DialogService-Specification)<br>[Code](./force-app/main/default/aura/DialogService) | Provides access to `lightning:overlayLibrary` to create dialogs (modals) via LMS.<br><br>Both Aura and LWCs can be created dynamically and injected as the dialog body.<br><br>Both Aura's public `attributes` and LWC's `@api` properties can be passed in. | Aura:<br>`Service` |
 | `DialogServiceHandler`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/aura/DialogServiceHandler) | Utility bar (empty label) component wrapping `messageService`.<br><br>Provides universal access to `DialogService` by handling the `opendialog` LMS event. | Aura:<br>`Service`, `Utility Bar` |
-| `eventFooter`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/aura/eventFooter) | Dynamic footer for lwc dialogs.<br><br>Contains an instance of `messageService` listening for the `closedialog` LMS Event.<br><br>Unfortunately, `component.getReference()` does not work on LWCs. Write your own action button in the dialog body. | Aura:<br>`UI` |
-| `modalFooter`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/aura/modalFooter) | Dynamic footer for aura dialogs.<br><br>Connects a primary action on the target dialog body to the footer's main action via `component.getReference()`<br><br>Enables writing functions directly on the dialog body and `DialogService.modal()` will connect it to a primary action. | Aura:<br>`UI` |
+| `EventFooter`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/aura/eventFooter) | Dynamic footer for lwc dialogs.<br><br>Contains an instance of `messageService` listening for the `closedialog` LMS Event.<br><br>Unfortunately, `component.getReference()` does not work on LWCs. Write your own action button in the dialog body. | Aura:<br>`UI` |
+| `ModalFooter`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/aura/modalFooter) | Dynamic footer for aura dialogs.<br><br>Connects a primary action on the target dialog body to the footer's main action via `component.getReference()`<br><br>Enables writing functions directly on the dialog body and `DialogService.modal()` will connect it to a primary action. | Aura:<br>`UI` |
 | `FlowWrapper`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/aura/FlowWrapper) | Enables `DialogService` to create flows inside a dialog body dynamically.<br><br><br>Can be used with `dialogAutoCloser` (LWC flow component) to automatically close a dialog launched by this component.<br><br>See `flowWizardLauncherExample` (LWC). | Aura:<br>`Service` |
 | `dialogAutoCloser`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/lwc/dialogAutoCloser) | Contains a progress bar and timer message before automatically closing a `DialogService` dialog with the `closerfooter` LMS event | LWC:<br>`Service`, `Flow` |
 | `soqlDatatable`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/lwc/soqlDatatable) | // TODO | LWC:<br>`UI`, `App`, `Record`, `Flow` |
 | `collectionDatatable`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/lwc/collectionDatatable) | // TODO | LWC:<br>`UI`, `Flow` |
 
-## MessageService
+## messageService
 
 Leverages `Lightning Message Service` on `OpenChannel__c` to message `payloads` in a key/value format like this:
 
@@ -94,7 +94,28 @@ This component is meant to be composed on the template like this:
 <c-message-service></c-message-service>
 ```
 
-#### MessageService Specification
+This component also provides public methods to Aura only APIs like `overlayLibrary`.
+
+For example, using `.dialogService()` ultimately routes to `DialogService.cmp`:
+
+```js
+const dialogServicePayload = {
+    method: 'bodyModalLarge',
+    config: {
+        auraId: 'soql-datatable-example',
+        headerLabel: 'Dynamically Created SOQL Datatable',
+        component: 'c:soqlDatatable',
+        componentParams: {
+            isRecordBind: false,
+            recordId: this.recordId,
+            queryString: query
+        }
+    }
+};
+this.template.querySelector('c-message-service').dialogService(dialogServicePayload);
+```
+
+#### messageService Specification
 
 **Attributes**
 
@@ -114,6 +135,91 @@ This component is meant to be composed on the template like this:
 | notifySuccess | (`title`, `message` = null) | Convenience function for `ShowToastEvent` |
 | notifyInfo | (`title`, `message` = null) | Convenience function for `ShowToastEvent` |
 | notifySingleError | (`title`, `error` = '') | Convenience function for `ShowToastEvent`.<br>`error` object can be passed directly in, it will be reduced/parsed by `c-utils.reduceError`. |
+
+## DialogService
+
+This component is composed inside `DialogServiceHandler` and provides it with the public methods for creating modals via Aura's `overlayLibrary`. 
+
+Primarily used by `messageService` for message publishing, `DialogServiceHandler` receives the subscription and delegates to this component.
+
+It is not recommended to use this component directly.
+
+#### DialogService Specification
+
+**Attributes**
+
+| name | type | access | required | default | description |
+|-|-|-|-|-|-|
+| overlayPromise | Object | public | no |  | Stores the returned overlay promise from `overlayLibrary`.<br><br>If a `callback` is specified by the caller, this is returned. |
+
+**Public Methods**
+
+Arguments for this component are not in JS Object `{}` notation so that they can be explicitly listed out in the component itself.
+For that reason, it is recommended to use `messageService` / `DialogServiceHandler` to call these functions.
+
+| name | arguments | description |
+|-|-|-|
+| showPopover | (<br>  `body`,<br>  `bodyParams`,<br>  `referenceSelector`,<br>  `cssClass`,<br>  `callback`<br>) | No examples for this one yet. |
+| modal | (<br>  `auraId`,<br>  `headerLabel`,<br>  `body`,<br>  `bodyParams`,<br>  `mainActionReference`,<br>  `mainActionLabel`,<br>  `callback`,<br>) | Compatible with Aura dialog bodies.<br><br>`body` is the component name (Aura notation) to be created in a dialog.<br><br>`bodyParams` are public attributes to be passed from the caller to the body.<br><br>`mainActionReference` uses `component.getReference` to connect the primary action in `ModalFooter` to a function on the body to be created.<br>This allows you to avoid writing a button specifically at the bottom of the body to be created.<br><br>`mainActionLabel` changes the label of the primary action on `ModalFooter`.<br><br>`callback` is optionally specified to return the `overlayPromise` if needed. Alternatively, listen for the `dialogready` LMS Event. |
+| modalLarge | (<br>  `auraId`,<br>  `headerLabel`,<br>  `body`,<br>  `bodyParams`,<br>  `mainActionReference`,<br>  `mainActionLabel`,<br>  `callback`,<br>  `isLargeModal = true`<br>) | Compatible with Aura dialog bodies.<br><br>Same as `modal`, with wider dialog box using `slds-modal_large` |
+| bodyModal | (<br>  `auraId`,<br>  `headerLabel`,<br>  `body`,<br>  `bodyParams`,<br>  `callback`<br>) | Compatible with LWC dialog bodies.<br><br>Same as `modal` except without connectivity to a `mainAction` via `component.getReference` which doesn't work on LWCs, even with `@api` functions.<br><br>Instead, a slim footer called `EventFooter` is created which is subscribing to the `dialogclose` event for closing the dialog.<br><br>Write your own `Cancel` and `Primary Action` button on the dialog body that is dynamically being created. |
+| bodyModalLarge | (<br>  `auraId`,<br>  `headerLabel`,<br>  `body`,<br>  `bodyParams`,<br>  `callback`,<br>  `isLargeModal = true`<br>) | Compatible with LWC dialog bodies.<br><br>Same as `bodyModal`, with wider dialog box using `slds-modal_large` |
+
+## DialogServiceHandler
+
+#### DialogServiceHandler Specification
+
+**Attributes**
+
+**Public Methods**
+
+## EventFooter
+
+#### EventFooter Specification
+
+**Attributes**
+
+**Public Methods**
+
+## ModalFooter
+
+#### ModalFooter Specification
+
+**Attributes**
+
+**Public Methods**
+
+## FlowWrapper
+
+#### FlowWrapper Specification
+
+**Attributes**
+
+**Public Methods**
+
+## dialogAutoCloser
+
+#### dialogAutoCloser Specification
+
+**Attributes**
+
+**Public Methods**
+
+## soqlDatatable
+
+#### soqlDatatable Specification
+
+**Attributes**
+
+**Public Methods**
+
+## collectionDatatable
+
+#### collectionDatatable Specification
+
+**Attributes**
+
+**Public Methods**
 
 ## SOQL Datatable
 

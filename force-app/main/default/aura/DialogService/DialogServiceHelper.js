@@ -99,7 +99,7 @@
         );
     },
     createEventFooter: function(ctrlCallback) {
-        $A.createComponent('c:eventFooter', {}, (eventFooter, status, errorMessage) => {
+        $A.createComponent('c:EventFooter', {}, (eventFooter, status, errorMessage) => {
             if (status === 'SUCCESS') {
                 ctrlCallback(null, eventFooter);
             } else {

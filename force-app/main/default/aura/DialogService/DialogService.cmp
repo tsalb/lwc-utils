@@ -1,14 +1,9 @@
 <aura:component>
     <lightning:overlayLibrary aura:id="overlayLib" />
-    <lightning:notificationsLibrary aura:id="notificationsLib" />
     <c:messageService aura:id="messageService" />
-
-    <aura:attribute name="overlayPromise" type="Object" />
     <c:singleton aura:id="singleton" />
 
-    <aura:method name="showToast" action="{! c.handleShowToast }">
-        <aura:attribute name="configObj" type="Object" />
-    </aura:method>
+    <aura:attribute name="overlayPromise" type="Object" />
 
     <aura:method name="showPopover" action="{! c.createOverlayPopover }">
         <aura:attribute name="body" type="String" />

@@ -31,10 +31,6 @@
  */
 
 ({
-    handleShowToast: function(component, event, helper) {
-        // pass the config object through
-        helper.notificationsLib(component).showToast(event.getParam('arguments')['configObj']);
-    },
     createOverlayPopover: function(component, event, helper) {
         let params = event.getParam('arguments');
 
@@ -97,7 +93,7 @@
                             if (mainAction.isValid() && !$A.util.isEmpty(mainAction)) {
                                 // Final assembly
                                 $A.createComponent(
-                                    'c:modalFooter',
+                                    'c:ModalFooter',
                                     {
                                         actions: mainAction
                                     },

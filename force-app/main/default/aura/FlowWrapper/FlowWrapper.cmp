@@ -1,7 +1,6 @@
 <aura:component>
     <c:messageService aura:id="messageService" />
 
-    <!-- Flow variables from MessageBroker -->
     <aura:attribute name="flowApiName" type="String" access="PUBLIC" />
     <aura:attribute name="inputVariables" type="Object[]" access="PUBLIC" />
 

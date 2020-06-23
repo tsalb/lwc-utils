@@ -49,13 +49,13 @@ sfdx force:user:permset:assign -n LWC_Utils_Access
 |-|-|-|
 | `messageService`<br><br>[Example](#messageService)<br>[Spec](#messageService-Specification)<br>[Code](./force-app/main/default/lwc/messageService/messageService.js#L41) | Use one API to communicate **within** or **across** both Aura and LWC technologies.<br><br>Use this component instead of manually publishing / subscribing to `Lightning Message Service` (LMS).<br><br>Provides a psuedo-namespacing property called `boundary` which can separate subscribers by string, `recordId` etc.<br><br>Subscribers can choose to listen to any event by just enabling event handling like:<br><br>LWC: `<c-messageService onmycoolevent={handleCoolEvent}>`<br><br>Aura: `<c:messageService onmycoolevent="{! c.handleCoolEvent }">` | LWC:<br>`Service` |
 | `DialogService`<br><br>[Example](#DialogService)<br>[Spec](#DialogService-Specification)<br>[Code](./force-app/main/default/aura/DialogService) | Provides access to `lightning:overlayLibrary` to create dialogs (modals) via LMS.<br><br>Both Aura and LWCs can be created dynamically and injected as the dialog body.<br><br>Both Aura's public `attributes` and LWC's `@api` properties can be passed in. | Aura:<br>`Service` |
-| `DialogServiceHandler`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/aura/DialogServiceHandler) | Utility bar (empty label) component wrapping `messageService`.<br><br>Provides universal access to `DialogService` by handling the `opendialog` LMS event. | Aura:<br>`Service`, `Utility Bar` |
-| `EventFooter`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/aura/eventFooter) | Dynamic footer for lwc dialogs.<br><br>Contains an instance of `messageService` listening for the `closedialog` LMS Event.<br><br>Unfortunately, `component.getReference()` does not work on LWCs. Write your own action button in the dialog body. | Aura:<br>`UI` |
-| `ModalFooter`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/aura/modalFooter) | Dynamic footer for aura dialogs.<br><br>Connects a primary action on the target dialog body to the footer's main action via `component.getReference()`<br><br>Enables writing functions directly on the dialog body and `DialogService.modal()` will connect it to a primary action. | Aura:<br>`UI` |
-| `FlowWrapper`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/aura/FlowWrapper) | Enables `DialogService` to create flows inside a dialog body dynamically.<br><br><br>Can be used with `dialogAutoCloser` (LWC flow component) to automatically close a dialog launched by this component.<br><br>See `flowWizardLauncherExample` (LWC). | Aura:<br>`Service` |
-| `dialogAutoCloser`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/lwc/dialogAutoCloser) | Contains a progress bar and timer message before automatically closing a `DialogService` dialog with the `closerfooter` LMS event | LWC:<br>`Service`, `Flow` |
-| `soqlDatatable`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/lwc/soqlDatatable) | // TODO | LWC:<br>`UI`, `App`, `Record`, `Flow` |
-| `collectionDatatable`<br><br>[Example]()<br>[Spec]()<br>[Code](./force-app/main/default/lwc/collectionDatatable) | // TODO | LWC:<br>`UI`, `Flow` |
+| `DialogServiceHandler`<br><br>[Example](#DialogServiceHandler)<br>[Spec](#DialogServiceHandler-Specification)<br>[Code](./force-app/main/default/aura/DialogServiceHandler) | Utility bar (empty label) component wrapping `messageService`.<br><br>Provides universal access to `DialogService` by handling the `opendialog` LMS event. | Aura:<br>`Service`, `Utility Bar` |
+| `EventFooter`<br><br>[Code](./force-app/main/default/aura/EventFooter) | Dynamic footer for lwc dialogs.<br><br>Contains an instance of `messageService` listening for the `closedialog` LMS Event.<br><br>Unfortunately, `component.getReference()` does not work on LWCs. Write your own action button in the dialog body. | Aura:<br>`UI` |
+| `ModalFooter`<br><br>[Code](./force-app/main/default/aura/ModalFooter) | Dynamic footer for aura dialogs.<br><br>Connects a primary action on the target dialog body to the footer's main action via `component.getReference()`<br><br>Enables writing functions directly on the dialog body and `DialogService.modal()` will connect it to a primary action. | Aura:<br>`UI` |
+| `FlowWrapper`<br><br>[Example](#FlowWrapper)<br>[Spec](#FlowWrapper-Specification)<br>[Code](./force-app/main/default/aura/FlowWrapper) | Enables `messageService` to create flows inside a dialog body dynamically.<br><br>Can be used with `dialogAutoCloser` (LWC flow component) to automatically close a dialog launched by this component.<br><br>See [`flowWizardLauncherExample`](./force-app/main/default/lwc/flowWizardLauncherExample/flowWizardLauncherExample.js#L19) | Aura:<br>`Service` |
+| `dialogAutoCloser`<br><br>[Example](#dialogAutoCloser)<br>[Spec](#dialogAutoCloser-Specification)<br>[Code](./force-app/main/default/lwc/dialogAutoCloser) | Contains a progress bar and timer message before automatically closing a `DialogService` dialog with the `closerfooter` LMS event | LWC:<br>`Service`, `Flow` |
+| `soqlDatatable`<br><br>[Example](#soqlDatatable)<br>[Spec](#soqlDatatable-Specification)<br>[Code](./force-app/main/default/lwc/soqlDatatable) | // TODO | LWC:<br>`UI`, `App`, `Record`, `Flow` |
+| `collectionDatatable`<br><br>[Example](#collectionDatatable)<br>[Spec](#collectionDatatable-Specification)<br>[Code](./force-app/main/default/lwc/collectionDatatable) | // TODO | LWC:<br>`UI`, `Flow` |
 
 ## messageService
 
@@ -168,61 +168,121 @@ For that reason, it is recommended to use `messageService` / `DialogServiceHandl
 
 ## DialogServiceHandler
 
+This component parses the `messageService.dialogService()` payload. It expects two properties:
+
+```js
+const flowOrDialogServicePayload = {
+    method: 'bodyModal', // or bodyModalLarge, flowModal, flowModalLarge
+    config: {
+        <see flowWizardLauncherExample>
+        <or soqlDatatableLauncherExample>
+    }
+}
+```
+
+As of early Summer 20, `Lightning Message Service` requires rendering on the DOM to be connected.
+
+Because of this limitation, this component is designed to be placed once on the utility bar (rendered, but hidden label) OR per flexipage.
+
+This component is very simple which just listens and delegates to `DialogService`.
+
+```html
+<aura:component implements="lightning:utilityItem">
+    <c:DialogService aura:id="dialogService" />
+    <c:messageService aura:id="messageService" onopendialog="{! c.handleDialogService }" />
+    <c:singleton aura:id="singleton" />
+</aura:component>
+```
+
 #### DialogServiceHandler Specification
 
 **Attributes**
 
-**Public Methods**
-
-## EventFooter
-
-#### EventFooter Specification
-
-**Attributes**
+None
 
 **Public Methods**
 
-## ModalFooter
-
-#### ModalFooter Specification
-
-**Attributes**
-
-**Public Methods**
+None
 
 ## FlowWrapper
+
+This component wraps `lightning:flow` and is designed to be created dynamically by `DialogService`.
+
+So then, the component itself is very simple.
+
+```html
+<aura:component>
+    <c:messageService aura:id="messageService" />
+    <aura:attribute name="flowApiName" type="String" access="PUBLIC" />
+    <aura:attribute name="inputVariables" type="Object[]" access="PUBLIC" />
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }" />
+    <div class="slds-is-relative">
+        <lightning:flow aura:id="flow" onstatuschange="{! c.handleStatusChange }" />
+    </div>
+</aura:component>
+```
 
 #### FlowWrapper Specification
 
 **Attributes**
 
+| name | type | access | required | default | description |
+|-|-|-|-|-|-|
+| flowApiName | String | public | yes |  | Developer Name of the flow to be dynamically created by `lightning:flow` |
+| inputVariables | Object[] | public | yes |  | Array of inputs in flow's `[{ name: 'flowVarName', type: 'String', value: 'my cool string value!' }]` |
+
 **Public Methods**
 
+None
+
 ## dialogAutoCloser
+
+A simple component that counts down and auto closes a dialog with the `closedialog` LMS Event.
+
+```html
+<template>
+    <c-message-service></c-message-service>
+    <lightning-layout horizontal-align="center" multiple-rows>
+        <lightning-layout-item flexibility="shrink">
+            {messageTemplate}
+        </lightning-layout-item>
+        <lightning-layout-item size="12">
+            <lightning-progress-bar value={progress}></lightning-progress-bar>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>
+```
+
+```js
+    @api messageTemplate = 'Auto closing in {timer} seconds';
+    @api timer = 5;
+    
+    ...
+
+    renderedCallback() {
+        if (this._isRendered) {
+            return;
+        }
+        this._isRendered = true;
+        this._startProgressInterval();
+        this._startTimerInterval();
+    }
+```
 
 #### dialogAutoCloser Specification
 
 **Attributes**
 
+| name | type | access | required | default | description |
+|-|-|-|-|-|-|
+| messageTemplate | String | public | no | Auto closing in {timer} seconds | Message to display to user while countdown is running |
+| timer | Number | public | no | 5 | Seconds until the component launches the `closedialog` LMS event |
+
 **Public Methods**
+
+None
 
 ## soqlDatatable
-
-#### soqlDatatable Specification
-
-**Attributes**
-
-**Public Methods**
-
-## collectionDatatable
-
-#### collectionDatatable Specification
-
-**Attributes**
-
-**Public Methods**
-
-## SOQL Datatable
 
 This component can dynamically create tables from just a SOQL String fed into its design attributes in the App Builder. For example: 
 
@@ -245,6 +305,12 @@ or
 
 SELECT Id, Name FROM CustomObject__c WHERE Account__c IN (SELECT Id FROM Account WHERE Id = recordId)
 ```
+
+#### soqlDatatable Specification
+
+**Attributes**
+
+**Public Methods**
 
 ## SOQL Datatable - Dynamic Creation via MessageService & DialogService
 
@@ -310,6 +376,13 @@ Another component called `Collection Datatable` is able to display any Flow `Rec
     <img src="./readme-images/soql-datatable-to-collection-datatable.gif" width="600">
 </p>
 
+## collectionDatatable
+
+#### collectionDatatable Specification
+
+**Attributes**
+
+**Public Methods**
 
 ## Collection Datatable - Displaying a Record Collection
 

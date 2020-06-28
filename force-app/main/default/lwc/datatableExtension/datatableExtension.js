@@ -34,16 +34,18 @@ import LightningDatatable from 'lightning/datatable';
 
 // Custom data type templates
 import customName from './customName.html';
+import customPicklist from './customPicklist.html';
 
 export default class datatableExtension extends LightningDatatable {
     static customTypes = {
         customName: {
             template: customName,
-            // Provide template data here if needed
             typeAttributes: [
-                'requestorRecordId', // for scoping of events
+                // LWC specific attributes
                 'href',
                 'target',
+                // Defaults for datatable-edit-cell
+                'requestorRecordId',
                 'rowKeyAttribute',
                 'rowKeyValue',
                 'isEditable',
@@ -51,6 +53,21 @@ export default class datatableExtension extends LightningDatatable {
                 'columnName',
                 'fieldApiName',
                 'isCompoundName'
+            ]
+        },
+        customPicklist: {
+            template: customPicklist,
+            typeAttributes: [
+                // LWC specific attributes
+                'recordTypeId',
+                // Defaults for datatable-edit-cell
+                'requestorRecordId',
+                'rowKeyAttribute',
+                'rowKeyValue',
+                'isEditable',
+                'objectApiName',
+                'columnName',
+                'fieldApiName'
             ]
         }
     };

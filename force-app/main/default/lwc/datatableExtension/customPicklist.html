@@ -1,7 +1,6 @@
 <template>
-    <c-datatable-name-cell
-        href={typeAttributes.href}
-        target={typeAttributes.target}
+    <c-datatable-picklist-cell
+        record-type-id={typeAttributes.recordTypeId}
         value={value}
         requestor-record-id={typeAttributes.requestorRecordId}
         row-key-attribute={typeAttributes.rowKeyAttribute}
@@ -10,6 +9,5 @@
         object-api-name={typeAttributes.objectApiName}
         column-name={typeAttributes.columnName}
         field-api-name={typeAttributes.fieldApiName}
-        is-compound-name={typeAttributes.isCompoundName}
-    ></c-datatable-name-cell>
+    ></c-datatable-picklist-cell>
 </template>

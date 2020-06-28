@@ -2,7 +2,7 @@
     <c-datatable-editable-cell
         requestor-record-id={requestorRecordId}
         original-value={value}
-        display-cell-value-prop="label"
+        display-cell-value-prop="value"
         edit-cell-value-prop="value"
         is-editable={isEditable}
         row-key-attribute={rowKeyAttribute}
@@ -10,14 +10,15 @@
         object-api-name={objectApiName}
         column-name={columnName}
         field-api-name={fieldApiName}
-        is-compound-name={isCompoundName}
+        change-event-name={changeEventName}
     >
-        <lightning-formatted-url
-            slot="displayCell"
-            value={href}
-            label={value}
-            target={target}
-        ></lightning-formatted-url>
-        <lightning-input slot="editCell" variant="label-hidden" value={value}></lightning-input>
+        <lightning-formatted-text slot="displayCell" value={value}></lightning-formatted-text>
+        <c-picklist
+            slot="editCell"
+            field-describe={fieldDescribe}
+            record-type-id={recordTypeId}
+            value={value}
+            variant="label-hidden"
+        ></c-picklist>
     </c-datatable-editable-cell>
 </template>

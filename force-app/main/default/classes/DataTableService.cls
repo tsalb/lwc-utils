@@ -60,7 +60,7 @@ public inherited sharing class DataTableService {
         Schema.DisplayType.MultiPicklist => 'text',
         Schema.DisplayType.Percent => 'percent',
         Schema.DisplayType.Phone => 'text',
-        Schema.DisplayType.Picklist => 'text',
+        Schema.DisplayType.Picklist => 'customPicklist',
         Schema.DisplayType.Reference => 'url',
         Schema.DisplayType.String => 'text',
         Schema.DisplayType.TextArea => 'text',
@@ -112,19 +112,40 @@ public inherited sharing class DataTableService {
         if (!tableRequest.containsKey(QUERY_STRING_KEY)) {
             throw new AuraHandledException('Missing Query.');
         }
-        // Configurations
-        Map<String, Object> tableServiceResponse = new Map<String, Object>();
-        // Derived Data
-        List<SObject> tableData = DataTableService.getSObjectData(tableRequest);
-        // Derived Columns
+        // Gather Schema information from incoming query string
         String queryString = (String) tableRequest.get(QUERY_STRING_KEY);
         String objectName = queryString.substringAfter(' FROM ').split(' ').get(0); // don't depend on if there is a WHERE, also in case FROM is in a field name
         SObject queryObject = Schema.getGlobalDescribe().get(objectName).newSObject();
 
-        tableServiceResponse.put(TABLE_DATA_KEY, tableData);
-        tableServiceResponse.put(TABLE_COLUMNS_KEY, DataTableService.getColumnData(queryString, queryObject));
-        tableServiceResponse.put(SOBJECT_API_NAME, objectName);
-        return tableServiceResponse;
+        // Supports the customPicklist datatype
+        Set<Id> recordTypeIds = Schema.getGlobalDescribe()
+            .get(objectName)
+            .getDescribe()
+            .getRecordTypeInfosById()
+            .keySet();
+
+        // Master RecordType Id, 012000000000000AAA is always given
+        if (recordTypeIds.size() > 1 && !queryString.containsIgnoreCase('RecordTypeId')) {
+            queryString = addRecordTypeIdToQueryString(queryString);
+            tableRequest.put(QUERY_STRING_KEY, queryString);
+        }
+
+        // Finally derive both data and columns for lightning-datatable here
+        List<SObject> tableData = DataTableService.getSObjectData(tableRequest);
+        List<Map<String, Object>> tableColumns = DataTableService.getColumnData(queryString, queryObject);
+
+        // Put it all together
+        return new Map<String, Object>{
+            TABLE_DATA_KEY => tableData,
+            TABLE_COLUMNS_KEY => tableColumns,
+            SOBJECT_API_NAME => objectName
+        };
+    }
+
+    private static String addRecordTypeIdToQueryString(String queryString) {
+        String queryStart = queryString.substringBefore(' FROM ');
+        String queryEnd = queryString.substringAfter(' FROM ');
+        return queryStart + ', RecordTypeId FROM ' + queryEnd;
     }
 
     /**
@@ -239,7 +260,7 @@ public inherited sharing class DataTableService {
             fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(field.getType()));
             fieldColumn.put('fieldName', flatFieldName);
 
-            // TODO
+            // TODO, eventually add as customLookup datatype
             if (field.getType() === Schema.DisplayType.REFERENCE) {
                 continue;
             }
@@ -248,7 +269,7 @@ public inherited sharing class DataTableService {
             if (fieldName.equalsIgnoreCase('name') || fieldName.substringAfterLast('.').equalsIgnoreCase('name')) {
                 String objectName = currentSObjectType.getDescribe().getName();
                 fieldColumn.put('type', 'customName');
-                Map<String, Object> typeAttributes = new Map<String, Object>();
+                Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);
                 // This is a trick to set reference to a value and allow tableServiceUtils.js deal with this
                 typeAttributes.put('href', new Map<String, Object>{ 'fieldName' => objectName + '_Id' });
                 typeAttributes.put('target', '_parent');
@@ -258,7 +279,7 @@ public inherited sharing class DataTableService {
             // All custom data types get these attributes for dealing with cell specific logic
             if (String.valueOf(fieldColumn.get('type')).startsWithIgnoreCase('custom')) {
                 String fieldNameParticle = fieldName.contains('.') ? fieldName.substringAfterLast('.') : fieldName;
-                Map<String, Object> typeAttributes = (Map<String, Object>) fieldColumn.get('typeAttributes');
+                Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);
                 typeAttributes.put('columnName', fieldNameParticle);
                 typeAttributes.put('objectApiName', currentSObjectType.getDescribe().getName());
                 typeAttributes.put('fieldApiName', fieldNameParticle);
@@ -269,5 +290,12 @@ public inherited sharing class DataTableService {
             tableColumns.add(fieldColumn);
         }
         return tableColumns;
+    }
+
+    private static Map<String, Object> getTypeAttributes(Map<String, Object> fieldColumn) {
+        if (fieldColumn.get('typeAttributes') == null) {
+            fieldColumn.put('typeAttributes', new Map<String, Object>());
+        }
+        return (Map<String, Object>) fieldColumn.get('typeAttributes');
     }
 }

@@ -48,16 +48,21 @@
 
 import { LightningElement, api } from 'lwc';
 
-export default class DatatableNameCell extends LightningElement {
-    // Properties specific to this cell type
+const MASTER_RECORD_TYPE_ID = '012000000000000AAA';
+
+export default class DatatablePicklistCell extends LightningElement {
+    // Properties for this specific LWC
     @api
-    get href() {
-        return this._href;
+    get recordTypeId() {
+        return this._recordTypeId || MASTER_RECORD_TYPE_ID;
     }
-    set href(value = '/') {
-        this._href = `/${value}`;
+    set recordTypeId(value) {
+        this._recordTypeId = value || MASTER_RECORD_TYPE_ID;
     }
-    @api target = '_parent';
+
+    get fieldDescribe() {
+        return `${this.objectApiName}.${this.fieldApiName}`;
+    }
 
     // Required properties for datatable-edit-cell
     @api value; // comes in from datatable as the value of the name field
@@ -68,5 +73,7 @@ export default class DatatableNameCell extends LightningElement {
     @api objectApiName;
     @api columnName;
     @api fieldApiName;
-    @api isCompoundName;
+
+    // Required properties for datatable-edit-cell, but only for open-source lwcs
+    changeEventName = 'selected';
 }

@@ -8,24 +8,17 @@
 
     <section onmouseenter={toggleShowEditIcon} onmouseleave={toggleShowEditIcon}>
         <lightning-layout horizontal-align="spread" class={calculateLayoutClass}>
-            <!-- VIEW MODE -->
             <template if:false={isEditMode}>
-                <lightning-layout-item class="slds_truncate">
-                    <slot name="valueCell" onslotchange={handleValueCellSlotChange}>
-                        <!-- value contents goes here -->
-                    </slot>
-                </lightning-layout-item>
-                <lightning-layout-item flexibility="shrink">
-                    <template if:true={showEditIcon}>
-                        <lightning-button-icon
-                            class="slds-button__icon_hint"
-                            icon-name="utility:edit"
-                            variant="bare"
-                            alternative-text="Edit"
-                            onclick={enableEditMode}
-                        ></lightning-button-icon>
-                    </template>
-                </lightning-layout-item>
+                <slot name="displayCell" onslotchange={handleDisplayCellSlotChange}>
+                    <!-- display contents goes here -->
+                </slot>
+                <lightning-button-icon
+                    class={calculateEditIconClass}
+                    icon-name="utility:edit"
+                    variant="bare"
+                    alternative-text="Edit"
+                    onclick={enableEditMode}
+                ></lightning-button-icon>
             </template>
             <template if:true={isEditMode}>
                 <div class="slds-dropdown slds-dropdown_left cell-dropdown">

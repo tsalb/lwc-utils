@@ -33,9 +33,10 @@
 import { LightningElement, api } from 'lwc';
 
 export default class DatatableEditableCell extends LightningElement {
+    @api requestorRecordId;
     @api originalValue;
-    @api valueCellProp;
-    @api editCellProp;
+    @api displayCellValueProp;
+    @api editCellValueProp;
     @api isEditable;
 
     @api rowKeyAttribute;
@@ -45,17 +46,19 @@ export default class DatatableEditableCell extends LightningElement {
     @api fieldApiName; // for Contact Name, this is an array
     @api isCompoundName;
 
+    @api changeEventName = 'change';
+
     draftValue;
     isEditMode;
     showEditIcon;
     selectedRows;
 
-    _valueElement;
+    _displayElement;
     _editElement;
 
     // private
     _isRendered;
-    _sectionContainer;
+    _container;
     _valueOnEdit;
 
     get showMassEdit() {
@@ -80,7 +83,7 @@ export default class DatatableEditableCell extends LightningElement {
         }
         this._isRendered = true;
         this._messageService = this.template.querySelector('c-message-service');
-        this._sectionContainer = this.template.querySelector('section');
+        this._container = this.template.querySelector('section');
     }
 
     // Vanilla editing
@@ -111,8 +114,10 @@ export default class DatatableEditableCell extends LightningElement {
     }
 
     handleMassEditApply() {
-        const currentInputValue = this._editElement.value;
+        const currentInputValue = this._editElement[this.editCellValueProp];
         const isAppliedToMultipleRows = this.template.querySelector('.mass-input-checkbox').checked;
+
+        console.log(currentInputValue);
 
         if (isAppliedToMultipleRows) {
             let rowIdentifierToValues = {};
@@ -125,13 +130,15 @@ export default class DatatableEditableCell extends LightningElement {
                     value: currentInputValue
                 });
             });
+
             console.log(rowIdentifierToValues);
+
             this._messageService.publish({
                 key: 'setdraftvalue',
                 value: { rowIdentifierToValues: rowIdentifierToValues }
             });
         } else {
-            this.draftValue = selectedValue;
+            this.draftValue = currentInputValue;
             this.forceClosePopover();
         }
     }
@@ -140,7 +147,7 @@ export default class DatatableEditableCell extends LightningElement {
         this.listenForClickOutside(true);
     }
 
-    // Dynamically attached events
+    // Events - Dynamically Attached
 
     listenForClickOutside(isForceClose) {
         let clicksInside = 0;
@@ -151,7 +158,7 @@ export default class DatatableEditableCell extends LightningElement {
 
         const documentClick = () => {
             clicksInside--;
-            // click was finally outside of _sectionContainer, i.e. document click
+            // click was finally outside of _container, i.e. document click
             if (clicksInside < 0) {
                 removeAndCloseMenu();
             }
@@ -161,7 +168,7 @@ export default class DatatableEditableCell extends LightningElement {
             this.isEditMode = false;
             this.showEditIcon = false;
             this.notifyCellChanged();
-            this._sectionContainer.removeEventListener('click', thisClick);
+            this._container.removeEventListener('click', thisClick);
             document.removeEventListener('click', documentClick);
             clicksInside = 0; // reset counter
         };
@@ -169,32 +176,39 @@ export default class DatatableEditableCell extends LightningElement {
         if (isForceClose) {
             removeAndCloseMenu();
         } else {
-            this._sectionContainer.addEventListener('click', thisClick);
+            this._container.addEventListener('click', thisClick);
             document.addEventListener('click', documentClick);
         }
     }
 
-    // Event Handlers
+    // Event Handlers - Slot changes
 
-    handleValueCellSlotChange(event) {
-        this._valueElement = event.target.assignedElements()[0];
-        this._valueElement[this.valueCellProp] = this.cellDisplayValue;
+    handleDisplayCellSlotChange(event) {
+        if (event.target && event.target.assignedElements().length === 1) {
+            this._displayElement = event.target.assignedElements()[0];
+            this._displayElement.classList.add('slds-truncate');
+            this._displayElement[this.displayCellValueProp] = this.cellDisplayValue;
+        }
     }
 
     handleEditCellSlotChange(event) {
-        this._editElement = event.target.assignedElements()[0];
-        this._editElement[this.editCellProp] = this.cellDisplayValue;
-        if (!this.showMassEdit) {
-            this._editElement.addEventListener('change', this.handleEditCellInputChange.bind(this));
+        if (event.target && event.target.assignedElements().length === 1) {
+            this._editElement = event.target.assignedElements()[0];
+            this._editElement[this.editCellValueProp] = this.cellDisplayValue;
+            if (!this.showMassEdit) {
+                this._editElement.addEventListener(this.changeEventName, this.handleEditCellInputChange.bind(this));
+            }
         }
     }
+
+    // Event Handlers - Editing
 
     handleCancelDraftValue() {
         if (!this.isEditable) {
             return;
         }
         this.draftValue = null;
-        this._valueElement[this.valueCellProp] = this.cellDisplayValue;
+        this._displayElement[this.displayCellValueProp] = this.cellDisplayValue;
     }
 
     handleRowSelected(event) {
@@ -212,25 +226,22 @@ export default class DatatableEditableCell extends LightningElement {
         const payload = JSON.parse(JSON.stringify(event.detail.value)); // un-proxify for ease of debugging
         if (payload.rowKeysToNull && payload.rowKeysToNull.includes(this.rowKeyValue)) {
             this.draftValue = null;
-            this._valueElement[this.valueCellProp] = this.cellDisplayValue;
+            this._displayElement[this.displayCellValueProp] = this.cellDisplayValue;
         }
         if (payload.rowIdentifierToValues) {
-            console.log(this.fieldApiName);
             const identifierMap = new Map(Object.entries(payload.rowIdentifierToValues));
             const currentCellIdentifier = `${this.rowKeyValue}_${this.objectApiName}_${this.fieldApiName}`;
             if (identifierMap.has(currentCellIdentifier)) {
                 const incomingDraftValue = identifierMap.get(currentCellIdentifier);
                 this.draftValue = incomingDraftValue;
-                this._valueElement[this.valueCellProp] = incomingDraftValue;
+                this._displayElement[this.displayCellValueProp] = incomingDraftValue;
                 this.forceClosePopover();
             }
         }
     }
 
-    // Cell Event Handlers
-
     handleEditCellInputChange(event) {
-        this.draftValue = event.target.value;
+        this.draftValue = this._getEventValue(event);
     }
 
     // Public Events
@@ -276,10 +287,31 @@ export default class DatatableEditableCell extends LightningElement {
     // Class Expressions
 
     get calculateLayoutClass() {
-        let css = 'slds-p-horizontal_xx-small ';
+        let css = 'slds-p-horizontal_xx-small slds-has-flexi-truncate ';
         if (this.draftValue) {
             css += 'slds-is-edited';
         }
         return css;
+    }
+
+    get calculateEditIconClass() {
+        let css = 'slds-p-left_small slds-button__icon_hint ';
+        if (this.showEditIcon) {
+            css += 'slds-visible';
+        } else {
+            css += 'slds-hidden';
+        }
+        return css;
+    }
+
+    // Private functions
+
+    _getEventValue(event) {
+        if (event.detail && typeof event.detail === 'string') {
+            return event.detail;
+        }
+        if (event.target.value && typeof event.target.value === 'string') {
+            return event.target.value;
+        }
     }
 }

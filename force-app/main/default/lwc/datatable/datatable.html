@@ -12,7 +12,7 @@
                 </template>
             </slot>
         </div>
-        <div class="slds-border_top slds-border_bottom slds-border_left slds-border_right slds-is-relative">
+        <div class={containerClass}>
             <template if:true={showSpinner}>
                 <lightning-spinner alternative-text="Loading"></lightning-spinner>
             </template>

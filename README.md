@@ -26,13 +26,7 @@ git clone https://github.com/tsalb/lwc-utils
 
 4) Use Command Palette to `SFDX: Push Source to Default Scratch Org`.
 
-5) Use the `sfdx-cli` to assign a required permission set.
-
-```
-sfdx force:user:permset:assign -n LWC_Utils_Access
-```
-
-6) Use Command Palette to `SFDX: Open Default Org`.
+5) Use Command Palette to `SFDX: Open Default Org`.
 
 ## Install via Deploy to Salesforce
 

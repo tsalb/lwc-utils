@@ -3,6 +3,266 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentInstanceProperties>
+                    <name>collapsed</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>enableActionsConfiguration</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>hideChatterActions</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>numVisibleActions</name>
+                    <value>3</value>
+                </componentInstanceProperties>
+                <componentName>force:highlightsPanel</componentName>
+            </componentInstance>
+        </itemInstances>
+        <mode>Replace</mode>
+        <name>header</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>decorate</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>richTextValue</name>
+                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;The below tables are all powered by &lt;span style=&quot;font-family: courier;&quot;&gt;soqlDatatable&lt;/span&gt;. The actual App Builder &lt;span style=&quot;font-family: courier;&quot;&gt;SOQL String&lt;/span&gt; configuration is shown right above.&lt;/p&gt;</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:richText</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>decorate</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>richTextValue</name>
+                    <value>&lt;p&gt;&lt;span style=&quot;font-family: courier;&quot;&gt;SELECT Name, Email, Title, Phone FROM Contact WHERE AccountId = $recordId&lt;/span&gt;&lt;/p&gt;</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:richText</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>checkboxType</name>
+                    <value>None</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>isRecordBind</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>queryString</name>
+                    <value>SELECT Name, Email, Title, Phone FROM Contact WHERE AccountId = $recordId</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showRecordCount</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showRefreshButton</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>sortedDirection</name>
+                    <value>asc</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>title</name>
+                    <value>Related Contacts</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>useRelativeMaxHeight</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentName>soqlDatatable</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>decorate</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>richTextValue</name>
+                    <value>&lt;p&gt;&lt;span style=&quot;font-family: courier;&quot;&gt;SELECT Name, Type, Website, Industry FROM Account WHERE OwnerId = $CurrentRecord.OwnerId&lt;/span&gt;&lt;/p&gt;</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:richText</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>checkboxType</name>
+                    <value>None</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>isRecordBind</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>queryString</name>
+                    <value>SELECT Name, Type, Website, Industry FROM Account WHERE OwnerId = $CurrentRecord.OwnerId</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showRecordCount</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>sortedDirection</name>
+                    <value>asc</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>title</name>
+                    <value>Related Accounts from same Owner</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>useRelativeMaxHeight</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentName>soqlDatatable</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>decorate</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>richTextValue</name>
+                    <value>&lt;p&gt;&lt;span style=&quot;font-family: courier;&quot;&gt;SELECT Name, Type, Website, Industry FROM Account WHERE Industry = $CurrentRecord.Industry AND Id != $recordId&lt;/span&gt;&lt;/p&gt;</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:richText</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>checkboxType</name>
+                    <value>None</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>isRecordBind</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>queryString</name>
+                    <value>SELECT Name, Type, Website, Industry FROM Account WHERE Industry = $CurrentRecord.Industry AND Id != $recordId</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showRecordCount</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>sortedDirection</name>
+                    <value>asc</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>title</name>
+                    <value>Similar Accounts (Industry)</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>useRelativeMaxHeight</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentName>soqlDatatable</componentName>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-1c420cf4-d7cd-4d8a-bb8e-7d97850ced61</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentName>lwcContactDatatable</componentName>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-867b732e-beb2-4844-a53f-833078ef1afa</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>active</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-1c420cf4-d7cd-4d8a-bb8e-7d97850ced61</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>title</name>
+                    <value>SOQL Datatables</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:tab</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-867b732e-beb2-4844-a53f-833078ef1afa</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>title</name>
+                    <value>lwcContactDatatable</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:tab</componentName>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-08499d5d-be1a-491f-860b-b89791c7d41f</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>tabs</name>
+                    <value>Facet-08499d5d-be1a-491f-860b-b89791c7d41f</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:tabset</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>decorate</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>richTextValue</name>
+                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;MessageServiceHandler is placed below on the flexipage directly to handle any LMS events.&lt;/p&gt;</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:richText</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>MessageServiceHandler</componentName>
+            </componentInstance>
+        </itemInstances>
+        <mode>Replace</mode>
+        <name>main</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
                 <componentName>force:detailPanel</componentName>
             </componentInstance>
         </itemInstances>
@@ -12,15 +272,10 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>lwcContactDatatable</componentName>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-7c6f2543-cf4e-4975-ad50-d0f17c76cc7c</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
+                <componentInstanceProperties>
+                    <name>hideHeader</name>
+                    <value>true</value>
+                </componentInstanceProperties>
                 <componentName>force:relatedListQuickLinksContainer</componentName>
             </componentInstance>
         </itemInstances>
@@ -45,19 +300,6 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>body</name>
-                    <value>Facet-7c6f2543-cf4e-4975-ad50-d0f17c76cc7c</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>title</name>
-                    <value>Contact Datatable (LWC)</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:tab</componentName>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
                     <value>Facet-0187c3f6-569a-4969-9e0e-399fb161f837</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
@@ -74,35 +316,12 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>collapsed</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>numVisibleActions</name>
-                    <value>3</value>
-                </componentInstanceProperties>
-                <componentName>force:highlightsPanel</componentName>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
                     <name>tabs</name>
                     <value>Facet-9bfb73b2-f758-4cb3-b5c6-43cceb067723</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tabset</componentName>
             </componentInstance>
         </itemInstances>
-        <mode>Replace</mode>
-        <name>header</name>
-        <type>Region</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <mode>Replace</mode>
-        <name>main</name>
-        <type>Region</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
         <mode>Replace</mode>
         <name>sidebar</name>
         <type>Region</type>

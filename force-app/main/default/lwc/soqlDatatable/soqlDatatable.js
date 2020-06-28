@@ -58,6 +58,7 @@ export default class SoqlDatatable extends LightningElement {
     @api sortableFields;
     @api sortedBy;
     @api sortedDirection;
+    @api useRelativeMaxHeight;
 
     // Pass through outputs for flow
     @api selectedRows;

@@ -32,13 +32,6 @@
 
 import { LightningElement, api } from 'lwc';
 
-// HACK ALERT START
-// Currently, there is no way to style inside a base component without this.
-// We do this to fill the utility icon SVGs with a color rather than the base utility grey.
-import css_overrides from '@salesforce/resourceUrl/css_overrides';
-import { loadStyle } from 'lightning/platformResourceLoader';
-// HACK ALERT END
-
 export default class DatatableEditableCell extends LightningElement {
     @api originalValue;
     @api valueCellProp;
@@ -87,9 +80,6 @@ export default class DatatableEditableCell extends LightningElement {
         }
         this._isRendered = true;
         this._messageService = this.template.querySelector('c-message-service');
-
-        // override base slds styles
-        loadStyle(this, css_overrides + '/datatableEditableCell.css');
         this._sectionContainer = this.template.querySelector('section');
     }
 

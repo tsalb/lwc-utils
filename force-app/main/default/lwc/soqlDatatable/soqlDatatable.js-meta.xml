@@ -21,6 +21,7 @@
             <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API Names. If parent fieldNames, use _ instaed of . (e.g. Account_Name)"/>
             <property name="sortedBy" label="Default Sort Field" type="String" description="Field API name, if parent fieldName use _ instead of . (e.g. Account_Name)"/>
             <property name="sortedDirection" label="Default Sort Direction" type="String" datasource="asc,desc" default="asc"/>
+            <property name="useRelativeMaxHeight" label="Limit Height (Relative to screen)" type="Boolean" description="Force table height to 60% of the vertical screen space."/>
         </targetConfig>
         <targetConfig targets="lightning__RecordPage">
             <property name="isRecordBind" label="Use Record Binding in SOQL String" type="Boolean" description="Use $CurrentRecord or $recordId in your SOQL query to bind record data or just the recordId. User must have FLS access." default="true"/>
@@ -33,6 +34,7 @@
             <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API Names. If parent fieldNames, use _ instaed of . (e.g. Account_Name)"/>
             <property name="sortedBy" label="Default Sort Field" type="String" description="Field API name, if parent fieldName use _ instead of . (e.g. Account_Name)"/>
             <property name="sortedDirection" label="Default Sort Direction" type="String" datasource="asc,desc" default="asc"/>
+            <property name="useRelativeMaxHeight" label="Limit Height (Relative to screen)" type="Boolean" description="Force table height to 60% of the vertical screen space."/>
         </targetConfig>
         <targetConfig targets="lightning__FlowScreen">
             <propertyType name="sObj" extends="SObject" label="Object"/>

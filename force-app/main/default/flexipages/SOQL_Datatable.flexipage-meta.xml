@@ -9,7 +9,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>editableFields</name>
-                    <value>Email, Phone</value>
+                    <value>Name, Email, Phone</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>queryString</name>
@@ -38,6 +38,10 @@
                 <componentInstanceProperties>
                     <name>title</name>
                     <value>Queried Contacts</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>useRelativeMaxHeight</name>
+                    <value>true</value>
                 </componentInstanceProperties>
                 <componentName>soqlDatatable</componentName>
             </componentInstance>

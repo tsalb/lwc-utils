@@ -40,7 +40,18 @@ export default class datatableExtension extends LightningDatatable {
         customName: {
             template: customName,
             // Provide template data here if needed
-            typeAttributes: ['href', 'target']
+            typeAttributes: [
+                'requestorRecordId', // for scoping of events
+                'href',
+                'target',
+                'rowKeyAttribute',
+                'rowKeyValue',
+                'isEditable',
+                'objectApiName',
+                'columnName',
+                'fieldApiName',
+                'isCompoundName'
+            ]
         }
     };
 }

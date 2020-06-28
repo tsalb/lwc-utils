@@ -49,6 +49,7 @@
 import { LightningElement, api } from 'lwc';
 
 export default class DatatableNameCell extends LightningElement {
+    @api requestorRecordId;
     @api
     get href() {
         return this._href;
@@ -56,6 +57,14 @@ export default class DatatableNameCell extends LightningElement {
     set href(value = '/') {
         this._href = `/${value}`;
     }
+
     @api value; // comes in from datatable as the value of the name field
     @api target = '_parent';
+    @api rowKeyAttribute;
+    @api rowKeyValue;
+    @api isEditable;
+    @api objectApiName;
+    @api columnName;
+    @api fieldApiName;
+    @api isCompoundName;
 }

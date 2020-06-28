@@ -23,7 +23,7 @@
             <property name="sortedDirection" label="Default Sort Direction" type="String" datasource="asc,desc" default="asc"/>
         </targetConfig>
         <targetConfig targets="lightning__RecordPage">
-            <property name="isRecordBind" label="Use Flexipage Record Id" type="Boolean" description="Use 'recordId' (no quotes) in SOQL to bind to flexipage record Id." default="true"/>
+            <property name="isRecordBind" label="Use Record Binding in SOQL String" type="Boolean" description="Use $CurrentRecord or $recordId in your SOQL query to bind record data or just the recordId. User must have FLS access." default="true"/>
             <property name="title" label="Title" type="String"/>
             <property name="showRecordCount" label="Show Record Count" type="Boolean"/>
             <property name="showRefreshButton" label="Show Refresh" type="Boolean"/>

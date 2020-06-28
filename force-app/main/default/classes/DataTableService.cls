@@ -69,6 +69,21 @@ public inherited sharing class DataTableService {
     };
 
     @AuraEnabled(cacheable=true)
+    public static String getQueryExceptionMessage(String queryString) {
+        System.debug(LoggingLevel.INFO, 'getQueryExceptionMessage queryString: ' + queryString);
+        String errorMessage;
+        try {
+            Database.query(queryString);
+        } catch (System.QueryException e) {
+            errorMessage = e.getMessage();
+        } catch (Exception e) {
+            errorMessage = e.getMessage();
+        }
+        System.debug(LoggingLevel.ERROR, 'getQueryExceptionMessage errorMessage: ' + errorMessage);
+        return errorMessage;
+    }
+
+    @AuraEnabled(cacheable=true)
     public static Map<String, String> getDisplayTypeMap() {
         Map<String, String> result = new Map<String, String>();
         for (Schema.DisplayType type : DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.keySet()) {
@@ -237,6 +252,16 @@ public inherited sharing class DataTableService {
                 // This is a trick to set reference to a value and allow tableServiceUtils.js deal with this
                 typeAttributes.put('href', new Map<String, Object>{ 'fieldName' => objectName + '_Id' });
                 typeAttributes.put('target', '_parent');
+                fieldColumn.put('typeAttributes', typeAttributes);
+            }
+
+            // All custom data types get these attributes for dealing with cell specific logic
+            if (String.valueOf(fieldColumn.get('type')).startsWithIgnoreCase('custom')) {
+                String fieldNameParticle = fieldName.contains('.') ? fieldName.substringAfterLast('.') : fieldName;
+                Map<String, Object> typeAttributes = (Map<String, Object>) fieldColumn.get('typeAttributes');
+                typeAttributes.put('columnName', fieldNameParticle);
+                typeAttributes.put('objectApiName', currentSObjectType.getDescribe().getName());
+                typeAttributes.put('fieldApiName', fieldNameParticle);
                 fieldColumn.put('typeAttributes', typeAttributes);
             }
 

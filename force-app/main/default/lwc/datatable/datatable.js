@@ -40,6 +40,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { reduceErrors, createSetFromDelimitedString } from 'c/utils';
 
 const MAX_ROW_SELECTION = 200;
+const OBJECTS_WITH_COMPOUND_NAMES = ['Contact'];
 
 export default class Datatable extends LightningElement {
     @api recordId;
@@ -127,6 +128,8 @@ export default class Datatable extends LightningElement {
 
     @api
     initializeTable(objectApiName, columns, data) {
+        console.log(columns);
+        console.log(data);
         this.showSpinner = true;
         this._objectApiName = objectApiName;
         this._setTableColumns(columns);
@@ -186,6 +189,10 @@ export default class Datatable extends LightningElement {
     handleRowSelection(event) {
         this.selectedRows = event.detail.selectedRows;
         this._notifyPublicEvent('rowselection');
+        this._messageService.publish({
+            key: 'rowselected',
+            value: { selectedRows: this.selectedRows }
+        });
     }
 
     handleColumnSorting(event) {
@@ -201,28 +208,33 @@ export default class Datatable extends LightningElement {
             const changedData = this._draftValuesMap.get(draft[this.keyField]);
             this._draftValuesMap.set(draft[this.keyField], { ...changedData, ...draft });
         });
+        //console.log(this._draftValuesMap);
         if (this._draftValuesMap.size > 0) {
             this.draftValues = [...this._draftValuesMap.values()];
+            //console.log(this.draftValues);
         }
     }
 
     handleCancel() {
         // do not prevent default, but tell every single draft row to clear itself
         this._clearDraftValues([...this._draftValuesMap.keys()]);
+        // also tell any custom data type to clear restore itself
+        this._messageService.publish({ key: 'canceldraft' });
     }
 
-    async handleSave(event) {
+    // Avoid using the event because the payload doesn't have name compound fields
+    async handleSave() {
         // Provides data to paint errors if needed, luckily draftValues come in ordered by row number
         const rowKeyToRowNumberMap = new Map(
-            event.detail.draftValues.map(draft => [
+            this.draftValues.map(draft => [
                 draft[this.keyField],
                 this.tableData.findIndex(data => draft[this.keyField] === data[this.keyField]) + 1
             ])
         );
-        // On partial save rows, this helps signal which rows succeeded by clearing them out
-        this.draftValues = event.detail.draftValues;
-        this.showSpinner = true;
+        //console.log(rowKeyToRowNumberMap);
 
+        // On partial save rows, this helps signal which rows succeeded by clearing them out
+        this.showSpinner = true;
         const saveResults = await tableService.updateDraftValues(this.draftValues, rowKeyToRowNumberMap);
 
         if (saveResults.errors.rows && Object.keys(saveResults.errors.rows).length) {
@@ -259,6 +271,22 @@ export default class Datatable extends LightningElement {
             // Inline edit
             if (this.editableFields && this.editableFields.size) {
                 col.editable = this.editableFields.has(col.fieldName);
+            }
+            // All custom data types first, but notice that the
+            // only way to pass down attributes is via typeAttributes
+            if (col.type.startsWith('custom')) {
+                const additional = {
+                    rowKeyAttribute: this.keyField,
+                    rowKeyValue: { fieldName: this.keyField },
+                    isEditable: this.editableFields.has(col.fieldName)
+                };
+                col.typeAttributes = { ...col.typeAttributes, ...additional };
+            }
+            // Overridden by specific logic
+            if (col.type === 'customName') {
+                if (OBJECTS_WITH_COMPOUND_NAMES.includes(this._objectApiName)) {
+                    col.typeAttributes.isCompoundName = true;
+                }
             }
             finalColumns.push(col);
         }
@@ -319,6 +347,10 @@ export default class Datatable extends LightningElement {
         this.draftValues = this.draftValues.filter(draft => !rowKeysToNull.includes(draft[this.keyField]));
         rowKeysToNull.forEach(key => {
             this._draftValuesMap.delete(key);
+        });
+        this._messageService.publish({
+            key: 'setdraftvalue',
+            value: { rowKeysToNull: rowKeysToNull }
         });
         // Removes both table and row errors from `lightning-datatable`
         if (this._draftValuesMap.size === 0 && this.draftValues.length === 0) {

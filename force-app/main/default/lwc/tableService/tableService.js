@@ -31,11 +31,16 @@
  */
 
 import getTableCache from '@salesforce/apex/DataTableService.getTableCache';
+import getQueryExceptionMessage from '@salesforce/apex/DataTableService.getQueryExceptionMessage';
 import { updateRecord } from 'lightning/uiRecordApi';
 import * as tableUtils from 'c/tableServiceUtils';
 
 const isRecordId = str => {
     return str.length === 18 || str.length === 15;
+};
+
+const checkQueryException = async queryString => {
+    return await getQueryExceptionMessage({ queryString: queryString });
 };
 
 const fetchTableCache = async requestConfig => {
@@ -84,4 +89,4 @@ const updateDraftValues = async (draftValues, recordIdToRowNumberMap) => {
     }
 };
 
-export { isRecordId, fetchTableCache, updateDraftValues };
+export { isRecordId, checkQueryException, fetchTableCache, updateDraftValues };

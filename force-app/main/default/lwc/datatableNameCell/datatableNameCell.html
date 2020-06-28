@@ -1,3 +1,18 @@
 <template>
-    <lightning-formatted-url value={href} label={value} target={target}></lightning-formatted-url>
+    <c-datatable-editable-cell
+        requestor-record-id={requestorRecordId}
+        original-value={value}
+        value-cell-prop="label"
+        edit-cell-prop="value"
+        is-editable={isEditable}
+        row-key-attribute={rowKeyAttribute}
+        row-key-value={rowKeyValue}
+        object-api-name={objectApiName}
+        column-name={columnName}
+        field-api-name={fieldApiName}
+        is-compound-name={isCompoundName}
+    >
+        <lightning-formatted-url slot="valueCell" value={href} label={value} target={target}></lightning-formatted-url>
+        <lightning-input slot="editCell" variant="label-hidden" value={value}></lightning-input>
+    </c-datatable-editable-cell>
 </template>

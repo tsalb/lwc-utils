@@ -4,17 +4,17 @@
         <headerColor>#0070D2</headerColor>
         <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
     </brand>
-    <description>Composing LWC in Lightning Console.</description>
+    <description>Samples using Record Flexipages</description>
     <formFactors>Large</formFactors>
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
-    <label>LWC Utils - Flexipage SPA</label>
+    <label>LWC Utils Console</label>
     <navType>Console</navType>
     <tabs>standard-Account</tabs>
     <tabs>standard-Contact</tabs>
     <tabs>standard-Opportunity</tabs>
     <uiType>Lightning</uiType>
-    <utilityBar>LWC_Utils_Flexipage_SPA_UtilityBar</utilityBar>
+    <utilityBar>LWC_Utils_Console_UtilityBar</utilityBar>
     <workspaceConfig>
         <mappings>
             <tab>standard-Account</tab>

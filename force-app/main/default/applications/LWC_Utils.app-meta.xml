@@ -4,7 +4,7 @@
         <headerColor>#0070D2</headerColor>
         <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
     </brand>
-    <description>Design patterns and sample components</description>
+    <description>Examples from the repo</description>
     <formFactors>Large</formFactors>
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
@@ -16,5 +16,5 @@
     <tabs>Collection_Datatable</tabs>
     <tabs>LWC_Launching_Flow</tabs>
     <uiType>Lightning</uiType>
-    <utilityBar>Service_Components_UtilityBar</utilityBar>
+    <utilityBar>LWC_Utils_UtilityBar</utilityBar>
 </CustomApplication>

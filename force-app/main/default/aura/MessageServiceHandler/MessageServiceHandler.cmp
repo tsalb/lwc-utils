@@ -1,4 +1,4 @@
-<aura:component implements="lightning:utilityItem">
+<aura:component implements="flexipage:availableForAllPageTypes, lightning:utilityItem" access="global">
     <c:DialogService aura:id="dialogService" />
     <c:messageService aura:id="messageService" onopendialog="{! c.handleDialogService }" />
     <c:singleton aura:id="singleton" />

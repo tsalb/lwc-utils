@@ -5,7 +5,7 @@
         <visible>true</visible>
     </applicationVisibilities>
     <applicationVisibilities>
-        <application>LWC_Utils_Flexipage_SPA</application>
+        <application>LWC_Utils_Console</application>
         <visible>true</visible>
     </applicationVisibilities>
     <classAccesses>

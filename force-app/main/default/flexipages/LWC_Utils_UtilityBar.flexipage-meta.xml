@@ -32,7 +32,7 @@
                     <type>decorator</type>
                     <value>1</value>
                 </componentInstanceProperties>
-                <componentName>DialogServiceHandler</componentName>
+                <componentName>MessageServiceHandler</componentName>
             </componentInstance>
         </itemInstances>
         <name>utilityItems</name>
@@ -42,7 +42,7 @@
         <name>backgroundComponents</name>
         <type>Background</type>
     </flexiPageRegions>
-    <masterLabel>Service Components UtilityBar</masterLabel>
+    <masterLabel>LWC Utils UtilityBar</masterLabel>
     <template>
         <name>one:utilityBarTemplateDesktop</name>
     </template>

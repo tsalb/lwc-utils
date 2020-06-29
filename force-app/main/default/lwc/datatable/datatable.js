@@ -137,12 +137,12 @@ export default class Datatable extends LightningElement {
 
     @api
     initializeTable(objectApiName, columns, data) {
-        console.log(columns);
-        console.log(data);
         this.showSpinner = true;
         this._objectApiName = objectApiName;
         this._setTableColumns(columns);
         this._setTableData(data);
+        console.log(this.tableData);
+        console.log(this.tableColumns);
         // for inline-edit success
         if (this._draftSuccessIds.size) {
             this._clearDraftValues([...this._draftSuccessIds.keys()]);

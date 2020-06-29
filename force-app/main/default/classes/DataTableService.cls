@@ -68,9 +68,10 @@ public inherited sharing class DataTableService {
         Schema.DisplayType.URL => 'url'
     };
 
+    private static Set<Id> RECORD_TYPE_IDS { private get; private set; }
+
     @AuraEnabled(cacheable=true)
     public static String getQueryExceptionMessage(String queryString) {
-        System.debug(LoggingLevel.INFO, 'getQueryExceptionMessage queryString: ' + queryString);
         String errorMessage;
         try {
             Database.query(queryString);
@@ -79,7 +80,6 @@ public inherited sharing class DataTableService {
         } catch (Exception e) {
             errorMessage = e.getMessage();
         }
-        System.debug(LoggingLevel.ERROR, 'getQueryExceptionMessage errorMessage: ' + errorMessage);
         return errorMessage;
     }
 
@@ -117,15 +117,11 @@ public inherited sharing class DataTableService {
         String objectName = queryString.substringAfter(' FROM ').split(' ').get(0); // don't depend on if there is a WHERE, also in case FROM is in a field name
         SObject queryObject = Schema.getGlobalDescribe().get(objectName).newSObject();
 
-        // Supports the customPicklist datatype
-        Set<Id> recordTypeIds = Schema.getGlobalDescribe()
-            .get(objectName)
-            .getDescribe()
-            .getRecordTypeInfosById()
-            .keySet();
-
         // Master RecordType Id, 012000000000000AAA is always given
-        if (recordTypeIds.size() > 1 && !queryString.containsIgnoreCase('RecordTypeId')) {
+        if (
+            DataTableService.recordTypeIdsForObject(objectName).size() > 1 &&
+            !queryString.containsIgnoreCase('RecordTypeId')
+        ) {
             queryString = addRecordTypeIdToQueryString(queryString);
             tableRequest.put(QUERY_STRING_KEY, queryString);
         }
@@ -170,12 +166,8 @@ public inherited sharing class DataTableService {
      */
     private static List<SObject> getSObjectDataFromQueryString(String queryString) {
         String.escapeSingleQuotes(queryString);
-        try {
-            System.debug('getSObjectDataFromQueryString queryString is: ' + queryString);
-            return Database.query(queryString);
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
+        System.debug('getSObjectDataFromQueryString queryString is: ' + queryString);
+        return Database.query(queryString);
     }
 
     /**
@@ -226,6 +218,7 @@ public inherited sharing class DataTableService {
 
         for (String fieldName : soqlColumns) {
             Schema.SObjectType currentSObjectType = queriedSObject.getSObjectType();
+            String currentObjectName = currentSObjectType.getDescribe().getName();
             Schema.DescribeFieldResult field;
             Map<String, Object> fieldColumn = new Map<String, Object>();
 
@@ -245,7 +238,7 @@ public inherited sharing class DataTableService {
             } else {
                 field = fieldMap.get(fieldName).getDescribe();
             }
-            System.debug('getColumnData field info: ' + fieldName + ' : ' + field.getType());
+            //System.debug('getColumnData field info: ' + fieldName + ' : ' + field.getType());
 
             // Respect FLS
             if (!field.isAccessible()) {
@@ -267,22 +260,30 @@ public inherited sharing class DataTableService {
 
             // Fields with Name are typically hyperlinked, so we replace it with a custom datatype
             if (fieldName.equalsIgnoreCase('name') || fieldName.substringAfterLast('.').equalsIgnoreCase('name')) {
-                String objectName = currentSObjectType.getDescribe().getName();
                 fieldColumn.put('type', 'customName');
                 Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);
                 // This is a trick to set reference to a value and allow tableServiceUtils.js deal with this
-                typeAttributes.put('href', new Map<String, Object>{ 'fieldName' => objectName + '_Id' });
+                typeAttributes.put('href', new Map<String, Object>{ 'fieldName' => currentObjectName + '_Id' });
                 typeAttributes.put('target', '_parent');
                 fieldColumn.put('typeAttributes', typeAttributes);
             }
 
             // All custom data types get these attributes for dealing with cell specific logic
-            if (String.valueOf(fieldColumn.get('type')).startsWithIgnoreCase('custom')) {
+            String columnType = String.valueOf(fieldColumn.get('type'));
+            if (columnType.startsWithIgnoreCase('custom')) {
                 String fieldNameParticle = fieldName.contains('.') ? fieldName.substringAfterLast('.') : fieldName;
                 Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);
                 typeAttributes.put('columnName', fieldNameParticle);
                 typeAttributes.put('objectApiName', currentSObjectType.getDescribe().getName());
                 typeAttributes.put('fieldApiName', fieldNameParticle);
+                fieldColumn.put('typeAttributes', typeAttributes);
+            }
+            if (
+                columnType.equalsIgnoreCase('customPicklist') &&
+                DataTableService.recordTypeIdsForObject(currentObjectName).size() > 1
+            ) {
+                Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);
+                typeAttributes.put('picklistRecordTypeId', new Map<String, Object>{ 'fieldName' => 'RecordTypeId' });
                 fieldColumn.put('typeAttributes', typeAttributes);
             }
 
@@ -297,5 +298,16 @@ public inherited sharing class DataTableService {
             fieldColumn.put('typeAttributes', new Map<String, Object>());
         }
         return (Map<String, Object>) fieldColumn.get('typeAttributes');
+    }
+
+    private static Set<Id> recordTypeIdsForObject(String objectName) {
+        if (DataTableService.RECORD_TYPE_IDS == null) {
+            DataTableService.RECORD_TYPE_IDS = Schema.getGlobalDescribe()
+                .get(objectName)
+                .getDescribe()
+                .getRecordTypeInfosById()
+                .keySet();
+        }
+        return DataTableService.RECORD_TYPE_IDS;
     }
 }

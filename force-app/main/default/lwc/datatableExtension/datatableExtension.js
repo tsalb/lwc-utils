@@ -59,7 +59,9 @@ export default class datatableExtension extends LightningDatatable {
             template: customPicklist,
             typeAttributes: [
                 // LWC specific attributes
-                'recordTypeId',
+                // After a lot of random debugging, it appears that recordTypeId is a reserved typeAttribute
+                // which is not passed down correctly if used, so the workaround is to use something more custom
+                'picklistRecordTypeId',
                 // Defaults for datatable-edit-cell
                 'requestorRecordId',
                 'rowKeyAttribute',

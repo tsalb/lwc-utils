@@ -297,6 +297,7 @@ export default class Datatable extends LightningElement {
 
     _setTableData(tableData, isRefresh) {
         if (!tableData || !tableData.length) {
+            this.tableData = [];
             return;
         }
         // First Paint - no sort

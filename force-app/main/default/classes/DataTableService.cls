@@ -93,15 +93,6 @@ public inherited sharing class DataTableService {
     }
 
     /**
-     * Experimental wire for creating tableCache
-     * For now, new POJO passed through @wire aren't triggering change event unless as JSON.
-     */
-    @AuraEnabled(cacheable=true)
-    public static Map<String, Object> wireTableCache(String tableRequest) {
-        return DataTableService.getTableCache((Map<String, Object>) JSON.deserializeUntyped(tableRequest));
-    }
-
-    /**
      * Creates a lightning-datatable ready object keys:
      * tableData and tableColumns can be used as attributes directly clientside.
      * @param  tableRequest [Object with keys listed at top of this class]

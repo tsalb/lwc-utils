@@ -4,9 +4,8 @@ import { convertToSingleLineString } from 'c/utils';
 export default class SoqlDatatableLauncherExample extends LightningElement {
     handleOpenDialog() {
         const query = convertToSingleLineString`
-            SELECT Title, Name, Email
+            SELECT Title, Name, Email, Account.Name, Account.Type
             FROM Contact
-            WHERE AccountId IN (SELECT Id FROM Account)
             LIMIT 5
         `;
         const dialogServicePayload = {

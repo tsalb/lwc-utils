@@ -281,7 +281,9 @@ None
 This component can dynamically create tables from just a SOQL String fed into its design attributes in the App Builder. For example: 
 
 ```
-SELECT Id, Name, Email, Phone, Account.Name, Account.BillingState, Account.Type FROM Contact
+SELECT Id, Name, Email, Phone, Account.Name, Account.BillingState, Account.Type 
+FROM Contact
+LIMIT 50
 ```
 
 ![soql-datatable](/readme-images/soql-datatable.png?raw=true)
@@ -290,21 +292,69 @@ Clicking Edit Page on the App Page, you can see that there are only a handful of
 
 ![soql-datatable-app-builder](/readme-images/soql-datatable-app-builder.png?raw=true)
 
-On a Record Flexipage you have access to a property called `isRecordBind` which will merge field in the `recordId` into the SOQL String like in the following examples:
+## soqlDatatable - Record Binding in SOQL
+
+This comes with an API to grab data from the current record context and merge it into the SOQL String with the `$CurrentRecord` and `$recordId` syntax as follows:
 
 ```
-SELECT Id, Name, Email, Phone FROM Contact WHERE AccountId = recordId
+// Find other Accounts similar to this Account's Industry
+SELECT Name, Type, Website, Industry
+FROM Account
+WHERE Industry = $CurrentRecord.Industry
+AND Id != $recordId
 
-or
-
-SELECT Id, Name FROM CustomObject__c WHERE Account__c IN (SELECT Id FROM Account WHERE Id = recordId)
+// Find related contacts with same MailingState as this Account's BillingState
+SELECT Name, Email, MailingState, Account.BillingState
+FROM Contact
+WHERE AccountId = $recordId
+AND MailingState = $CurrentRecord.BillingState
 ```
+
+It uses Lightning Data Service to `getRecord` and resolve the record values before merging them into the SOQL String. 
+
+Currently these data types for merging with `$CurrentRecord` are tested and supported:
+- `Date`
+- `Picklist`
+- `Text`
+- `Lookup` (Record Ids)
+
+More to come in the future.
+
+## soqlDatatable - Inline editing
+
+Define which fields can be editable in a comma separated list in the `Editable Fields` design attribute. For data types that are supported in the vanilla `lightning-datatable`, such as `date`, `text`, `number`, those are relied on as heavily as possible.
+
+For data types such as `picklist` which are yet to be supported, `soqlDatatable` uses the custom data types feature. The custom LWC surfaced as the datatable cell is called `customPicklist`. It copies the mass edit functionality as much as possible as the vanilla `lightning-datatable` to provide a seamless user experience until Salesforce provides `picklist` as a [supported data type](https://trailblazer.salesforce.com/ideaView?id=0873A000000PZJ4QAO).
+
+`RecordType` restricted picklist values are supported with a limitation:
+
+> When using mass edit on a Picklist field for a Standard Object enabled with Record Types, it's possible to mass apply a value which does not belong on that table. This seems to be because Standard Object picklist fields do not have the `Restrict picklist to the values defined in the value set` option.
+
+Multi-line inline edit is supported for the `customPicklist` data type. Partial save across rows is supported. The UI is aligned to **native list views** to provide a seamless User Experience.
+
+<p align="center">
+    <img src="./readme-images/soql-datatable-inline-edit-mass.png" width="900">
+</p>
+
+Error handling is also designed to be as close to native list views as possible.
+
+<p align="center">
+    <img src="./readme-images/soql-datatable-inline-edit-error.png" width="900">
+</p>
+
+The following are not currently supported, but is on the roadmap:
+- Keyboard navigation
+- `customLookup` data type
 
 #### soqlDatatable Specification
 
 **Attributes**
 
+`// TODO`
+
 **Public Methods**
+
+`// TODO`
 
 ## SOQL Datatable - Dynamic Creation via MessageService & DialogService
 
@@ -333,9 +383,8 @@ Here's the actual payload used in the above code flow:
 ```js
 handleOpenDialog() {
     const query = convertToSingleLineString`
-        SELECT Title, Name, Email
+        SELECT Title, Name, Email, Account.Name, Account.Type
         FROM Contact
-        WHERE AccountId IN (SELECT Id FROM Account)
         LIMIT 5
     `;
     const dialogServicePayload = {
@@ -376,7 +425,11 @@ Another component called `Collection Datatable` is able to display any Flow `Rec
 
 **Attributes**
 
+`// TODO`
+
 **Public Methods**
+
+`// TODO`
 
 ## Collection Datatable - Displaying a Record Collection
 

@@ -52,17 +52,20 @@ export default class Datatable extends LightningElement {
         this._keyField = value;
     }
     @api title;
-    @api showRecordCount;
+    @api showRecordCount = false;
+
+    // MessageService boundary, for when multiple instances are on same page
+    @api uniqueBoundary;
 
     // SOQL
     @api queryString;
-    @api isRecordBind;
+    @api isRecordBind = false;
 
     // Misc
     @api columnWidthsMode = 'auto'; // override salesforce default
     @api showRefreshButton = false;
     @api showSpinner = false;
-    @api useRelativeMaxHeight;
+    @api useRelativeMaxHeight = false;
 
     // Sorting
     @api sortedBy;
@@ -97,7 +100,7 @@ export default class Datatable extends LightningElement {
         }
     }
 
-    // In-line editing
+    // Inline editing
     @api
     get editableFields() {
         return this._editableFields;
@@ -106,8 +109,7 @@ export default class Datatable extends LightningElement {
         this._editableFields = createSetFromDelimitedString(value, ',');
     }
 
-    /* Template props and getters */
-
+    // Template and getters
     isHideCheckbox = true;
     maxRowSelection = MAX_ROW_SELECTION;
 
@@ -133,7 +135,7 @@ export default class Datatable extends LightningElement {
         return css;
     }
 
-    /* Public Methods */
+    // Public APIs
 
     @api
     initializeTable(objectApiName, columns, data) {
@@ -156,32 +158,23 @@ export default class Datatable extends LightningElement {
         this.dispatchEvent(new CustomEvent('refresh'));
     }
 
-    /**
-     * Private props
-     */
-
+    // private
     _isRendered;
     _messageService;
     _objectApiName;
     _objectInfo;
 
-    // In-line Edit
+    // private - inline edit
     _draftValuesMap = new Map();
     _draftSuccessIds = new Set();
 
-    // For future if object info data is needed
+    // For future enhancements
     @wire(getObjectInfo, { objectApiName: '$_objectApiName' })
     wiredObjectInfo({ error, data }) {
-        if (data) {
+        if (error) {
+            this._notifySingleError('getObjectInfo error', error);
+        } else if (data) {
             this._objectInfo = data;
-        } else if (error) {
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'getObjectInfo error',
-                    message: reduceErrors(error)[0],
-                    variant: 'error'
-                })
-            );
         }
     }
 
@@ -193,7 +186,7 @@ export default class Datatable extends LightningElement {
         this._messageService = this.template.querySelector('c-message-service');
     }
 
-    /* Event Handlers */
+    // Event Handlers
 
     handleRowSelection(event) {
         this.selectedRows = event.detail.selectedRows;
@@ -260,15 +253,13 @@ export default class Datatable extends LightningElement {
         this.showSpinner = false;
     }
 
-    /**
-     * Private functions
-     */
+    // Private functions
 
     _setTableColumns(tableColumns) {
         if (!tableColumns || !tableColumns.length) {
             return;
         }
-        let finalColumns = [];
+        const finalColumns = [];
         for (let col of tableColumns) {
             // Sorting
             if (this.sortableFields && this.sortableFields.size) {
@@ -285,6 +276,7 @@ export default class Datatable extends LightningElement {
             // only way to pass down attributes is via typeAttributes
             if (col.type.startsWith('custom')) {
                 const additional = {
+                    tableBoundary: this.uniqueBoundary,
                     rowKeyAttribute: this.keyField,
                     rowKeyValue: { fieldName: this.keyField },
                     isEditable: this.editableFields.has(col.fieldName)
@@ -403,5 +395,26 @@ export default class Datatable extends LightningElement {
             default:
             // nothing
         }
+    }
+
+    // Private toast functions
+
+    _notifySingleError(title, error = '') {
+        if (this._messageService) {
+            this._messageService.notifySingleError(title, error);
+        } else {
+            this._notifyError(title, reduceErrors(error)[0]);
+        }
+    }
+
+    _notifyError(title, error = '') {
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: title,
+                message: error,
+                variant: 'error',
+                mode: 'sticky'
+            })
+        );
     }
 }

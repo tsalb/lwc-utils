@@ -68,7 +68,7 @@ export default class DatatablePicklistCell extends LightningElement {
 
     // Required properties for datatable-edit-cell
     @api value; // comes in from datatable as the value of the name field
-    @api requestorRecordId;
+    @api tableBoundary;
     @api rowKeyAttribute;
     @api rowKeyValue;
     @api isEditable;

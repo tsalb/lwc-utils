@@ -45,7 +45,7 @@ export default class datatableExtension extends LightningDatatable {
                 'href',
                 'target',
                 // Defaults for datatable-edit-cell
-                'requestorRecordId',
+                'tableBoundary',
                 'rowKeyAttribute',
                 'rowKeyValue',
                 'isEditable',
@@ -63,7 +63,7 @@ export default class datatableExtension extends LightningDatatable {
                 // which is not passed down correctly if used, so the workaround is to use something more custom
                 'picklistRecordTypeId',
                 // Defaults for datatable-edit-cell
-                'requestorRecordId',
+                'tableBoundary',
                 'rowKeyAttribute',
                 'rowKeyValue',
                 'isEditable',

@@ -13,34 +13,34 @@
     <targetConfigs>
         <targetConfig targets="lightning__AppPage, lightning__HomePage">
             <property name="title" label="Title" type="String"/>
-            <property name="showRecordCount" label="Show Record Count" type="Boolean"/>
-            <property name="showRefreshButton" label="Show Refresh" type="Boolean"/>
+            <property name="showRecordCount" label="Show Record Count" type="Boolean" default="false"/>
+            <property name="showRefreshButton" label="Show Refresh" type="Boolean" default="false"/>
             <property name="queryString" label="SOQL String" type="String" placeholder="SELECT Id, Name FROM Account LIMIT 10" required="true"/>
             <property name="checkboxType" label="Checkbox Type" type="String" default="None" datasource="None,Multi,Single"/>
             <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of field api names for inline editing. Does not support parent fieldNames"/>
             <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API Names. If parent fieldNames, use _ instaed of . (e.g. Account_Name)"/>
             <property name="sortedBy" label="Default Sort Field" type="String" description="Field API name, if parent fieldName use _ instead of . (e.g. Account_Name)"/>
             <property name="sortedDirection" label="Default Sort Direction" type="String" datasource="asc,desc" default="asc"/>
-            <property name="useRelativeMaxHeight" label="Limit Height (Relative to screen)" type="Boolean" description="Force table height to 60% of the vertical screen space."/>
+            <property name="useRelativeMaxHeight" label="Limit Height (Relative to screen)" type="Boolean" description="Force table height to 60% of the vertical screen space." default="false"/>
         </targetConfig>
         <targetConfig targets="lightning__RecordPage">
             <property name="isRecordBind" label="Use Record Binding in SOQL String" type="Boolean" description="Use $CurrentRecord or $recordId in your SOQL query to bind record data or just the recordId. User must have FLS access." default="true"/>
             <property name="title" label="Title" type="String"/>
-            <property name="showRecordCount" label="Show Record Count" type="Boolean"/>
-            <property name="showRefreshButton" label="Show Refresh" type="Boolean"/>
+            <property name="showRecordCount" label="Show Record Count" type="Boolean" default="false"/>
+            <property name="showRefreshButton" label="Show Refresh" type="Boolean" default="false"/>
             <property name="queryString" label="SOQL String" type="String" placeholder="SELECT Id, Name FROM Account LIMIT 10" required="true"/>
             <property name="checkboxType" label="Checkbox Type" type="String" default="None" datasource="None,Multi,Single"/>
             <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of field api names for inline editing. Does not support parent fieldNames"/>
             <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API Names. If parent fieldNames, use _ instaed of . (e.g. Account_Name)"/>
             <property name="sortedBy" label="Default Sort Field" type="String" description="Field API name, if parent fieldName use _ instead of . (e.g. Account_Name)"/>
             <property name="sortedDirection" label="Default Sort Direction" type="String" datasource="asc,desc" default="asc"/>
-            <property name="useRelativeMaxHeight" label="Limit Height (Relative to screen)" type="Boolean" description="Force table height to 60% of the vertical screen space."/>
+            <property name="useRelativeMaxHeight" label="Limit Height (Relative to screen)" type="Boolean" description="Force table height to 60% of the vertical screen space." default="false"/>
         </targetConfig>
         <targetConfig targets="lightning__FlowScreen">
             <propertyType name="sObj" extends="SObject" label="Object"/>
             <property name="recordId" label="Record Id" type="String" role="inputOnly"/>
             <property name="title" label="Title" type="String" role="inputOnly"/>
-            <property name="showRecordCount" label="Show Record Count" type="Boolean" role="inputOnly"/>
+            <property name="showRecordCount" label="Show Record Count" type="Boolean" role="inputOnly" default="false"/>
             <property name="queryString" label="SOQL String" type="String" default="SELECT ... FROM ..." description="Use 'recordId' (no quotes) to bind to recordId property." required="true" role="inputOnly"/>
             <property name="checkboxType" label="Checkbox Type" type="String" description="None, Multi, or Single" role="inputOnly"/>
             <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of field api names for inline editing. Does not support parent fieldNames" role="inputOnly"/>

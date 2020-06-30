@@ -1,6 +1,8 @@
 <template>
-    <c-message-service boundary={recordId}></c-message-service>
+    <c-message-service boundary={uniqueBoundary}></c-message-service>
+
     <c-datatable
+        unique-boundary={uniqueBoundary}
         key-field="Id"
         title={title}
         record-id={recordId}

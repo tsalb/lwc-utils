@@ -33,7 +33,7 @@
 import { LightningElement, api } from 'lwc';
 
 export default class DatatableEditableCell extends LightningElement {
-    @api requestorRecordId;
+    @api tableBoundary;
     @api originalValue;
     @api displayCellValueProp;
     @api editCellValueProp;

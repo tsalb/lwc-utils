@@ -34,6 +34,7 @@ import { LightningElement, api, wire } from 'lwc';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import { getRecord } from 'lightning/uiRecordApi';
 import * as tableService from 'c/tableService';
+import { generateUUID } from 'c/utils';
 
 // Flow specific imports
 import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
@@ -46,10 +47,10 @@ export default class SoqlDatatable extends LightningElement {
     @api recordId;
     @api objectApiName;
 
-    @api isRecordBind;
+    @api isRecordBind = false;
     @api title;
-    @api showRecordCount;
-    @api showRefreshButton;
+    @api showRecordCount = false;
+    @api showRefreshButton = false;
 
     @api queryString;
     @api checkboxType;
@@ -57,13 +58,21 @@ export default class SoqlDatatable extends LightningElement {
 
     @api sortableFields;
     @api sortedBy;
-    @api sortedDirection;
-    @api useRelativeMaxHeight;
+    @api sortedDirection = 'asc';
+    @api useRelativeMaxHeight = false;
 
     // Pass through outputs for flow
     @api selectedRows;
 
-    showSpinner;
+    // MessageService boundary, useful for when multiple instances are on same page
+    get uniqueBoundary() {
+        if (!this._uniqueBoundary) {
+            this._uniqueBoundary = generateUUID();
+        }
+        return this._uniqueBoundary;
+    }
+
+    showSpinner = false;
 
     // private
     _isRendered;
@@ -201,13 +210,13 @@ export default class SoqlDatatable extends LightningElement {
         this.refreshTable();
     }
 
-    // Private Functions
+    // Private toast functions
 
     _notifySingleError(title, error = '') {
         if (this._messageService) {
             this._messageService.notifySingleError(title, error);
         } else {
-            this._notifyError(title, error);
+            this._notifyError(title, reduceErrors(error)[0]);
         }
     }
 

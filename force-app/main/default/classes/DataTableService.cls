@@ -72,6 +72,7 @@ public inherited sharing class DataTableService {
 
     @AuraEnabled(cacheable=true)
     public static String getQueryExceptionMessage(String queryString) {
+        System.debug('getQueryExceptionMessage queryString is: ' + queryString);
         String errorMessage;
         try {
             Database.query(queryString);

@@ -43,6 +43,31 @@ import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { reduceErrors } from 'c/utils';
 
+const DIRECT_MERGE_DATA_TYPES = [
+    'anytype',
+    'boolean',
+    'currency',
+    'date',
+    'datetime',
+    'double',
+    'integer',
+    'percent',
+    'time'
+];
+const STRING_MERGE_DATA_TYPES = [
+    'address',
+    'combobox',
+    'email',
+    'multipicklist',
+    'phone',
+    'picklist',
+    'reference',
+    'string',
+    'text',
+    'textarea',
+    'url'
+];
+
 export default class SoqlDatatable extends LightningElement {
     @api recordId;
     @api objectApiName;
@@ -93,6 +118,7 @@ export default class SoqlDatatable extends LightningElement {
             this._notifySingleError('getObjectInfo error', error);
         } else if (data) {
             this._objectInfo = data;
+            console.log(this._objectInfo);
             this._getRecordFields = Array.from(this._mergeMap.values()).map(
                 config => config.objectQualifiedFieldApiName
             );
@@ -112,14 +138,15 @@ export default class SoqlDatatable extends LightningElement {
             // Finally we can merge field our queryString
             for (const [key, config] of this._mergeMap.entries()) {
                 const dataType = config.dataType.toLowerCase();
-                if (dataType === 'date') {
+                if (DIRECT_MERGE_DATA_TYPES.includes(dataType)) {
                     this.queryString = this.queryString.replace(key, config.value);
                 }
-                if (dataType === 'string' || dataType === 'picklist' || dataType === 'reference') {
+                if (STRING_MERGE_DATA_TYPES.includes(dataType)) {
                     this.queryString = this.queryString.replace(key, `'${config.value}'`);
                 }
             }
             this._finalQueryString = this.queryString;
+            console.log(this._finalQueryString);
             this.validateQueryStringAndInitialize();
         }
     }

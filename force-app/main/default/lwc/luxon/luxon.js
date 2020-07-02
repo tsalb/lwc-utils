@@ -1169,10 +1169,7 @@ class Locale {
         return (
             'en' === this.locale ||
             'en-us' === this.locale.toLowerCase() ||
-            (hasIntl() &&
-                Intl.DateTimeFormat(this.intl)
-                    .resolvedOptions()
-                    .locale.startsWith('en-us'))
+            (hasIntl() && Intl.DateTimeFormat(this.intl).resolvedOptions().locale.startsWith('en-us'))
         );
     }
     equals(e) {
@@ -1862,9 +1859,7 @@ class Interval {
 }
 class Info {
     static hasDST(e = Settings.defaultZone) {
-        const n = DateTime.local()
-            .setZone(e)
-            .set({ month: 12 });
+        const n = DateTime.local().setZone(e).set({ month: 12 });
         return !e.universal && n.offset !== n.set({ month: 6 }).offset;
     }
     static isValidIANAZone(e) {
@@ -1913,11 +1908,7 @@ class Info {
     }
 }
 function dayDiff(e, n) {
-    const i = e =>
-            e
-                .toUTC(0, { keepLocalTime: !0 })
-                .startOf('day')
-                .valueOf(),
+    const i = e => e.toUTC(0, { keepLocalTime: !0 }).startOf('day').valueOf(),
         a = i(n) - i(e);
     return Math.floor(Duration.fromMillis(a).as('days'));
 }
@@ -2448,14 +2439,7 @@ function diffRelative(e, n, i) {
             return s.format(e, o);
         },
         s = a =>
-            i.calendary
-                ? n.hasSame(e, a)
-                    ? 0
-                    : n
-                          .startOf(a)
-                          .diff(e.startOf(a), a)
-                          .get(a)
-                : n.diff(e, a).get(a);
+            i.calendary ? (n.hasSame(e, a) ? 0 : n.startOf(a).diff(e.startOf(a), a).get(a)) : n.diff(e, a).get(a);
     if (i.unit) return o(s(i.unit), i.unit);
     for (const a of i.units) {
         const e = s(a);

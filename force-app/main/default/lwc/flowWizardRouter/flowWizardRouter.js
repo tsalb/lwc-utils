@@ -48,9 +48,7 @@ export default class FlowWizardRouter extends LightningElement {
             // So for now, we only move forward after messing with the cache
             if (this.isDateParserTwo) {
                 const cfg = { [this.flowCache.luxonMode]: this.flowCache.luxonNumber };
-                this.flowCache.calculatedDateTime = DateTime.local()
-                    .plus(cfg)
-                    .toISO();
+                this.flowCache.calculatedDateTime = DateTime.local().plus(cfg).toISO();
             }
         }
     }

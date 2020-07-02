@@ -331,15 +331,15 @@ export default class Datatable extends LightningElement {
 
     _sortBy(field, reverse, primer) {
         const key = primer
-            ? function(x) {
+            ? function (x) {
                   return primer(x[field]);
               }
-            : function(x) {
+            : function (x) {
                   return x[field];
               };
         // checks if the two rows should switch places
         reverse = !reverse ? 1 : -1;
-        return function(a, b) {
+        return function (a, b) {
             return (a = key(a) ? key(a) : ''), (b = key(b) ? key(b) : ''), reverse * ((a > b) - (b > a));
         };
     }

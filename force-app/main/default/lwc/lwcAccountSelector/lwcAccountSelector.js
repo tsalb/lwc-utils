@@ -31,7 +31,10 @@ export default class LwcAccountSelector extends LightningElement {
     }
 
     handleAccountOptionSelected(event) {
-        this._messageService.publish({ key: 'accountselected', value: event.target.value });
+        const payload = {
+            accountId: event.target.value
+        };
+        this._messageService.publish({ key: 'accountselected', value: payload });
     }
 
     handleClearTable() {

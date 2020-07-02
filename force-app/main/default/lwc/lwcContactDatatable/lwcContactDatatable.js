@@ -63,7 +63,8 @@ export default class LwcContactDatatable extends LightningElement {
     }
 
     handleAccountSelected(event) {
-        this._accountId = event.detail.value;
+        const payload = event.detail.value;
+        this._accountId = payload.accountId;
     }
 
     handleRefreshContacts() {

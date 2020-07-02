@@ -53,7 +53,7 @@ git clone https://github.com/tsalb/lwc-utils
 
 ## messageService
 
-Leverages `Lightning Message Service` on `OpenChannel__c` to message `payloads` in a key/value format like this:
+Leverages `Lightning Message Service` on `OpenChannel__c` to message `payloads` in a `key` / `value` format as defined in `OpenChannel__c` like this:
 
 ```js
 const payload = { 
@@ -63,26 +63,44 @@ const payload = {
         foo: 'bar'
     }
 }
-this.template.querySelector('c-message-service').publish(payload);
+messageService.publish(payload);
+
+// or, my preferred method, this way
+
+const payload = {
+    accountId: '12345'
+}
+messageService.publish({key: 'supercoolevent', value: payload});
 ```
 
-This component is meant to be composed on the template like this:
+And handled like this, composed on the template
 
 ```html
-<!-- Has listeners enabled -->
 <c-message-service
     boundary="sample_app_lwc"
-    oncleartable={handleClearTable}
-    onaccountselected={handleAccountSelected}
-    onrefreshcontacts={handleRefreshContacts}
+    oncoolevent={handleCoolEvent}
+    onsupercoolevent={handleSuperCoolEvent}
 ></c-message-service>
+```
+```js
+handleCoolEvent(event) {
+    console.log(event.detail.value.hello) // world
+    console.log(event.detail.value.foo) // bar
+}
 
-...or
+handleSuperCoolEvent(event) {
+    const payload = event.detail.value
+    console.log(payload.accountId) // 12345
+}
+```
 
+This component doesn't need to subscribe to an event, it can be used for publish only:
+
+```html
 <!-- No listeners, but has a boundary set for any publish() calls -->
 <c-message-service boundary={recordId}></c-message-service>
 
-...or
+... or
 
 <!-- No listeners, no boundary set for any publish() calls -->
 <c-message-service></c-message-service>
@@ -106,7 +124,7 @@ const dialogServicePayload = {
         }
     }
 };
-this.template.querySelector('c-message-service').dialogService(dialogServicePayload);
+messageService.dialogService(dialogServicePayload);
 ```
 
 #### messageService Specification
@@ -312,13 +330,7 @@ AND MailingState = $CurrentRecord.BillingState
 
 It uses Lightning Data Service to `getRecord` and resolve the record values before merging them into the SOQL String. 
 
-Currently these data types for merging with `$CurrentRecord` are tested and supported:
-- `Date`
-- `Picklist`
-- `Text`
-- `Lookup` (Record Ids)
-
-More to come in the future.
+All data types that can be SOQL-ed are supported for `$CurrentRecord`.
 
 ## soqlDatatable - Inline editing
 

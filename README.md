@@ -41,15 +41,15 @@ git clone https://github.com/tsalb/lwc-utils
 
 | Component Name | Description | Component Type |
 |-|-|-|
-| `messageService`<br><br>[Example](#messageService)<br>[Spec](#messageService-Specification)<br>[Code](./force-app/main/default/lwc/messageService/messageService.js#L41) | Use one API to communicate **within** or **across** both Aura and LWC technologies.<br><br>Use this component instead of manually publishing / subscribing to `Lightning Message Service` (LMS).<br><br>Provides a psuedo-namespacing property called `boundary` which can separate subscribers by string, `recordId` etc.<br><br>Subscribers can choose to listen to any event by just enabling event handling like:<br><br>LWC: `<c-messageService onmycoolevent={handleCoolEvent}>`<br><br>Aura: `<c:messageService onmycoolevent="{! c.handleCoolEvent }">` | LWC:<br>`Service` |
-| `DialogService`<br><br>[Example](#DialogService)<br>[Spec](#DialogService-Specification)<br>[Code](./force-app/main/default/aura/DialogService) | Provides access to `lightning:overlayLibrary` to create dialogs (modals) via LMS.<br><br>Both Aura and LWCs can be created dynamically and injected as the dialog body.<br><br>Both Aura's public `attributes` and LWC's `@api` properties can be passed in. | Aura:<br>`Service` |
-| `MessageServiceHandler`<br><br>[Example](#MessageServiceHandler)<br>[Spec](#MessageServiceHandler-Specification)<br>[Code](./force-app/main/default/aura/MessageServiceHandler) | Utility bar (empty label) component wrapping `messageService`.<br><br>Provides universal access to `DialogService` by handling the `opendialog` LMS event. | Aura:<br>`Service`, `Utility Bar` |
+| `messageService`<br><br>[Example](#messageService)<br>[Code](./force-app/main/default/lwc/messageService/messageService.js#L41) | Use one API to communicate **within** or **across** both Aura and LWC technologies.<br><br>Use this component instead of manually publishing / subscribing to `Lightning Message Service` (LMS).<br><br>Provides a psuedo-namespacing property called `boundary` which can separate subscribers by string, `recordId` etc.<br><br>Subscribers can choose to listen to any event by just enabling event handling like:<br><br>LWC: ``<br><br>Aura: `` | LWC:<br>`Service` |
+| `DialogService`<br><br>[Example](#DialogService)<br>[Code](./force-app/main/default/aura/DialogService) | Provides access to `lightning:overlayLibrary` to create dialogs (modals) via LMS.<br><br>Both Aura and LWCs can be created dynamically and injected as the dialog body.<br><br>Both Aura's public `attributes` and LWC's `@api` properties can be passed in. | Aura:<br>`Service` |
+| `MessageServiceHandler`<br><br>[Example](#MessageServiceHandler)<br>[Code](./force-app/main/default/aura/MessageServiceHandler) | Utility bar (empty label) component wrapping `messageService`.<br><br>Provides universal access to `DialogService` by handling the `opendialog` LMS event. | Aura:<br>`Service`, `Utility Bar`, `Flexipage` |
 | `EventFooter`<br><br>[Code](./force-app/main/default/aura/EventFooter) | Dynamic footer for lwc dialogs.<br><br>Contains an instance of `messageService` listening for the `closedialog` LMS Event.<br><br>Unfortunately, `component.getReference()` does not work on LWCs. Write your own action button in the dialog body. | Aura:<br>`UI` |
 | `ModalFooter`<br><br>[Code](./force-app/main/default/aura/ModalFooter) | Dynamic footer for aura dialogs.<br><br>Connects a primary action on the target dialog body to the footer's main action via `component.getReference()`<br><br>Enables writing functions directly on the dialog body and `DialogService.modal()` will connect it to a primary action. | Aura:<br>`UI` |
-| `FlowWrapper`<br><br>[Example](#FlowWrapper)<br>[Spec](#FlowWrapper-Specification)<br>[Code](./force-app/main/default/aura/FlowWrapper) | Enables `messageService` to create flows inside a dialog body dynamically.<br><br>Can be used with `dialogAutoCloser` (LWC flow component) to automatically close a dialog launched by this component.<br><br>See [`flowWizardLauncherExample`](./force-app/main/default/lwc/flowWizardLauncherExample/flowWizardLauncherExample.js#L19) | Aura:<br>`Service` |
-| `dialogAutoCloser`<br><br>[Example](#dialogAutoCloser)<br>[Spec](#dialogAutoCloser-Specification)<br>[Code](./force-app/main/default/lwc/dialogAutoCloser) | Contains a progress bar and timer message before automatically closing a `DialogService` dialog with the `closerfooter` LMS event | LWC:<br>`Service`, `Flow` |
-| `soqlDatatable`<br><br>[Example](#soqlDatatable)<br>[Spec](#soqlDatatable-Specification)<br>[Code](./force-app/main/default/lwc/soqlDatatable) | // TODO | LWC:<br>`UI`, `App`, `Record`, `Flow` |
-| `collectionDatatable`<br><br>[Example](#collectionDatatable)<br>[Spec](#collectionDatatable-Specification)<br>[Code](./force-app/main/default/lwc/collectionDatatable) | // TODO | LWC:<br>`UI`, `Flow` |
+| `FlowWrapper`<br><br>[Example](#FlowWrapper)<br>[Code](./force-app/main/default/aura/FlowWrapper) | Enables `messageService` to create flows inside a dialog body dynamically.<br><br>Can be used with `dialogAutoCloser` (LWC flow component) to automatically close a dialog launched by this component.<br><br>See [`flowWizardLauncherExample`](./force-app/main/default/lwc/flowWizardLauncherExample/flowWizardLauncherExample.js#L19) | Aura:<br>`Service` |
+| `dialogAutoCloser`<br><br>[Example](#dialogAutoCloser)<br>[Code](./force-app/main/default/lwc/dialogAutoCloser) | Contains a progress bar and timer message before automatically closing a `DialogService` dialog with the `closerfooter` LMS event | LWC:<br>`Service`, `Flow` |
+| `soqlDatatable`<br><br>[Example](#soqlDatatable)<br>[Code](./force-app/main/default/lwc/soqlDatatable) | // TODO | LWC:<br>`UI`, `App`, `Record`, `Flow` |
+| `collectionDatatable`<br><br>[Example](#collectionDatatable)<br>[Code](./force-app/main/default/lwc/collectionDatatable) | // TODO | LWC:<br>`UI`, `Flow` |
 
 ## messageService
 
@@ -127,7 +127,9 @@ const dialogServicePayload = {
 this._messageService.dialogService(dialogServicePayload);
 ```
 
-#### messageService Specification
+<details>
+    <summary>messageService Specification</summary>
+
 
 **Attributes**
 
@@ -147,6 +149,7 @@ this._messageService.dialogService(dialogServicePayload);
 | notifySuccess | (`title`, `message` = null) | Convenience function for `ShowToastEvent` |
 | notifyInfo | (`title`, `message` = null) | Convenience function for `ShowToastEvent` |
 | notifySingleError | (`title`, `error` = '') | Convenience function for `ShowToastEvent`.<br>`error` object can be passed directly in, it will be reduced/parsed by `c-utils.reduceError`. |
+</details>
 
 ## DialogService
 
@@ -156,7 +159,9 @@ Primarily used by `messageService` for message publishing, `MessageServiceHandle
 
 It is not recommended to use this component directly.
 
-#### DialogService Specification
+<details>
+    <summary>DialogService Specification</summary>
+
 
 **Attributes**
 
@@ -177,6 +182,7 @@ For that reason, it is recommended to use `messageService` / `MessageServiceHand
 | modalLarge | (<br>  `auraId`,<br>  `headerLabel`,<br>  `body`,<br>  `bodyParams`,<br>  `mainActionReference`,<br>  `mainActionLabel`,<br>  `callback`,<br>  `isLargeModal = true`<br>) | Compatible with Aura dialog bodies.<br><br>Same as `modal`, with wider dialog box using `slds-modal_large` |
 | bodyModal | (<br>  `auraId`,<br>  `headerLabel`,<br>  `body`,<br>  `bodyParams`,<br>  `callback`<br>) | Compatible with LWC dialog bodies.<br><br>Same as `modal` except without connectivity to a `mainAction` via `component.getReference` which doesn't work on LWCs, even with `@api` functions.<br><br>Instead, a slim footer called `EventFooter` is created which is subscribing to the `dialogclose` event for closing the dialog.<br><br>Write your own `Cancel` and `Primary Action` button on the dialog body that is dynamically being created. |
 | bodyModalLarge | (<br>  `auraId`,<br>  `headerLabel`,<br>  `body`,<br>  `bodyParams`,<br>  `callback`,<br>  `isLargeModal = true`<br>) | Compatible with LWC dialog bodies.<br><br>Same as `bodyModal`, with wider dialog box using `slds-modal_large` |
+</details>
 
 ## MessageServiceHandler
 
@@ -206,7 +212,9 @@ This component is very simple which just listens and delegates to `DialogService
 </aura:component>
 ```
 
-#### MessageServiceHandler Specification
+<details>
+    <summary>MessageServiceHandler Specification</summary>
+
 
 **Attributes**
 
@@ -215,6 +223,8 @@ None
 **Public Methods**
 
 None
+
+</details>
 
 ## FlowWrapper
 
@@ -234,7 +244,9 @@ So then, the component itself is very simple.
 </aura:component>
 ```
 
-#### FlowWrapper Specification
+<details>
+    <summary>FlowWrapper Specification</summary>
+
 
 **Attributes**
 
@@ -246,6 +258,8 @@ So then, the component itself is very simple.
 **Public Methods**
 
 None
+
+</details>
 
 ## dialogAutoCloser
 
@@ -281,7 +295,9 @@ A simple component that counts down and auto closes a dialog with the `closedial
     }
 ```
 
-#### dialogAutoCloser Specification
+<details>
+    <summary>dialogAutoCloser Specification</summary>
+
 
 **Attributes**
 
@@ -293,6 +309,7 @@ A simple component that counts down and auto closes a dialog with the `closedial
 **Public Methods**
 
 None
+</details>
 
 ## soqlDatatable
 
@@ -310,7 +327,12 @@ Clicking Edit Page on the App Page, you can see that there are only a handful of
 
 ![soql-datatable-app-builder](/readme-images/soql-datatable-app-builder.png?raw=true)
 
-## soqlDatatable - Record Binding in SOQL
+## soqlDatatable - Features and Examples
+
+<!-- Psuedo-spoiler tags can be formed like this. Line break is required! -->
+<details>
+    <summary>Record Binding in SOQL</summary>
+
 
 This comes with an API to grab data from the current record context and merge it into the SOQL String with the `$CurrentRecord` and `$recordId` syntax as follows:
 
@@ -331,8 +353,11 @@ AND MailingState = $CurrentRecord.BillingState
 It uses Lightning Data Service to `getRecord` and resolve the record values before merging them into the SOQL String. 
 
 All data types that can be SOQL-ed are supported for `$CurrentRecord`.
+</details>
 
-## soqlDatatable - Inline editing
+<details>
+    <summary>Inline Editing</summary>
+
 
 Define which fields can be editable in a comma separated list in the `Editable Fields` design attribute. For data types that are supported in the vanilla `lightning-datatable`, such as `date`, `text`, `number`, those are relied on as heavily as possible.
 
@@ -358,17 +383,35 @@ The following are not currently supported, but is on the roadmap:
 - Keyboard navigation
 - `customLookup` data type
 
-#### soqlDatatable Specification
+</details>
 
-**Attributes**
+<details>
+    <summary>Configurable Custom Actions</summary>
 
-`// TODO`
 
-**Public Methods**
+#### Flow Action
 
-`// TODO`
+This component currently has one button in the top right that is reserved for a configurable Flow action.
 
-## SOQL Datatable - Dynamic Creation via MessageService & DialogService
+The example in the `SOQL Datatable` tab uses the following design attributes:
+
+- **Flow Action Dev Name**: `SOQL_Datatable_Flow_Action_Update_Contacts_with_New_Account`
+- **Flow Action Button Label**: `Assign New Account`
+- **Flow Size**: `Normal`
+
+<p align="center">
+    <img src="./readme-images/soql-datatable-flow-action.gif" width="900">
+</p>
+
+<p align="center">
+    <img src="./readme-images/soql-datatable-new-account-flow.png" width="320">
+</p>
+
+</details>
+
+<details>
+    <summary>Dynamic Creation via MessageService & DialogService</summary>
+
 
 Dynamically create a `soqlDatatable` when clicking the `Launch a SOQL Datatable in a Dialog` button.
 
@@ -417,8 +460,11 @@ handleOpenDialog() {
 ```
 
 As you can see, it's possible to parameterize a payload back to Aura's `$A.createComponent` API to instantiate a public properties against an LWC.
+</details>
 
-## SOQL Datatable - Display a Selection to Collection Datatable in Flow
+<details>
+    <summary>Display a Selection to Collection Datatable in Flow</summary>
+
 
 This Screen Flow uses the ability for `SOQL Datatable` to output a `List<SObject>` directly in Flow.
 
@@ -430,6 +476,20 @@ Another component called `Collection Datatable` is able to display any Flow `Rec
 <p align="center">
     <img src="./readme-images/soql-datatable-to-collection-datatable.gif" width="600">
 </p>
+</details>
+
+<details>
+    <summary>soqlDatatable Specification</summary>
+
+
+**Attributes**
+
+`// TODO`
+
+**Public Methods**
+
+`// TODO`
+</details>
 
 ## collectionDatatable
 

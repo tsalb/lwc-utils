@@ -12,6 +12,18 @@
                     <value>Name, Email, Phone, LeadSource</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>flowActionDevName</name>
+                    <value>SOQL_Datatable_Flow_Action_Update_Contacts_with_New_Account</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>flowActionLabel</name>
+                    <value>Assign New Account</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>flowSize</name>
+                    <value>Normal</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>queryString</name>
                     <value>SELECT Name, Email, Phone, LeadSource, Account.Name, Account.Type FROM Contact LIMIT 50</value>
                 </componentInstanceProperties>

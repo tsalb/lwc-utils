@@ -109,6 +109,11 @@ export default class Datatable extends LightningElement {
         this._editableFields = createSetFromDelimitedString(value, ',');
     }
 
+    // Custom actions
+    @api flowActionDevName;
+    @api flowActionLabel;
+    @api isLargeFlow = false;
+
     // Template and getters
     isHideCheckbox = true;
     maxRowSelection = MAX_ROW_SELECTION;
@@ -127,12 +132,8 @@ export default class Datatable extends LightningElement {
         return this.showRefreshButton;
     }
 
-    get containerClass() {
-        let css = 'slds-border_top slds-border_bottom slds-border_left slds-border_right slds-is-relative ';
-        if (this.useRelativeMaxHeight) {
-            css += 'table-vh ';
-        }
-        return css;
+    get showFlowAction() {
+        return this.flowActionDevName && this.flowActionLabel;
     }
 
     // Public APIs
@@ -187,6 +188,52 @@ export default class Datatable extends LightningElement {
     }
 
     // Event Handlers
+
+    handleRefresh() {
+        this.refreshTable();
+    }
+
+    handleFlowAction() {
+        const flowInputVars = [];
+        // The following should only be provided to the flow when used.
+        const selectedRowKeys = this.selectedRows.map(row => row[this.keyField]);
+        if (selectedRowKeys.length) {
+            flowInputVars.push({
+                name: 'SelectedRowKeys',
+                type: 'String', // array
+                value: selectedRowKeys
+            });
+            flowInputVars.push({
+                name: 'SelectedRowKeysSize',
+                type: 'Number',
+                value: selectedRowKeys.length
+            });
+        }
+        if (this.uniqueBoundary) {
+            flowInputVars.push({
+                name: 'UniqueBoundary',
+                type: 'String',
+                value: this.uniqueBoundary
+            });
+        }
+        if (this.recordId) {
+            flowInputVars.push({
+                name: 'SourceRecordId',
+                type: 'String',
+                value: this.recordId || 'none'
+            });
+        }
+        const flowPayload = {
+            method: this.isLargeFlow ? 'flowLarge' : 'flow',
+            config: {
+                componentParams: {
+                    flowApiName: this.flowActionDevName,
+                    inputVariables: flowInputVars
+                }
+            }
+        };
+        this._messageService.dialogService(flowPayload);
+    }
 
     handleRowSelection(event) {
         this.selectedRows = event.detail.selectedRows;
@@ -417,5 +464,23 @@ export default class Datatable extends LightningElement {
                 mode: 'sticky'
             })
         );
+    }
+
+    // Class expressions
+
+    get containerClass() {
+        let css = 'slds-border_top slds-border_bottom slds-border_left slds-border_right slds-is-relative ';
+        if (this.useRelativeMaxHeight) {
+            css += 'table-vh ';
+        }
+        return css;
+    }
+
+    get refreshClass() {
+        let css = 'slds-p-left_x-small ';
+        if (!this.showFlowAction) {
+            css += 'slds-p-right_small ';
+        }
+        return css;
     }
 }

@@ -1,5 +1,5 @@
 <template>
-    <c-message-service boundary={uniqueBoundary}></c-message-service>
+    <c-message-service boundary={uniqueBoundary} onrefreshsoqldatatable={handleRefresh}></c-message-service>
 
     <c-datatable
         unique-boundary={uniqueBoundary}
@@ -18,6 +18,9 @@
         onrowselection={handleRowSelection}
         onrefresh={handleRefresh}
         show-spinner={showSpinner}
+        flow-action-dev-name={flowActionDevName}
+        flow-action-label={flowActionLabel}
+        is-large-flow={isLargeFlow}
         use-relative-max-height={useRelativeMaxHeight}
     ></c-datatable>
 </template>

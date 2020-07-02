@@ -64,6 +64,16 @@
                     <value>Name, Email, MailingState</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>flowActionDevName</name>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>flowActionLabel</name>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>flowSize</name>
+                    <value>Normal</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>isRecordBind</name>
                     <value>true</value>
                 </componentInstanceProperties>
@@ -116,6 +126,10 @@
                 <componentInstanceProperties>
                     <name>editableFields</name>
                     <value>Name, Email, Title, Phone, MailingState</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>flowSize</name>
+                    <value>Normal</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>isRecordBind</name>
@@ -172,6 +186,10 @@
                     <value>Name, Type, Industry, Website</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>flowSize</name>
+                    <value>Normal</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>isRecordBind</name>
                     <value>true</value>
                 </componentInstanceProperties>
@@ -226,6 +244,10 @@
                     <value>Name, Type, Website, Industry</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>flowSize</name>
+                    <value>Normal</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>isRecordBind</name>
                     <value>true</value>
                 </componentInstanceProperties>
@@ -273,7 +295,7 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>active</name>
-                    <value>true</value>
+                    <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>body</name>

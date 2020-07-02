@@ -63,14 +63,14 @@ const payload = {
         foo: 'bar'
     }
 }
-messageService.publish(payload);
+this._messageService.publish(payload);
 
 // or, my preferred method, this way
 
 const payload = {
     accountId: '12345'
 }
-messageService.publish({key: 'supercoolevent', value: payload});
+this._messageService.publish({key: 'supercoolevent', value: payload});
 ```
 
 And handled like this, composed on the template
@@ -124,7 +124,7 @@ const dialogServicePayload = {
         }
     }
 };
-messageService.dialogService(dialogServicePayload);
+this._messageService.dialogService(dialogServicePayload);
 ```
 
 #### messageService Specification
@@ -412,7 +412,7 @@ handleOpenDialog() {
             }
         }
     };
-    this.template.querySelector('c-message-service').dialogService(dialogServicePayload);
+    this._messageService.dialogService(dialogServicePayload);
 }
 ```
 

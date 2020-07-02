@@ -86,6 +86,17 @@ export default class SoqlDatatable extends LightningElement {
     @api sortedDirection = 'asc';
     @api useRelativeMaxHeight = false;
 
+    // Flow Actions
+    @api flowActionDevName;
+    @api flowActionLabel;
+    @api
+    get flowSize() {
+        return this.isLargeFlow ? 'Large' : 'Normal';
+    }
+    set flowSize(value) {
+        this.isLargeFlow = value === 'Large';
+    }
+
     // Pass through outputs for flow
     @api selectedRows;
 
@@ -97,6 +108,7 @@ export default class SoqlDatatable extends LightningElement {
         return this._uniqueBoundary;
     }
 
+    isLargeFlow = false;
     showSpinner = false;
 
     // private

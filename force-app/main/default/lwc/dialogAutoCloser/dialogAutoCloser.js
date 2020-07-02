@@ -36,9 +36,14 @@ export default class DialogAutoCloser extends LightningElement {
     @api messageTemplate = 'Auto closing in {timer} seconds';
     @api timer = 5;
 
+    // Scopes refresh
+    @api uniqueBoundary;
+    @api isRefreshTable = false;
+
     progress = 100;
 
     // private
+    _messageService;
     _originalTemplate;
     _originalTimer;
     _isRendered;
@@ -58,6 +63,7 @@ export default class DialogAutoCloser extends LightningElement {
         this._isRendered = true;
         this._startProgressInterval();
         this._startTimerInterval();
+        this._messageService = this.template.querySelector('c-message-service');
     }
 
     disconnectedCallback() {
@@ -88,6 +94,9 @@ export default class DialogAutoCloser extends LightningElement {
     _close() {
         clearInterval(this._progressInterval);
         clearInterval(this._timerInterval);
-        this.template.querySelector('c-message-service').notifyClose();
+        if (this.uniqueBoundary && this.isRefreshTable) {
+            this._messageService.publish({ key: 'refreshsoqldatatable' });
+        }
+        this._messageService.notifyClose();
     }
 }

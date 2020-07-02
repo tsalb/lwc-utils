@@ -37,12 +37,21 @@
         <div slot="actions">
             <lightning-layout if:true={hasActions} horizontal-align="end" vertical-align="end" pull-to-boundary="small">
                 <template if:true={showRefreshButton}>
-                    <lightning-layout-item class="slds-p-horizontal_x-small">
+                    <lightning-layout-item class={refreshClass}>
                         <lightning-button-icon
                             alternative-text="Refresh"
                             icon-name="utility:refresh"
-                            onclick={refreshTable}
+                            onclick={handleRefresh}
                         ></lightning-button-icon>
+                    </lightning-layout-item>
+                </template>
+                <template if:true={showFlowAction}>
+                    <lightning-layout-item class="slds-p-left_x-small slds-p-right_small">
+                        <lightning-button
+                            name={flowActionDevName}
+                            label={flowActionLabel}
+                            onclick={handleFlowAction}
+                        ></lightning-button>
                     </lightning-layout-item>
                 </template>
             </lightning-layout>

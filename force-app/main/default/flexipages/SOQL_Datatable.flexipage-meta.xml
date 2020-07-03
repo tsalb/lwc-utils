@@ -4,24 +4,16 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
+                    <name>actionConfigDevName</name>
+                    <value>LWC_Utils_SOQL_Datatable_tab</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>checkboxType</name>
                     <value>Multi</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>editableFields</name>
                     <value>Name, Email, Phone, LeadSource</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>flowActionDevName</name>
-                    <value>SOQL_Datatable_Flow_Action_Update_Contacts_with_New_Account</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>flowActionLabel</name>
-                    <value>Assign New Account</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>flowSize</name>
-                    <value>Normal</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>queryString</name>

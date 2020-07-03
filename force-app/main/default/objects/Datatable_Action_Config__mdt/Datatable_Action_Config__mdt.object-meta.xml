@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Table and Row action configurations for Datatable_Config__mdt</description>
+    <label>Datatable Action Config</label>
+    <pluralLabel>Datatable Action Config</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

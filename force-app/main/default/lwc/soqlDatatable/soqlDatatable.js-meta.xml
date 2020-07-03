@@ -21,9 +21,7 @@
             <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API Names. If parent fieldNames, use _ instaed of . (e.g. Account_Name)"/>
             <property name="sortedBy" label="Default Sort Field" type="String" description="Field API name, if parent fieldName use _ instead of . (e.g. Account_Name)"/>
             <property name="sortedDirection" label="Default Sort Direction" type="String" datasource="asc,desc" default="asc"/>
-            <property name="flowActionDevName" label="Flow Action Dev Name" type="String" description="API name of a flow that you want to show up as a custom button on the table. Supports single and multiselect."/>
-            <property name="flowActionLabel" label="Flow Action Button Label" type="String" description="Label of the button that launches the flow"/>
-            <property name="flowSize" label="Flow Size" type="String" datasource="Normal,Large" default="Normal"/>
+            <property name="actionConfigDevName" label="Action Configuration" type="String" description="Configure table and row actions with a record in Datatable_Config__mdt"/>
             <property name="useRelativeMaxHeight" label="Limit Height (Relative to screen)" type="Boolean" description="Force table height to 60% of the vertical screen space." default="false"/>
         </targetConfig>
         <targetConfig targets="lightning__RecordPage">
@@ -37,9 +35,6 @@
             <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API Names. If parent fieldNames, use _ instaed of . (e.g. Account_Name)"/>
             <property name="sortedBy" label="Default Sort Field" type="String" description="Field API name, if parent fieldName use _ instead of . (e.g. Account_Name)"/>
             <property name="sortedDirection" label="Default Sort Direction" type="String" datasource="asc,desc" default="asc"/>
-            <property name="flowActionDevName" label="Flow Action Dev Name" type="String" description="API name of a flow that you want to show up as a custom button on the table. Supports single and multiselect."/>
-            <property name="flowActionLabel" label="Flow Action Button Label" type="String" description="Label of the button that launches the flow"/>
-            <property name="flowSize" label="Flow Size" type="String" datasource="Normal,Large" default="Normal"/>
             <property name="useRelativeMaxHeight" label="Limit Height (Relative to screen)" type="Boolean" description="Force table height to 60% of the vertical screen space." default="false"/>
         </targetConfig>
         <targetConfig targets="lightning__FlowScreen">

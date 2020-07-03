@@ -70,6 +70,8 @@ public inherited sharing class DataTableService {
 
     private static Set<Id> RECORD_TYPE_IDS { private get; private set; }
 
+    private static final String DATATABLE_ACTION_CONFIG_TYPE = 'Actions';
+
     @AuraEnabled(cacheable=true)
     public static String getQueryExceptionMessage(String queryString) {
         System.debug('getQueryExceptionMessage queryString is: ' + queryString);
@@ -128,6 +130,17 @@ public inherited sharing class DataTableService {
             TABLE_COLUMNS_KEY => tableColumns,
             SOBJECT_API_NAME => objectName
         };
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<Datatable_Action_Config__mdt> getActionConfig(String configName) {
+        return [
+            SELECT Button_Label__c, Datatable_Config__c, Screen_Flow_API_Name__c, Type__c, Flow_Size__c
+            FROM Datatable_Action_Config__mdt
+            WHERE
+                Datatable_Config__r.DeveloperName = :configName
+                AND Datatable_Config__r.Type__c = :DATATABLE_ACTION_CONFIG_TYPE
+        ];
     }
 
     private static String addRecordTypeIdToQueryString(String queryString) {

@@ -87,15 +87,7 @@ export default class SoqlDatatable extends LightningElement {
     @api useRelativeMaxHeight = false;
 
     // Flow Actions
-    @api flowActionDevName;
-    @api flowActionLabel;
-    @api
-    get flowSize() {
-        return this.isLargeFlow ? 'Large' : 'Normal';
-    }
-    set flowSize(value) {
-        this.isLargeFlow = value === 'Large';
-    }
+    @api actionConfigDevName;
 
     // Pass through outputs for flow
     @api selectedRows;

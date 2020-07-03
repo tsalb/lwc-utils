@@ -3,8 +3,8 @@
     <assignments>
         <name>Add_Contact_to_Update_List</name>
         <label>Add Contact to Update List</label>
-        <locationX>739</locationX>
-        <locationY>270</locationY>
+        <locationX>408</locationX>
+        <locationY>288</locationY>
         <assignmentItems>
             <assignToReference>ContactsToUpdate</assignToReference>
             <operator>Add</operator>
@@ -17,10 +17,10 @@
         </connector>
     </assignments>
     <assignments>
-        <name>Set_Contact_Field</name>
-        <label>Set Contact Field</label>
-        <locationX>740</locationX>
-        <locationY>116</locationY>
+        <name>Clear_Contact_Phone</name>
+        <label>Clear Contact Phone</label>
+        <locationX>408</locationX>
+        <locationY>155</locationY>
         <assignmentItems>
             <assignToReference>ContactShell.Id</assignToReference>
             <operator>Assign</operator>
@@ -29,55 +29,30 @@
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>ContactShell.AccountId</assignToReference>
+            <assignToReference>ContactShell.Phone</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>AccountLookup.recordId</elementReference>
+                <stringValue/>
             </value>
         </assignmentItems>
         <connector>
             <targetReference>Add_Contact_to_Update_List</targetReference>
         </connector>
     </assignments>
-    <decisions>
-        <name>Contacts_Selected</name>
-        <label>Contacts Selected</label>
-        <locationX>248</locationX>
-        <locationY>202</locationY>
-        <defaultConnector>
-            <targetReference>Nothing_Selected</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Yes</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>SelectedRowKeysSize</leftValueReference>
-                <operator>GreaterThan</operator>
-                <rightValue>
-                    <numberValue>0.0</numberValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>New_Account_Lookup</targetReference>
-            </connector>
-            <label>Yes</label>
-        </rules>
-    </decisions>
-    <interviewLabel>SOQL Datatable Flow Action - Update Contacts with New Account {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>SOQL Datatable - Flow Action - Update Contacts with New Account</label>
+    <interviewLabel>SOQL_Datatable_Flow_Row_Action_Remove_Contact_Phone {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>SOQL Datatable - Flow Row Action - Remove Contact Phone</label>
     <loops>
         <name>Contact_Id</name>
         <label>Contact Id</label>
-        <locationX>526</locationX>
-        <locationY>200</locationY>
+        <locationX>176</locationX>
+        <locationY>225</locationY>
         <collectionReference>SelectedRowKeys</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
-            <targetReference>Set_Contact_Field</targetReference>
+            <targetReference>Clear_Contact_Phone</targetReference>
         </nextValueConnector>
         <noMoreValuesConnector>
-            <targetReference>Update_Contacts_with_New_Account</targetReference>
+            <targetReference>Update_Contacts</targetReference>
         </noMoreValuesConnector>
     </loops>
     <processMetadataValues>
@@ -94,81 +69,20 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <recordUpdates>
-        <name>Update_Contacts_with_New_Account</name>
-        <label>Update Contacts with New Account</label>
-        <locationX>521</locationX>
-        <locationY>430</locationY>
+        <name>Update_Contacts</name>
+        <label>Update Contacts</label>
+        <locationX>174</locationX>
+        <locationY>413</locationY>
         <connector>
             <targetReference>Success</targetReference>
         </connector>
         <inputReference>ContactsToUpdate</inputReference>
     </recordUpdates>
     <screens>
-        <name>New_Account_Lookup</name>
-        <label>New Account Lookup</label>
-        <locationX>404</locationX>
-        <locationY>200</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <connector>
-            <targetReference>Contact_Id</targetReference>
-        </connector>
-        <fields>
-            <name>AssignmentInfo</name>
-            <fieldText>&lt;p&gt;Change Account for {!SelectedRowKeysSize} Contacts&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <fields>
-            <name>AccountLookup</name>
-            <extensionName>flowruntime:lookup</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>fieldApiName</name>
-                <value>
-                    <stringValue>AccountId</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>objectApiName</name>
-                <value>
-                    <stringValue>Contact</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>label</name>
-                <value>
-                    <stringValue>New Account</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>required</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
-        <name>Nothing_Selected</name>
-        <label>Nothing Selected</label>
-        <locationX>50</locationX>
-        <locationY>203</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <showFooter>false</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
         <name>Success</name>
         <label>Success</label>
-        <locationX>739</locationX>
-        <locationY>430</locationY>
+        <locationX>175</locationX>
+        <locationY>564</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -188,15 +102,9 @@
                 </value>
             </inputParameters>
             <inputParameters>
-                <name>messageTemplate</name>
-                <value>
-                    <stringValue>Auto closing in {timer} seconds</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
                 <name>timer</name>
                 <value>
-                    <numberValue>4.0</numberValue>
+                    <numberValue>3.0</numberValue>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -212,13 +120,13 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>130</locationX>
+        <locationX>50</locationX>
         <locationY>50</locationY>
         <connector>
-            <targetReference>Contacts_Selected</targetReference>
+            <targetReference>Contact_Id</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>ContactShell</name>
         <dataType>SObject</dataType>

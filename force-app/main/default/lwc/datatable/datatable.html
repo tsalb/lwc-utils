@@ -45,14 +45,27 @@
                         ></lightning-button-icon>
                     </lightning-layout-item>
                 </template>
-                <template if:true={showFlowAction}>
-                    <lightning-layout-item class="slds-p-left_x-small slds-p-right_small">
-                        <lightning-button
-                            name={flowActionDevName}
-                            label={flowActionLabel}
-                            onclick={handleFlowAction}
-                        ></lightning-button>
-                    </lightning-layout-item>
+                <template if:true={showFlowTableActions}>
+                    <template if:true={hasPrimaryFlowAction}>
+                        <lightning-layout-item class="slds-p-left_x-small slds-p-right_small">
+                            <lightning-button
+                                data-flowsize={primaryFlowConfig.Flow_Size__c}
+                                name={primaryFlowConfig.Screen_Flow_API_Name__c}
+                                label={primaryFlowConfig.Button_Label__c}
+                                onclick={handleFlowAction}
+                            ></lightning-button>
+                        </lightning-layout-item>
+                    </template>
+                    <template if:true={hasSecondaryFlowAction}>
+                        <lightning-layout-item class="slds-p-left_x-small slds-p-right_small">
+                            <lightning-button
+                                data-flowsize={secondaryFlowConfig.Flow_Size__c}
+                                name={secondaryFlowConfig.Screen_Flow_API_Name__c}
+                                label={secondaryFlowConfig.Button_Label__c}
+                                onclick={handleFlowAction}
+                            ></lightning-button>
+                        </lightning-layout-item>
+                    </template>
                 </template>
             </lightning-layout>
         </div>

@@ -32,8 +32,8 @@
 
 import { LightningElement, api, wire } from 'lwc';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
-
 import * as tableService from 'c/tableService'; // Data, columns, mass update
+import getActionConfig from '@salesforce/apex/DataTableService.getActionConfig'; // Custom flow actions
 
 // Toast and Errors
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -41,6 +41,8 @@ import { reduceErrors, createSetFromDelimitedString } from 'c/utils';
 
 const MAX_ROW_SELECTION = 200;
 const OBJECTS_WITH_COMPOUND_NAMES = ['Contact'];
+const PRIMARY_TABLE_ACTION_STRING = 'Primary Table Action';
+const SECONDARY_TABLE_ACTION_STRING = 'Secondary Table Action';
 
 export default class Datatable extends LightningElement {
     @api recordId;
@@ -109,10 +111,8 @@ export default class Datatable extends LightningElement {
         this._editableFields = createSetFromDelimitedString(value, ',');
     }
 
-    // Custom actions
-    @api flowActionDevName;
-    @api flowActionLabel;
-    @api isLargeFlow = false;
+    // Custom Flow actions
+    @api actionConfigDevName;
 
     // Template and getters
     isHideCheckbox = true;
@@ -123,17 +123,35 @@ export default class Datatable extends LightningElement {
     draftValues = []; // this is to feed into the datatable to clear stuff out
     saveErrors = {};
 
+    primaryFlowConfig;
+    secondaryFlowConfig;
+
     get recordCount() {
         return this.tableData ? this.tableData.length : 0;
     }
 
     get hasActions() {
-        // More in the future
-        return this.showRefreshButton;
+        return this.showRefreshButton || this.showFlowTableActions;
     }
 
-    get showFlowAction() {
-        return this.flowActionDevName && this.flowActionLabel;
+    get showFlowTableActions() {
+        return this.hasPrimaryFlowAction || this.hasSecondaryFlowAction;
+    }
+
+    get hasPrimaryFlowAction() {
+        return (
+            this.primaryFlowConfig &&
+            this.primaryFlowConfig.Button_Label__c &&
+            this.primaryFlowConfig.Screen_Flow_API_Name__c
+        );
+    }
+
+    get hasSecondaryFlowAction() {
+        return (
+            this.secondaryFlowConfig &&
+            this.secondaryFlowConfig.Button_Label__c &&
+            this.secondaryFlowConfig.Screen_Flow_API_Name__c
+        );
     }
 
     // Public APIs
@@ -169,6 +187,9 @@ export default class Datatable extends LightningElement {
     _draftValuesMap = new Map();
     _draftSuccessIds = new Set();
 
+    // private - flow actions
+    _actionConfigs = [];
+
     // For future enhancements
     @wire(getObjectInfo, { objectApiName: '$_objectApiName' })
     wiredObjectInfo({ error, data }) {
@@ -176,6 +197,22 @@ export default class Datatable extends LightningElement {
             this._notifySingleError('getObjectInfo error', error);
         } else if (data) {
             this._objectInfo = data;
+        }
+    }
+
+    // For any actions configured for this table
+    @wire(getActionConfig, { configName: '$actionConfigDevName' })
+    actionWire({ error, data }) {
+        if (error) {
+            this._notifySingleError('getActionConfig error', error);
+        } else if (data) {
+            this._actionConfigs = data;
+            console.log(this._actionConfigs);
+            // Table Actions
+            this.primaryFlowConfig = this._actionConfigs.find(cfg => cfg.Type__c === PRIMARY_TABLE_ACTION_STRING);
+            this.secondaryFlowConfig = this._actionConfigs.find(cfg => cfg.Type__c === SECONDARY_TABLE_ACTION_STRING);
+            // Row Actions
+            // TODO
         }
     }
 
@@ -193,8 +230,11 @@ export default class Datatable extends LightningElement {
         this.refreshTable();
     }
 
-    handleFlowAction() {
+    handleFlowAction(event) {
         const flowInputVars = [];
+        const flowSize = event.target.dataset.flowsize === 'Large' ? 'flowLarge' : 'flow';
+        const flowApiName = event.target.name;
+
         // The following should only be provided to the flow when used.
         const selectedRowKeys = this.selectedRows.map(row => row[this.keyField]);
         if (selectedRowKeys.length) {
@@ -224,10 +264,10 @@ export default class Datatable extends LightningElement {
             });
         }
         const flowPayload = {
-            method: this.isLargeFlow ? 'flowLarge' : 'flow',
+            method: flowSize,
             config: {
                 componentParams: {
-                    flowApiName: this.flowActionDevName,
+                    flowApiName: flowApiName,
                     inputVariables: flowInputVars
                 }
             }
@@ -478,7 +518,7 @@ export default class Datatable extends LightningElement {
 
     get refreshClass() {
         let css = 'slds-p-left_x-small ';
-        if (!this.showFlowAction) {
+        if (!this.showFlowTableActions) {
             css += 'slds-p-right_small ';
         }
         return css;

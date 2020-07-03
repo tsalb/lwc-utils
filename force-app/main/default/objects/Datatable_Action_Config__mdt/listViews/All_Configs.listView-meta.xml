@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Configs</fullName>
+    <columns>MasterLabel</columns>
+    <columns>DeveloperName</columns>
+    <columns>Datatable_Config__c</columns>
+    <columns>Type__c</columns>
+    <columns>Button_Label__c</columns>
+    <columns>Screen_Flow_API_Name__c</columns>
+    <columns>Flow_Size__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All Configs</label>
+</ListView>

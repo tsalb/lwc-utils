@@ -388,23 +388,34 @@ The following are not currently supported, but is on the roadmap:
 <details>
     <summary>Configurable Custom Actions</summary>
 
+Configure a Primary or Secondary table action which can launch a flow with with a Custom Metadata row.
 
-#### Flow Action
+App Builder's `Action Configuration` (`actionConfigDevName`) property refers to a single row configured on the `Datatable_Config__mdt` where the `Datatable_Action_Config__mdt` related children define the types of actions you can place on the table.
 
-This component currently has one button in the top right that is reserved for a configurable Flow action.
+For example, the SOQL Datatable tab uses:
 
-The example in the `SOQL Datatable` tab uses the following design attributes:
+-  One `Datatable_Config__mdt` entry:
+    - **DeveloperName**: `LWC_Utils_SOQL_Datatable_tab`
+    - **Type**: `Actions`
 
-- **Flow Action Dev Name**: `SOQL_Datatable_Flow_Action_Update_Contacts_with_New_Account`
-- **Flow Action Button Label**: `Assign New Account`
-- **Flow Size**: `Normal`
+- One `Datatable_Action_Config__mdt` entry:
+    - **DeveloperName**: `Assign_New_Account_for_Contacts`
+    - **Type**: `Primary Table Action`
+    - **Datatable Config**: `[ Lookup to Datatable Config Above ]`
+    - **Button Label**: `Assign New Account`
+    - **Screen Flow API Name**: `SOQL_Datatable_Flow_Action_Update_Contacts_with_New_Account`
+    - **Flow Size**: `Normal`
+
+```
+// TODO custom row actions
+```
 
 <p align="center">
     <img src="./readme-images/soql-datatable-flow-action.gif" width="900">
 </p>
 
 <p align="center">
-    <img src="./readme-images/soql-datatable-new-account-flow.png" width="320">
+    <img src="./readme-images/soql-datatable-new-account-flow.png" width="640">
 </p>
 
 </details>

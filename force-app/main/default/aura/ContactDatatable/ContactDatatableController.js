@@ -1,5 +1,5 @@
 ({
-    handleRowAction: function(component, event, helper) {
+    handleRowAction: function (component, event, helper) {
         let action = event.getParam('action');
         let row = event.getParam('row');
         switch (action.name) {
@@ -11,7 +11,7 @@
                 break;
         }
     },
-    handleOpenUpdateAddressModal: function(component, event, helper) {
+    handleOpenUpdateAddressModal: function (component, event, helper) {
         let selectedArr = component.find('searchTable').getSelectedRows();
         if ($A.util.isEmpty(selectedArr)) {
             helper.messageService(component).notifyInfo('Please choose at least one Contact.');
@@ -32,11 +32,11 @@
             helper.messageService(component).dialogService(dialogServicePayload);
         }
     },
-    handleAccountSelected: function(component, event, helper) {
+    handleAccountSelected: function (component, event, helper) {
         const value = event.getParam('value');
         helper.loadContactTable(component, value);
     },
-    handleClearTable: function(component, event, helper) {
+    handleClearTable: function (component, event, helper) {
         component.set('v.tableData', null);
     }
 });

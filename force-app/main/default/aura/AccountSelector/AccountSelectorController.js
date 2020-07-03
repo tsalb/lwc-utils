@@ -1,5 +1,5 @@
 ({
-    doInit: function(component, event, helper) {
+    doInit: function (component, event, helper) {
         helper.service(component).fetchAccountCombobox(
             $A.getCallback((error, data) => {
                 // This returns whatever datatype is specified in the controller
@@ -11,14 +11,14 @@
             })
         );
     },
-    handleAccountOptionSelected: function(component, event, helper) {
+    handleAccountOptionSelected: function (component, event, helper) {
         const payload = {
             key: 'accountselected',
             value: event.getParam('value')
         };
         helper.messageService(component).publish(payload);
     },
-    handleClearTableOnly: function(component, event, helper) {
+    handleClearTableOnly: function (component, event, helper) {
         helper.messageService(component).publish({ key: 'cleartable' });
     }
 });

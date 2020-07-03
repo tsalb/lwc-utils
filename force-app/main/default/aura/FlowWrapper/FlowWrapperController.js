@@ -31,12 +31,12 @@
  */
 
 ({
-    doInit: function(component, event, helper) {
+    doInit: function (component, event, helper) {
         let flowApiName = component.get('v.flowApiName');
         let inputVars = component.get('v.inputVariables');
         helper.flow(component).startFlow(flowApiName, inputVars);
     },
-    handleStatusChange: function(component, event, helper) {
+    handleStatusChange: function (component, event, helper) {
         let status = event.getParam('status');
         let payload = event.getParams();
         console.log(JSON.parse(JSON.stringify(payload)));

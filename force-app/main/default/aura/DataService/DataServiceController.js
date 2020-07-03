@@ -31,12 +31,12 @@
  */
 
 ({
-    handleFetchAccountCombobox: function(component, event, helper) {
+    handleFetchAccountCombobox: function (component, event, helper) {
         let params = event.getParam('arguments');
         let action = component.get('c.getAccountOptions');
         helper.dispatchAction(component, action, params);
     },
-    handleFetchContactsByAccountId: function(component, event, helper) {
+    handleFetchContactsByAccountId: function (component, event, helper) {
         let params = event.getParam('arguments');
         let action = component.get('c.getContactsByAccountId');
         action.setParams({
@@ -44,7 +44,7 @@
         });
         helper.dispatchAction(component, action, params);
     },
-    handleUpdateMultiContactAddress: function(component, event, helper) {
+    handleUpdateMultiContactAddress: function (component, event, helper) {
         let params = event.getParam('arguments');
         let action = component.get('c.updateMultiContactAddress');
         action.setParams({

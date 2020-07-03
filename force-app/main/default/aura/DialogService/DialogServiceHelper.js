@@ -31,16 +31,16 @@
  */
 
 ({
-    overlayLib: function(component) {
+    overlayLib: function (component) {
         return component.find('overlayLib');
     },
-    notificationsLib: function(component) {
+    notificationsLib: function (component) {
         return component.find('notificationsLib');
     },
-    messageService: function(component) {
+    messageService: function (component) {
         return component.find('messageService');
     },
-    createBody: function(component, params, ctrlCallback) {
+    createBody: function (component, params, ctrlCallback) {
         let componentType = params.body.split(':')[0];
         let componentParams = {};
         let singleton = component.find('singleton');
@@ -80,7 +80,7 @@
                 );
         }
     },
-    createButton: function(params, ctrlCallback) {
+    createButton: function (params, ctrlCallback) {
         $A.createComponent(
             'lightning:button',
             {
@@ -98,7 +98,7 @@
             }
         );
     },
-    createEventFooter: function(ctrlCallback) {
+    createEventFooter: function (ctrlCallback) {
         $A.createComponent('c:EventFooter', {}, (eventFooter, status, errorMessage) => {
             if (status === 'SUCCESS') {
                 ctrlCallback(null, eventFooter);
@@ -107,7 +107,7 @@
             }
         });
     },
-    defineLargeModalAttribute: function(isLargeModalVal) {
+    defineLargeModalAttribute: function (isLargeModalVal) {
         if ($A.util.isUndefinedOrNull(isLargeModalVal)) {
             return null;
         }
@@ -118,7 +118,7 @@
             return 'slds-modal_large';
         }
     },
-    defineShowCLoseButtonAttribute: function(showCloseButtonBooleanVal) {
+    defineShowCLoseButtonAttribute: function (showCloseButtonBooleanVal) {
         if ($A.util.isUndefinedOrNull(showCloseButtonBooleanVal)) {
             return true;
         }

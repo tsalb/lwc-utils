@@ -31,7 +31,7 @@
  */
 
 ({
-    initUpdatePromiseChain: function(component, event, helper) {
+    initUpdatePromiseChain: function (component, event, helper) {
         helper
             .initializeLightningDataService(component, event)
             .then(
@@ -48,7 +48,7 @@
                 });
             });
     },
-    handleRecordUpdated: function(component, event, helper) {
+    handleRecordUpdated: function (component, event, helper) {
         let changeType = event.getParams().changeType;
         switch (changeType.toUpperCase()) {
             case 'ERROR':

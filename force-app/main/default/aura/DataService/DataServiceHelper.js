@@ -31,7 +31,7 @@
  */
 
 ({
-    dispatchAction: function(component, action, params) {
+    dispatchAction: function (component, action, params) {
         action.setCallback(this, response => {
             if (response.getState() === 'SUCCESS') {
                 params.callback(null, response.getReturnValue());

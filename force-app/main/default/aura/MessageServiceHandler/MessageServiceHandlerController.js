@@ -31,7 +31,7 @@
  */
 
 ({
-    handleDialogService: function(component, event, helper) {
+    handleDialogService: function (component, event, helper) {
         const payload = event.getParam('value');
         const singleton = helper.singleton(component);
 

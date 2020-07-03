@@ -1,11 +1,11 @@
 ({
-    service: function(component) {
+    service: function (component) {
         return component.find('service');
     },
-    dialogService: function(component) {
+    dialogService: function (component) {
         return component.find('dialogService');
     },
-    messageService: function(component) {
+    messageService: function (component) {
         return component.find('messageService');
     }
 });

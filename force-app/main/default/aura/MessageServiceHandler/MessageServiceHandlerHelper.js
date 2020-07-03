@@ -31,16 +31,16 @@
  */
 
 ({
-    dialogService: function(component) {
+    dialogService: function (component) {
         return component.find('dialogService');
     },
-    messageService: function(component) {
+    messageService: function (component) {
         return component.find('messageService');
     },
-    singleton: function(component) {
+    singleton: function (component) {
         return component.find('singleton');
     },
-    executeDialogService: function(component, payload) {
+    executeDialogService: function (component, payload) {
         let flowModalConfig;
         if (payload.method.startsWith('flow')) {
             flowModalConfig = {
@@ -74,7 +74,7 @@
         }
     },
     // mainActionReference only works for aura components
-    modal: function(component, config) {
+    modal: function (component, config) {
         this.dialogService(component).modal(
             config.auraId,
             config.headerLabel,
@@ -84,7 +84,7 @@
             config.mainActionLabel
         );
     },
-    bodyModal: function(component, config) {
+    bodyModal: function (component, config) {
         this.dialogService(component).bodyModal(
             config.auraId,
             config.headerLabel,
@@ -92,7 +92,7 @@
             config.componentParams
         );
     },
-    bodyModalLarge: function(component, config) {
+    bodyModalLarge: function (component, config) {
         this.dialogService(component).bodyModalLarge(
             config.auraId,
             config.headerLabel,

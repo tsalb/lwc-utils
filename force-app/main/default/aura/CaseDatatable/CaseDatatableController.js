@@ -1,5 +1,5 @@
 ({
-    doInit: function(component, event, helper) {
+    doInit: function (component, event, helper) {
         const contactRecordId = component.get('v.contactRecordId');
         // prettier-ignore
         const queryString =

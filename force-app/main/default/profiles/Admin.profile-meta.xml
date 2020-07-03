@@ -116,36 +116,12 @@
         <field>Contact.Account_Information__c</field>
         <readable>true</readable>
     </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Contact_DML__e.Timestamp__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Contact_DML__e.Type__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Contact_DML__e.Username__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
     <layoutAssignments>
         <layout>Datatable_Action_Config__mdt-Datatable Action Config Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>Datatable_Config__mdt-Datatable Config Layout</layout>
     </layoutAssignments>
-    <objectPermissions>
-        <allowCreate>true</allowCreate>
-        <allowDelete>true</allowDelete>
-        <allowEdit>true</allowEdit>
-        <allowRead>true</allowRead>
-        <modifyAllRecords>true</modifyAllRecords>
-        <object>Contact_DML__e</object>
-        <viewAllRecords>true</viewAllRecords>
-    </objectPermissions>
     <tabVisibilities>
         <tab>Collection_Datatable</tab>
         <visibility>DefaultOn</visibility>

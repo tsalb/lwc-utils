@@ -1,11 +1,11 @@
 ({
-    service: function(component) {
+    service: function (component) {
         return component.find('service');
     },
-    messageService: function(component) {
+    messageService: function (component) {
         return component.find('messageService');
     },
-    updateMultiAddress: function(component) {
+    updateMultiAddress: function (component) {
         let _self = this;
         let contactList = component.get('v.contactList');
         let addressObject = component.find('mailing-address').get('v.value'); // contact mailing address is stored in key:value pairs.

@@ -1,8 +1,8 @@
 ({
-    tableService: function(component) {
+    tableService: function (component) {
         return component.find('tableService');
     },
-    dialogService: function(component) {
+    dialogService: function (component) {
         return component.find('dialogService');
     }
 });

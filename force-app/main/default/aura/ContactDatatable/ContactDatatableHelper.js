@@ -1,14 +1,14 @@
 ({
-    service: function(component) {
+    service: function (component) {
         return component.find('service');
     },
-    quickUpdateService: function(component) {
+    quickUpdateService: function (component) {
         return component.find('quickUpdateService');
     },
-    messageService: function(component) {
+    messageService: function (component) {
         return component.find('messageService');
     },
-    getTableColumnDefinition: function() {
+    getTableColumnDefinition: function () {
         let tableColumns = [
             {
                 label: 'Name',
@@ -74,7 +74,7 @@
         ];
         return tableColumns;
     },
-    clearMailingAddressWithLightningDataService: function(component, row) {
+    clearMailingAddressWithLightningDataService: function (component, row) {
         let _self = this;
         let configObject = {
             // QuickUpdateService only expects this object with recordId and fieldUpdates properties
@@ -104,7 +104,7 @@
             })
         );
     },
-    openViewCasesModal: function(component, row) {
+    openViewCasesModal: function (component, row) {
         let _self = this;
         const dialogServicePayload = {
             method: 'bodyModalLarge',
@@ -119,7 +119,7 @@
         };
         _self.messageService(component).dialogService(dialogServicePayload);
     },
-    loadContactTable: function(component, accountId) {
+    loadContactTable: function (component, accountId) {
         let _self = this;
         _self.service(component).fetchContactsByAccountId(
             accountId,

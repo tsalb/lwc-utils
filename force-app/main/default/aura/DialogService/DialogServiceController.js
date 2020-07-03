@@ -31,7 +31,7 @@
  */
 
 ({
-    createOverlayPopover: function(component, event, helper) {
+    createOverlayPopover: function (component, event, helper) {
         let params = event.getParam('arguments');
 
         helper.createBody(
@@ -66,7 +66,7 @@
             })
         ); // end helper
     },
-    createOverlayModal: function(component, event, helper) {
+    createOverlayModal: function (component, event, helper) {
         let params = event.getParam('arguments');
         // Creating the body first - this can be a custom component or text wrapped in formattedText
         helper.createBody(
@@ -140,7 +140,7 @@
             })
         ); // end helper.createBody
     },
-    createOverlayModalWithEventFooter: function(component, event, helper) {
+    createOverlayModalWithEventFooter: function (component, event, helper) {
         let params = event.getParam('arguments');
         helper.createBody(
             component,

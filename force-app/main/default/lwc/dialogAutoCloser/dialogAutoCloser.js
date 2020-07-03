@@ -33,7 +33,7 @@
 import { LightningElement, api } from 'lwc';
 
 export default class DialogAutoCloser extends LightningElement {
-    @api messageTemplate = 'Auto closing in {timer} seconds';
+    @api messageTemplate;
     @api timer = 5;
 
     // Scopes refresh
@@ -53,7 +53,7 @@ export default class DialogAutoCloser extends LightningElement {
     connectedCallback() {
         this._originalTemplate = this.messageTemplate;
         this._originalTimer = this.timer;
-        this.messageTemplate = this.messageTemplate.replace('{timer}', this.timer);
+        this.messageTemplate = this.messageTemplate ? this.messageTemplate.replace('{timer}', this.timer) : null;
     }
 
     renderedCallback() {
@@ -87,7 +87,9 @@ export default class DialogAutoCloser extends LightningElement {
                 this._close();
             }
             this.timer = this.timer - 1;
-            this.messageTemplate = this._originalTemplate.slice().replace('{timer}', this.timer);
+            if (this._originalTemplate && this.messageTemplate) {
+                this.messageTemplate = this._originalTemplate.slice().replace('{timer}', this.timer);
+            }
         }, 1000);
     }
 

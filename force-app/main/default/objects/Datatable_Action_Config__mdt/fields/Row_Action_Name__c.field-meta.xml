@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Row_Action_Name__c</fullName>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <label>Row Action Name</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>edit_row</fullName>
+                <default>true</default>
+                <label>edit_row</label>
+            </value>
+            <value>
+                <fullName>delete_row</fullName>
+                <default>false</default>
+                <label>delete_row</label>
+            </value>
+            <value>
+                <fullName>custom_flow</fullName>
+                <default>false</default>
+                <label>custom_flow</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

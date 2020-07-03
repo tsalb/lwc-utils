@@ -125,19 +125,7 @@ const reduceErrors = errors => {
                     let firstError = '';
                     if (
                         error.body.output.errors.length &&
-                        error.body.output.errors[0].errorCode === 'INSUFFICIENT_ACCESS_OR_READONLY'
-                    ) {
-                        firstError = error.body.output.errors[0].message;
-                    }
-                    if (
-                        error.body.output.errors.length &&
-                        error.body.output.errors[0].errorCode === 'FIELD_CUSTOM_VALIDATION_EXCEPTION'
-                    ) {
-                        firstError = error.body.output.errors[0].message;
-                    }
-                    if (
-                        error.body.output.errors.length &&
-                        error.body.output.errors[0].errorCode === 'CANNOT_EXECUTE_FLOW_TRIGGER'
+                        error.body.output.errors[0].errorCode.includes('_') // one of the many salesforce errors with underscores
                     ) {
                         firstError = error.body.output.errors[0].message;
                     }

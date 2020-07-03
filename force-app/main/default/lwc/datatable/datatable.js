@@ -41,8 +41,10 @@ import { reduceErrors, createSetFromDelimitedString } from 'c/utils';
 
 const MAX_ROW_SELECTION = 200;
 const OBJECTS_WITH_COMPOUND_NAMES = ['Contact'];
+
 const PRIMARY_TABLE_ACTION_STRING = 'Primary Table Action';
 const SECONDARY_TABLE_ACTION_STRING = 'Secondary Table Action';
+const ROW_ACTIONS_STRING = 'Row Action';
 
 export default class Datatable extends LightningElement {
     @api recordId;
@@ -111,7 +113,7 @@ export default class Datatable extends LightningElement {
         this._editableFields = createSetFromDelimitedString(value, ',');
     }
 
-    // Custom Flow actions
+    // Custom Table actions
     @api actionConfigDevName;
 
     // Template and getters
@@ -123,8 +125,9 @@ export default class Datatable extends LightningElement {
     draftValues = []; // this is to feed into the datatable to clear stuff out
     saveErrors = {};
 
-    primaryFlowConfig;
-    secondaryFlowConfig;
+    primaryFlowConfig = {};
+    secondaryFlowConfig = {};
+    rowActionConfigs = [];
 
     get recordCount() {
         return this.tableData ? this.tableData.length : 0;
@@ -140,9 +143,7 @@ export default class Datatable extends LightningElement {
 
     get hasPrimaryFlowAction() {
         return (
-            this.primaryFlowConfig &&
-            this.primaryFlowConfig.Button_Label__c &&
-            this.primaryFlowConfig.Screen_Flow_API_Name__c
+            this.primaryFlowConfig && this.primaryFlowConfig.Button_Label__c && this.primaryFlowConfig.Flow_API_Name__c
         );
     }
 
@@ -150,8 +151,12 @@ export default class Datatable extends LightningElement {
         return (
             this.secondaryFlowConfig &&
             this.secondaryFlowConfig.Button_Label__c &&
-            this.secondaryFlowConfig.Screen_Flow_API_Name__c
+            this.secondaryFlowConfig.Flow_API_Name__c
         );
+    }
+
+    get showRowMenuActions() {
+        return this.rowActionConfigs.length;
     }
 
     // Public APIs
@@ -212,7 +217,7 @@ export default class Datatable extends LightningElement {
             this.primaryFlowConfig = this._actionConfigs.find(cfg => cfg.Type__c === PRIMARY_TABLE_ACTION_STRING);
             this.secondaryFlowConfig = this._actionConfigs.find(cfg => cfg.Type__c === SECONDARY_TABLE_ACTION_STRING);
             // Row Actions
-            // TODO
+            this.rowActionConfigs = this._actionConfigs.filter(cfg => cfg.Type__c === ROW_ACTIONS_STRING);
         }
     }
 
@@ -232,8 +237,21 @@ export default class Datatable extends LightningElement {
 
     handleFlowAction(event) {
         const flowInputVars = [];
-        const flowSize = event.target.dataset.flowsize === 'Large' ? 'flowLarge' : 'flow';
-        const flowApiName = event.target.name;
+        let flowSize;
+        let flowApiName;
+
+        // From Table Action
+        if (event.target) {
+            flowSize = event.target.dataset.flowSize === 'Large' ? 'flowLarge' : 'flow';
+            flowApiName = event.target.name;
+        } else {
+            flowSize = event.rowMenuAction.flowSize === 'Large' ? 'flowLarge' : 'flow';
+            flowApiName = event.rowMenuAction.flowApiName;
+        }
+
+        if (!flowApiName || !flowSize) {
+            return;
+        }
 
         // The following should only be provided to the flow when used.
         const selectedRowKeys = this.selectedRows.map(row => row[this.keyField]);
@@ -260,7 +278,19 @@ export default class Datatable extends LightningElement {
             flowInputVars.push({
                 name: 'SourceRecordId',
                 type: 'String',
-                value: this.recordId || 'none'
+                value: this.recordId
+            });
+        }
+        if (event.rowMenuAction && event.rowMenuAction.row) {
+            flowInputVars.push({
+                name: 'SelectedRowKeys',
+                type: 'String',
+                value: [event.rowMenuAction.row[this.keyField]]
+            });
+            flowInputVars.push({
+                name: 'SelectedRowKeysSize',
+                type: 'Number',
+                value: 1
             });
         }
         const flowPayload = {
@@ -278,10 +308,51 @@ export default class Datatable extends LightningElement {
     handleRowSelection(event) {
         this.selectedRows = event.detail.selectedRows;
         this._notifyPublicEvent('rowselection');
+        // Supports mass inline editing
         this._messageService.publish({
             key: 'rowselected',
             value: { selectedRows: this.selectedRows }
         });
+    }
+
+    handleRowAction(event) {
+        const action = event.detail.action;
+        const row = event.detail.row;
+
+        // Default Actions
+        switch (action.name) {
+            case 'delete_row': {
+                const dialogPayload = {
+                    method: 'bodyModal',
+                    config: {
+                        auraId: 'datatable-delete-row',
+                        headerLabel: 'Delete ' + this._objectInfo.label,
+                        component: 'c:datatableDeleteRowForm',
+                        componentParams: {
+                            row: row,
+                            uniqueBoundary: this.uniqueBoundary
+                        }
+                    }
+                };
+                this._messageService.dialogService(dialogPayload);
+                break;
+            }
+            case 'edit_row': {
+                alert('TODO');
+                //this._messageService.forceRecordEdit({ recordId: row.Id });
+                break;
+            }
+            case 'custom_flow': {
+                const payload = {
+                    rowMenuAction: {
+                        flowApiName: action.flowApiName,
+                        flowSize: action.flowSize,
+                        row: row
+                    }
+                };
+                this.handleFlowAction(payload);
+            }
+        }
     }
 
     handleColumnSorting(event) {
@@ -378,6 +449,14 @@ export default class Datatable extends LightningElement {
             }
             finalColumns.push(col);
         }
+        if (this.showRowMenuActions) {
+            finalColumns.push({
+                type: 'action',
+                typeAttributes: {
+                    rowActions: this._getRowActions.bind(this)
+                }
+            });
+        }
         this.tableColumns = finalColumns;
         this._notifyPublicEvent('columnsload');
     }
@@ -429,6 +508,31 @@ export default class Datatable extends LightningElement {
         return function (a, b) {
             return (a = key(a) ? key(a) : ''), (b = key(b) ? key(b) : ''), reverse * ((a > b) - (b > a));
         };
+    }
+
+    _getRowActions(row, doneCallback) {
+        let actions = [];
+        console.log(this.rowActionConfigs);
+        // These are pre-sorted by order by server
+        this.rowActionConfigs.forEach(cfg => {
+            // "Native" actions
+            if (this._objectInfo.updateable && cfg.Row_Action_Name__c === 'edit_row') {
+                actions.push({ label: 'Edit', name: 'edit_row' });
+            }
+            if (this._objectInfo.deletable && cfg.Row_Action_Name__c === 'delete_row') {
+                actions.push({ label: 'Delete', name: 'delete_row' });
+            }
+            // Custom actions
+            if (cfg.Row_Action_Name__c === 'custom_flow') {
+                actions.push({
+                    label: cfg.Button_Label__c,
+                    name: cfg.Row_Action_Name__c,
+                    flowApiName: cfg.Flow_API_Name__c,
+                    flowSize: cfg.Flow_Size__c
+                });
+            }
+        });
+        doneCallback(actions);
     }
 
     _clearDraftValues(rowKeysToNull) {

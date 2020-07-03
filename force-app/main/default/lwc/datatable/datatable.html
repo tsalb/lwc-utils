@@ -24,6 +24,7 @@
                 columns={tableColumns}
                 column-widths-mode={columnWidthsMode}
                 onrowselection={handleRowSelection}
+                onrowaction={handleRowAction}
                 onsort={handleColumnSorting}
                 sorted-by={sortedBy}
                 sorted-direction={sortedDirection}
@@ -49,8 +50,8 @@
                     <template if:true={hasPrimaryFlowAction}>
                         <lightning-layout-item class="slds-p-left_x-small slds-p-right_small">
                             <lightning-button
-                                data-flowsize={primaryFlowConfig.Flow_Size__c}
-                                name={primaryFlowConfig.Screen_Flow_API_Name__c}
+                                data-flow-size={primaryFlowConfig.Flow_Size__c}
+                                name={primaryFlowConfig.Flow_API_Name__c}
                                 label={primaryFlowConfig.Button_Label__c}
                                 onclick={handleFlowAction}
                             ></lightning-button>
@@ -59,8 +60,8 @@
                     <template if:true={hasSecondaryFlowAction}>
                         <lightning-layout-item class="slds-p-left_x-small slds-p-right_small">
                             <lightning-button
-                                data-flowsize={secondaryFlowConfig.Flow_Size__c}
-                                name={secondaryFlowConfig.Screen_Flow_API_Name__c}
+                                data-flow-size={secondaryFlowConfig.Flow_Size__c}
+                                name={secondaryFlowConfig.Flow_API_Name__c}
                                 label={secondaryFlowConfig.Button_Label__c}
                                 onclick={handleFlowAction}
                             ></lightning-button>

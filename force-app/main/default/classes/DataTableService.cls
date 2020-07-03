@@ -135,11 +135,19 @@ public inherited sharing class DataTableService {
     @AuraEnabled(cacheable=true)
     public static List<Datatable_Action_Config__mdt> getActionConfig(String configName) {
         return [
-            SELECT Button_Label__c, Datatable_Config__c, Screen_Flow_API_Name__c, Type__c, Flow_Size__c
+            SELECT
+                Order__c,
+                Row_Action_Name__c,
+                Button_Label__c,
+                Type__c,
+                Datatable_Config__c,
+                Flow_API_Name__c,
+                Flow_Size__c
             FROM Datatable_Action_Config__mdt
             WHERE
                 Datatable_Config__r.DeveloperName = :configName
                 AND Datatable_Config__r.Type__c = :DATATABLE_ACTION_CONFIG_TYPE
+            ORDER BY Order__c ASC
         ];
     }
 

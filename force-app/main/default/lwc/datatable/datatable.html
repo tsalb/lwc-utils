@@ -46,27 +46,29 @@
                         ></lightning-button-icon>
                     </lightning-layout-item>
                 </template>
-                <template if:true={showFlowTableActions}>
-                    <template if:true={hasPrimaryFlowAction}>
-                        <lightning-layout-item class="slds-p-left_x-small slds-p-right_small">
-                            <lightning-button
-                                data-flow-size={primaryFlowConfig.Flow_Size__c}
-                                name={primaryFlowConfig.Flow_API_Name__c}
-                                label={primaryFlowConfig.Button_Label__c}
-                                onclick={handleFlowAction}
-                            ></lightning-button>
-                        </lightning-layout-item>
-                    </template>
-                    <template if:true={hasSecondaryFlowAction}>
-                        <lightning-layout-item class="slds-p-left_x-small slds-p-right_small">
-                            <lightning-button
-                                data-flow-size={secondaryFlowConfig.Flow_Size__c}
-                                name={secondaryFlowConfig.Flow_API_Name__c}
-                                label={secondaryFlowConfig.Button_Label__c}
-                                onclick={handleFlowAction}
-                            ></lightning-button>
-                        </lightning-layout-item>
-                    </template>
+                <template if:true={showTableActions}>
+                    <lightning-layout-item class="slds-p-left_x-small slds-p-right_small">
+                        <lightning-button-group>
+                            <template if:true={hasPrimaryAction}>
+                                <lightning-button
+                                    data-dialog-size={primaryConfig.Dialog_Size__c}
+                                    data-type={primaryConfig.Type__c}
+                                    name={primaryActionName}
+                                    label={primaryConfig.Button_Label__c}
+                                    onclick={handleTableAction}
+                                ></lightning-button>
+                            </template>
+                            <template if:true={hasSecondaryAction}>
+                                <lightning-button
+                                    data-dialog-size={secondaryConfig.Dialog_Size__c}
+                                    data-type={secondaryConfig.Type__c}
+                                    name={secondaryActionName}
+                                    label={secondaryConfig.Button_Label__c}
+                                    onclick={handleTableAction}
+                                ></lightning-button>
+                            </template>
+                        </lightning-button-group>
+                    </lightning-layout-item>
                 </template>
             </lightning-layout>
         </div>

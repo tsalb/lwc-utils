@@ -76,13 +76,32 @@
         <connector>
             <targetReference>Success</targetReference>
         </connector>
+        <faultConnector>
+            <targetReference>Failure</targetReference>
+        </faultConnector>
         <inputReference>ContactsToUpdate</inputReference>
     </recordUpdates>
     <screens>
+        <name>Failure</name>
+        <label>Failure</label>
+        <locationX>27</locationX>
+        <locationY>577</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>FailureMessage</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;Removing Phone Failed:&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>false</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>Success</name>
         <label>Success</label>
-        <locationX>175</locationX>
-        <locationY>564</locationY>
+        <locationX>174</locationX>
+        <locationY>578</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>

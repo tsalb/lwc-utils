@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <label>Remove Contact Phone</label>
     <protected>false</protected>
     <values>
@@ -15,7 +17,7 @@
         <value xsi:type="xsd:string">SOQL_Datatable_Flow_Row_Action_Remove_Contact_Phone</value>
     </values>
     <values>
-        <field>Flow_Size__c</field>
+        <field>Dialog_Size__c</field>
         <value xsi:type="xsd:string">Normal</value>
     </values>
     <values>

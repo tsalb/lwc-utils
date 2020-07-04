@@ -1,0 +1,12 @@
+<template>
+    <c-message-service boundary={uniqueBoundary}></c-message-service>
+
+    <template if:true={queryString}>
+        <c-soql-datatable query-string={queryString}></c-soql-datatable>
+    </template>
+    <template if:false={queryString}>
+        <div class="slds-align_absolute-center">
+            No Contacts Selected. Please choose contacts to view opportunities for.
+        </div>
+    </template>
+</template>

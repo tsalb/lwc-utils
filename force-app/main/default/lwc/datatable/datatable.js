@@ -42,10 +42,6 @@ import { reduceErrors, createSetFromDelimitedString } from 'c/utils';
 const MAX_ROW_SELECTION = 200;
 const OBJECTS_WITH_COMPOUND_NAMES = ['Contact'];
 
-const PRIMARY_TABLE_ACTION_STRING = 'Primary Table Action';
-const SECONDARY_TABLE_ACTION_STRING = 'Secondary Table Action';
-const ROW_ACTIONS_STRING = 'Row Action';
-
 export default class Datatable extends LightningElement {
     @api recordId;
     @api
@@ -125,8 +121,8 @@ export default class Datatable extends LightningElement {
     draftValues = []; // this is to feed into the datatable to clear stuff out
     saveErrors = {};
 
-    primaryFlowConfig = {};
-    secondaryFlowConfig = {};
+    primaryConfig = {};
+    secondaryConfig = {};
     rowActionConfigs = [];
 
     get recordCount() {
@@ -134,25 +130,31 @@ export default class Datatable extends LightningElement {
     }
 
     get hasActions() {
-        return this.showRefreshButton || this.showFlowTableActions;
+        return this.showRefreshButton || this.showTableActions;
     }
 
-    get showFlowTableActions() {
-        return this.hasPrimaryFlowAction || this.hasSecondaryFlowAction;
+    get showTableActions() {
+        return this.hasPrimaryAction || this.hasSecondaryAction;
     }
 
-    get hasPrimaryFlowAction() {
-        return (
-            this.primaryFlowConfig && this.primaryFlowConfig.Button_Label__c && this.primaryFlowConfig.Flow_API_Name__c
-        );
+    get hasPrimaryAction() {
+        return this.primaryConfig && this.primaryConfig.Button_Label__c;
     }
 
-    get hasSecondaryFlowAction() {
-        return (
-            this.secondaryFlowConfig &&
-            this.secondaryFlowConfig.Button_Label__c &&
-            this.secondaryFlowConfig.Flow_API_Name__c
-        );
+    get primaryActionName() {
+        return this.primaryConfig.Type__c.toLowerCase().includes('flow')
+            ? this.primaryConfig.Flow_API_Name__c
+            : this.primaryConfig.LWC_Name__c;
+    }
+
+    get hasSecondaryAction() {
+        return this.secondaryConfig && this.secondaryConfig.Button_Label__c;
+    }
+
+    get secondaryActionName() {
+        return this.secondaryConfig.Type__c.toLowerCase().includes('flow')
+            ? this.secondaryConfig.Flow_API_Name__c
+            : this.secondaryConfig.LWC_Name__c;
     }
 
     get showRowMenuActions() {
@@ -214,10 +216,10 @@ export default class Datatable extends LightningElement {
             this._actionConfigs = data;
             console.log(this._actionConfigs);
             // Table Actions
-            this.primaryFlowConfig = this._actionConfigs.find(cfg => cfg.Type__c === PRIMARY_TABLE_ACTION_STRING);
-            this.secondaryFlowConfig = this._actionConfigs.find(cfg => cfg.Type__c === SECONDARY_TABLE_ACTION_STRING);
+            this.primaryConfig = this._actionConfigs.find(cfg => cfg.Type__c.toLowerCase().includes('primary'));
+            this.secondaryConfig = this._actionConfigs.find(cfg => cfg.Type__c.toLowerCase().includes('secondary'));
             // Row Actions
-            this.rowActionConfigs = this._actionConfigs.filter(cfg => cfg.Type__c === ROW_ACTIONS_STRING);
+            this.rowActionConfigs = this._actionConfigs.filter(cfg => cfg.Type__c.toLowerCase() === 'row_action');
         }
     }
 
@@ -235,21 +237,31 @@ export default class Datatable extends LightningElement {
         this.refreshTable();
     }
 
+    handleTableAction(event) {
+        const type = event.target.dataset.type;
+        if (type.toLowerCase().includes('flow')) {
+            this.handleFlowAction(event);
+        }
+        if (type.toLowerCase().includes('lwc')) {
+            this.handleLwcAction(event);
+        }
+    }
+
     handleFlowAction(event) {
         const flowInputVars = [];
-        let flowSize;
+        let flowMethod;
         let flowApiName;
 
         // From Table Action
         if (event.target) {
-            flowSize = event.target.dataset.flowSize === 'Large' ? 'flowLarge' : 'flow';
+            flowMethod = event.target.dataset.dialogSize === 'Large' ? 'flowLarge' : 'flow';
             flowApiName = event.target.name;
         } else {
-            flowSize = event.rowMenuAction.flowSize === 'Large' ? 'flowLarge' : 'flow';
+            flowMethod = event.rowMenuAction.dialogSize === 'Large' ? 'flowLarge' : 'flow';
             flowApiName = event.rowMenuAction.flowApiName;
         }
 
-        if (!flowApiName || !flowSize) {
+        if (!flowApiName || !flowMethod) {
             return;
         }
 
@@ -294,7 +306,7 @@ export default class Datatable extends LightningElement {
             });
         }
         const flowPayload = {
-            method: flowSize,
+            method: flowMethod,
             config: {
                 componentParams: {
                     flowApiName: flowApiName,
@@ -303,6 +315,25 @@ export default class Datatable extends LightningElement {
             }
         };
         this._messageService.dialogService(flowPayload);
+    }
+
+    handleLwcAction(event) {
+        const dialogMethod = event.target.dataset.dialogSize === 'Large' ? 'bodyModalLarge' : 'bodyModal';
+        const dialogPayload = {
+            method: dialogMethod,
+            config: {
+                auraId: `lwc-${event.target.name.toLowerCase()}-id`,
+                headerLabel: `${event.target.label}`,
+                component: `${event.target.name}`,
+                componentParams: {
+                    uniqueBoundary: this.uniqueBoundary,
+                    selectedRows: this.selectedRows,
+                    sourceRecordId: this.recordId
+                }
+            }
+        };
+        console.log(dialogPayload);
+        this._messageService.dialogService(dialogPayload);
     }
 
     handleRowSelection(event) {
@@ -351,6 +382,9 @@ export default class Datatable extends LightningElement {
                     }
                 };
                 this.handleFlowAction(payload);
+            }
+            case 'custom_lwc': {
+                alert('TODO');
             }
         }
     }
@@ -528,7 +562,15 @@ export default class Datatable extends LightningElement {
                     label: cfg.Button_Label__c,
                     name: cfg.Row_Action_Name__c,
                     flowApiName: cfg.Flow_API_Name__c,
-                    flowSize: cfg.Flow_Size__c
+                    dialogSize: cfg.Dialog_Size__c
+                });
+            }
+            if (cfg.Row_Action_Name__c === 'custom_lwc') {
+                actions.push({
+                    label: cfg.Button_Label__c,
+                    name: cfg.Row_Action_Name__c,
+                    lwcName: cfg.LWC_Name__c,
+                    dialogSize: cfg.Dialog_Size__c
                 });
             }
         });
@@ -622,7 +664,7 @@ export default class Datatable extends LightningElement {
 
     get refreshClass() {
         let css = 'slds-p-left_x-small ';
-        if (!this.showFlowTableActions) {
+        if (!this.showTableActions) {
             css += 'slds-p-right_small ';
         }
         return css;

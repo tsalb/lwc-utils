@@ -161,6 +161,11 @@
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <fields>
+            <name>NoSelectionMessage</name>
+            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;No Contacts Selected&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
         <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>

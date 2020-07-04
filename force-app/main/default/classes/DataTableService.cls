@@ -142,7 +142,8 @@ public inherited sharing class DataTableService {
                 Type__c,
                 Datatable_Config__c,
                 Flow_API_Name__c,
-                Flow_Size__c
+                LWC_Name__c,
+                Dialog_Size__c
             FROM Datatable_Action_Config__mdt
             WHERE
                 Datatable_Config__r.DeveloperName = :configName

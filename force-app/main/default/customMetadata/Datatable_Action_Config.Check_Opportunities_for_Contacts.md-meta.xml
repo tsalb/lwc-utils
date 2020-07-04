@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <label>Assign New Account for Contacts</label>
+    <label>Check Opportunities for Contacts</label>
     <protected>false</protected>
     <values>
         <field>Button_Label__c</field>
-        <value xsi:type="xsd:string">Assign New Account</value>
+        <value xsi:type="xsd:string">Check Opportunities</value>
     </values>
     <values>
         <field>Datatable_Config__c</field>
@@ -12,15 +12,15 @@
     </values>
     <values>
         <field>Dialog_Size__c</field>
-        <value xsi:type="xsd:string">Normal</value>
+        <value xsi:type="xsd:string">Large</value>
     </values>
     <values>
         <field>Flow_API_Name__c</field>
-        <value xsi:type="xsd:string">SOQL_Datatable_Flow_Action_Update_Contacts_with_New_Account</value>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>LWC_Name__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">c:checkOpportunitiesExample</value>
     </values>
     <values>
         <field>Order__c</field>
@@ -32,6 +32,6 @@
     </values>
     <values>
         <field>Type__c</field>
-        <value xsi:type="xsd:string">Flow Table Action - Primary</value>
+        <value xsi:type="xsd:string">LWC Table Action - Secondary</value>
     </values>
 </CustomMetadata>

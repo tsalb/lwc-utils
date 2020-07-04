@@ -12,7 +12,7 @@
             <sorted>false</sorted>
             <value>
                 <fullName>edit_row</fullName>
-                <default>true</default>
+                <default>false</default>
                 <label>edit_row</label>
             </value>
             <value>
@@ -24,6 +24,11 @@
                 <fullName>custom_flow</fullName>
                 <default>false</default>
                 <label>custom_flow</label>
+            </value>
+            <value>
+                <fullName>custom_lwc</fullName>
+                <default>false</default>
+                <label>custom_lwc</label>
             </value>
         </valueSetDefinition>
     </valueSet>

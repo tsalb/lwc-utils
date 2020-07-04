@@ -9,7 +9,8 @@
     <columns>Row_Action_Name__c</columns>
     <columns>Button_Label__c</columns>
     <columns>Flow_API_Name__c</columns>
-    <columns>Flow_Size__c</columns>
+    <columns>LWC_Name__c</columns>
+    <columns>Dialog_Size__c</columns>
     <filterScope>Everything</filterScope>
     <label>All Configs</label>
 </ListView>

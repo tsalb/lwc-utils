@@ -42,6 +42,10 @@ import { reduceErrors, createSetFromDelimitedString } from 'c/utils';
 const MAX_ROW_SELECTION = 200;
 const OBJECTS_WITH_COMPOUND_NAMES = ['Contact'];
 
+const PRIMARY_CONFIG_CHECK = 'Primary';
+const SECONDARY_CONFIG_CHECK = 'Secondary';
+const ROW_ACTION_CHECK = 'Row Action';
+
 export default class Datatable extends LightningElement {
     @api recordId;
     @api
@@ -216,10 +220,10 @@ export default class Datatable extends LightningElement {
             this._actionConfigs = data;
             console.log(this._actionConfigs);
             // Table Actions
-            this.primaryConfig = this._actionConfigs.find(cfg => cfg.Type__c.toLowerCase().includes('primary'));
-            this.secondaryConfig = this._actionConfigs.find(cfg => cfg.Type__c.toLowerCase().includes('secondary'));
+            this.primaryConfig = this._actionConfigs.find(cfg => cfg.Type__c.includes(PRIMARY_CONFIG_CHECK));
+            this.secondaryConfig = this._actionConfigs.find(cfg => cfg.Type__c.includes(SECONDARY_CONFIG_CHECK));
             // Row Actions
-            this.rowActionConfigs = this._actionConfigs.filter(cfg => cfg.Type__c.toLowerCase() === 'row_action');
+            this.rowActionConfigs = this._actionConfigs.filter(cfg => cfg.Type__c === ROW_ACTION_CHECK);
         }
     }
 
@@ -251,22 +255,26 @@ export default class Datatable extends LightningElement {
         const flowInputVars = [];
         let flowMethod;
         let flowApiName;
+        let selectedRowKeys = [];
 
         // From Table Action
         if (event.target) {
             flowMethod = event.target.dataset.dialogSize === 'Large' ? 'flowLarge' : 'flow';
             flowApiName = event.target.name;
-        } else {
+            selectedRowKeys = this.selectedRows.map(row => row[this.keyField]);
+        }
+        // Row Menu Action
+        if (event.rowMenuAction) {
             flowMethod = event.rowMenuAction.dialogSize === 'Large' ? 'flowLarge' : 'flow';
             flowApiName = event.rowMenuAction.flowApiName;
+            selectedRowKeys.push(event.rowMenuAction.row[this.keyField]);
         }
 
         if (!flowApiName || !flowMethod) {
             return;
         }
 
-        // The following should only be provided to the flow when used.
-        const selectedRowKeys = this.selectedRows.map(row => row[this.keyField]);
+        // Input vars need to be calculated only when when necessary
         if (selectedRowKeys.length) {
             flowInputVars.push({
                 name: 'SelectedRowKeys',
@@ -293,18 +301,6 @@ export default class Datatable extends LightningElement {
                 value: this.recordId
             });
         }
-        if (event.rowMenuAction && event.rowMenuAction.row) {
-            flowInputVars.push({
-                name: 'SelectedRowKeys',
-                type: 'String',
-                value: [event.rowMenuAction.row[this.keyField]]
-            });
-            flowInputVars.push({
-                name: 'SelectedRowKeysSize',
-                type: 'Number',
-                value: 1
-            });
-        }
         const flowPayload = {
             method: flowMethod,
             config: {
@@ -318,16 +314,33 @@ export default class Datatable extends LightningElement {
     }
 
     handleLwcAction(event) {
-        const dialogMethod = event.target.dataset.dialogSize === 'Large' ? 'bodyModalLarge' : 'bodyModal';
+        let dialogMethod;
+        let headerLabel;
+        let componentName;
+        let selectedRows = [];
+
+        // From Table Action
+        if (event.target) {
+            dialogMethod = event.target.dataset.dialogSize === 'Large' ? 'bodyModalLarge' : 'bodyModal';
+            headerLabel = event.target.label;
+            componentName = event.target.name;
+            selectedRows = this.selectedRows;
+        } else {
+            dialogMethod = event.rowMenuAction.dialogSize === 'Large' ? 'bodyModalLarge' : 'bodyModal';
+            headerLabel = event.rowMenuAction.dialogHeader;
+            componentName = event.rowMenuAction.lwcName;
+            selectedRows.push(event.rowMenuAction.row);
+        }
+
         const dialogPayload = {
             method: dialogMethod,
             config: {
-                auraId: `lwc-${event.target.name.toLowerCase()}-id`,
-                headerLabel: `${event.target.label}`,
-                component: `${event.target.name}`,
+                auraId: `${headerLabel.toLowerCase()}_${componentName.toLowerCase()}`,
+                headerLabel: headerLabel,
+                component: componentName,
                 componentParams: {
                     uniqueBoundary: this.uniqueBoundary,
-                    selectedRows: this.selectedRows,
+                    selectedRows: selectedRows,
                     sourceRecordId: this.recordId
                 }
             }
@@ -377,14 +390,22 @@ export default class Datatable extends LightningElement {
                 const payload = {
                     rowMenuAction: {
                         flowApiName: action.flowApiName,
-                        flowSize: action.flowSize,
+                        dialogSize: action.dialogSize,
                         row: row
                     }
                 };
                 this.handleFlowAction(payload);
             }
             case 'custom_lwc': {
-                alert('TODO');
+                const payload = {
+                    rowMenuAction: {
+                        lwcName: action.lwcName,
+                        dialogSize: action.dialogSize,
+                        dialogHeader: action.label,
+                        row: row
+                    }
+                };
+                this.handleLwcAction(payload);
             }
         }
     }

@@ -1,7 +1,7 @@
 /**
  * BSD 3-Clause License
  *
- * Copyright (c) 2019, james@sparkworks.io
+ * Copyright (c) 2020, james@sparkworks.io
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

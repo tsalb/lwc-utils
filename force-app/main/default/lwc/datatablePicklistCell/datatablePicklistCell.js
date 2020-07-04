@@ -1,7 +1,7 @@
 /**
  * BSD 3-Clause License
  *
- * Copyright (c) 2019, james@sparkworks.io
+ * Copyright (c) 2020, james@sparkworks.io
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,22 +28,6 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
- * Usage - these are how custom data types are configured by column attributes
- *
- * {
- *     label: 'Account Name',
- *     type: 'customName,
- *     fieldName: 'Name',
- *     typeAttributes: {
- *         // only way to pass row related data down
- *         href: { fieldName: 'Account_Id' },
- *         target: '_parent'
- *      },
- * }
- *
  */
 
 import { LightningElement, api } from 'lwc';

@@ -386,36 +386,98 @@ The following are not currently supported, but is on the roadmap:
 </details>
 
 <details>
-    <summary>Configurable Custom Actions</summary>
+    <summary>Configurable Flow and LWC actions</summary>
 
-Configure a Primary or Secondary table action which can launch a flow with with a Custom Metadata row.
+Each `soqlDatatable` can be have one defined **Action Configuration** (`Datatable_Config__mdt`) to define both Table level (supporting multi / single select) and Row Level actions.
 
-App Builder's `Action Configuration` (`actionConfigDevName`) property refers to a single row configured on the `Datatable_Config__mdt` where the `Datatable_Action_Config__mdt` related children define the types of actions you can place on the table.
+Both LWCs (inside a dialog) and Screen Flows can be launched from either action type. The configuration is easier to explain in picture format:
 
-For example, the SOQL Datatable tab uses:
-
--  One `Datatable_Config__mdt` entry:
-    - **DeveloperName**: `LWC_Utils_SOQL_Datatable_tab`
-    - **Type**: `Actions`
-
-- One `Datatable_Action_Config__mdt` entry:
-    - **DeveloperName**: `Assign_New_Account_for_Contacts`
-    - **Type**: `Primary Table Action`
-    - **Datatable Config**: `[ Lookup to Datatable Config Above ]`
-    - **Button Label**: `Assign New Account`
-    - **Screen Flow API Name**: `SOQL_Datatable_Flow_Action_Update_Contacts_with_New_Account`
-    - **Flow Size**: `Normal`
-
-```
-// TODO custom row actions
-```
+![soql-datatable-config-mdt](/readme-images/soql-datatable-config-mdt.png?raw=true)
 
 <p align="center">
-    <img src="./readme-images/soql-datatable-flow-action.gif" width="900">
+    <img src="./readme-images/soql-datatable-actions.png" width="480">
 </p>
+
+#### Assign New Account - Flow Table Action
+
+The button is configured to the `SOQL_Datatable_Flow_Action_Update_Contacts_with_New_Account` Screen Flow.
+
+`soqlDatatable` sends the following `inputVariables` to Flows.
+
+| Name | Type | Value |
+|-|-|-|
+| SelectedRowKeys | String[]  | Selected Row key-fields, usually recordIds. |
+| SelectedRowKeysSize | Number | Number of selected rows. |
+| UniqueBoundary | String | For `dialogAutoCloser` to refresh the table that opened the Screen Flow.  |
+| SourceRecordId | String | The recordId of the page that the `soqlDatatable` is placed on. |
+
+When the flow is done, it auto-closes using `dialogAutoCloser`.
 
 <p align="center">
     <img src="./readme-images/soql-datatable-new-account-flow.png" width="640">
+</p>
+
+#### Check Opportunities - LWC Table Action
+
+This button configured to open the `checkOpportunitiesExample` LWC.
+
+Notice the public attributes, these are always supplied by `soqlDatatable` when invoking an LWC.
+
+```html
+<template>
+    <c-message-service boundary={uniqueBoundary}></c-message-service>
+    <template if:true={queryString}>
+        <c-soql-datatable query-string={queryString}></c-soql-datatable>
+    </template>
+    <template if:false={queryString}>
+        <div class="slds-align_absolute-center">
+            No Contacts Selected. Please choose contacts to view opportunities for.
+        </div>
+    </template>
+</template>
+```
+```js
+...
+
+@api uniqueBoundary;
+@api selectedRows;
+@api sourceRecordId;
+
+queryString;
+
+// private
+_isRendered;
+_messageService;
+_accountIdSet = new Set();
+
+connectedCallback() {
+    if (this.selectedRows && this.selectedRows.length) {
+        this.selectedRows.forEach(row => {
+            this._accountIdSet.add(`'${row.AccountId}'`);
+        });
+    }
+    if (this._accountIdSet.size > 0) {
+        let accountIds = Array.from(this._accountIdSet.keys());
+        this.queryString = convertToSingleLineString`
+            SELECT Account.Name, Name, Amount, CloseDate, StageName
+            FROM Opportunity
+            WHERE AccountId IN (${accountIds.join(',')})
+            ORDER BY Account.Name ASC
+        `;
+    }
+}
+
+...
+```
+
+#### Remove Phone - Flow Row Action
+
+The button is configured to the `SOQL_Datatable_Flow_Row_Action_Remove_Contact_Phone` Screen Flow.
+
+This Screen Flow also auto-closes with `dialogAutoCloser`.
+
+<p align="center">
+    <img src="./readme-images/soql-datatable-remove-contact-phone-flow.png" width="380">
 </p>
 
 </details>

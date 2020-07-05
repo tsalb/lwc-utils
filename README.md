@@ -331,12 +331,11 @@ Clicking Edit Page on the App Page, you can see that there are only a handful of
 
 <!-- Psuedo-spoiler tags can be formed like this. Line break is required! -->
 <details>
-    <summary>Record Binding in SOQL</summary>
+    <summary>Using Record Context with <code>$CurrentRecord</code> in a SOQL String</summary>
 
+`$CurrentRecord` and `$recordId` are special syntax that allows for merge-fields of current record data into the SOQL string. By using them, you can merge current record context as values in the `WHERE` clause as follows:
 
-This comes with an API to grab data from the current record context and merge it into the SOQL String with the `$CurrentRecord` and `$recordId` syntax as follows:
-
-```
+```js
 // Find other Accounts similar to this Account's Industry
 SELECT Name, Type, Website, Industry
 FROM Account
@@ -350,38 +349,68 @@ WHERE AccountId = $recordId
 AND MailingState = $CurrentRecord.BillingState
 ```
 
-It uses Lightning Data Service to `getRecord` and resolve the record values before merging them into the SOQL String. 
+This uses Lightning Data Service (`getRecord`) to retrieve and resolve the record values, so make sure your user(s) have FLS enabled for any fields you plan on using the `$CurrentRecord` feature with.  
 
 All data types that can be SOQL-ed are supported for `$CurrentRecord`.
+
+Please submit issues to this repo if you find one that cannot be merged correctly.
 </details>
 
 <details>
-    <summary>Inline Editing</summary>
+    <summary>Inline Editing / Mass Inline Editing</summary>
 
 
 Define which fields can be editable in a comma separated list in the `Editable Fields` design attribute. For data types that are supported in the vanilla `lightning-datatable`, such as `date`, `text`, `number`, those are relied on as heavily as possible.
 
-For data types such as `picklist` which are yet to be supported, `soqlDatatable` uses the custom data types feature. The custom LWC surfaced as the datatable cell is called `customPicklist`. It copies the mass edit functionality as much as possible as the vanilla `lightning-datatable` to provide a seamless user experience until Salesforce provides `picklist` as a [supported data type](https://trailblazer.salesforce.com/ideaView?id=0873A000000PZJ4QAO).
+For data types such as `picklist` and `lookup` which are yet to be [supported](https://trailblazer.salesforce.com/ideaView?id=0873A000000PZJ4QAO), this component provides custom data types as follows.
+
+**Picklist Custom Data Type**
+
+This custom data type is surfaced as `customPicklist`. It always places a `--None--` value, regardless of if your picklist is configured to always require a value. The save will fail and user will need to correct it to move on.
 
 `RecordType` restricted picklist values are supported with a limitation:
 
 > When using mass edit on a Picklist field for a Standard Object enabled with Record Types, it's possible to mass apply a value which does not belong on that table. This seems to be because Standard Object picklist fields do not have the `Restrict picklist to the values defined in the value set` option.
 
-Multi-line inline edit is supported for the `customPicklist` data type. Partial save across rows is supported. The UI is aligned to **native list views** to provide a seamless User Experience.
+The actual picklist edit cell is a fork of the one authored by jlyon87 as found [here](https://github.com/jlyon87/lwc-picklist)
+
+**Lookup Custom Data Type**
+
+The custom LWC data type is surfaced as `customLookup`.
+
+```
+// TODO documentation
+// TODO configuration options
+```
+
+The actual lookup edit cell is a fork of the one authored by jlyon87 as found [here](https://github.com/jlyon87/lwc-lookup)
+
+**Name Custom Data Type**
+
+This custom data type is surfaced as `customName`.
+
+```
+// TODO documentation
+```
+
+**Supported Features for all Custom Data Types**
+- Multi-line inline edit (aka mass-edit).
 
 <p align="center">
     <img src="./readme-images/soql-datatable-inline-edit-mass.png" width="900">
 </p>
 
-Error handling is also designed to be as close to native list views as possible.
+- Partial save across rows is supported. 
+    - Error display user experience is aligned to **native list views**.
+    - If one row errors, all fields/columns for that row fail as well until all errors are resolved.
 
 <p align="center">
     <img src="./readme-images/soql-datatable-inline-edit-error.png" width="900">
 </p>
 
-The following are not currently supported, but is on the roadmap:
+**Unsupported / Roadmap Features**
 - Keyboard navigation
-- `customLookup` data type
+    - Pending lwc / aura issue investigation [here](https://github.com/salesforce/lwc/issues/1962)
 
 </details>
 

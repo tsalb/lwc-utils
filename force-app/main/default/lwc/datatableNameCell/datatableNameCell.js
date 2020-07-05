@@ -36,9 +36,15 @@ export default class DatatableNameCell extends LightningElement {
     // Properties specific to this cell type
     @api
     get href() {
-        return this._href;
+        if (!this.value) {
+            return null;
+        }
+        if (this._href) {
+            return this._href;
+        }
+        return `/${this.value}`;
     }
-    set href(value = '/') {
+    set href(value) {
         this._href = `/${value}`;
     }
     @api target = '_parent';

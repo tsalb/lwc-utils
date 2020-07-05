@@ -59,7 +59,7 @@ export default class DatatableEditableCell extends LightningElement {
     // private
     _isRendered;
     _container;
-    _valueOnEdit;
+    _isCleared;
 
     get showMassEdit() {
         return (
@@ -74,7 +74,13 @@ export default class DatatableEditableCell extends LightningElement {
     }
 
     get cellDisplayValue() {
-        return this.draftValue ? this.draftValue : this.originalValue;
+        if (this._isCleared) {
+            return null;
+        }
+        if (this.draftValue) {
+            return this.draftValue;
+        }
+        return this.originalValue;
     }
 
     renderedCallback() {
@@ -117,7 +123,7 @@ export default class DatatableEditableCell extends LightningElement {
         const currentInputValue = this._editElement[this.editCellValueProp];
         const isAppliedToMultipleRows = this.template.querySelector('.mass-input-checkbox').checked;
 
-        console.log(currentInputValue);
+        //console.log(currentInputValue);
 
         if (isAppliedToMultipleRows) {
             let rowIdentifierToValues = {};
@@ -131,7 +137,7 @@ export default class DatatableEditableCell extends LightningElement {
                 });
             });
 
-            console.log(rowIdentifierToValues);
+            //console.log(rowIdentifierToValues);
 
             this._messageService.publish({
                 key: 'setdraftvalue',
@@ -187,14 +193,18 @@ export default class DatatableEditableCell extends LightningElement {
         if (event.target && event.target.assignedElements().length === 1) {
             this._displayElement = event.target.assignedElements()[0];
             this._displayElement.classList.add('slds-truncate');
-            this._displayElement[this.displayCellValueProp] = this.cellDisplayValue;
+            if (this.displayCellValueProp) {
+                this._displayElement[this.displayCellValueProp] = this.cellDisplayValue;
+            }
         }
     }
 
     handleEditCellSlotChange(event) {
         if (event.target && event.target.assignedElements().length === 1) {
             this._editElement = event.target.assignedElements()[0];
-            this._editElement[this.editCellValueProp] = this.cellDisplayValue;
+            if (this.editCellValueProp) {
+                this._editElement[this.editCellValueProp] = this.cellDisplayValue;
+            }
             if (!this.showMassEdit) {
                 this._editElement.addEventListener(this.changeEventName, this.handleEditCellInputChange.bind(this));
             }
@@ -224,8 +234,12 @@ export default class DatatableEditableCell extends LightningElement {
             return;
         }
         const payload = JSON.parse(JSON.stringify(event.detail.value)); // un-proxify for ease of debugging
+
+        //console.log(payload);
+
         if (payload.rowKeysToNull && payload.rowKeysToNull.includes(this.rowKeyValue)) {
             this.draftValue = null;
+            this._isCleared = false;
             this._displayElement[this.displayCellValueProp] = this.cellDisplayValue;
         }
         if (payload.rowIdentifierToValues) {
@@ -242,6 +256,7 @@ export default class DatatableEditableCell extends LightningElement {
 
     handleEditCellInputChange(event) {
         this.draftValue = this._getEventValue(event);
+        this._isCleared = !this.draftValue;
     }
 
     // Public Events
@@ -252,7 +267,7 @@ export default class DatatableEditableCell extends LightningElement {
             return;
         }
         // Match UX of vanilla datatable when no changes made
-        if (!this.draftValue) {
+        if (!this.draftValue && !this._isCleared) {
             return;
         }
         let rowData = {
@@ -288,7 +303,7 @@ export default class DatatableEditableCell extends LightningElement {
 
     get calculateLayoutClass() {
         let css = 'slds-p-horizontal_xx-small slds-has-flexi-truncate ';
-        if (this.draftValue) {
+        if (this.draftValue || this._isCleared) {
             css += 'slds-is-edited';
         }
         return css;
@@ -307,6 +322,14 @@ export default class DatatableEditableCell extends LightningElement {
     // Private functions
 
     _getEventValue(event) {
+        // custom data types
+        if (this._editElement.name === 'lookup-edit') {
+            return event.detail.selectedRecordId;
+        }
+        if (this._editElement.name === 'picklist-edit') {
+            return event.detail.selectedValue;
+        }
+        // fallbacks
         if (event.detail && typeof event.detail === 'string') {
             return event.detail;
         }

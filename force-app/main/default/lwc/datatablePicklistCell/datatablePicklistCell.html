@@ -44,10 +44,11 @@
         object-api-name={objectApiName}
         column-name={columnName}
         field-api-name={fieldApiName}
-        change-event-name={changeEventName}
+        change-event-name="selected"
     >
         <lightning-formatted-text slot="displayCell" value={value}></lightning-formatted-text>
         <c-picklist
+            name="picklist-edit"
             slot="editCell"
             field-describe={fieldDescribe}
             record-type-id={picklistRecordTypeId}

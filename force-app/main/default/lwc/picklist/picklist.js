@@ -40,21 +40,14 @@ export default class Picklist extends LightningElement {
     @api recordTypeId;
     @api
     get value() {
+        if (this._isCleared) {
+            return null;
+        }
         return this.selected || this._value;
     }
     set value(value) {
-        if (value) {
-            this._value = value;
-        }
+        this._value = value;
     }
-
-    @api label;
-    @api fieldLevelHelp;
-    @api disabled = false;
-    @api required = false;
-
-    @track errors = [];
-    @track _variant;
     @api
     get variant() {
         return this._variant;
@@ -64,16 +57,27 @@ export default class Picklist extends LightningElement {
         this._variant = val;
     }
 
-    @track selected;
+    @api label;
+    @api fieldLevelHelp;
+    @api disabled = false;
+    @api required = false;
+
     @track options;
+    selected;
+
+    // private
+    _errors = [];
+    _variant;
+    _isCleared = false;
 
     @wire(getPicklistValues, { recordTypeId: '$recordTypeId', fieldApiName: '$fieldDescribe' })
     wiredPicklistValues({ error, data }) {
         if (error) {
-            this.errors.push(error);
+            this._errors.push(error);
             console.error('Error', error);
         } else if (data) {
             this.options = data.values.map(({ label, value }) => ({ label, value }));
+            this.options.unshift({ label: '--None--', value: null });
             this.setDefaultSelected(data);
         }
     }
@@ -88,8 +92,14 @@ export default class Picklist extends LightningElement {
         }
     }
 
-    onChange(event) {
+    handleChange(event) {
         this.selected = event.target.value;
-        this.dispatchEvent(new CustomEvent('selected', { detail: this.selected }));
+        this._isCleared = !this.selected;
+        const payload = {
+            detail: {
+                selectedValue: this.selected
+            }
+        };
+        this.dispatchEvent(new CustomEvent('selected', payload));
     }
 }

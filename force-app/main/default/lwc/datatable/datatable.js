@@ -415,6 +415,8 @@ export default class Datatable extends LightningElement {
     }
 
     handleCellChange(event) {
+        event.stopPropagation();
+
         // This function is needed for handling custom data types to unify draftValue changes
         event.detail.draftValues.forEach(draft => {
             if (!this._draftValuesMap.has(draft[this.keyField])) {
@@ -423,7 +425,9 @@ export default class Datatable extends LightningElement {
             const changedData = this._draftValuesMap.get(draft[this.keyField]);
             this._draftValuesMap.set(draft[this.keyField], { ...changedData, ...draft });
         });
+
         //console.log(this._draftValuesMap);
+
         if (this._draftValuesMap.size > 0) {
             this.draftValues = [...this._draftValuesMap.values()];
             //console.log(this.draftValues);
@@ -446,7 +450,9 @@ export default class Datatable extends LightningElement {
                 this.tableData.findIndex(data => draft[this.keyField] === data[this.keyField]) + 1
             ])
         );
+
         //console.log(rowKeyToRowNumberMap);
+        //console.log(this.draftValues);
 
         // On partial save rows, this helps signal which rows succeeded by clearing them out
         this.showSpinner = true;

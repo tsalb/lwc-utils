@@ -61,7 +61,7 @@ public inherited sharing class DataTableService {
         Schema.DisplayType.Percent => 'percent',
         Schema.DisplayType.Phone => 'text',
         Schema.DisplayType.Picklist => 'customPicklist',
-        Schema.DisplayType.Reference => 'url',
+        Schema.DisplayType.Reference => 'customLookup',
         Schema.DisplayType.String => 'text',
         Schema.DisplayType.TextArea => 'text',
         Schema.DisplayType.Time => 'text',
@@ -267,17 +267,12 @@ public inherited sharing class DataTableService {
             fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(field.getType()));
             fieldColumn.put('fieldName', flatFieldName);
 
-            // TODO, eventually add as customLookup datatype
-            if (field.getType() === Schema.DisplayType.REFERENCE) {
-                continue;
-            }
-
             // Fields with Name are typically hyperlinked, so we replace it with a custom datatype
             if (fieldName.equalsIgnoreCase('name') || fieldName.substringAfterLast('.').equalsIgnoreCase('name')) {
                 fieldColumn.put('type', 'customName');
                 Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);
                 // This is a trick to set reference to a value and allow tableServiceUtils.js deal with this
-                typeAttributes.put('href', new Map<String, Object>{ 'fieldName' => currentObjectName + '_Id' });
+                typeAttributes.put('href', new Map<String, Object>{ 'fieldName' => currentSObjectType + '_Id' });
                 typeAttributes.put('target', '_parent');
                 fieldColumn.put('typeAttributes', typeAttributes);
             }
@@ -292,12 +287,22 @@ public inherited sharing class DataTableService {
                 typeAttributes.put('fieldApiName', fieldNameParticle);
                 fieldColumn.put('typeAttributes', typeAttributes);
             }
-            if (
-                columnType.equalsIgnoreCase('customPicklist') &&
-                DataTableService.recordTypeIdsForObject(currentObjectName).size() > 1
-            ) {
+
+            Boolean hasRecordTypes = DataTableService.recordTypeIdsForObject(currentObjectName).size() > 1;
+            if (columnType.equalsIgnoreCase('customPicklist') && hasRecordTypes) {
                 Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);
                 typeAttributes.put('picklistRecordTypeId', new Map<String, Object>{ 'fieldName' => 'RecordTypeId' });
+                fieldColumn.put('typeAttributes', typeAttributes);
+            }
+
+            if (columnType.equalsIgnoreCase('customLookup')) {
+                Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);
+                String lookupObjectType = field.getReferenceTo().get(0).getDescribe().getName();
+                String lookupObjectTypeNameField = lookupObjectType + '_Name';
+                typeAttributes.put('href', new Map<String, Object>{ 'fieldName' => lookupObjectType + '_Id' });
+                typeAttributes.put('target', '_parent');
+                typeAttributes.put('displayValue', new Map<String, Object>{ 'fieldName' => lookupObjectTypeNameField });
+                typeAttributes.put('referenceObjectApiName', lookupObjectType);
                 fieldColumn.put('typeAttributes', typeAttributes);
             }
 

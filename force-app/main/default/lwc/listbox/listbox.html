@@ -30,13 +30,17 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <template>
-    <lightning-combobox
-        name="picklist"
-        label={label}
-        value={selected}
-        options={options}
-        disabled={disabled}
-        variant={variant}
-        onchange={handleChange}
-    ></lightning-combobox>
+    <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+        <template for:item="record" for:each={records}>
+            <li key={record.Id} class="slds-listbox__item" role="presentation">
+                <c-listbox-item
+                    record={record}
+                    title={title}
+                    subtitle={subtitle}
+                    active-id={activeId}
+                    icon-name={iconName}
+                ></c-listbox-item>
+            </li>
+        </template>
+    </ul>
 </template>

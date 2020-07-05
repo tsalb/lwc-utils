@@ -32,23 +32,24 @@
 
 import { LightningElement, api } from 'lwc';
 
-const MASTER_RECORD_TYPE_ID = '012000000000000AAA';
-
-export default class DatatablePicklistCell extends LightningElement {
-    // Properties for this specific LWC
-    // After a lot of random debugging, it appears that recordTypeId is a reserved typeAttribute
-    // which is not passed down correctly if used, so the workaround is to use a custom prop name
+export default class DatatableLookupCell extends LightningElement {
+    // LWC specific attributes
     @api
-    get picklistRecordTypeId() {
-        return this._picklistRecordTypeId || MASTER_RECORD_TYPE_ID;
+    get href() {
+        if (!this.value || this.isCleared) {
+            return null;
+        }
+        if (this._href) {
+            return this._href;
+        }
+        return `/${this.value}`;
     }
-    set picklistRecordTypeId(value) {
-        this._picklistRecordTypeId = value || MASTER_RECORD_TYPE_ID;
+    set href(value) {
+        this._href = `/${value}`;
     }
-
-    get fieldDescribe() {
-        return `${this.objectApiName}.${this.fieldApiName}`;
-    }
+    @api target = '_parent';
+    @api displayValue;
+    @api referenceObjectApiName;
 
     // Required properties for datatable-edit-cell
     @api value; // comes in from datatable as the value of the name field
@@ -59,4 +60,24 @@ export default class DatatablePicklistCell extends LightningElement {
     @api objectApiName;
     @api columnName;
     @api fieldApiName;
+
+    isCleared = false;
+    selectedRecordId;
+    selectedDisplayValue;
+
+    get cellDisplayValue() {
+        if (this.isCleared) {
+            return null;
+        }
+        if (this.selectedDisplayValue) {
+            return this.selectedDisplayValue;
+        }
+        return this.displayValue;
+    }
+
+    handleSelected(event) {
+        this.selectedRecordId = event.detail.selectedRecordId;
+        this.selectedDisplayValue = event.detail.selectedDisplayValue;
+        this.isCleared = !this.selectedRecordId && !this.selectedDisplayValue;
+    }
 }

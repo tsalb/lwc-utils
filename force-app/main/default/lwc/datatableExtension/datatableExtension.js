@@ -35,6 +35,7 @@ import LightningDatatable from 'lightning/datatable';
 // Custom data type templates
 import customName from './customName.html';
 import customPicklist from './customPicklist.html';
+import customLookup from './customLookup.html';
 
 export default class datatableExtension extends LightningDatatable {
     static customTypes = {
@@ -62,6 +63,24 @@ export default class datatableExtension extends LightningDatatable {
                 // After a lot of random debugging, it appears that recordTypeId is a reserved typeAttribute
                 // which is not passed down correctly if used, so the workaround is to use something more custom
                 'picklistRecordTypeId',
+                // Defaults for datatable-edit-cell
+                'tableBoundary',
+                'rowKeyAttribute',
+                'rowKeyValue',
+                'isEditable',
+                'objectApiName',
+                'columnName',
+                'fieldApiName'
+            ]
+        },
+        customLookup: {
+            template: customLookup,
+            typeAttributes: [
+                // LWC specific attributes
+                'href',
+                'target',
+                'displayValue',
+                'referenceObjectApiName',
                 // Defaults for datatable-edit-cell
                 'tableBoundary',
                 'rowKeyAttribute',

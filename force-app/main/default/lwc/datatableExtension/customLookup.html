@@ -1,3 +1,4 @@
+<!--
 /**
  * BSD 3-Clause License
  *
@@ -29,34 +30,21 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+-->
 
-import { LightningElement, api } from 'lwc';
-
-const MASTER_RECORD_TYPE_ID = '012000000000000AAA';
-
-export default class DatatablePicklistCell extends LightningElement {
-    // Properties for this specific LWC
-    // After a lot of random debugging, it appears that recordTypeId is a reserved typeAttribute
-    // which is not passed down correctly if used, so the workaround is to use a custom prop name
-    @api
-    get picklistRecordTypeId() {
-        return this._picklistRecordTypeId || MASTER_RECORD_TYPE_ID;
-    }
-    set picklistRecordTypeId(value) {
-        this._picklistRecordTypeId = value || MASTER_RECORD_TYPE_ID;
-    }
-
-    get fieldDescribe() {
-        return `${this.objectApiName}.${this.fieldApiName}`;
-    }
-
-    // Required properties for datatable-edit-cell
-    @api value; // comes in from datatable as the value of the name field
-    @api tableBoundary;
-    @api rowKeyAttribute;
-    @api rowKeyValue;
-    @api isEditable;
-    @api objectApiName;
-    @api columnName;
-    @api fieldApiName;
-}
+<template>
+    <c-datatable-lookup-cell
+        href={typeAttributes.href}
+        target={typeAttributes.target}
+        display-value={typeAttributes.displayValue}
+        reference-object-api-name={typeAttributes.referenceObjectApiName}
+        value={value}
+        table-boundary={typeAttributes.tableBoundary}
+        row-key-attribute={typeAttributes.rowKeyAttribute}
+        row-key-value={typeAttributes.rowKeyValue}
+        is-editable={typeAttributes.isEditable}
+        object-api-name={typeAttributes.objectApiName}
+        column-name={typeAttributes.columnName}
+        field-api-name={typeAttributes.fieldApiName}
+    ></c-datatable-lookup-cell>
+</template>

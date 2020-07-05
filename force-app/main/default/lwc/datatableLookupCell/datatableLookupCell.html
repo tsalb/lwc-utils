@@ -1,3 +1,4 @@
+<!--
 /**
  * BSD 3-Clause License
  *
@@ -29,34 +30,34 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+-->
 
-import { LightningElement, api } from 'lwc';
-
-const MASTER_RECORD_TYPE_ID = '012000000000000AAA';
-
-export default class DatatablePicklistCell extends LightningElement {
-    // Properties for this specific LWC
-    // After a lot of random debugging, it appears that recordTypeId is a reserved typeAttribute
-    // which is not passed down correctly if used, so the workaround is to use a custom prop name
-    @api
-    get picklistRecordTypeId() {
-        return this._picklistRecordTypeId || MASTER_RECORD_TYPE_ID;
-    }
-    set picklistRecordTypeId(value) {
-        this._picklistRecordTypeId = value || MASTER_RECORD_TYPE_ID;
-    }
-
-    get fieldDescribe() {
-        return `${this.objectApiName}.${this.fieldApiName}`;
-    }
-
-    // Required properties for datatable-edit-cell
-    @api value; // comes in from datatable as the value of the name field
-    @api tableBoundary;
-    @api rowKeyAttribute;
-    @api rowKeyValue;
-    @api isEditable;
-    @api objectApiName;
-    @api columnName;
-    @api fieldApiName;
-}
+<template>
+    <c-datatable-editable-cell
+        table-boundary={tableBoundary}
+        original-value={value}
+        edit-cell-value-prop="value"
+        is-editable={isEditable}
+        row-key-attribute={rowKeyAttribute}
+        row-key-value={rowKeyValue}
+        object-api-name={objectApiName}
+        column-name={columnName}
+        field-api-name={fieldApiName}
+        change-event-name="selected"
+    >
+        <lightning-formatted-url
+            slot="displayCell"
+            name="lookup-display"
+            value={href}
+            label={cellDisplayValue}
+            target={target}
+        ></lightning-formatted-url>
+        <c-lookup
+            slot="editCell"
+            name="lookup-edit"
+            object-api-name={referenceObjectApiName}
+            value={value}
+            onselected={handleSelected}
+        ></c-lookup>
+    </c-datatable-editable-cell>
+</template>

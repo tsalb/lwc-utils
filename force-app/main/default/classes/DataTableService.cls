@@ -69,6 +69,7 @@ public inherited sharing class DataTableService {
     };
 
     private static Set<Id> RECORD_TYPE_IDS { private get; private set; }
+    private static Map<String, String> LOOKUP_FIELD_TO_NAME_FIELD_MAP = new Map<String, String>();
 
     private static final String DATATABLE_ACTION_CONFIG_TYPE = 'Actions';
 
@@ -116,13 +117,23 @@ public inherited sharing class DataTableService {
             DataTableService.recordTypeIdsForObject(objectName).size() > 1 &&
             !queryString.containsIgnoreCase('RecordTypeId')
         ) {
-            queryString = addRecordTypeIdToQueryString(queryString);
+            queryString = addFieldToQueryString('RecordTypeId', queryString);
             tableRequest.put(QUERY_STRING_KEY, queryString);
         }
 
-        // Finally derive both data and columns for lightning-datatable here
-        List<SObject> tableData = DataTableService.getSObjectData(tableRequest);
+        // Columns are derived first for customLookup detection by populating LOOKUP_FIELD_TO_NAME_FIELD_MAP
         List<Map<String, Object>> tableColumns = DataTableService.getColumnData(queryString, queryObject);
+        if (!LOOKUP_FIELD_TO_NAME_FIELD_MAP.isEmpty()) {
+            for (String lookupNameField : new List<String>(LOOKUP_FIELD_TO_NAME_FIELD_MAP.values())) {
+                if (!queryString.containsIgnoreCase(lookupNameField)) {
+                    queryString = addFieldToQueryString(lookupNameField, queryString);
+                    tableRequest.put(QUERY_STRING_KEY, queryString);
+                }
+            }
+        }
+
+        // Finally, the data itself after checking on both recordTypeId and lookupNameFields
+        List<SObject> tableData = DataTableService.getSObjectData(tableRequest);
 
         // Put it all together
         return new Map<String, Object>{
@@ -152,10 +163,10 @@ public inherited sharing class DataTableService {
         ];
     }
 
-    private static String addRecordTypeIdToQueryString(String queryString) {
+    private static String addFieldToQueryString(String field, String queryString) {
         String queryStart = queryString.substringBefore(' FROM ');
         String queryEnd = queryString.substringAfter(' FROM ');
-        return queryStart + ', RecordTypeId FROM ' + queryEnd;
+        return queryStart + ', ' + String.escapeSingleQuotes(field) + ' FROM ' + queryEnd;
     }
 
     /**
@@ -304,6 +315,10 @@ public inherited sharing class DataTableService {
                 typeAttributes.put('displayValue', new Map<String, Object>{ 'fieldName' => lookupObjectTypeNameField });
                 typeAttributes.put('referenceObjectApiName', lookupObjectType);
                 fieldColumn.put('typeAttributes', typeAttributes);
+                // Helps queryString retrieve additional name fields
+                Boolean isCustom = field.getReferenceTo().get(0).getDescribe().isCustom();
+                String lookupField = isCustom ? fieldName : fieldName.removeEnd('Id');
+                LOOKUP_FIELD_TO_NAME_FIELD_MAP.put(lookupField, lookupField + '.Name');
             }
 
             // Finally

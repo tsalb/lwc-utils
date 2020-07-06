@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Type__c</fullName>
-    <description>There is a bug around querying picklists in the WHERE clause from the child, so this is a text for now.</description>
+    <fullName>Object_API_Name__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
-    <inlineHelpText>Semicolon delimited to keep track of which child configs are used for this grouping record.</inlineHelpText>
-    <label>Type</label>
+    <label>Object API Name</label>
     <length>255</length>
     <required>true</required>
     <type>Text</type>

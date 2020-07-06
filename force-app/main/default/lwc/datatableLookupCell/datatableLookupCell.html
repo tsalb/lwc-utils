@@ -33,6 +33,8 @@
 -->
 
 <template>
+    <c-message-service boundary={tableBoundary} onlookupconfigload={handleLookupConfigLoad}></c-message-service>
+
     <c-datatable-editable-cell
         table-boundary={tableBoundary}
         original-value={value}
@@ -56,6 +58,9 @@
         <c-lookup
             slot="editCell"
             name="lookup-edit"
+            icon-name={configIconName}
+            title={configTitle}
+            subtitle={configSubtitle}
             object-api-name={referenceObjectApiName}
             value={value}
             onselected={handleSelected}

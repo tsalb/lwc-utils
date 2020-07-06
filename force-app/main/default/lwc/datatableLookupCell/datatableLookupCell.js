@@ -64,6 +64,10 @@ export default class DatatableLookupCell extends LightningElement {
     @api columnName;
     @api fieldApiName;
 
+    configIconName;
+    configTitle;
+    configSubtitle;
+
     // private
     _isCleared = false;
     _selectedRecordId;
@@ -77,6 +81,20 @@ export default class DatatableLookupCell extends LightningElement {
             return this._selectedDisplayValue;
         }
         return this.displayValue;
+    }
+
+    handleLookupConfigLoad(event) {
+        const payload = event.detail.value;
+        if (payload.lookupConfigs && payload.lookupConfigs.length) {
+            const lookupMap = new Map(payload.lookupConfigs.map(obj => [obj.Object_API_Name__c, obj]));
+            const cellConfig = lookupMap.has(this.referenceObjectApiName)
+                ? lookupMap.get(this.referenceObjectApiName)
+                : lookupMap.get('All');
+            // Send these down to the open source component
+            this.configIconName = cellConfig.Icon_Name__c;
+            this.configTitle = cellConfig.Title_Field__c;
+            this.configSubtitle = cellConfig.Subtitle_Field__c;
+        }
     }
 
     // It's easier for the lookup custom data type to have logic here, unlike the picklist custom data type

@@ -33,7 +33,9 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import * as tableService from 'c/tableService'; // Data, columns, mass update
-import getActionConfig from '@salesforce/apex/DataTableService.getActionConfig'; // Custom flow actions
+
+import getActionConfig from '@salesforce/apex/DataTableService.getActionConfig';
+import getLookupConfig from '@salesforce/apex/DataTableService.getLookupConfig';
 
 // Toast and Errors
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -42,9 +44,13 @@ import { reduceErrors, createSetFromDelimitedString } from 'c/utils';
 const MAX_ROW_SELECTION = 200;
 const OBJECTS_WITH_COMPOUND_NAMES = ['Contact'];
 
+// Datatable_Action_Config__mdt
 const PRIMARY_CONFIG_CHECK = 'Primary';
 const SECONDARY_CONFIG_CHECK = 'Secondary';
 const ROW_ACTION_CHECK = 'Row Action';
+
+// Datatable_Lookup_Config__mdt
+const DATATABLE_LOOKUP_CONFIG_DEFAULT = 'Default_Lookup_Config';
 
 export default class Datatable extends LightningElement {
     @api recordId;
@@ -113,8 +119,9 @@ export default class Datatable extends LightningElement {
         this._editableFields = createSetFromDelimitedString(value, ',');
     }
 
-    // Custom Table actions
+    // Datatable_Config__mdt configs
     @api actionConfigDevName;
+    @api lookupConfigDevName;
 
     // Template and getters
     isHideCheckbox = true;
@@ -198,12 +205,15 @@ export default class Datatable extends LightningElement {
     _draftValuesMap = new Map();
     _draftSuccessIds = new Set();
 
-    // private - flow actions
+    // private - table and lwc actions
     _actionConfigs = [];
+
+    // Datatable_Lookup_Config__mdt
+    _lookupConfigDevName;
 
     // For future enhancements
     @wire(getObjectInfo, { objectApiName: '$_objectApiName' })
-    wiredObjectInfo({ error, data }) {
+    objectInfoWire({ error, data }) {
         if (error) {
             this._notifySingleError('getObjectInfo error', error);
         } else if (data) {
@@ -213,7 +223,7 @@ export default class Datatable extends LightningElement {
 
     // For any actions configured for this table
     @wire(getActionConfig, { configName: '$actionConfigDevName' })
-    actionWire({ error, data }) {
+    actionConfigWire({ error, data }) {
         if (error) {
             this._notifySingleError('getActionConfig error', error);
         } else if (data) {
@@ -224,6 +234,18 @@ export default class Datatable extends LightningElement {
             this.secondaryConfig = this._actionConfigs.find(cfg => cfg.Type__c.includes(SECONDARY_CONFIG_CHECK));
             // Row Actions
             this.rowActionConfigs = this._actionConfigs.filter(cfg => cfg.Type__c === ROW_ACTION_CHECK);
+        }
+    }
+
+    // For lookup edits, if configured for this table
+    @wire(getLookupConfig, { configName: '$_lookupConfigDevName' })
+    lookupConfigWire({ error, data }) {
+        if (error) {
+            this._notifySingleError('getLookupEditConfig error', error);
+        } else if (data) {
+            console.log(data);
+            // This is ok to use now since this wire is only accessed after the table column set
+            this._messageService.publish({ key: 'lookupconfigload', value: { lookupConfigs: data } });
         }
     }
 
@@ -506,6 +528,13 @@ export default class Datatable extends LightningElement {
             if (col.type === 'customName') {
                 if (OBJECTS_WITH_COMPOUND_NAMES.includes(this._objectApiName)) {
                     col.typeAttributes.isCompoundName = true;
+                }
+            }
+            if (col.type === 'customLookup') {
+                if (col.typeAttributes.isEditable) {
+                    // Warm the cache with a variable assignment for each c-datatable-lookup-cell
+                    // messageService then publishes this to each one when the edit mode is accessed
+                    this._lookupConfigDevName = this.lookupConfigDevName || DATATABLE_LOOKUP_CONFIG_DEFAULT;
                 }
             }
             finalColumns.push(col);

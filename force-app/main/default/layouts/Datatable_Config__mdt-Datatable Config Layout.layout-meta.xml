@@ -74,13 +74,25 @@
         <sortField>Order__c</sortField>
         <sortOrder>Asc</sortOrder>
     </relatedLists>
+    <relatedLists>
+        <fields>MasterLabel</fields>
+        <fields>DeveloperName</fields>
+        <fields>Object_API_Name__c</fields>
+        <fields>Title_Field__c</fields>
+        <fields>Subtitle_Field__c</fields>
+        <fields>Icon_Name__c</fields>
+        <fields>IsProtected</fields>
+        <relatedList>Datatable_Lookup_Config__mdt.Datatable_Config__c</relatedList>
+        <sortField>Object_API_Name__c</sortField>
+        <sortOrder>Asc</sortOrder>
+    </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>
     <showInteractionLogPanel>false</showInteractionLogPanel>
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1g000001LF2y</masterLabel>
+        <masterLabel>00h8A000001EFyh</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

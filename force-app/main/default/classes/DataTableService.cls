@@ -72,6 +72,7 @@ public inherited sharing class DataTableService {
     private static Map<String, String> LOOKUP_FIELD_TO_NAME_FIELD_MAP = new Map<String, String>();
 
     private static final String DATATABLE_ACTION_CONFIG_TYPE = 'Actions';
+    private static final String DATATABLE_LOOKUP_CONFIG_TYPE = 'Lookup';
 
     @AuraEnabled(cacheable=true)
     public static String getQueryExceptionMessage(String queryString) {
@@ -160,6 +161,17 @@ public inherited sharing class DataTableService {
                 Datatable_Config__r.DeveloperName = :configName
                 AND Datatable_Config__r.Type__c = :DATATABLE_ACTION_CONFIG_TYPE
             ORDER BY Order__c ASC
+        ];
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<Datatable_Lookup_Config__mdt> getLookupConfig(String configName) {
+        return [
+            SELECT Datatable_Config__c, Object_API_Name__c, Title_Field__c, Subtitle_Field__c, Icon_Name__c
+            FROM Datatable_Lookup_Config__mdt
+            WHERE
+                Datatable_Config__r.DeveloperName = :configName
+                AND Datatable_Config__r.Type__c = :DATATABLE_LOOKUP_CONFIG_TYPE
         ];
     }
 

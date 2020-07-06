@@ -59,7 +59,7 @@ export default class Lookup extends LightningElement {
 
     @api fieldLabel;
     @api title = 'Name';
-    @api subtitle = 'Id';
+    @api subtitle;
     @api readOnly = false;
     @api required = false;
     @api messageWhenInputError = 'This field is required.';
@@ -294,10 +294,14 @@ export default class Lookup extends LightningElement {
     }
 
     getSearcher() {
+        const searcherFields = [this.title];
+        if (this.subtitle) {
+            searcherFields.push(this.subtitle);
+        }
         return {
             searchTerm: this.inputValue,
             objectName: this.objectApiName,
-            fields: [this.title, this.subtitle]
+            fields: searcherFields
         };
     }
 

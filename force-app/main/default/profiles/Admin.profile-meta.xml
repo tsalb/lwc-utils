@@ -120,6 +120,9 @@
         <layout>Datatable_Action_Config__mdt-Datatable Action Config Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
+        <layout>Datatable_Lookup_Config__mdt-Datatable Lookup Config Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>Datatable_Config__mdt-Datatable Config Layout</layout>
     </layoutAssignments>
     <tabVisibilities>

@@ -13,11 +13,11 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>editableFields</name>
-                    <value>Name, Email, Phone, LeadSource, AccountId</value>
+                    <value>Name, Email, Phone, LeadSource, Level__c, AccountId</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>queryString</name>
-                    <value>SELECT Name, Email, Phone, LeadSource, AccountId, Account.Type FROM Contact LIMIT 50</value>
+                    <value>SELECT Name, Email, Phone, LeadSource, Level__c, AccountId, Account.Type FROM Contact LIMIT 50</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>showRecordCount</name>

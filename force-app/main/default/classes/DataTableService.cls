@@ -75,7 +75,7 @@ public inherited sharing class DataTableService {
 
     @AuraEnabled(cacheable=true)
     public static String getQueryExceptionMessage(String queryString) {
-        System.debug('getQueryExceptionMessage queryString is: ' + queryString);
+        System.debug(LoggingLevel.INFO, 'getQueryExceptionMessage queryString is: ' + queryString);
         String errorMessage;
         try {
             Database.query(queryString);
@@ -307,18 +307,19 @@ public inherited sharing class DataTableService {
             }
 
             if (columnType.equalsIgnoreCase('customLookup')) {
+                // Process this first to extract name fields for soql query later
+                Boolean isCustomObjectLookup = field.getReferenceTo().get(0).getDescribe().isCustom();
+                String cleanFieldName = isCustomObjectLookup ? fieldName : fieldName.removeEnd('Id');
+                DataTableService.populateMapDataForNameFieldQuery(field, cleanFieldName);
+
+                // Then process the column itself
                 Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);
-                String lookupObjectType = field.getReferenceTo().get(0).getDescribe().getName();
-                String lookupObjectTypeNameField = lookupObjectType + '_Name';
-                typeAttributes.put('href', new Map<String, Object>{ 'fieldName' => lookupObjectType + '_Id' });
+                typeAttributes.put('href', new Map<String, Object>{ 'fieldName' => cleanFieldName + '_Id' });
                 typeAttributes.put('target', '_parent');
-                typeAttributes.put('displayValue', new Map<String, Object>{ 'fieldName' => lookupObjectTypeNameField });
-                typeAttributes.put('referenceObjectApiName', lookupObjectType);
+                String flattenedNameField = LOOKUP_FIELD_TO_NAME_FIELD_MAP.get(cleanFieldName).replace('.', '_');
+                typeAttributes.put('displayValue', new Map<String, Object>{ 'fieldName' => flattenedNameField });
+                typeAttributes.put('referenceObjectApiName', field.getReferenceTo().get(0).getDescribe().getName());
                 fieldColumn.put('typeAttributes', typeAttributes);
-                // Helps queryString retrieve additional name fields
-                Boolean isCustom = field.getReferenceTo().get(0).getDescribe().isCustom();
-                String lookupField = isCustom ? fieldName : fieldName.removeEnd('Id');
-                LOOKUP_FIELD_TO_NAME_FIELD_MAP.put(lookupField, lookupField + '.Name');
             }
 
             // Finally
@@ -343,5 +344,19 @@ public inherited sharing class DataTableService {
                 .keySet();
         }
         return DataTableService.RECORD_TYPE_IDS;
+    }
+
+    private static void populateMapDataForNameFieldQuery(Schema.DescribeFieldResult field, String cleanFieldName) {
+        // prettier-ignore
+        Map<String, Schema.SObjectField> lookupObjectFieldMap = field.getReferenceTo().get(0).getDescribe().fields.getMap();
+        Schema.SObjectField nameField;
+        for (Schema.SObjectField curField : lookupObjectFieldMap.values()) {
+            if (curField.getDescribe().isNameField()) {
+                nameField = curField;
+                break;
+            }
+        }
+        String lookupNamefield = cleanFieldName.replace('__c', '__r') + '.' + nameField.getDescribe().getName();
+        LOOKUP_FIELD_TO_NAME_FIELD_MAP.put(cleanFieldName, lookupNamefield);
     }
 }

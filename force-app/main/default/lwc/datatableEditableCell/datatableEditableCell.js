@@ -218,7 +218,13 @@ export default class DatatableEditableCell extends LightningElement {
             return;
         }
         this.draftValue = null;
-        this._displayElement[this.displayCellValueProp] = this.cellDisplayValue;
+        this._isCleared = false;
+        if (this.displayCellValueProp) {
+            this._displayElement[this.displayCellValueProp] = this.cellDisplayValue;
+        }
+        if (this._displayElement.name === 'lookup-display') {
+            this.dispatchEvent(new CustomEvent('reset'));
+        }
     }
 
     handleRowSelected(event) {
@@ -240,7 +246,9 @@ export default class DatatableEditableCell extends LightningElement {
         if (payload.rowKeysToNull && payload.rowKeysToNull.includes(this.rowKeyValue)) {
             this.draftValue = null;
             this._isCleared = false;
-            this._displayElement[this.displayCellValueProp] = this.cellDisplayValue;
+            if (this.displayCellValueProp) {
+                this._displayElement[this.displayCellValueProp] = this.cellDisplayValue;
+            }
         }
         if (payload.rowIdentifierToValues) {
             const identifierMap = new Map(Object.entries(payload.rowIdentifierToValues));

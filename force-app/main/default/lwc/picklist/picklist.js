@@ -43,7 +43,10 @@ export default class Picklist extends LightningElement {
         if (this._isCleared) {
             return null;
         }
-        return this.selected || this._value;
+        if (this.selected) {
+            return this.selected;
+        }
+        return this._value;
     }
     set value(value) {
         this._value = value;

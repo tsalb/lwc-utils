@@ -36,11 +36,14 @@ export default class DatatableLookupCell extends LightningElement {
     // LWC specific attributes
     @api
     get href() {
-        if (!this.value || this.isCleared) {
+        if (!this.value || this._isCleared) {
             return null;
         }
         if (this._href) {
             return this._href;
+        }
+        if (this._selectedRecordId) {
+            return `/${this._selectedRecordId}`;
         }
         return `/${this.value}`;
     }
@@ -61,23 +64,31 @@ export default class DatatableLookupCell extends LightningElement {
     @api columnName;
     @api fieldApiName;
 
-    isCleared = false;
-    selectedRecordId;
-    selectedDisplayValue;
+    // private
+    _isCleared = false;
+    _selectedRecordId;
+    _selectedDisplayValue;
 
     get cellDisplayValue() {
-        if (this.isCleared) {
+        if (this._isCleared) {
             return null;
         }
-        if (this.selectedDisplayValue) {
-            return this.selectedDisplayValue;
+        if (this._selectedDisplayValue) {
+            return this._selectedDisplayValue;
         }
         return this.displayValue;
     }
 
+    // It's easier for the lookup custom data type to have logic here, unlike the picklist custom data type
+    handleReset() {
+        this._isCleared = false;
+        this._selectedRecordId = null;
+        this._selectedDisplayValue = null;
+    }
+
     handleSelected(event) {
-        this.selectedRecordId = event.detail.selectedRecordId;
-        this.selectedDisplayValue = event.detail.selectedDisplayValue;
-        this.isCleared = !this.selectedRecordId && !this.selectedDisplayValue;
+        this._selectedRecordId = event.detail.selectedRecordId;
+        this._selectedDisplayValue = event.detail.selectedDisplayValue;
+        this._isCleared = !this._selectedRecordId && !this._selectedDisplayValue;
     }
 }

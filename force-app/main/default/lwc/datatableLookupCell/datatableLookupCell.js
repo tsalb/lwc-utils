@@ -45,10 +45,13 @@ export default class DatatableLookupCell extends LightningElement {
         if (this._selectedRecordId) {
             return `/${this._selectedRecordId}`;
         }
+        if (this.value.startsWith('/')) {
+            return this.value;
+        }
         return `/${this.value}`;
     }
     set href(value) {
-        this._href = `/${value}`;
+        this._href = value && value.startsWith('/') ? value : `/${value}`;
     }
     @api target = '_parent';
     @api displayValue;

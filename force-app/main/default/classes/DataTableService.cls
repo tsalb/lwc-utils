@@ -46,25 +46,28 @@ public inherited sharing class DataTableService {
     // https://developer.salesforce.com/docs/component-library/bundle/lightning-datatable/documentation
     public static final Map<Schema.DisplayType, String> DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP = new Map<Schema.DisplayType, String>{
         Schema.DisplayType.address => 'text',
-        Schema.DisplayType.anytype => 'text',
+        Schema.DisplayType.anytype => 'text', // Rich text areas, TODO customRichText data type
         Schema.DisplayType.base64 => 'text',
         Schema.DisplayType.Boolean => 'boolean',
         Schema.DisplayType.Combobox => 'text',
         Schema.DisplayType.Currency => 'currency',
-        Schema.DisplayType.Date => 'date',
-        Schema.DisplayType.DateTime => 'date-local',
+        Schema.DisplayType.Date => 'date-local',
+        Schema.DisplayType.DateTime => 'date',
         Schema.DisplayType.Double => 'number',
         Schema.DisplayType.Email => 'email',
+        Schema.DisplayType.EncryptedString => 'text', // TODO customEncryptedString data type
+        Schema.DisplayType.Long => 'number',
+        //Schema.DisplayType.Location => 'location', Geo fields are not supported, there is a gack when casting to List<SObject>!
         Schema.DisplayType.ID => 'text',
         Schema.DisplayType.Integer => 'number',
         Schema.DisplayType.MultiPicklist => 'text',
         Schema.DisplayType.Percent => 'percent',
-        Schema.DisplayType.Phone => 'text',
+        Schema.DisplayType.Phone => 'phone',
         Schema.DisplayType.Picklist => 'customPicklist',
         Schema.DisplayType.Reference => 'customLookup',
         Schema.DisplayType.String => 'text',
         Schema.DisplayType.TextArea => 'text',
-        Schema.DisplayType.Time => 'text',
+        Schema.DisplayType.Time => 'text', // TODO customTime data type
         Schema.DisplayType.URL => 'url'
     };
 
@@ -95,6 +98,37 @@ public inherited sharing class DataTableService {
             result.put(String.valueOf(type), DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(type));
         }
         return result;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<Datatable_Action_Config__mdt> getActionConfig(String configName) {
+        return [
+            SELECT
+                Order__c,
+                Row_Action_Name__c,
+                Button_Label__c,
+                Type__c,
+                Datatable_Config__c,
+                Flow_API_Name__c,
+                LWC_Name__c,
+                Dialog_Size__c
+            FROM Datatable_Action_Config__mdt
+            WHERE
+                Datatable_Config__r.DeveloperName = :configName
+                AND Datatable_Config__r.Type__c = :DATATABLE_ACTION_CONFIG_TYPE
+            ORDER BY Order__c ASC
+        ];
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<Datatable_Lookup_Config__mdt> getLookupConfig(String configName) {
+        return [
+            SELECT Datatable_Config__c, Object_API_Name__c, Title_Field__c, Subtitle_Field__c, Icon_Name__c
+            FROM Datatable_Lookup_Config__mdt
+            WHERE
+                Datatable_Config__r.DeveloperName = :configName
+                AND Datatable_Config__r.Type__c = :DATATABLE_LOOKUP_CONFIG_TYPE
+        ];
     }
 
     /**
@@ -142,43 +176,6 @@ public inherited sharing class DataTableService {
             TABLE_COLUMNS_KEY => tableColumns,
             SOBJECT_API_NAME => objectName
         };
-    }
-
-    @AuraEnabled(cacheable=true)
-    public static List<Datatable_Action_Config__mdt> getActionConfig(String configName) {
-        return [
-            SELECT
-                Order__c,
-                Row_Action_Name__c,
-                Button_Label__c,
-                Type__c,
-                Datatable_Config__c,
-                Flow_API_Name__c,
-                LWC_Name__c,
-                Dialog_Size__c
-            FROM Datatable_Action_Config__mdt
-            WHERE
-                Datatable_Config__r.DeveloperName = :configName
-                AND Datatable_Config__r.Type__c = :DATATABLE_ACTION_CONFIG_TYPE
-            ORDER BY Order__c ASC
-        ];
-    }
-
-    @AuraEnabled(cacheable=true)
-    public static List<Datatable_Lookup_Config__mdt> getLookupConfig(String configName) {
-        return [
-            SELECT Datatable_Config__c, Object_API_Name__c, Title_Field__c, Subtitle_Field__c, Icon_Name__c
-            FROM Datatable_Lookup_Config__mdt
-            WHERE
-                Datatable_Config__r.DeveloperName = :configName
-                AND Datatable_Config__r.Type__c = :DATATABLE_LOOKUP_CONFIG_TYPE
-        ];
-    }
-
-    private static String addFieldToQueryString(String field, String queryString) {
-        String queryStart = queryString.substringBefore(' FROM ');
-        String queryEnd = queryString.substringAfter(' FROM ');
-        return queryStart + ', ' + String.escapeSingleQuotes(field) + ' FROM ' + queryEnd;
     }
 
     /**
@@ -255,7 +252,6 @@ public inherited sharing class DataTableService {
 
         for (String fieldName : soqlColumns) {
             Schema.SObjectType currentSObjectType = queriedSObject.getSObjectType();
-            String currentObjectName = currentSObjectType.getDescribe().getName();
             Schema.DescribeFieldResult field;
             Map<String, Object> fieldColumn = new Map<String, Object>();
 
@@ -293,15 +289,43 @@ public inherited sharing class DataTableService {
             // Fields with Name are typically hyperlinked, so we replace it with a custom datatype
             if (fieldName.equalsIgnoreCase('name') || fieldName.substringAfterLast('.').equalsIgnoreCase('name')) {
                 fieldColumn.put('type', 'customName');
+
+                // Need a little bit of magic to resolve name fields that are relationship one level up
+                Boolean isNameFieldForPrimaryObject =
+                    currentSObjectType.getDescribe().getName() ==
+                    queriedSObject.getSObjectType().getDescribe().getName();
+                String hrefFieldValue = isNameFieldForPrimaryObject
+                    ? currentSObjectType.getDescribe().getName() + '_Id'
+                    : fieldName.substringBeforeLast('.') + '_Id';
+
                 Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);
-                // This is a trick to set reference to a value and allow tableServiceUtils.js deal with this
-                typeAttributes.put('href', new Map<String, Object>{ 'fieldName' => currentSObjectType + '_Id' });
+                typeAttributes.put('href', new Map<String, Object>{ 'fieldName' => hrefFieldValue });
                 typeAttributes.put('target', '_parent');
                 fieldColumn.put('typeAttributes', typeAttributes);
             }
 
-            // All custom data types get these attributes for dealing with cell specific logic
+            // Some native data types need some default typeAttributes
             String columnType = String.valueOf(fieldColumn.get('type'));
+
+            if (columnType.equalsIgnoreCase('date-local')) {
+                Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);
+                typeAttributes.put('year', 'numeric');
+                typeAttributes.put('month', 'numeric');
+                typeAttributes.put('day', 'numeric');
+                fieldColumn.put('typeAttributes', typeAttributes);
+            }
+
+            if (columnType.equalsIgnoreCase('date')) {
+                Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);
+                typeAttributes.put('year', 'numeric');
+                typeAttributes.put('month', 'numeric');
+                typeAttributes.put('day', 'numeric');
+                typeAttributes.put('hour', 'numeric');
+                typeAttributes.put('minute', 'numeric');
+                fieldColumn.put('typeAttributes', typeAttributes);
+            }
+
+            // All custom data types get these attributes for dealing with cell specific logic
             if (columnType.startsWithIgnoreCase('custom')) {
                 String fieldNameParticle = fieldName.contains('.') ? fieldName.substringAfterLast('.') : fieldName;
                 Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);
@@ -311,7 +335,8 @@ public inherited sharing class DataTableService {
                 fieldColumn.put('typeAttributes', typeAttributes);
             }
 
-            Boolean hasRecordTypes = DataTableService.recordTypeIdsForObject(currentObjectName).size() > 1;
+            Boolean hasRecordTypes =
+                DataTableService.recordTypeIdsForObject(currentSObjectType.getDescribe().getName()).size() > 1;
             if (columnType.equalsIgnoreCase('customPicklist') && hasRecordTypes) {
                 Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);
                 typeAttributes.put('picklistRecordTypeId', new Map<String, Object>{ 'fieldName' => 'RecordTypeId' });
@@ -319,16 +344,20 @@ public inherited sharing class DataTableService {
             }
 
             if (columnType.equalsIgnoreCase('customLookup')) {
-                // Process this first to extract name fields for soql query later
+                // We need to scrape the schema for the name field
                 Boolean isCustomObjectLookup = field.getReferenceTo().get(0).getDescribe().isCustom();
                 String cleanFieldName = isCustomObjectLookup ? fieldName : fieldName.removeEnd('Id');
-                DataTableService.populateMapDataForNameFieldQuery(field, cleanFieldName);
+                String lookupNameField = DataTableService.getLookupNameField(field, cleanFieldName);
+                String flattenedNameField = lookupNameField.replace('.', '_');
+                String hrefFieldValue = cleanFieldName.replace('__c', '__r') + '_Id';
+
+                // So that when we get the table data, these extra name fields are injected
+                LOOKUP_FIELD_TO_NAME_FIELD_MAP.put(cleanFieldName, lookupNamefield);
 
                 // Then process the column itself
                 Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);
-                typeAttributes.put('href', new Map<String, Object>{ 'fieldName' => cleanFieldName + '_Id' });
+                typeAttributes.put('href', new Map<String, Object>{ 'fieldName' => hrefFieldValue });
                 typeAttributes.put('target', '_parent');
-                String flattenedNameField = LOOKUP_FIELD_TO_NAME_FIELD_MAP.get(cleanFieldName).replace('.', '_');
                 typeAttributes.put('displayValue', new Map<String, Object>{ 'fieldName' => flattenedNameField });
                 typeAttributes.put('referenceObjectApiName', field.getReferenceTo().get(0).getDescribe().getName());
                 fieldColumn.put('typeAttributes', typeAttributes);
@@ -358,17 +387,20 @@ public inherited sharing class DataTableService {
         return DataTableService.RECORD_TYPE_IDS;
     }
 
-    private static void populateMapDataForNameFieldQuery(Schema.DescribeFieldResult field, String cleanFieldName) {
-        // prettier-ignore
-        Map<String, Schema.SObjectField> lookupObjectFieldMap = field.getReferenceTo().get(0).getDescribe().fields.getMap();
+    private static String addFieldToQueryString(String field, String queryString) {
+        String queryStart = queryString.substringBefore(' FROM ');
+        String queryEnd = queryString.substringAfter(' FROM ');
+        return queryStart + ', ' + String.escapeSingleQuotes(field) + ' FROM ' + queryEnd;
+    }
+
+    private static String getLookupNameField(Schema.DescribeFieldResult field, String cleanFieldName) {
         Schema.SObjectField nameField;
-        for (Schema.SObjectField curField : lookupObjectFieldMap.values()) {
+        for (Schema.SObjectField curField : field.getReferenceTo().get(0).getDescribe().fields.getMap().values()) {
             if (curField.getDescribe().isNameField()) {
                 nameField = curField;
                 break;
             }
         }
-        String lookupNamefield = cleanFieldName.replace('__c', '__r') + '.' + nameField.getDescribe().getName();
-        LOOKUP_FIELD_TO_NAME_FIELD_MAP.put(cleanFieldName, lookupNamefield);
+        return cleanFieldName.replace('__c', '__r') + '.' + nameField.getDescribe().getName();
     }
 }

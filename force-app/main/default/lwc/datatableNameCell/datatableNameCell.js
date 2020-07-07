@@ -42,10 +42,13 @@ export default class DatatableNameCell extends LightningElement {
         if (this._href) {
             return this._href;
         }
+        if (this.value.startsWith('/')) {
+            return this.value;
+        }
         return `/${this.value}`;
     }
     set href(value) {
-        this._href = `/${value}`;
+        this._href = value && value.startsWith('/') ? value : `/${value}`;
     }
     @api target = '_parent';
 

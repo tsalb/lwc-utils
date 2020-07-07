@@ -52,6 +52,13 @@ const ROW_ACTION_CHECK = 'Row Action';
 // Datatable_Lookup_Config__mdt
 const DATATABLE_LOOKUP_CONFIG_DEFAULT = 'Default_Lookup_Config';
 
+// HACK ALERT START
+// Currently, there is no way to to inject css into a base component, lightning-datatable
+// This is needed to support overflow of customPicklist and customLookup when there are only a few rows
+import datatableStyleOverrides from '@salesforce/resourceUrl/Datatable_CSS_Override';
+import { loadStyle } from 'lightning/platformResourceLoader';
+// HACK ALERT END
+
 export default class Datatable extends LightningElement {
     @api recordId;
     @api
@@ -255,6 +262,7 @@ export default class Datatable extends LightningElement {
         }
         this._isRendered = true;
         this._messageService = this.template.querySelector('c-message-service');
+        loadStyle(this, datatableStyleOverrides + '/datatable.css');
     }
 
     // Event Handlers
@@ -543,7 +551,8 @@ export default class Datatable extends LightningElement {
             finalColumns.push({
                 type: 'action',
                 typeAttributes: {
-                    rowActions: this._getRowActions.bind(this)
+                    rowActions: this._getRowActions.bind(this),
+                    menuAlignment: 'auto'
                 }
             });
         }

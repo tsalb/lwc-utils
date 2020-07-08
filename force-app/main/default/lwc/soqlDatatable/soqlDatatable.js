@@ -158,7 +158,9 @@ export default class SoqlDatatable extends LightningElement {
     @api
     async refreshTable() {
         const cache = await this.fetchTableCache();
-        this.initializeTable(cache);
+        if (cache) {
+            this.initializeTable(cache);
+        }
     }
 
     async connectedCallback() {

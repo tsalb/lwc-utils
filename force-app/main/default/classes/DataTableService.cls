@@ -57,7 +57,7 @@ public inherited sharing class DataTableService {
         Schema.DisplayType.Email => 'email',
         Schema.DisplayType.EncryptedString => 'text', // TODO customEncryptedString data type
         Schema.DisplayType.Long => 'number',
-        //Schema.DisplayType.Location => 'location', Geo fields are not supported, there is a gack when casting to List<SObject>!
+        Schema.DisplayType.Location => 'location',
         Schema.DisplayType.ID => 'text',
         Schema.DisplayType.Integer => 'number',
         Schema.DisplayType.MultiPicklist => 'text',
@@ -169,6 +169,8 @@ public inherited sharing class DataTableService {
 
         // Finally, the data itself after checking on both recordTypeId and lookupNameFields
         List<SObject> tableData = DataTableService.getSObjectData(tableRequest);
+
+        System.debug('getTableCache tableData is: ' + tableData);
 
         // Put it all together
         return new Map<String, Object>{
@@ -306,6 +308,12 @@ public inherited sharing class DataTableService {
 
             // Some native data types need some default typeAttributes
             String columnType = String.valueOf(fieldColumn.get('type'));
+
+            if (columnType.equalsIgnoreCase('location')) {
+                throw new AuraHandledException(
+                    'Geolocation fields must be queried with __Longitude__s and __Latitude__s suffixes.'
+                );
+            }
 
             if (columnType.equalsIgnoreCase('date-local')) {
                 Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);

@@ -31,16 +31,6 @@
                 <label>LWC Table Action - Secondary</label>
             </value>
             <value>
-                <fullName>Primary Table Action</fullName>
-                <default>true</default>
-                <label>Primary Table Action</label>
-            </value>
-            <value>
-                <fullName>Secondary Table Action</fullName>
-                <default>false</default>
-                <label>Secondary Table Action</label>
-            </value>
-            <value>
                 <fullName>Row Action</fullName>
                 <default>false</default>
                 <label>Row Action</label>

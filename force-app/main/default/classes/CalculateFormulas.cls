@@ -38,18 +38,17 @@ public inherited sharing class CalculateFormulas {
         for (Request curInput : inputs) {
             List<SObject> collectionToHydrate = new List<SObject>();
             for (SObject obj : curInput.originalCollection) {
-                System.debug('CalculateFormulas obj: ' + obj);
                 for (String field : curInput.formualFieldsToCalculate) {
                     collectionToHydrate.add(setReadOnlyField(obj, field, null));
                 }
             }
-            System.debug('CalculateFormulas collectionToHydrate: ' + collectionToHydrate);
+            System.debug(LoggingLevel.INFO, 'CalculateFormulas collectionToHydrate: ' + collectionToHydrate);
             Response output = new Response();
             output.hydratedCollection = new List<SObject>();
             for (FormulaRecalcResult result : Formula.recalculateFormulas(collectionToHydrate)) {
                 output.hydratedCollection.add(result.getSObject());
             }
-            System.debug('CalculateFormulas output.hydratedCollection: ' + output.hydratedCollection);
+            System.debug(LoggingLevel.INFO, 'CalculateFormulas hydratedCollection: ' + output.hydratedCollection);
             responseList.add(output);
         }
         return responseList;
@@ -62,13 +61,11 @@ public inherited sharing class CalculateFormulas {
     private static SObject setReadOnlyField(SObject sobj, Map<String, Object> changesToFields) {
         String serializedRecord = JSON.serialize(sobj);
         Map<String, Object> deserializedRecordMap = (Map<String, Object>) JSON.deserializeUntyped(serializedRecord);
-
         // Loop through the deserialized record map and put the field & value
         // Since it's a map, if the field already exists on the SObject, it's updated (or added if it wasn't there already)
         for (String sobjectField : changesToFields.keySet()) {
             deserializedRecordMap.put(sobjectField, changesToFields.get(sobjectField));
         }
-
         serializedRecord = JSON.serialize(deserializedRecordMap);
         return (SObject) JSON.deserialize(serializedRecord, SObject.class);
     }
@@ -87,8 +84,5 @@ public inherited sharing class CalculateFormulas {
     public class Response {
         @InvocableVariable(label='Record Collection with formula fields')
         public List<SObject> hydratedCollection;
-    }
-
-    public class CalculateFormulasException extends Exception {
     }
 }

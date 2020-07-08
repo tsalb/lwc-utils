@@ -31,7 +31,7 @@
  *
  */
 @isTest
-private class LookupAuraServiceTest {
+private class LookupAuraServiceTests {
     @TestSetup
     static void makeData() {
         List<Account> accounts = new List<Account>();

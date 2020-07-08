@@ -85,8 +85,6 @@ public inherited sharing class DataTableService {
             Database.query(queryString);
         } catch (System.QueryException e) {
             errorMessage = e.getMessage();
-        } catch (Exception e) {
-            errorMessage = e.getMessage();
         }
         return errorMessage;
     }
@@ -156,6 +154,8 @@ public inherited sharing class DataTableService {
             tableRequest.put(QUERY_STRING_KEY, queryString);
         }
 
+        System.debug(LoggingLevel.INFO, 'getTableCache PRE COLUMN queryString is: ' + queryString);
+
         // Columns are derived first for customLookup detection by populating LOOKUP_FIELD_TO_NAME_FIELD_MAP
         List<Map<String, Object>> tableColumns = DataTableService.getColumnData(queryString, queryObject);
         if (!LOOKUP_FIELD_TO_NAME_FIELD_MAP.isEmpty()) {
@@ -169,8 +169,6 @@ public inherited sharing class DataTableService {
 
         // Finally, the data itself after checking on both recordTypeId and lookupNameFields
         List<SObject> tableData = DataTableService.getSObjectData(tableRequest);
-
-        System.debug('getTableCache tableData is: ' + tableData);
 
         // Put it all together
         return new Map<String, Object>{
@@ -202,7 +200,7 @@ public inherited sharing class DataTableService {
      */
     private static List<SObject> getSObjectDataFromQueryString(String queryString) {
         String.escapeSingleQuotes(queryString);
-        System.debug('getSObjectDataFromQueryString queryString is: ' + queryString);
+        System.debug(LoggingLevel.INFO, 'getSObjectDataFromQueryString FINAL queryString is: ' + queryString);
         return Database.query(queryString);
     }
 
@@ -214,12 +212,9 @@ public inherited sharing class DataTableService {
      */
     private static List<SObject> getSObjectDataFromQueryString(String queryString, Object orderedBindVars) {
         Set<Id> idSet = new Set<Id>();
-        System.debug('getSObjectDataFromQueryString orderedBindVars ' + orderedBindVars);
-
         Map<String, Object> reconstructedBindVars = (Map<String, Object>) JSON.deserializeUntyped(
             JSON.serialize(orderedBindVars)
         );
-
         if (reconstructedBindVars.get(ID_SET_KEY) != null) {
             List<String> idList = (List<String>) JSON.deserialize(
                 JSON.serialize(reconstructedBindVars.get(ID_SET_KEY)),
@@ -273,7 +268,6 @@ public inherited sharing class DataTableService {
             } else {
                 field = fieldMap.get(fieldName).getDescribe();
             }
-            //System.debug('getColumnData field info: ' + fieldName + ' : ' + field.getType());
 
             // Respect FLS
             if (!field.isAccessible()) {

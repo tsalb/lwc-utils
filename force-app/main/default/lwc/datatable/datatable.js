@@ -225,6 +225,7 @@ export default class Datatable extends LightningElement {
             this._notifySingleError('getObjectInfo error', error);
         } else if (data) {
             this._objectInfo = data;
+            console.log(this._objectInfo);
         }
     }
 
@@ -412,8 +413,20 @@ export default class Datatable extends LightningElement {
                 break;
             }
             case 'edit_row': {
-                alert('TODO');
-                //this._messageService.forceRecordEdit({ recordId: row.Id });
+                const dialogPayload = {
+                    method: 'bodyModalLarge',
+                    config: {
+                        auraId: 'datatable-edit-row',
+                        headerLabel: `Edit ${this._objectInfo.label} Record`,
+                        component: 'c:datatableEditRowForm',
+                        componentParams: {
+                            row: row,
+                            objectApiName: this._objectInfo.apiName,
+                            uniqueBoundary: this.uniqueBoundary
+                        }
+                    }
+                };
+                this._messageService.dialogService(dialogPayload);
                 break;
             }
             case 'custom_flow': {
@@ -425,6 +438,7 @@ export default class Datatable extends LightningElement {
                     }
                 };
                 this.handleFlowAction(payload);
+                break;
             }
             case 'custom_lwc': {
                 const payload = {
@@ -436,6 +450,7 @@ export default class Datatable extends LightningElement {
                     }
                 };
                 this.handleLwcAction(payload);
+                break;
             }
         }
     }

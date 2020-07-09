@@ -31,17 +31,12 @@
  */
 
 import { LightningElement, api } from 'lwc';
-import { deleteRecord } from 'lightning/uiRecordApi';
 
-export default class DatatableDeleteRowForm extends LightningElement {
-    @api uniqueBoundary;
+export default class DatatableEditRowForm extends LightningElement {
     @api row;
-    showSpinner = false;
-
-    // calculated
-    get messageTemplate() {
-        return `Are you sure you want to delete "${this.row.Name}"?`;
-    }
+    @api objectApiName;
+    @api uniqueBoundary;
+    showSpinner = true;
 
     // private
     _isRendered;
@@ -55,22 +50,17 @@ export default class DatatableDeleteRowForm extends LightningElement {
         this._messageService = this.template.querySelector('c-message-service');
     }
 
+    handleLoad() {
+        this.showSpinner = false;
+    }
+
     handleCancel() {
         this._messageService.notifyClose();
     }
 
-    async handleConfirm() {
-        this.showSpinner = true;
-        try {
-            await deleteRecord(this.row.Id);
-            this._messageService.notifySuccess(`Succesfully Deleted "${this.row.Name}".`);
-            this._refreshViewAndClose();
-        } catch (error) {
-            console.log(error);
-            this._messageService.notifySingleError('Error Deleting Row', error);
-        } finally {
-            this.showSpinner = false;
-        }
+    handleSuccess() {
+        this._messageService.notifySuccess('Successfully Updated');
+        this._messageService._refreshViewAndClose();
     }
 
     _refreshViewAndClose() {

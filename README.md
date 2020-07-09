@@ -359,7 +359,6 @@ Please submit issues to this repo if you find one that cannot be merged correctl
 <details>
     <summary>Inline Editing / Mass Inline Editing</summary>
 
-
 Define which fields can be editable in a comma separated list in the `Editable Fields` design attribute. For data types that are supported in the vanilla `lightning-datatable`, such as `date`, `text`, `number`, those are relied on as heavily as possible.
 
 For data types such as `picklist` and `lookup` which are yet to be [supported](https://trailblazer.salesforce.com/ideaView?id=0873A000000PZJ4QAO), this component provides custom data types as follows.
@@ -378,20 +377,26 @@ The actual picklist edit cell is a fork of the one authored by jlyon87 as found 
 
 The custom LWC data type is surfaced as `customLookup`.
 
-```
-// TODO documentation
-// TODO configuration options
-```
+Each `soqlDatatable` can be have one defined **Lookup Configuration** (`Datatable_Config__mdt`) to define lookup search behavior.
+
+Because of a limitation with cmdt, the `Type__c` on the parent `Datatable_Config__mdt` must be `Lookups`.
+
+When using inline edit and lookup, there are two properties that are set as global defaults on `Datatable_Lookup_Config__mdt` that help with the search results:
+
+- **Title**: Name of the Record
+- **Subtitle**: null
+
+However, in this sample repo, they are overridden by the following settings:
+
+![soql-datatable-lookup-defaults.png](/readme-images/soql-datatable-lookup-defaults.png?raw=true)
+
+Which produces this kind of search result:
+
+<p align="center">
+    <img src="./readme-images/soql-datatable-lookup.png" width="350">
+</p>
 
 The actual lookup edit cell is a fork of the one authored by jlyon87 as found [here](https://github.com/jlyon87/lwc-lookup)
-
-**Name Custom Data Type**
-
-This custom data type is surfaced as `customName`.
-
-```
-// TODO documentation
-```
 
 **Supported Features for all Custom Data Types**
 - Multi-line inline edit (aka mass-edit).
@@ -409,15 +414,19 @@ This custom data type is surfaced as `customName`.
 </p>
 
 **Unsupported / Roadmap Features**
-- Keyboard navigation
-    - Pending lwc / aura issue investigation [here](https://github.com/salesforce/lwc/issues/1962)
+- Keyboard navigation.
+    - Pending lwc / aura issue investigation [here](https://github.com/salesforce/lwc/issues/1962).
+- Geolocation fields must be queried with the `__Longitude__s` and `__Latitude__s` (capital L).
+- Time data type is not yet supported for **view** or **edit**.
 
 </details>
 
 <details>
     <summary>Configurable Flow and LWC actions</summary>
 
-Each `soqlDatatable` can be have one defined **Action Configuration** (`Datatable_Config__mdt`) to define both Table level (supporting multi / single select) and Row Level actions.
+Each `soqlDatatable` can be have one defined **Action Configuration** (`Datatable_Config__mdt`) to define both Table level (supporting multi / single select) and Row Level actions. This can be the same `Datatable_Config__mdt` as used in the **Lookup Configuration** section.
+
+Because of a limitation with cmdt, the `Type__c` on the parent `Datatable_Config__mdt` must be text of `Actions`. For combined configs, use `Actions; Lookups`.
 
 Both LWCs (inside a dialog) and Screen Flows can be launched from either action type. The configuration is easier to explain in picture format:
 

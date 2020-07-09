@@ -75,7 +75,7 @@ public inherited sharing class DataTableService {
     private static Map<String, String> LOOKUP_FIELD_TO_NAME_FIELD_MAP = new Map<String, String>();
 
     private static final String DATATABLE_ACTION_CONFIG_TYPE = 'Actions';
-    private static final String DATATABLE_LOOKUP_CONFIG_TYPE = 'Lookup';
+    private static final String DATATABLE_LOOKUP_CONFIG_TYPE = 'Lookups';
 
     @AuraEnabled(cacheable=true)
     public static String getQueryExceptionMessage(String queryString) {
@@ -100,6 +100,8 @@ public inherited sharing class DataTableService {
 
     @AuraEnabled(cacheable=true)
     public static List<Datatable_Action_Config__mdt> getActionConfig(String configName) {
+        // No multi-selects for custom metadata, so semicolon delimited string field
+        String configType = '%' + DATATABLE_ACTION_CONFIG_TYPE + '%';
         return [
             SELECT
                 Order__c,
@@ -111,21 +113,19 @@ public inherited sharing class DataTableService {
                 LWC_Name__c,
                 Dialog_Size__c
             FROM Datatable_Action_Config__mdt
-            WHERE
-                Datatable_Config__r.DeveloperName = :configName
-                AND Datatable_Config__r.Type__c = :DATATABLE_ACTION_CONFIG_TYPE
+            WHERE Datatable_Config__r.DeveloperName = :configName AND Datatable_Config__r.Type__c LIKE :configType
             ORDER BY Order__c ASC
         ];
     }
 
     @AuraEnabled(cacheable=true)
     public static List<Datatable_Lookup_Config__mdt> getLookupConfig(String configName) {
+        // No multi-selects for custom metadata, so semicolon delimited string field
+        String configType = '%' + DATATABLE_LOOKUP_CONFIG_TYPE + '%';
         return [
             SELECT Datatable_Config__c, Object_API_Name__c, Title_Field__c, Subtitle_Field__c, Icon_Name__c
             FROM Datatable_Lookup_Config__mdt
-            WHERE
-                Datatable_Config__r.DeveloperName = :configName
-                AND Datatable_Config__r.Type__c = :DATATABLE_LOOKUP_CONFIG_TYPE
+            WHERE Datatable_Config__r.DeveloperName = :configName AND Datatable_Config__r.Type__c LIKE :configType
         ];
     }
 

@@ -16,6 +16,10 @@
                     <value>Name, Email, Phone, LeadSource, Level__c, AccountId</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>lookupConfigDevName</name>
+                    <value>LWC_Utils_SOQL_Datatable_tab</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>queryString</name>
                     <value>SELECT Name, Email, Phone, LeadSource, Level__c, AccountId, Account.Type FROM Contact LIMIT 50</value>
                 </componentInstanceProperties>

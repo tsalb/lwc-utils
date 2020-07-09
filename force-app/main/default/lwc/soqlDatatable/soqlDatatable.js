@@ -86,8 +86,10 @@ export default class SoqlDatatable extends LightningElement {
     @api sortedDirection = 'asc';
     @api useRelativeMaxHeight = false;
 
-    // Flow Actions
+    // Table and Row Actions
     @api actionConfigDevName;
+    /// For inline edit lookup search behavior
+    @api lookupConfigDevName;
 
     // Pass through outputs for flow
     @api selectedRows;

@@ -4,6 +4,6 @@
     <protected>false</protected>
     <values>
         <field>Type__c</field>
-        <value xsi:type="xsd:string">Lookup</value>
+        <value xsi:type="xsd:string">Lookups</value>
     </values>
 </CustomMetadata>

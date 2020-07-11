@@ -1,7 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <interviewLabel>Collection Datatable - Displaying a Record Collection {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Collection Datatable - Displaying a Record Collection</label>
+    <actionCalls>
+        <name>Calculate_Name_Fields</name>
+        <label>Calculate Name Fields</label>
+        <locationX>308</locationX>
+        <locationY>226</locationY>
+        <actionName>CalculateFormulas</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Show_Contacts</targetReference>
+        </connector>
+        <dataTypeMappings>
+            <typeName>T__originalCollection</typeName>
+            <typeValue>Contact</typeValue>
+        </dataTypeMappings>
+        <dataTypeMappings>
+            <typeName>U__hydratedCollection</typeName>
+            <typeValue>Contact</typeValue>
+        </dataTypeMappings>
+        <inputParameters>
+            <name>originalCollection</name>
+            <value>
+                <elementReference>Get_Contacts_With_A_Names</elementReference>
+            </value>
+        </inputParameters>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <interviewLabel>Collection Datatable - Show a Record Collection (With CalculateFormulas) {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Collection Datatable - Show a Record Collection (With CalculateFormulas)</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -16,14 +42,21 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <recordLookups>
-        <name>Get_All_Contacts</name>
-        <label>Get All Contacts</label>
+        <name>Get_Contacts_With_A_Names</name>
+        <label>Get Contacts With &quot;A&quot; Names</label>
         <locationX>176</locationX>
         <locationY>225</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Show_Contacts</targetReference>
+            <targetReference>Calculate_Name_Fields</targetReference>
         </connector>
+        <filters>
+            <field>FirstName</field>
+            <operator>StartsWith</operator>
+            <value>
+                <stringValue>A</stringValue>
+            </value>
+        </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
         <object>Contact</object>
         <sortField>Name</sortField>
@@ -33,8 +66,8 @@
     <screens>
         <name>Show_Contacts</name>
         <label>Show Contacts</label>
-        <locationX>326</locationX>
-        <locationY>225</locationY>
+        <locationX>446</locationX>
+        <locationY>226</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -49,26 +82,20 @@
             <inputParameters>
                 <name>recordCollection</name>
                 <value>
-                    <elementReference>Get_All_Contacts</elementReference>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>shownFields</name>
-                <value>
-                    <stringValue>Title, Department, Name, Email</stringValue>
+                    <elementReference>Calculate_Name_Fields.hydratedCollection</elementReference>
                 </value>
             </inputParameters>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
-        <showFooter>true</showFooter>
+        <showFooter>false</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <start>
         <locationX>50</locationX>
         <locationY>50</locationY>
         <connector>
-            <targetReference>Get_All_Contacts</targetReference>
+            <targetReference>Get_Contacts_With_A_Names</targetReference>
         </connector>
     </start>
     <status>Active</status>

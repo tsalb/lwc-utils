@@ -37,7 +37,7 @@ import getDisplayTypeMap from '@salesforce/apex/DataTableService.getDisplayTypeM
 
 // Toast and Errors
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { reduceErrors, createSetFromDelimitedString } from 'c/utils';
+import { reduceErrors, createFlattenedSetFromDelimitedString } from 'c/utils';
 
 // Flatten data again, for when things are recalculated
 import { flattenQueryResult } from 'c/tableServiceUtils';
@@ -52,7 +52,7 @@ export default class CollectionDatatable extends LightningElement {
         return this._shownFields;
     }
     set shownFields(value = '') {
-        this._shownFields = createSetFromDelimitedString(value, ',');
+        this._shownFields = createFlattenedSetFromDelimitedString(value, ',');
     }
     @api editableFields;
     @api sortableFields;
@@ -119,11 +119,11 @@ export default class CollectionDatatable extends LightningElement {
 
             // Flatten here, we want to recover any possible customLookup name values
             this.recordCollection = flattenQueryResult(this.recordCollection);
-            //console.log(this.recordCollection);
+            console.log(this.recordCollection);
 
             // Creating columns means parsing LDS and matching that to design props or what's in the record collection
             this._objectFieldsMap = new Map(Object.entries(this._objectInfo.fields));
-            //console.log(this._objectFieldsMap);
+            console.log(this._objectFieldsMap);
 
             this._referenceFieldsMap = new Map(
                 Array.from(this._objectFieldsMap.values())
@@ -134,7 +134,7 @@ export default class CollectionDatatable extends LightningElement {
                         return [field.apiName, flatNameField];
                     })
             );
-            //console.log(this._referenceFieldsMap);
+            console.log(this._referenceFieldsMap);
 
             const collectionFields = this._createSetFromUniqueCollectionFields(this.recordCollection);
             const columns = this._createColumns(collectionFields, this.shownFields);

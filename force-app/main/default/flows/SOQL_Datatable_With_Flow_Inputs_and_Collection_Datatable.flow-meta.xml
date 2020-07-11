@@ -19,15 +19,9 @@
             <typeValue>Contact</typeValue>
         </dataTypeMappings>
         <inputParameters>
-            <name>formualFieldsToCalculate</name>
+            <name>formulaFieldsToCalculate</name>
             <value>
                 <elementReference>FormulaFieldstoRecalc</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>objectApiName</name>
-            <value>
-                <stringValue>Contact</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
@@ -70,8 +64,8 @@
             <targetReference>Calculate_Formulas</targetReference>
         </connector>
     </assignments>
-    <interviewLabel>Combining SOQL and Collection Datatable with Flow inputs {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Combining SOQL and Collection Datatable with Flow inputs</label>
+    <interviewLabel>SOQL Datatable - With Flow Inputs and Collection Datatable {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>SOQL Datatable - With Flow Inputs and Collection Datatable</label>
     <loops>
         <name>Selected_Contact</name>
         <label>Selected Contact</label>
@@ -168,7 +162,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Confirmation_Message</name>
-            <fieldText>&lt;p&gt;No Records have been update/inserted.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt; &lt;span style=&quot;font-family: courier;&quot;&gt;Account_Information__c&lt;/span&gt; has been recalculated by the apex &lt;span style=&quot;font-family: courier;&quot;&gt;Calculate_Formulas&lt;/span&gt; action!&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;The new Accounts selected for each contact are now shown in &lt;span style=&quot;font-family: courier;&quot;&gt;collectionDatatable.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-family: courier;&quot;&gt;Account_Information__c&lt;/span&gt; has been recalculated by the apex &lt;span style=&quot;font-family: courier;&quot;&gt;Calculate_Formulas&lt;/span&gt; action!&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -183,6 +177,12 @@
                 <name>recordCollection</name>
                 <value>
                     <elementReference>Calculate_Formulas.hydratedCollection</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>shownFields</name>
+                <value>
+                    <stringValue>AccountId, Account_Information__c, Name, Email</stringValue>
                 </value>
             </inputParameters>
             <isRequired>true</isRequired>
@@ -213,7 +213,7 @@
             <inputParameters>
                 <name>queryString</name>
                 <value>
-                    <stringValue>SELECT Title, Name, Email, AccountId, Account.Name, Account_Information__c FROM Contact LIMIT 50</stringValue>
+                    <stringValue>SELECT Name, Email, AccountId, Account_Information__c FROM Contact LIMIT 5</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>

@@ -31,7 +31,7 @@
  */
 
 public inherited sharing class CalculateFormulas {
-    @InvocableMethod(label='Calculates formulas fields for a Record Collection')
+    @InvocableMethod(label='Calculates Formulas and Relationship Name Fields for a Record Collection')
     public static List<FlowOutput> calculateFormulasFor(List<FlowInput> inputs) {
         List<FlowOutput> outputs = new List<FlowOutput>();
 
@@ -63,18 +63,21 @@ public inherited sharing class CalculateFormulas {
             }
             System.debug(LoggingLevel.INFO, 'CalculateFormulas lookupIdToNameFieldMap: ' + lookupIdToNameFieldMap);
 
-            // Then we prep the collection for hydration in recalculateFormulas
+            // Prep for recalculation or add directly (typically used when user wants relationship name fields calced via SOQL)
             List<SObject> collectionToHydrate = new List<SObject>();
             for (SObject obj : input.originalCollection) {
-                for (String fieldName : input.formualFieldsToCalculate) {
-                    collectionToHydrate.add(setReadOnlyField(obj, fieldName, null));
+                if (!input.formulaFieldsToCalculate.isEmpty()) {
+                    for (String fieldName : input.formulaFieldsToCalculate) {
+                        collectionToHydrate.add(setReadOnlyField(obj, fieldName, null));
+                    }
+                } else {
+                    collectionToHydrate.add(obj);
                 }
             }
             System.debug(LoggingLevel.INFO, 'CalculateFormulas collectionToHydrate: ' + collectionToHydrate);
 
             // Hydration happens here
             FlowOutput output = new FlowOutput();
-            output.hydratedCollection = new List<SObject>();
             for (FormulaRecalcResult result : Formula.recalculateFormulas(collectionToHydrate)) {
                 output.hydratedCollection.add(result.getSObject());
             }
@@ -96,17 +99,19 @@ public inherited sharing class CalculateFormulas {
                 for (SObject row : output.hydratedCollection) {
                     Map<String, Object> fieldsToValue = row.getPopulatedFieldsAsMap();
                     for (String fieldName : fieldsToValue.keySet()) {
-                        String fieldValue = (String) fieldsToValue.get(fieldName);
-
-                        // When a match is found, put the queried object back in for collectionDatatable to flatten
-                        if (fieldValue instanceof Id && lookupIdToNameValueMap.keySet().contains(fieldValue)) {
-                            SObject objectWithData = lookupIdToNameValueMap.get(Id.valueOf(fieldValue));
-                            String objectName = objectWithData.getSObjectType().getDescribe().getName();
-                            row.putSObject(objectName, objectWithData);
+                        if (fieldsToValue.get(fieldName) instanceof Id) {
+                            Id lookupId = (Id) fieldsToValue.get(fieldName);
+                            // When a match is found, put the queried object back in for collectionDatatable to flatten
+                            if (lookupIdToNameValueMap.keySet().contains(lookupId)) {
+                                SObject objectWithData = lookupIdToNameValueMap.get(lookupId);
+                                String objectName = objectWithData.getSObjectType().getDescribe().getName();
+                                row.putSObject(objectName, objectWithData);
+                            }
                         }
                     }
                 }
             }
+            System.debug(LoggingLevel.INFO, 'CalculateFormulas output: ' + output);
             outputs.add(output);
         }
         return outputs;
@@ -148,18 +153,18 @@ public inherited sharing class CalculateFormulas {
     }
 
     public class FlowInput {
-        @InvocableVariable(label='Object Api Name' required=true)
-        public String objectApiName;
-
-        @InvocableVariable(label='Record Collection to calculate' required=true)
+        @InvocableVariable(label='Record Collection to recalculate' required=true)
         public List<SObject> originalCollection;
 
-        @InvocableVariable(label='List of formula fields for calculation' required=true)
-        public List<String> formualFieldsToCalculate;
+        @InvocableVariable(
+            label='List of formula fields for calculation'
+            description='If only recalculating relationship name fields, this can be blank.'
+        )
+        public List<String> formulaFieldsToCalculate = new List<String>();
     }
 
     public class FlowOutput {
-        @InvocableVariable(label='Record Collection with formula fields')
-        public List<SObject> hydratedCollection;
+        @InvocableVariable(label='Record Collection with formulas and relationship name fields recalculated')
+        public List<SObject> hydratedCollection = new List<SObject>();
     }
 }

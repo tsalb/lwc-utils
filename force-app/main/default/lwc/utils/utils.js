@@ -68,9 +68,22 @@ const fetchFakeDataHelper = async ({ amountOfRecords }) => {
     return response.json();
 };
 
-const createSetFromDelimitedString = (string, delimiter) => {
-    // remove all white space in and around
-    return new Set(string.replace(/\s+/g, '').split(delimiter));
+const createFlattenedSetFromDelimitedString = (string, delimiter) => {
+    return new Set(string.removeWhiteSpace().flatten().split(delimiter));
+};
+
+// Side benefit that these will also extend the LWCs that use utils
+
+String.prototype.removeWhiteSpace = function () {
+    return this.replaceAll(/\s+/, '');
+};
+
+String.prototype.flatten = function () {
+    return this.replaceAll(/\./, '_');
+};
+
+String.prototype.replaceAll = function (search, replace) {
+    return this.replace(new RegExp(search, 'g'), replace);
 };
 
 // https://muffinresearch.co.uk/removing-leading-whitespace-in-es6-template-strings/
@@ -166,7 +179,7 @@ export {
     // Trusted Site Name: salesforce_heroku_data_faker
     // Trusted Site URL:	https://data-faker.herokuapp.com
     fetchFakeDataHelper,
-    createSetFromDelimitedString,
+    createFlattenedSetFromDelimitedString,
     convertToSingleLineString,
     reduceErrors
 };

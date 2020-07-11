@@ -9,7 +9,20 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>flowName</name>
-                    <value>Collection_Datatable_Displaying_a_Record_Collection</value>
+                    <value>Collection_Datatable_Show_a_Record_Collection_Without_CalculateFormulas</value>
+                </componentInstanceProperties>
+                <componentName>flowruntime:interview</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>flowLayout</name>
+                    <value>oneColumn</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>flowName</name>
+                    <value>Collection_Datatable_Show_a_Record_Collection_With_CalculateFormulas</value>
                 </componentInstanceProperties>
                 <componentName>flowruntime:interview</componentName>
             </componentInstance>
@@ -26,7 +39,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>flowName</name>
-                    <value>SOQL_Datatable_Display_a_Selection_to_Collection_Datatable_in_Flow</value>
+                    <value>SOQL_Datatable_Show_selection_in_Collection_Datatable</value>
                 </componentInstanceProperties>
                 <componentName>flowruntime:interview</componentName>
             </componentInstance>
@@ -43,7 +56,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>flowName</name>
-                    <value>Combining_SOQL_and_Collection_Datatable_with_Flow_inputs</value>
+                    <value>SOQL_Datatable_With_Flow_Inputs_and_Collection_Datatable</value>
                 </componentInstanceProperties>
                 <componentName>flowruntime:interview</componentName>
             </componentInstance>

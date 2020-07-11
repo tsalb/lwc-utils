@@ -39,7 +39,7 @@ import getLookupConfig from '@salesforce/apex/DataTableService.getLookupConfig';
 
 // Toast and Errors
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { reduceErrors, createSetFromDelimitedString } from 'c/utils';
+import { reduceErrors, createFlattenedSetFromDelimitedString } from 'c/utils';
 
 const MAX_ROW_SELECTION = 200;
 const OBJECTS_WITH_COMPOUND_NAMES = ['Contact'];
@@ -92,7 +92,7 @@ export default class Datatable extends LightningElement {
         return this._sortableFields;
     }
     set sortableFields(value = '') {
-        this._sortableFields = createSetFromDelimitedString(value, ',');
+        this._sortableFields = createFlattenedSetFromDelimitedString(value, ',');
     }
 
     // Row selections
@@ -123,7 +123,7 @@ export default class Datatable extends LightningElement {
         return this._editableFields;
     }
     set editableFields(value = '') {
-        this._editableFields = createSetFromDelimitedString(value, ',');
+        this._editableFields = createFlattenedSetFromDelimitedString(value, ',');
     }
 
     // Datatable_Config__mdt configs

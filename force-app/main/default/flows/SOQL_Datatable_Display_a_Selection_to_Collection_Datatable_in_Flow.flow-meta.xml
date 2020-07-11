@@ -38,9 +38,15 @@
                 </value>
             </inputParameters>
             <inputParameters>
+                <name>checkboxType</name>
+                <value>
+                    <stringValue>None</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
                 <name>shownFields</name>
                 <value>
-                    <stringValue>Name, Email</stringValue>
+                    <stringValue>Name, Email, Account_Name, Account_Type</stringValue>
                 </value>
             </inputParameters>
             <isRequired>true</isRequired>

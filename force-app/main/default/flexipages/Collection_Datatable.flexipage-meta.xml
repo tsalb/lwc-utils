@@ -9,11 +9,15 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>flowName</name>
-                    <value>SOQL_Datatable_Display_a_Selection_to_Collection_Datatable_in_Flow</value>
+                    <value>Collection_Datatable_Displaying_a_Record_Collection</value>
                 </componentInstanceProperties>
                 <componentName>flowruntime:interview</componentName>
             </componentInstance>
         </itemInstances>
+        <name>region1</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
@@ -22,12 +26,12 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>flowName</name>
-                    <value>Collection_Datatable_Displaying_a_Record_Collection</value>
+                    <value>SOQL_Datatable_Display_a_Selection_to_Collection_Datatable_in_Flow</value>
                 </componentInstanceProperties>
                 <componentName>flowruntime:interview</componentName>
             </componentInstance>
         </itemInstances>
-        <name>column1</name>
+        <name>region2</name>
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -44,12 +48,12 @@
                 <componentName>flowruntime:interview</componentName>
             </componentInstance>
         </itemInstances>
-        <name>column2</name>
+        <name>region3</name>
         <type>Region</type>
     </flexiPageRegions>
     <masterLabel>Collection Datatable</masterLabel>
     <template>
-        <name>flexipage:appHomeTemplateTwoColumns</name>
+        <name>flexipage:appHomeTemplateHeaderTwoColumnsEqualWidth</name>
     </template>
     <type>AppPage</type>
 </FlexiPage>

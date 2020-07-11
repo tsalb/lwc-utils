@@ -36,20 +36,20 @@ private class CalculateFormulasTests {
     static void test_request_should_get_response_but_with_no_hydrated_sobjects() {
         List<User> userList = [SELECT Id, Name, Email FROM User LIMIT 1];
         List<String> fieldsToRecalc = new List<String>{ 'Email' };
-        List<CalculateFormulas.Request> requestList = new List<CalculateFormulas.Request>();
+        List<CalculateFormulas.FlowInput> inputs = new List<CalculateFormulas.FlowInput>();
 
-        CalculateFormulas.Request request = new CalculateFormulas.Request();
-        request.objectApiName = 'User';
-        request.originalCollection = userList;
-        request.formualFieldsToCalculate = fieldsToRecalc;
-        requestList.add(request);
+        CalculateFormulas.FlowInput input = new CalculateFormulas.FlowInput();
+        input.objectApiName = 'User';
+        input.originalCollection = userList;
+        input.formualFieldsToCalculate = fieldsToRecalc;
+        inputs.add(input);
 
         Test.startTest();
-        List<CalculateFormulas.Response> response = CalculateFormulas.calculateFormulasFor(requestList);
+        List<CalculateFormulas.FlowOutput> outputs = CalculateFormulas.calculateFormulasFor(inputs);
         Test.stopTest();
 
-        System.assertEquals(1, response.size());
-        List<SObject> hydratedCollection = response[0].hydratedCollection;
+        System.assertEquals(1, outputs.size());
+        List<SObject> hydratedCollection = outputs[0].hydratedCollection;
         // No formula fields on User means Formula.recalculateFormulas() will return nothing
         System.assertEquals(0, hydratedCollection.size());
     }

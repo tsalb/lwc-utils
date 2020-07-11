@@ -65,7 +65,7 @@ const flattenQueryResult = (listOfObjects, objectApiName) => {
                 }
             }
             // Helps with linkifying name fields
-            if (prop === 'Id') {
+            if (prop === 'Id' && objectApiName) {
                 const objectIdProp = { [`${objectApiName}_Id`]: obj[prop] };
                 obj = { ...obj, ...objectIdProp };
             }

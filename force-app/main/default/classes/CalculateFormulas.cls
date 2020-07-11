@@ -32,26 +32,84 @@
 
 public inherited sharing class CalculateFormulas {
     @InvocableMethod(label='Calculates formulas fields for a Record Collection')
-    public static List<Response> calculateFormulasFor(List<Request> inputs) {
-        List<Response> responseList = new List<Response>();
+    public static List<FlowOutput> calculateFormulasFor(List<FlowInput> inputs) {
+        List<FlowOutput> outputs = new List<FlowOutput>();
 
-        for (Request curInput : inputs) {
+        for (FlowInput input : inputs) {
+            // Sanity check since we're going to do some SOQL later
+            if (!isAllSameSObject(input.originalCollection)) {
+                throw new AuraHandledException('Records in the collection must be of the same SObject type');
+            }
+
+            // First, we check for reference/lookup fields so we can put them back in at the end
+            // This is done when the user is trying to display the customLookup datatype
+            // prettier-ignore
+            Map<String, Schema.SObjectField> fieldMap = input.originalCollection[0].getSObjectType().getDescribe().fields.getMap();
+            Map<Id, String> lookupIdToNameFieldMap = new Map<Id, String>();
+            for (SObject obj : input.originalCollection) {
+                Map<String, Object> fieldsToValue = obj.getPopulatedFieldsAsMap();
+
+                for (String fieldName : fieldsToValue.keySet()) {
+                    // Some kind of mismatch, like for lookup field names
+                    if (fieldMap.get(fieldName) == null) {
+                        continue;
+                    }
+                    // If not a reference field
+                    if (fieldMap.get(fieldName).getDescribe().getReferenceTo().isEmpty()) {
+                        continue;
+                    }
+                    lookupIdToNameFieldMap.put((Id) fieldsToValue.get(fieldName), getLookupNameField(fieldMap));
+                }
+            }
+            System.debug(LoggingLevel.INFO, 'CalculateFormulas lookupIdToNameFieldMap: ' + lookupIdToNameFieldMap);
+
+            // Then we prep the collection for hydration in recalculateFormulas
             List<SObject> collectionToHydrate = new List<SObject>();
-            for (SObject obj : curInput.originalCollection) {
-                for (String field : curInput.formualFieldsToCalculate) {
-                    collectionToHydrate.add(setReadOnlyField(obj, field, null));
+            for (SObject obj : input.originalCollection) {
+                for (String fieldName : input.formualFieldsToCalculate) {
+                    collectionToHydrate.add(setReadOnlyField(obj, fieldName, null));
                 }
             }
             System.debug(LoggingLevel.INFO, 'CalculateFormulas collectionToHydrate: ' + collectionToHydrate);
-            Response output = new Response();
+
+            // Hydration happens here
+            FlowOutput output = new FlowOutput();
             output.hydratedCollection = new List<SObject>();
             for (FormulaRecalcResult result : Formula.recalculateFormulas(collectionToHydrate)) {
                 output.hydratedCollection.add(result.getSObject());
             }
-            System.debug(LoggingLevel.INFO, 'CalculateFormulas hydratedCollection: ' + output.hydratedCollection);
-            responseList.add(output);
+
+            // And finally we stitch the SOQL back into the hydrated collection. Due to the SOQL in a loop here,
+            // CalculateFormulas should only ever be used for Screen Flows (which makes sense).
+            if (!lookupIdToNameFieldMap.isEmpty()) {
+                // Establish the actual values of the name field
+                List<Id> scopeIds = new List<Id>(lookupIdToNameFieldMap.keySet());
+                String queryString = '';
+                queryString += 'SELECT Id, ' + lookupIdToNameFieldMap.values()[0];
+                queryString += ' FROM ' + scopeIds[0].getSobjectType().getDescribe().getName();
+                queryString += ' WHERE Id = :scopeIds';
+                System.debug(LoggingLevel.INFO, 'CalculateFormulas queryString: ' + queryString);
+                Map<Id, SObject> lookupIdToNameValueMap = new Map<Id, SObject>(Database.query(queryString));
+                System.debug(LoggingLevel.INFO, 'CalculateFormulas lookupIdToNameValueMap: ' + lookupIdToNameValueMap);
+
+                // Then work backwards from the Id value on each already formula recalculated row
+                for (SObject row : output.hydratedCollection) {
+                    Map<String, Object> fieldsToValue = row.getPopulatedFieldsAsMap();
+                    for (String fieldName : fieldsToValue.keySet()) {
+                        String fieldValue = (String) fieldsToValue.get(fieldName);
+
+                        // When a match is found, put the queried object back in for collectionDatatable to flatten
+                        if (fieldValue instanceof Id && lookupIdToNameValueMap.keySet().contains(fieldValue)) {
+                            SObject objectWithData = lookupIdToNameValueMap.get(Id.valueOf(fieldValue));
+                            String objectName = objectWithData.getSObjectType().getDescribe().getName();
+                            row.putSObject(objectName, objectWithData);
+                        }
+                    }
+                }
+            }
+            outputs.add(output);
         }
-        return responseList;
+        return outputs;
     }
 
     private static SObject setReadOnlyField(SObject sobj, String fieldName, Object value) {
@@ -70,7 +128,26 @@ public inherited sharing class CalculateFormulas {
         return (SObject) JSON.deserialize(serializedRecord, SObject.class);
     }
 
-    public class Request {
+    private static Boolean isAllSameSObject(List<SObject> collection) {
+        Set<String> objectNames = new Set<String>();
+        for (SObject obj : collection) {
+            objectNames.add(obj.getSObjectType().getDescribe().getName());
+        }
+        return new List<String>(objectNames).size() == 1;
+    }
+
+    private static String getLookupNameField(Map<String, Schema.SObjectField> fieldMap) {
+        Schema.SObjectField nameField;
+        for (Schema.SObjectField curField : fieldMap.values()) {
+            if (curField.getDescribe().isNameField()) {
+                nameField = curField;
+                break;
+            }
+        }
+        return nameField.getDescribe().getName();
+    }
+
+    public class FlowInput {
         @InvocableVariable(label='Object Api Name' required=true)
         public String objectApiName;
 
@@ -81,7 +158,7 @@ public inherited sharing class CalculateFormulas {
         public List<String> formualFieldsToCalculate;
     }
 
-    public class Response {
+    public class FlowOutput {
         @InvocableVariable(label='Record Collection with formula fields')
         public List<SObject> hydratedCollection;
     }

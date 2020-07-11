@@ -39,6 +39,9 @@ import getDisplayTypeMap from '@salesforce/apex/DataTableService.getDisplayTypeM
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { reduceErrors, createSetFromDelimitedString } from 'c/utils';
 
+// Flatten data again, for when things are recalculated
+import { flattenQueryResult } from 'c/tableServiceUtils';
+
 export default class CollectionDatatable extends LightningElement {
     @api recordCollection;
     @api title;
@@ -59,12 +62,12 @@ export default class CollectionDatatable extends LightningElement {
     columnWidthsMode;
 
     // private
-    _displayTypeMap;
+    _displayTypeMap = new Map();
     _singleRecordId;
     _objectApiName;
     _objectInfo;
-    _objectFieldsMap;
-    _finalColumns;
+    _objectFieldsMap = new Map();
+    _referenceFieldsMap = new Map();
 
     get isUsingShownFields() {
         return this.shownFields && this.shownFields.size;
@@ -80,12 +83,13 @@ export default class CollectionDatatable extends LightningElement {
         // Collections can be either from a getRecord (which will contain Ids) or Record (Single) collection.
         const recordIdRow = this.recordCollection.find(row => row.hasOwnProperty('Id'));
 
-        // TODO
-        console.log(JSON.parse(JSON.stringify(this.recordCollection)));
-
         // Should ever only be one or the other, unless I learn some new things about how flow works
         if (recordIdRow) {
             this.initializeFromWire(recordIdRow.Id);
+        } else {
+            // TODO - this should be a fallback if no objectApiName was given by the configuration
+            // ALSO TODO - surface an object api name prop on this design file
+            // this.initializeFromCollection()
         }
     }
 
@@ -93,9 +97,9 @@ export default class CollectionDatatable extends LightningElement {
         this._singleRecordId = recordId;
     }
 
-    initializeFromCollection(objectApiName) {
-        this._objectApiName = objectApiName;
-    }
+    // initializeFromCollection(objectApiName) {
+    //     this._objectApiName = objectApiName;
+    // }
 
     @wire(getRecord, { recordId: '$_singleRecordId', layoutTypes: 'Compact' })
     wiredSingleRecord({ error, data }) {
@@ -112,11 +116,28 @@ export default class CollectionDatatable extends LightningElement {
             this._notifySingleError('getObjectInfo error', error);
         } else if (data) {
             this._objectInfo = data;
+
+            // Flatten here, we want to recover any possible customLookup name values
+            this.recordCollection = flattenQueryResult(this.recordCollection);
+            //console.log(this.recordCollection);
+
             // Creating columns means parsing LDS and matching that to design props or what's in the record collection
             this._objectFieldsMap = new Map(Object.entries(this._objectInfo.fields));
+            //console.log(this._objectFieldsMap);
+
+            this._referenceFieldsMap = new Map(
+                Array.from(this._objectFieldsMap.values())
+                    .filter(field => field.reference && field.referenceToInfos.length)
+                    .map(field => {
+                        const referenceTo = field.referenceToInfos[0];
+                        const flatNameField = `${field.relationshipName}_${referenceTo.nameFields[0]}`;
+                        return [field.apiName, flatNameField];
+                    })
+            );
+            //console.log(this._referenceFieldsMap);
+
             const collectionFields = this._createSetFromUniqueCollectionFields(this.recordCollection);
             const columns = this._createColumns(collectionFields, this.shownFields);
-            // Then we can access a public api on the base datatable component
             this.template
                 .querySelector('c-datatable')
                 .initializeTable(this._objectApiName, columns, this.recordCollection);
@@ -141,24 +162,38 @@ export default class CollectionDatatable extends LightningElement {
         this.columnWidthsMode = this.isUsingShownFields ? 'auto' : 'fixed';
         if (this.isUsingShownFields) {
             fieldsToShow.forEach(fieldName => {
-                finalColumns.push(this._createColumnAttribute(fieldName));
+                finalColumns.push(this._createBaseColumnAttribute(fieldName));
             });
         } else {
             collectionFields.forEach(fieldName => {
-                finalColumns.push(this._createColumnAttribute(fieldName));
+                finalColumns.push(this._createBaseColumnAttribute(fieldName));
             });
         }
         return finalColumns;
     }
 
-    _createColumnAttribute(fieldName) {
+    _createBaseColumnAttribute(fieldName) {
         const fieldConfig = this._objectFieldsMap.get(fieldName);
-        return {
-            label: fieldConfig.label,
-            fieldName: fieldConfig.apiName,
-            type: this._displayTypeMap.get(fieldConfig.dataType.toUpperCase()),
+        const hasConfig = !!fieldConfig;
+        let columnDefinition = {
+            label: hasConfig ? fieldConfig.label : fieldName.split('_').join(' '),
+            fieldName: hasConfig ? fieldConfig.apiName : fieldName,
+            type: hasConfig ? this._displayTypeMap.get(fieldConfig.dataType.toUpperCase()) : 'text',
             initialWidth: 200
         };
+        // A little more processing is needed
+        if (columnDefinition.type === 'customLookup' && this._referenceFieldsMap.has(fieldName)) {
+            const lookupTypeAttributes = {
+                typeAttributes: {
+                    href: { fieldName: fieldName },
+                    target: '_parent',
+                    displayValue: { fieldName: this._referenceFieldsMap.get(fieldName) },
+                    referenceObjectApiName: this._objectFieldsMap.get(fieldName).referenceToInfos[0].apiName
+                }
+            };
+            columnDefinition = { ...columnDefinition, ...lookupTypeAttributes };
+        }
+        return columnDefinition;
     }
 
     _notifySingleError(title, error) {

@@ -21,34 +21,22 @@ In this README:
     - [soqlDatatable - Features and Examples](#soqldatatable---features-and-examples)
   - [collectionDatatable](#collectiondatatable)
     - [collectionDatatable - Features and Examples](#collectiondatatable---features-and-examples)
+- [Installation](#installation)
 
 <!-- omit in toc -->
-## Installation
+## Introduction
 
-With SFDX + Scratch Orgs:
+This repo showcases the best defaults for creating rich, interactive, data-dense UIs using the following centerpieces:
+- `lightning-datatable` from LWC.
+- `lightning:overlayLibrary` from Aura.
+- `lightning:flow` from Aura.
+- `Lightning Message Service` to stitch it all-together.
 
-1) See pre-requisite steps in the official [lwc-recipes](https://github.com/trailheadapps/lwc-recipes#installing-the-app-using-a-scratch-org) repo.
+Salesforce has invested heavily into `LWC`, `Flow` and `Screen Flow` and has given [Architect Guidance](https://quip.com/HmPvA0tSaqfE) around how to build scalable and flexible solutions now and into the future.
 
-2) Clone this repo to a desired directory and navigate into it:
+This repo builds on that guidance and pushes data-dense UI design to the next level with highly reusable, highly configurable components. These components have saved me thousands of developer hours and allowed me to pivot on a dime to meet the changing speed of business.
 
-```
-git clone https://github.com/tsalb/lwc-utils
-cd lwc-utils
-```
-
-3) Use VSCode's [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) (or equivalent) to:
-- SFDX: Create a Default Scratch Org.
-- SFDX: Push Source to Default Scratch Org.
-- SFDX: Open Default Org.
-
-With Deploy to Salesforce:
-
-<a href="https://githubsfdeploy.herokuapp.com?owner=tsalb&repo=lwc-utils&ref=summer-20">
-  <img alt="Deploy to Salesforce"
-       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
-</a>
-
-> **NOTE:** This button will deploy this current `summer-20` branch to a target sandbox ONLY if that sandbox is also on summer 20.
+I hope they will help you do the same.
 
 ## Component Library Overview
 
@@ -679,3 +667,36 @@ Details incoming...
 </p>
 
 </details>
+
+## Installation
+
+Option 1 - SFDX + Scratch Orgs:
+
+1) See pre-requisite steps in the official [lwc-recipes](https://github.com/trailheadapps/lwc-recipes#installing-the-app-using-a-scratch-org) repo.
+
+2) Clone this repo to a desired directory and navigate into it:
+
+```
+git clone https://github.com/tsalb/lwc-utils
+cd lwc-utils
+```
+
+3) Use VSCode's [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) (or equivalent) to:
+- SFDX: Create a Default Scratch Org.
+- SFDX: Push Source to Default Scratch Org.
+- SFDX: Open Default Org.
+
+Option 2 - Deploy Button:
+
+<a href="https://githubsfdeploy.herokuapp.com?owner=tsalb&repo=lwc-utils&ref=summer-20">
+  <img alt="Deploy to Salesforce"
+       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
+</a>
+
+> **NOTE:** This button will deploy this current `summer-20` branch to a target sandbox ONLY if that sandbox is also on summer 20.
+
+Option 3 - Unlocked Package:
+
+```
+// TODO
+```

@@ -1,34 +1,47 @@
-# LWC Utils and Design Patterns
+<!-- omit in toc -->
+# LWC Utils 
 
-This repo highlights the following production proven design patterns:
+Reusable LWCs to 10x your solution building.
 
-- Design custom LWC into a service component architecture, i.e. making "utils".
-- Showcase complex datatable components like `SOQL Datatable` and `Collection Datatable` which can be used on App Flexipage, Record Flexipage, and even Flow Screens.
-- Showcase a unified messaging platform for both aura and lwc via `messageService`.
+- `messageService`: Lightning Message Service (LMS) simplified component messaging.
+- `SOQL Datatable`: Leverage SOQL to power your list views, related lists, and Screen Flows.
+- `Collection Datatable`: Display Collections and Selected Rows from SOQL Datatable in Screen Flows.
+- Design patterns leveraging both Aura and LWC to dynamically create dialogs (modals) for better UX.
+- Launch Screen Flows dynamically inside a dialog (modal) from anywhere.
 
-![side-by-side](/readme-images/side-by-side.png?raw=true)
+In this README:
 
-## Install with SFDX
+- [Component Library Overview](#component-library-overview)
+  - [messageService](#messageservice)
+  - [DialogService](#dialogservice)
+  - [MessageServiceHandler](#messageservicehandler)
+  - [FlowWrapper](#flowwrapper)
+  - [dialogAutoCloser](#dialogautocloser)
+  - [soqlDatatable](#soqldatatable)
+    - [soqlDatatable - Features and Examples](#soqldatatable---features-and-examples)
+  - [collectionDatatable](#collectiondatatable)
+    - [collectionDatatable - Features and Examples](#collectiondatatable---features-and-examples)
 
-SFDX CLI and VSCode has matured enough for general usage so I will be moving my repo to SFDX format only.
+<!-- omit in toc -->
+## Installation
 
-For VSCode and SFDX setup see steps (1 and 2) from the [official lwc-recipes repo](https://github.com/trailheadapps/lwc-recipes#installing-recipes-using-salesforce-dx). Once you have the SFDX CLI set up and Authed into a Dev Hub you can then:
+With SFDX + Scratch Orgs:
 
-1) Clone this repo to a desired directory.
+1) See pre-requisite steps in the official [lwc-recipes](https://github.com/trailheadapps/lwc-recipes#installing-the-app-using-a-scratch-org) repo.
+
+2) Clone this repo to a desired directory and navigate into it:
 
 ```
 git clone https://github.com/tsalb/lwc-utils
+cd lwc-utils
 ```
 
-2) Open VSCode (with a Dev Hub already connected), and open the `lwc-utils` folder.
+3) Use VSCode's [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) (or equivalent) to:
+- SFDX: Create a Default Scratch Org.
+- SFDX: Push Source to Default Scratch Org.
+- SFDX: Open Default Org.
 
-3) Use [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) to `SFDX: Create a Default Scratch Org` .
-
-4) Use Command Palette to `SFDX: Push Source to Default Scratch Org`.
-
-5) Use Command Palette to `SFDX: Open Default Org`.
-
-## Install via Deploy to Salesforce
+With Deploy to Salesforce:
 
 <a href="https://githubsfdeploy.herokuapp.com?owner=tsalb&repo=lwc-utils&ref=summer-20">
   <img alt="Deploy to Salesforce"
@@ -37,21 +50,21 @@ git clone https://github.com/tsalb/lwc-utils
 
 > **NOTE:** This button will deploy this current `summer-20` branch to a target sandbox ONLY if that sandbox is also on summer 20.
 
-## LWC Utils Overview
+## Component Library Overview
 
 | Component Name | Description | Component Type |
 |-|-|-|
-| `messageService`<br><br>[Example](#messageService)<br>[Code](./force-app/main/default/lwc/messageService/messageService.js#L41) | Use one API to communicate **within** or **across** both Aura and LWC technologies.<br><br>Use this component instead of manually publishing / subscribing to `Lightning Message Service` (LMS).<br><br>Provides a psuedo-namespacing property called `boundary` which can separate subscribers by string, `recordId` etc.<br><br>Subscribers can choose to listen to any event by just enabling event handling like:<br><br>LWC: ``<br><br>Aura: `` | LWC:<br>`Service` |
-| `DialogService`<br><br>[Example](#DialogService)<br>[Code](./force-app/main/default/aura/DialogService) | Provides access to `lightning:overlayLibrary` to create dialogs (modals) via LMS.<br><br>Both Aura and LWCs can be created dynamically and injected as the dialog body.<br><br>Both Aura's public `attributes` and LWC's `@api` properties can be passed in. | Aura:<br>`Service` |
-| `MessageServiceHandler`<br><br>[Example](#MessageServiceHandler)<br>[Code](./force-app/main/default/aura/MessageServiceHandler) | Utility bar (empty label) component wrapping `messageService`.<br><br>Provides universal access to `DialogService` by handling the `opendialog` LMS event. | Aura:<br>`Service`, `Utility Bar`, `Flexipage` |
-| `EventFooter`<br><br>[Code](./force-app/main/default/aura/EventFooter) | Dynamic footer for lwc dialogs.<br><br>Contains an instance of `messageService` listening for the `closedialog` LMS Event.<br><br>Unfortunately, `component.getReference()` does not work on LWCs. Write your own action button in the dialog body. | Aura:<br>`UI` |
-| `ModalFooter`<br><br>[Code](./force-app/main/default/aura/ModalFooter) | Dynamic footer for aura dialogs.<br><br>Connects a primary action on the target dialog body to the footer's main action via `component.getReference()`<br><br>Enables writing functions directly on the dialog body and `DialogService.modal()` will connect it to a primary action. | Aura:<br>`UI` |
-| `FlowWrapper`<br><br>[Example](#FlowWrapper)<br>[Code](./force-app/main/default/aura/FlowWrapper) | Enables `messageService` to create flows inside a dialog body dynamically.<br><br>Can be used with `dialogAutoCloser` (LWC flow component) to automatically close a dialog launched by this component.<br><br>See [`flowWizardLauncherExample`](./force-app/main/default/lwc/flowWizardLauncherExample/flowWizardLauncherExample.js#L19) | Aura:<br>`Service` |
-| `dialogAutoCloser`<br><br>[Example](#dialogAutoCloser)<br>[Code](./force-app/main/default/lwc/dialogAutoCloser) | Contains a progress bar and timer message before automatically closing a `DialogService` dialog with the `closerfooter` LMS event | LWC:<br>`Service`, `Flow` |
-| `soqlDatatable`<br><br>[Example](#soqlDatatable)<br>[Code](./force-app/main/default/lwc/soqlDatatable) | // TODO | LWC:<br>`UI`, `App`, `Record`, `Flow` |
-| `collectionDatatable`<br><br>[Example](#collectionDatatable)<br>[Code](./force-app/main/default/lwc/collectionDatatable) | // TODO | LWC:<br>`UI`, `Flow` |
+| `messageService`<br><br>[Example](#messageService)<br>[Code](./force-app/main/default/lwc/messageService/messageService.js#L41) | Use one API to communicate **within** or **across** both Aura and LWC technologies.<br><br>Use this component instead of manually publishing / subscribing to `Lightning Message Service` (LMS).<br><br>Provides a psuedo-namespacing property called `boundary` which can separate subscribers by string, `recordId` etc. | LWC:<br>- Service |
+| `DialogService`<br><br>[Example](#DialogService)<br>[Code](./force-app/main/default/aura/DialogService) | Provide LWCs access to `lightning:overlayLibrary` to create dialogs (modals) via LMS.<br><br>Both Aura and LWCs can be created dynamically and injected as the dialog body.<br><br>Both Aura's public `attributes` and LWC's `@api` properties can be passed in. | Aura:<br>- Service |
+| `MessageServiceHandler`<br><br>[Example](#MessageServiceHandler)<br>[Code](./force-app/main/default/aura/MessageServiceHandler) | Provides access to `DialogService` by handling the `opendialog` LMS event.<br><br>This is a hidden component you need to place on the flexipage or utility bar (hidden, empty label). | Aura:<br>- Service<br>- Utility Bar <br>- Record Flexipage |
+| `EventFooter`<br><br>[Code](./force-app/main/default/aura/EventFooter) | Dynamic footer for lwc dialogs. Meant to be used by `DialogService`.<br><br>Contains an instance of `messageService` listening for the `closedialog` LMS Event.<br><br>Unfortunately, `component.getReference()` does not work on LWCs. Write your own action button in the dialog body. | Aura:<br>- Service |
+| `ModalFooter`<br><br>[Code](./force-app/main/default/aura/ModalFooter) | Dynamic footer for aura dialogs. Meant to be used by `DialogService`.<br><br>Connects a primary action on the target dialog body to the footer's main action via `component.getReference()`<br><br>Enables writing functions directly on the dialog body and `DialogService.modal()` will connect it to a primary action. | Aura:<br>- Service |
+| `FlowWrapper`<br><br>[Example](#FlowWrapper)<br>[Code](./force-app/main/default/aura/FlowWrapper) | Enables `messageService` to create flows inside a dialog body dynamically.<br><br>Can be used with `dialogAutoCloser` (LWC flow component) to automatically close a dialog launched by this component.<br><br>See [`flowWizardLauncherExample`](./force-app/main/default/lwc/flowWizardLauncherExample/flowWizardLauncherExample.js#L19) | Aura:<br>- Service |
+| `dialogAutoCloser`<br><br>[Example](#dialogAutoCloser)<br>[Code](./force-app/main/default/lwc/dialogAutoCloser) | Contains a progress bar and timer message (optional).<br><br>Automatically tells the current dialog with the `closerfooter` LMS event.<br><br>Use `uniqueBoundary` to target a specific dialog to close if [Tab-Focused Dialogs is Enabled](https://releasenotes.docs.salesforce.com/en-us/winter20/release-notes/rn_console_dialogs.htm) | LWC:<br>- Service<br>- Flow Screen |
+| `soqlDatatable`<br><br>[Example](#soqlDatatable)<br>[Code](./force-app/main/default/lwc/soqlDatatable) | A SOQL powered list view. Meant to replace any related list / list view.<br><br>Supports record context, in-line editing, configurable table/row actions, output of selected rows to Flow (or other LWCs) and more.<br><br>See example for full features. | LWC:<br>- Service<br>- App Flexipage<br>- Record Flexipage<br>- Flow Screen |
+| `collectionDatatable`<br><br>[Example](#collectionDatatable)<br>[Code](./force-app/main/default/lwc/collectionDatatable) | Display Record Collections inside Flow Screens. Meant to mimic a related list / list view.<br><br>Can be populated from a Flow's `Get Records` element or `soqlDatatable.selectedRows` output. | LWC:<br>- Flow Screen |
 
-## messageService
+### messageService
 
 Leverages `Lightning Message Service` on `OpenChannel__c` to message `payloads` in a `key` / `value` format as defined in `OpenChannel__c` like this:
 
@@ -130,6 +143,7 @@ this._messageService.dialogService(dialogServicePayload);
 <details>
     <summary>messageService Specification</summary>
 
+⠀
 
 **Attributes**
 
@@ -151,7 +165,7 @@ this._messageService.dialogService(dialogServicePayload);
 | notifySingleError | (`title`, `error` = '') | Convenience function for `ShowToastEvent`.<br>`error` object can be passed directly in, it will be reduced/parsed by `c-utils.reduceError`. |
 </details>
 
-## DialogService
+### DialogService
 
 This component is composed inside `MessageServiceHandler` and provides it with the public methods for creating modals via Aura's `overlayLibrary`. 
 
@@ -162,6 +176,7 @@ It is not recommended to use this component directly.
 <details>
     <summary>DialogService Specification</summary>
 
+⠀
 
 **Attributes**
 
@@ -184,7 +199,7 @@ For that reason, it is recommended to use `messageService` / `MessageServiceHand
 | bodyModalLarge | (<br>  `auraId`,<br>  `headerLabel`,<br>  `body`,<br>  `bodyParams`,<br>  `callback`,<br>  `isLargeModal = true`<br>) | Compatible with LWC dialog bodies.<br><br>Same as `bodyModal`, with wider dialog box using `slds-modal_large` |
 </details>
 
-## MessageServiceHandler
+### MessageServiceHandler
 
 This component parses the `messageService.dialogService()` payload. It expects two properties:
 
@@ -215,6 +230,7 @@ This component is very simple which just listens and delegates to `DialogService
 <details>
     <summary>MessageServiceHandler Specification</summary>
 
+⠀
 
 **Attributes**
 
@@ -226,7 +242,7 @@ None
 
 </details>
 
-## FlowWrapper
+### FlowWrapper
 
 This component wraps `lightning:flow` and is designed to be created dynamically by `DialogService`.
 
@@ -247,6 +263,7 @@ So then, the component itself is very simple.
 <details>
     <summary>FlowWrapper Specification</summary>
 
+⠀
 
 **Attributes**
 
@@ -261,7 +278,7 @@ None
 
 </details>
 
-## dialogAutoCloser
+### dialogAutoCloser
 
 A simple component that counts down and auto closes a dialog with the `closedialog` LMS Event.
 
@@ -298,6 +315,7 @@ A simple component that counts down and auto closes a dialog with the `closedial
 <details>
     <summary>dialogAutoCloser Specification</summary>
 
+⠀
 
 **Attributes**
 
@@ -311,27 +329,29 @@ A simple component that counts down and auto closes a dialog with the `closedial
 None
 </details>
 
-## soqlDatatable
+### soqlDatatable
 
-This component can dynamically create tables from just a SOQL String fed into its design attributes in the App Builder. For example: 
+Create a fully featured `lightning-datatable` with just a SOQL String.
+
+This component can be used on a Flexipage as a list view or a related list. This can even be used inside Screen Flows.
+
+Since this is built on top of the `lightning-datatable` base component, all the bells and whistles can be inherited.
+
+The below example showcases how easy it is to create a `soqlDatatable` right in the Lightning App Builder with the following query string:
 
 ```
-SELECT Id, Name, Email, Phone, Account.Name, Account.BillingState, Account.Type 
-FROM Contact
-LIMIT 50
+SELECT Name, Email, Phone, LeadSource, Level__c, AccountId, Account.Type FROM Contact LIMIT 50
 ```
 
-![soql-datatable](/readme-images/soql-datatable.png?raw=true)
+![soql-datatable-app-builder](readme-images/soql-datatable-app-builder.png?raw=true)
 
-Clicking Edit Page on the App Page, you can see that there are only a handful of design attributes.
-
-![soql-datatable-app-builder](/readme-images/soql-datatable-app-builder.png?raw=true)
-
-## soqlDatatable - Features and Examples
+#### soqlDatatable - Features and Examples
 
 <!-- Psuedo-spoiler tags can be formed like this. Line break is required! -->
 <details>
-    <summary>Using Record Context with <code>$CurrentRecord</code> in a SOQL String</summary>
+    <summary>Using Record Context with <code>$CurrentRecord</code> in the SOQL</summary>
+
+⠀
 
 `$CurrentRecord` and `$recordId` are special syntax that allows for merge-fields of current record data into the SOQL string. By using them, you can merge current record context as values in the `WHERE` clause as follows:
 
@@ -358,6 +378,8 @@ Please submit issues to this repo if you find one that cannot be merged correctl
 
 <details>
     <summary>Inline Editing / Mass Inline Editing</summary>
+
+⠀
 
 Define which fields can be editable in a comma separated list in the `Editable Fields` design attribute. For data types that are supported in the vanilla `lightning-datatable`, such as `date`, `text`, `number`, those are relied on as heavily as possible.
 
@@ -424,6 +446,8 @@ The actual lookup edit cell is a fork of the one authored by jlyon87 as found [h
 <details>
     <summary>Configurable Flow and LWC actions</summary>
 
+⠀
+
 Each `soqlDatatable` can be have one defined **Action Configuration** (`Datatable_Config__mdt`) to define both Table level (supporting multi / single select) and Row Level actions. This can be the same `Datatable_Config__mdt` as used in the **Lookup Configuration** section.
 
 Because of a limitation with cmdt, the `Type__c` on the parent `Datatable_Config__mdt` must be text of `Actions`. For combined configs, use `Actions; Lookups`.
@@ -436,7 +460,7 @@ Both LWCs (inside a dialog) and Screen Flows can be launched from either action 
     <img src="./readme-images/soql-datatable-actions.png" width="480">
 </p>
 
-#### Assign New Account - Flow Table Action
+Assign New Account - Flow Table Action
 
 The button is configured to the `SOQL_Datatable_Flow_Action_Update_Contacts_with_New_Account` Screen Flow.
 
@@ -455,7 +479,7 @@ When the flow is done, it auto-closes using `dialogAutoCloser`.
     <img src="./readme-images/soql-datatable-new-account-flow.png" width="640">
 </p>
 
-#### Check Opportunities - LWC Table Action
+Check Opportunities - LWC Table Action
 
 This button configured to open the `checkOpportunitiesExample` LWC.
 
@@ -508,7 +532,7 @@ connectedCallback() {
 ...
 ```
 
-#### Remove Phone - Flow Row Action
+Remove Phone - Flow Row Action
 
 The button is configured to the `SOQL_Datatable_Flow_Row_Action_Remove_Contact_Phone` Screen Flow.
 
@@ -523,6 +547,7 @@ This Screen Flow also auto-closes with `dialogAutoCloser`.
 <details>
     <summary>Dynamic Creation via MessageService & DialogService</summary>
 
+⠀
 
 Dynamically create a `soqlDatatable` when clicking the `Launch a SOQL Datatable in a Dialog` button.
 
@@ -576,6 +601,7 @@ As you can see, it's possible to parameterize a payload back to Aura's `$A.creat
 <details>
     <summary>Display a Selection to Collection Datatable in Flow</summary>
 
+⠀
 
 This Screen Flow uses the ability for `SOQL Datatable` to output a `List<SObject>` directly in Flow.
 
@@ -602,9 +628,18 @@ Another component called `Collection Datatable` is able to display any Flow `Rec
 `// TODO`
 </details>
 
-## collectionDatatable
+### collectionDatatable
 
-#### collectionDatatable Specification
+This component is designed for use with Screen Flows to display tables of data from a Record Collection.
+
+You can use `Get Records` elements or `selectedRows` from SOQL Datatable.
+
+// TODO more description
+
+<details>
+    <summary>collectionDatatable Specification</summary>
+
+⠀
 
 **Attributes**
 
@@ -613,137 +648,34 @@ Another component called `Collection Datatable` is able to display any Flow `Rec
 **Public Methods**
 
 `// TODO`
+</details>
 
-## Collection Datatable - Displaying a Record Collection
+#### collectionDatatable - Features and Examples
 
-This Screen Flow uses `Collection Datatable` as a standalone way to display the output of a `Get Record` node in flow.
+<details>
+    <summary>Displaying Selected Records from SOQL Datatable</summary>
+
+⠀
+
+This Screen Flow uses the ability for `SOQL Datatable` to output a `List<SObject>` directly in Flow.
+
+Another component called `Collection Datatable` is able to display any Flow `Record Collection`.
 
 <p align="center">
-    <img src="./readme-images/collection-datatable-flow.png" width="320">
+    <img src="./readme-images/soql-datatable-to-collection-datatable-flow.png" width="320">
 </p>
 <p align="center">
-    <img src="./readme-images/collection-datatable.png" width="600">
+    <img src="./readme-images/soql-datatable-to-collection-datatable.gif" width="600">
 </p>
+</details>
 
-## Combining SOQL and Collection Datatable with Flow inputs
+<details>
+    <summary>Combining SOQL and Collection Datatable with Flow inputs</summary>
 
-```
-// TODO description
-```
+Details incoming...
 
 <p align="center">
     <img src="./readme-images/combine-soql-and-collection-datatable-flow.png" width="600">
 </p>
 
-```
-// TODO gif
-```
-
-## Collection Datatable - Using Apex Wrappers
-
-```
-// Future Roadmap
-```
-
-## Launch a flow from an LWC
-
-In psuedo-code:
-
-```
-lightning-button creates a JSON payload with some Flow details onclick
-    => payload is then handed to messageService
-        => messageService passes it to a label-less (but rendered) Aura component in the utility bar called MessageServiceHandler
-            => Once inside aura, it dynamically creates an LWC dialog body via lightning:overlayLibrary
-```
-
-Below is the actual flow this will be using:
-
-<p align="center">
-    <img src="./readme-images/flow-screen.png" width="600">
-</p>
-
-Which looks like this when clicked:
-
-<p align="center">
-    <img src="./readme-images/launch-flow-example.gif" width="900">
-</p>
-
-To understand the mechanics of what is happening in the wizard itself, see the next section.
-
-## Dynamic Templating in LWC Wizard Body, inside a flow
-
-This flow in this example uses a single LWC to back multiple screens. In essence, this is using flow as a navigation tool for switching between various `template if:true` checks on the LWC itself.
-
-In other words, `flowWizardRouter` is able to dynamically `render()` a chosen `template` based on an `@api` attribute.
-
-```js
-import { LightningElement, api, track } from 'lwc';
-import { DateTime } from 'c/luxon';
-// Known templates
-import { default as dateParserMenu } from './templates/dateParserMenu.html';
-import { default as defaultTemplate } from './templates/default.html';
-
-export default class FlowWizardRouter extends LightningElement {
-    @api templateName;
-    @api
-    get flowCacheJSON() {
-        return JSON.stringify(this.flowCache);
-    }
-    set flowCacheJSON(value) {
-        this.flowCache = JSON.parse(value);
-    }
-
-    ...
-
-    render() {
-        switch (this.templateName) {
-            case 'dateParserMenu':
-                return dateParserMenu;
-            default:
-                return defaultTemplate;
-        }
-    }
-
-    ...
-
-    get isDateParser() {
-        return this.templateName === 'dateParserMenu';
-    }
-
-    get isDateParserOne() {
-        return this.isDateParser && this.templateStep === 1;
-    }
-
-    get isDateParserTwo() {
-        return this.isDateParser && this.templateStep === 2;
-    }
-}
-```
-
-While doing so, it leverages flow as a state storage:
-
-```js
-notifyFlow() {
-    // The prop name needs to be the LWC one, not the variable name in flow itself
-    // Also, manual variable assignment MUST be used for this to persist across screens
-    this.dispatchEvent(new FlowAttributeChangeEvent('flowCacheJSON', JSON.stringify(this.flowCache)));
-}
-```
-
-And on the selected template:
-
-```html
-<!-- flowWizardRouter/templates/dateParserMenu.html -->
-<template if:true={isDateParserOne}>
-
-    <!-- template to show when configured to one -->
-
-</template>
-<template if:true={isDateParserTwo}>
-
-    <!-- template to show when configured to two -->
-
-</template>
-```
-
-
+</details>

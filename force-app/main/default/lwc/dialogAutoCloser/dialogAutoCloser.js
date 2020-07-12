@@ -99,6 +99,7 @@ export default class DialogAutoCloser extends LightningElement {
         if (this.uniqueBoundary && this.isRefreshTable) {
             this._messageService.publish({ key: 'refreshsoqldatatable' });
         }
+        this.dispatchEvent(new CustomEvent('closedialog'));
         this._messageService.notifyClose();
     }
 }

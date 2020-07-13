@@ -39,9 +39,8 @@ private class CalculateFormulasTests {
         List<CalculateFormulas.FlowInput> inputs = new List<CalculateFormulas.FlowInput>();
 
         CalculateFormulas.FlowInput input = new CalculateFormulas.FlowInput();
-        input.objectApiName = 'User';
         input.originalCollection = userList;
-        input.formualFieldsToCalculate = fieldsToRecalc;
+        input.formulaFieldsToCalculate = fieldsToRecalc;
         inputs.add(input);
 
         Test.startTest();

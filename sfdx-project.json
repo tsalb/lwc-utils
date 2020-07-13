@@ -2,10 +2,19 @@
     "packageDirectories": [
         {
             "path": "force-app",
-            "default": true
+            "package": "LWC Utils with Examples",
+            "versionName": "ver 0.1",
+            "versionNumber": "0.1.0.NEXT"
         }
     ],
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "49.0"
+    "sourceApiVersion": "49.0",
+    "packageAliases": {
+        "LWC Utils with Examples": "0HoB0000000TNIaKAO",
+        "LWC Utils with Examples@0.1.0-1": "04tB0000000QGMhIAO",
+        "LWC Utils with Examples@0.1.0-2": "04tB0000000QGMwIAO",
+        "LWC Utils with Examples@0.1.0-3": "04tB0000000QGN1IAO",
+        "LWC Utils with Examples@0.1.0-4": "04tB0000000QGN6IAO"
+    }
 }

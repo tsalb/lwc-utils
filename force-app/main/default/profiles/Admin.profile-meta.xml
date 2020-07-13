@@ -95,6 +95,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>CalculateFormulasTests</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>DataServiceCtrl</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -107,7 +111,11 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>PermissionService</apexClass>
+        <apexClass>LookupAuraService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>LookupAuraServiceTests</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <custom>false</custom>

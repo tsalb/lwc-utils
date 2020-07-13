@@ -39,7 +39,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>flowName</name>
-                    <value>SOQL_Datatable_Show_selection_in_Collection_Datatable</value>
+                    <value>SOQL_Datatable_Show_Selection_in_Collection_Datatable</value>
                 </componentInstanceProperties>
                 <componentName>flowruntime:interview</componentName>
             </componentInstance>

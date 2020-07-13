@@ -22,6 +22,9 @@ In this README:
   - [collectionDatatable](#collectiondatatable)
     - [collectionDatatable - Features and Examples](#collectiondatatable---features-and-examples)
 - [Installation](#installation)
+  - [With Examples](#with-examples)
+  - [Core Components Only](#core-components-only)
+  - [Configuration and Getting Started](#configuration-and-getting-started)
 
 <!-- omit in toc -->
 ## Introduction
@@ -697,6 +700,20 @@ Details incoming...
 </details>
 
 <details>
+    <summary>Inline Editing (Future Enhancement)</summary>
+
+⠀
+
+Direct inline editing inside a Flow Screen will be a future enhancement.
+
+<p align="center">
+    <img src="./readme-images/combine-soql-and-collection-datatable-flow.png" width="600">
+</p>
+
+</details>
+
+
+<details>
     <summary>collectionDatatable Specification</summary>
 
 ⠀
@@ -711,6 +728,12 @@ Details incoming...
 </details>
 
 ## Installation
+
+This repo uses APIs from Summer 20 (49.0), so make sure your sandbox/org meets this requirements.
+
+Currently, this package is in BETA. Install will only work on a sandbox / dev org.
+
+### With Examples
 
 Option 1 - SFDX + Scratch Orgs:
 
@@ -735,10 +758,50 @@ Option 2 - Deploy Button:
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
 
-> **NOTE:** This button will deploy this current `summer-20` branch to a target sandbox ONLY if that sandbox is also on summer 20.
-
-Option 3 - Unlocked Package:
+Option 3 - Installation URL:
 
 ```
-// TODO
+https://login.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGN6IAO
 ```
+
+Option 4 - Unlocked Package:
+
+```
+sfdx force:package:install --package "LWC Utils with Examples@0.1.0-4"
+```
+
+### Core Components Only
+
+Option 1 - Installation URL:
+
+```
+https://login.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGMrIAO
+```
+
+Option 2 - Unlocked Package:
+
+```
+sfdx force:package:install --package "LWC Utils with Examples"
+```
+
+### Configuration and Getting Started
+
+If you're working with the examples, you can view the `LWC Utils` sample app and navigate around.
+
+There are also many example `Flows` that have been set up as well.
+
+For both installations, please review the following:
+
+- `Datatable_Config__mdt`
+- `Datatable_Lookup_Config__mdt`
+- `Datatable_Action_Config__mdt`
+
+For `soqlDatatable` to successfully launch any configured Table / Row action (Flow and LWC) you must:
+
+1) Map a `Datatable_Config__mdt` that has a `Type__c` field that contains the text `Actions`.
+2) Place `MessageServiceHandler` somewhere on the App / Record Flexipage or the Utility bar. This component launches dialogs/modals. 
+
+For `soqlDatatable` inline editing of any Lookup data types, you must:
+
+3) Map a `Datatable_Config__mdt` that has a `Type__c` field that contains the text `Lookups`. `Actions; Lookups` is a valid configuration.
+4) Review the `Datatable_Lookup_Config.Default_Lookup_Config` and any necessary Object specific overrides.

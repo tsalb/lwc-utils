@@ -706,10 +706,6 @@ Details incoming...
 
 Direct inline editing inside a Flow Screen will be a future enhancement.
 
-<p align="center">
-    <img src="./readme-images/combine-soql-and-collection-datatable-flow.png" width="600">
-</p>
-
 </details>
 
 
@@ -775,13 +771,13 @@ sfdx force:package:install --package "LWC Utils with Examples@0.1.0-4"
 Option 1 - Installation URL:
 
 ```
-https://login.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGMrIAO
+https://login.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGNBIA4
 ```
 
 Option 2 - Unlocked Package:
 
 ```
-sfdx force:package:install --package "LWC Utils with Examples"
+sfdx force:package:install --package "LWC Utils Core@0.1.0-3"
 ```
 
 ### Configuration and Getting Started

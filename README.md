@@ -756,9 +756,7 @@ Option 2 - Deploy Button:
 
 Option 3 - Installation URL:
 
-```
-https://login.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGN6IAO
-```
+[Summer 20 Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGN6IAO)
 
 Option 4 - Unlocked Package:
 
@@ -770,9 +768,7 @@ sfdx force:package:install --package "LWC Utils with Examples@0.1.0-4"
 
 Option 1 - Installation URL:
 
-```
-https://login.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGNBIA4
-```
+[Summer 20 Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGNBIA4)
 
 Option 2 - Unlocked Package:
 

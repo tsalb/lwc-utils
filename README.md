@@ -734,24 +734,24 @@ cd lwc-utils
 
 Option 2 - Installation URL:
 
-[Summer 20 Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGbkIAG)
+[Summer 20 Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGbuIAG)
 
 Option 3 - Unlocked Package:
 
 ```
-sfdx force:package:install --package "LWC Utils with Examples@0.1.0-6"
+sfdx force:package:install --package "LWC Utils with Examples@0.1.0-7"
 ```
 
 ### Core Components Only
 
 Option 1 - Installation URL:
 
-[Summer 20 Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGbfIAG)
+[Summer 20 Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGbpIAG)
 
 Option 2 - Unlocked Package:
 
 ```
-sfdx force:package:install --package "LWC Utils Core@0.1.0-4"
+sfdx force:package:install --package "LWC Utils Core@0.1.0-5"
 ```
 
 ### Configuration and Getting Started

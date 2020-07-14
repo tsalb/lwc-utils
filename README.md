@@ -489,26 +489,28 @@ Both LWCs (inside a dialog) and Screen Flows can be launched from either action 
     <img src="./readme-images/soql-datatable-actions.png" width="480">
 </p>
 
-Assign New Account - Flow Table Action
+**Assign New Account - Flow Table Action**
 
 The button is configured to the `SOQL_Datatable_Flow_Action_Update_Contacts_with_New_Account` Screen Flow.
 
 `soqlDatatable` sends the following `inputVariables` to Flows.
 
+All of the following **must** be implemented as variables if the Screen Flow backs an action, otherwise you will get an error.
+
 | Name | Type | Value |
 |-|-|-|
-| SelectedRowKeys | String[]  | Selected Row key-fields, usually recordIds. |
-| SelectedRowKeysSize | Number | Number of selected rows. |
+| SelectedRows | SObject[] | Choose the correct Object type in a Record Collection. |
+| FirstSelectedRow | SObject | First Selected Row, choose the correct Object in a Record variable. |
 | UniqueBoundary | String | For `dialogAutoCloser` to refresh the table that opened the Screen Flow.  |
 | SourceRecordId | String | The recordId of the page that the `soqlDatatable` is placed on. |
 
 When the flow is done, it auto-closes using `dialogAutoCloser`.
 
-<p align="center">
-    <img src="./readme-images/soql-datatable-new-account-flow.png" width="640">
-</p>
+![soql-datatable-new-account-flow](readme-images/soql-datatable-new-account-flow.png?raw=true)
 
-Check Opportunities - LWC Table Action
+> **Note:** Due to how data is constructed in `soqlDatatable`, you cannot use the `SelectedRows` directly in a `Update Records`. Always assign values you specifically want to update to a new Record Variable that is **not** an output of `soqlDatatable`, which in this example is `ContactShell`/`ContactToUpdate`.
+
+**Check Opportunities - LWC Table Action**
 
 This button configured to open the `checkOpportunitiesExample` LWC.
 
@@ -561,15 +563,15 @@ connectedCallback() {
 ...
 ```
 
-Remove Phone - Flow Row Action
+**Remove Phone - Flow Row Action**
 
 The button is configured to the `SOQL_Datatable_Flow_Row_Action_Remove_Contact_Phone` Screen Flow.
 
 This Screen Flow also auto-closes with `dialogAutoCloser`.
 
-<p align="center">
-    <img src="./readme-images/soql-datatable-remove-contact-phone-flow.png" width="380">
-</p>
+![soql-datatable-remove-contact-phone-flow](readme-images/soql-datatable-remove-contact-phone-flow.png?raw=true)
+
+> **Note:** Due to how data is constructed in `soqlDatatable`, you cannot use the `FirstSelectedRecord` directly in an `Update Records`. Always assign values you specifically want to update to a new Record Variable that is **not** an output of `soqlDatatable`, which in this example is `ContactToUpdate`.
 
 </details>
 
@@ -628,23 +630,6 @@ As you can see, it's possible to parameterize a payload back to Aura's `$A.creat
 </details>
 
 <details>
-    <summary>Display a Selection to Collection Datatable in Flow</summary>
-
-⠀
-
-This Screen Flow uses the ability for `SOQL Datatable` to output a `List<SObject>` directly in Flow.
-
-Another component called `Collection Datatable` is able to display any Flow `Record Collection`.
-
-<p align="center">
-    <img src="./readme-images/soql-datatable-to-collection-datatable-flow.png" width="320">
-</p>
-<p align="center">
-    <img src="./readme-images/soql-datatable-to-collection-datatable.gif" width="600">
-</p>
-</details>
-
-<details>
     <summary>soqlDatatable Specification</summary>
 
 
@@ -679,11 +664,11 @@ This Screen Flow uses the ability for `SOQL Datatable` to output a `List<SObject
 Another component called `Collection Datatable` is able to display any Flow `Record Collection`.
 
 <p align="center">
-    <img src="./readme-images/soql-datatable-to-collection-datatable-flow.png" width="320">
+    <img src="./readme-images/soql-datatable-to-collection-datatable-flow.png" width="640">
 </p>
-<p align="center">
-    <img src="./readme-images/soql-datatable-to-collection-datatable.gif" width="600">
-</p>
+
+> **Note:** You can use the SOQL Datatable's `selectedRows` output directly as an input to `collectionDatatable`. You can also assign `selectedRows` to a flow Record Collection variable as well.
+> 
 </details>
 
 <details>
@@ -694,7 +679,7 @@ Another component called `Collection Datatable` is able to display any Flow `Rec
 Details incoming...
 
 <p align="center">
-    <img src="./readme-images/combine-soql-and-collection-datatable-flow.png" width="600">
+    <img src="./readme-images/combine-soql-and-collection-datatable-flow.png" width="800">
 </p>
 
 </details>
@@ -747,33 +732,26 @@ cd lwc-utils
 - SFDX: Push Source to Default Scratch Org.
 - SFDX: Open Default Org.
 
-Option 2 - Deploy Button:
+Option 2 - Installation URL:
 
-<a href="https://githubsfdeploy.herokuapp.com?owner=tsalb&repo=lwc-utils&ref=summer-20">
-  <img alt="Deploy to Salesforce"
-       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
-</a>
+[Summer 20 Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGbaIAG)
 
-Option 3 - Installation URL:
-
-[Summer 20 Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGN6IAO)
-
-Option 4 - Unlocked Package:
+Option 3 - Unlocked Package:
 
 ```
-sfdx force:package:install --package "LWC Utils with Examples@0.1.0-4"
+sfdx force:package:install --package "LWC Utils with Examples@0.1.0-5"
 ```
 
 ### Core Components Only
 
 Option 1 - Installation URL:
 
-[Summer 20 Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGNBIA4)
+[Summer 20 Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGbfIAG)
 
 Option 2 - Unlocked Package:
 
 ```
-sfdx force:package:install --package "LWC Utils Core@0.1.0-3"
+sfdx force:package:install --package "LWC Utils Core@0.1.0-4"
 ```
 
 ### Configuration and Getting Started

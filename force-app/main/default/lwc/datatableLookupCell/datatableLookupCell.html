@@ -33,7 +33,11 @@
 -->
 
 <template>
-    <c-message-service boundary={tableBoundary} onlookupconfigload={handleLookupConfigLoad}></c-message-service>
+    <c-message-service
+        boundary={tableBoundary}
+        onlookupconfigload={handleLookupConfigLoad}
+        onrefreshsoqldatatable={handleReset}
+    ></c-message-service>
 
     <c-datatable-editable-cell
         table-boundary={tableBoundary}

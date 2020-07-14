@@ -239,8 +239,10 @@ export default class SoqlDatatable extends LightningElement {
     // Event Handlers
 
     handleRowSelection(event) {
-        this.dispatchEvent(new FlowAttributeChangeEvent('selectedRows', event.detail.selectedRows));
-        this.dispatchEvent(new FlowAttributeChangeEvent('firstSelectedRow', event.detail.selectedRows[0]));
+        this.selectedRows = event.detail.selectedRows;
+        this.firstSelectedRow = event.detail.selectedRows[0];
+        this.dispatchEvent(new FlowAttributeChangeEvent('selectedRows', this.selectedRows));
+        this.dispatchEvent(new FlowAttributeChangeEvent('firstSelectedRow', this.firstSelectedRow));
     }
 
     handleRefresh() {

@@ -53,6 +53,7 @@
             <property name="sortedDirection" label="Default Sort Direction" type="String" default="asc" description="asc or desc" role="inputOnly"/>
             <!-- OUTPUTS -->
             <property name="selectedRows" label="Selected Rows" type="{sObj[]}" role="outputOnly"/>
+            <property name="firstSelectedRow" label="First Selected Row" type="{sObj}" role="outputOnly"/>
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

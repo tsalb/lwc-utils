@@ -91,8 +91,9 @@ export default class SoqlDatatable extends LightningElement {
     /// For inline edit lookup search behavior
     @api lookupConfigDevName;
 
-    // Pass through outputs for flow
+    // Flow outputs
     @api selectedRows;
+    @api firstSelectedRow;
 
     // MessageService boundary, useful for when multiple instances are on same page
     get uniqueBoundary() {
@@ -239,6 +240,7 @@ export default class SoqlDatatable extends LightningElement {
 
     handleRowSelection(event) {
         this.dispatchEvent(new FlowAttributeChangeEvent('selectedRows', event.detail.selectedRows));
+        this.dispatchEvent(new FlowAttributeChangeEvent('firstSelectedRow', event.detail.selectedRows[0]));
     }
 
     handleRefresh() {

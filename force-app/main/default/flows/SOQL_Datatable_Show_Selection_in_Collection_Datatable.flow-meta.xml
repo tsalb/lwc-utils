@@ -20,7 +20,7 @@
         <label>Confirm Selected Contacts</label>
         <locationX>347</locationX>
         <locationY>197</locationY>
-        <allowBack>true</allowBack>
+        <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
@@ -40,7 +40,7 @@
             <inputParameters>
                 <name>shownFields</name>
                 <value>
-                    <stringValue>Name, Email</stringValue>
+                    <stringValue>Name, Email, Account.Name, Account.Type</stringValue>
                 </value>
             </inputParameters>
             <isRequired>true</isRequired>

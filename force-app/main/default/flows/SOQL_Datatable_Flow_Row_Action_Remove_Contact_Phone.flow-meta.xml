@@ -1,60 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <assignments>
-        <name>Add_Contact_to_Update_List</name>
-        <label>Add Contact to Update List</label>
-        <locationX>408</locationX>
-        <locationY>288</locationY>
-        <assignmentItems>
-            <assignToReference>ContactsToUpdate</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <elementReference>ContactShell</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Contact_Id</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
         <name>Clear_Contact_Phone</name>
         <label>Clear Contact Phone</label>
-        <locationX>408</locationX>
-        <locationY>155</locationY>
+        <locationX>176</locationX>
+        <locationY>212</locationY>
         <assignmentItems>
-            <assignToReference>ContactShell.Id</assignToReference>
+            <assignToReference>ContactToUpdate.Id</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Contact_Id</elementReference>
+                <elementReference>FirstSelectedRow.Id</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>ContactShell.Phone</assignToReference>
+            <assignToReference>ContactToUpdate.Phone</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue/>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Add_Contact_to_Update_List</targetReference>
+            <targetReference>Confirm</targetReference>
         </connector>
     </assignments>
     <interviewLabel>SOQL_Datatable_Flow_Row_Action_Remove_Contact_Phone {!$Flow.CurrentDateTime}</interviewLabel>
     <label>SOQL Datatable - Flow Row Action - Remove Contact Phone</label>
-    <loops>
-        <name>Contact_Id</name>
-        <label>Contact Id</label>
-        <locationX>176</locationX>
-        <locationY>225</locationY>
-        <collectionReference>SelectedRowKeys</collectionReference>
-        <iterationOrder>Asc</iterationOrder>
-        <nextValueConnector>
-            <targetReference>Clear_Contact_Phone</targetReference>
-        </nextValueConnector>
-        <noMoreValuesConnector>
-            <targetReference>Update_Contacts</targetReference>
-        </noMoreValuesConnector>
-    </loops>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -71,21 +41,40 @@
     <recordUpdates>
         <name>Update_Contacts</name>
         <label>Update Contacts</label>
-        <locationX>174</locationX>
-        <locationY>413</locationY>
+        <locationX>434</locationX>
+        <locationY>212</locationY>
         <connector>
             <targetReference>Success</targetReference>
         </connector>
         <faultConnector>
             <targetReference>Failure</targetReference>
         </faultConnector>
-        <inputReference>ContactsToUpdate</inputReference>
+        <inputReference>ContactToUpdate</inputReference>
     </recordUpdates>
+    <screens>
+        <name>Confirm</name>
+        <label>Confirm</label>
+        <locationX>301</locationX>
+        <locationY>212</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Update_Contacts</targetReference>
+        </connector>
+        <fields>
+            <name>ConfirmMessage</name>
+            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;Are you sure you want to remove Phone for {!FirstSelectedRow.Name} ?&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
     <screens>
         <name>Failure</name>
         <label>Failure</label>
-        <locationX>27</locationX>
-        <locationY>577</locationY>
+        <locationX>432</locationX>
+        <locationY>396</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -100,14 +89,14 @@
     <screens>
         <name>Success</name>
         <label>Success</label>
-        <locationX>174</locationX>
-        <locationY>578</locationY>
+        <locationX>563</locationX>
+        <locationY>212</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <fields>
             <name>SuccessMessage</name>
-            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;{!SelectedRowKeysSize} Contacts Updated!&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;Contact Updated!&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -142,12 +131,12 @@
         <locationX>50</locationX>
         <locationY>50</locationY>
         <connector>
-            <targetReference>Contact_Id</targetReference>
+            <targetReference>Clear_Contact_Phone</targetReference>
         </connector>
     </start>
     <status>Active</status>
     <variables>
-        <name>ContactShell</name>
+        <name>ContactToUpdate</name>
         <dataType>SObject</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
@@ -155,30 +144,20 @@
         <objectType>Contact</objectType>
     </variables>
     <variables>
-        <name>ContactsToUpdate</name>
+        <name>FirstSelectedRow</name>
         <dataType>SObject</dataType>
-        <isCollection>true</isCollection>
-        <isInput>false</isInput>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
         <isOutput>false</isOutput>
         <objectType>Contact</objectType>
     </variables>
     <variables>
-        <name>SelectedRowKeys</name>
-        <dataType>String</dataType>
+        <name>SelectedRows</name>
+        <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <name>SelectedRowKeysSize</name>
-        <dataType>Number</dataType>
-        <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>false</isOutput>
-        <scale>0</scale>
-        <value>
-            <numberValue>0.0</numberValue>
-        </value>
+        <objectType>Contact</objectType>
     </variables>
     <variables>
         <name>SourceRecordId</name>

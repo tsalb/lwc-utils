@@ -3,7 +3,7 @@
     <assignments>
         <name>Add_Contact_to_Update_List</name>
         <label>Add Contact to Update List</label>
-        <locationX>739</locationX>
+        <locationX>750</locationX>
         <locationY>270</locationY>
         <assignmentItems>
             <assignToReference>ContactsToUpdate</assignToReference>
@@ -13,19 +13,35 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Contact_Id</targetReference>
+            <targetReference>Selected_Contacts</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Check_Count</name>
+        <label>Check Count</label>
+        <locationX>256</locationX>
+        <locationY>171</locationY>
+        <assignmentItems>
+            <assignToReference>SelectedRowsCount</assignToReference>
+            <operator>AssignCount</operator>
+            <value>
+                <elementReference>SelectedRows</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Contacts_Selected</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Set_Contact_Field</name>
         <label>Set Contact Field</label>
-        <locationX>740</locationX>
+        <locationX>750</locationX>
         <locationY>116</locationY>
         <assignmentItems>
             <assignToReference>ContactShell.Id</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Contact_Id</elementReference>
+                <elementReference>Selected_Contacts.Id</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -43,7 +59,7 @@
         <name>Contacts_Selected</name>
         <label>Contacts Selected</label>
         <locationX>248</locationX>
-        <locationY>202</locationY>
+        <locationY>308</locationY>
         <defaultConnector>
             <targetReference>Nothing_Selected</targetReference>
         </defaultConnector>
@@ -52,7 +68,7 @@
             <name>Yes</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>SelectedRowKeysSize</leftValueReference>
+                <leftValueReference>SelectedRowsCount</leftValueReference>
                 <operator>GreaterThan</operator>
                 <rightValue>
                     <numberValue>0.0</numberValue>
@@ -67,11 +83,11 @@
     <interviewLabel>SOQL Datatable Flow Action - Update Contacts with New Account {!$Flow.CurrentDateTime}</interviewLabel>
     <label>SOQL Datatable - Flow Action - Update Contacts with New Account</label>
     <loops>
-        <name>Contact_Id</name>
-        <label>Contact Id</label>
-        <locationX>526</locationX>
-        <locationY>200</locationY>
-        <collectionReference>SelectedRowKeys</collectionReference>
+        <name>Selected_Contacts</name>
+        <label>Selected Contacts</label>
+        <locationX>536</locationX>
+        <locationY>199</locationY>
+        <collectionReference>SelectedRows</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
             <targetReference>Set_Contact_Field</targetReference>
@@ -96,8 +112,8 @@
     <recordUpdates>
         <name>Update_Contacts_with_New_Account</name>
         <label>Update Contacts with New Account</label>
-        <locationX>521</locationX>
-        <locationY>430</locationY>
+        <locationX>536</locationX>
+        <locationY>423</locationY>
         <connector>
             <targetReference>Success</targetReference>
         </connector>
@@ -106,17 +122,17 @@
     <screens>
         <name>New_Account_Lookup</name>
         <label>New Account Lookup</label>
-        <locationX>404</locationX>
-        <locationY>200</locationY>
+        <locationX>396</locationX>
+        <locationY>304</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>Contact_Id</targetReference>
+            <targetReference>Selected_Contacts</targetReference>
         </connector>
         <fields>
             <name>AssignmentInfo</name>
-            <fieldText>&lt;p&gt;Change Account for {!SelectedRowKeysSize} Contacts&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Change Account for {!SelectedRowsCount} Contacts&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -156,8 +172,8 @@
     <screens>
         <name>Nothing_Selected</name>
         <label>Nothing Selected</label>
-        <locationX>50</locationX>
-        <locationY>203</locationY>
+        <locationX>49</locationX>
+        <locationY>303</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -172,14 +188,14 @@
     <screens>
         <name>Success</name>
         <label>Success</label>
-        <locationX>739</locationX>
-        <locationY>430</locationY>
+        <locationX>751</locationX>
+        <locationY>423</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <fields>
             <name>SuccessMessage</name>
-            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;{!SelectedRowKeysSize} Contacts Updated!&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;{!SelectedRowsCount} Contacts Updated!&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -220,7 +236,7 @@
         <locationX>130</locationX>
         <locationY>50</locationY>
         <connector>
-            <targetReference>Contacts_Selected</targetReference>
+            <targetReference>Check_Count</targetReference>
         </connector>
     </start>
     <status>Active</status>
@@ -241,17 +257,26 @@
         <objectType>Contact</objectType>
     </variables>
     <variables>
-        <name>SelectedRowKeys</name>
-        <dataType>String</dataType>
+        <name>FirstSelectedRow</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Contact</objectType>
+    </variables>
+    <variables>
+        <name>SelectedRows</name>
+        <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
+        <objectType>Contact</objectType>
     </variables>
     <variables>
-        <name>SelectedRowKeysSize</name>
+        <name>SelectedRowsCount</name>
         <dataType>Number</dataType>
         <isCollection>false</isCollection>
-        <isInput>true</isInput>
+        <isInput>false</isInput>
         <isOutput>false</isOutput>
         <scale>0</scale>
         <value>

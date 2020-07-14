@@ -286,19 +286,19 @@ export default class Datatable extends LightningElement {
         const flowInputVars = [];
         let flowMethod;
         let flowApiName;
-        let selectedRowKeys = [];
+        let selectedRows = [];
 
         // From Table Action
         if (event.target) {
             flowMethod = event.target.dataset.dialogSize === 'Large' ? 'flowLarge' : 'flow';
             flowApiName = event.target.name;
-            selectedRowKeys = this.selectedRows.map(row => row[this.keyField]);
+            selectedRows = this.selectedRows;
         }
         // Row Menu Action
         if (event.rowMenuAction) {
             flowMethod = event.rowMenuAction.dialogSize === 'Large' ? 'flowLarge' : 'flow';
             flowApiName = event.rowMenuAction.flowApiName;
-            selectedRowKeys.push(event.rowMenuAction.row[this.keyField]);
+            selectedRows.push(event.rowMenuAction.row);
         }
 
         if (!flowApiName || !flowMethod) {
@@ -306,16 +306,16 @@ export default class Datatable extends LightningElement {
         }
 
         // Input vars need to be calculated only when when necessary
-        if (selectedRowKeys.length) {
+        if (selectedRows.length) {
             flowInputVars.push({
-                name: 'SelectedRowKeys',
-                type: 'String', // array
-                value: selectedRowKeys
+                name: 'SelectedRows',
+                type: 'SObject',
+                value: selectedRows
             });
             flowInputVars.push({
-                name: 'SelectedRowKeysSize',
-                type: 'Number',
-                value: selectedRowKeys.length
+                name: 'FirstSelectedRow',
+                type: 'SObject',
+                value: selectedRows[0]
             });
         }
         if (this.uniqueBoundary) {
@@ -341,6 +341,7 @@ export default class Datatable extends LightningElement {
                 }
             }
         };
+        console.log(flowPayload);
         this._messageService.dialogService(flowPayload);
     }
 
@@ -356,7 +357,9 @@ export default class Datatable extends LightningElement {
             headerLabel = event.target.label;
             componentName = event.target.name;
             selectedRows = this.selectedRows;
-        } else {
+        }
+        // Row Menu Action
+        if (event.rowMenuAction) {
             dialogMethod = event.rowMenuAction.dialogSize === 'Large' ? 'bodyModalLarge' : 'bodyModal';
             headerLabel = event.rowMenuAction.dialogHeader;
             componentName = event.rowMenuAction.lwcName;
@@ -376,7 +379,6 @@ export default class Datatable extends LightningElement {
                 }
             }
         };
-        console.log(dialogPayload);
         this._messageService.dialogService(dialogPayload);
     }
 

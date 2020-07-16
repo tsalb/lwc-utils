@@ -34,10 +34,13 @@ import { LightningElement, api, wire } from 'lwc';
 import { getRecord } from 'lightning/uiRecordApi';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import getDisplayTypeMap from '@salesforce/apex/DataTableService.getDisplayTypeMap';
+import { generateUUID, reduceErrors, createFlattenedSetFromDelimitedString } from 'c/utils';
 
 // Toast and Errors
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { reduceErrors, createFlattenedSetFromDelimitedString } from 'c/utils';
+
+// Flow specific imports
+import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
 
 // Flatten data again, for when things are recalculated
 import { flattenQueryResult } from 'c/tableServiceUtils';
@@ -59,7 +62,11 @@ export default class CollectionDatatable extends LightningElement {
     @api sortedBy;
     @api sortedDirection;
 
-    columnWidthsMode;
+    columnWidthsMode = 'auto';
+
+    // Flow outputs
+    @api editedRows;
+    @api allRows;
 
     // private
     _displayTypeMap = new Map();
@@ -69,8 +76,12 @@ export default class CollectionDatatable extends LightningElement {
     _objectFieldsMap = new Map();
     _referenceFieldsMap = new Map();
 
-    get isUsingShownFields() {
-        return this.shownFields && this.shownFields.size;
+    // MessageService boundary, useful for when multiple instances are on same page
+    get uniqueBoundary() {
+        if (!this._uniqueBoundary) {
+            this._uniqueBoundary = generateUUID();
+        }
+        return this._uniqueBoundary;
     }
 
     async connectedCallback() {
@@ -136,40 +147,36 @@ export default class CollectionDatatable extends LightningElement {
             );
             console.log(this._referenceFieldsMap);
 
-            const collectionFields = this._createSetFromUniqueCollectionFields(this.recordCollection);
-            const columns = this._createColumns(collectionFields, this.shownFields);
+            const columns = [];
+            this.shownFields.forEach(fieldName => {
+                columns.push(this._createBaseColumnAttribute(fieldName));
+            });
             this.template
                 .querySelector('c-datatable')
                 .initializeTable(this._objectApiName, columns, this.recordCollection);
         }
     }
 
-    _createSetFromUniqueCollectionFields(collection) {
-        const uniqueFields = new Set();
-        collection.forEach(row => {
-            Object.keys(row).forEach(fieldName => {
-                // Prevents flattened fields of SOQL datatable from entering these keys
-                if (this._objectFieldsMap.has(fieldName)) {
-                    uniqueFields.add(fieldName);
-                }
-            });
-        });
-        return uniqueFields;
+    handleSave(event) {
+        if (event.detail.editedRows && event.detail.editedRows.length) {
+            const editedRowsClean = event.detail.editedRows.map(row => this._getCleanRow(row));
+            console.log(editedRowsClean);
+            this.dispatchEvent(new FlowAttributeChangeEvent('editedRows', editedRowsClean));
+        }
+        if (event.detail.allRows && event.detail.allRows.length) {
+            const allRowsClean = event.detail.allRows.map(row => this._getCleanRow(row));
+            console.log(allRowsClean);
+            this.dispatchEvent(new FlowAttributeChangeEvent('allRows', allRowsClean));
+        }
     }
 
-    _createColumns(collectionFields, fieldsToShow) {
-        const finalColumns = [];
-        this.columnWidthsMode = this.isUsingShownFields ? 'auto' : 'fixed';
-        if (this.isUsingShownFields) {
-            fieldsToShow.forEach(fieldName => {
-                finalColumns.push(this._createBaseColumnAttribute(fieldName));
-            });
-        } else {
-            collectionFields.forEach(fieldName => {
-                finalColumns.push(this._createBaseColumnAttribute(fieldName));
-            });
+    _getCleanRow(row) {
+        for (let fieldName in row) {
+            if (!this._objectFieldsMap.has(fieldName)) {
+                delete row[fieldName];
+            }
         }
-        return finalColumns;
+        return row;
     }
 
     _createBaseColumnAttribute(fieldName) {
@@ -178,8 +185,7 @@ export default class CollectionDatatable extends LightningElement {
         let columnDefinition = {
             label: hasConfig ? fieldConfig.label : fieldName.split('_').join(' '),
             fieldName: hasConfig ? fieldConfig.apiName : fieldName,
-            type: hasConfig ? this._displayTypeMap.get(fieldConfig.dataType.toUpperCase()) : 'text',
-            initialWidth: 200
+            type: hasConfig ? this._displayTypeMap.get(fieldConfig.dataType.toUpperCase()) : 'text'
         };
         // A little more processing is needed
         if (columnDefinition.type === 'customLookup' && this._referenceFieldsMap.has(fieldName)) {

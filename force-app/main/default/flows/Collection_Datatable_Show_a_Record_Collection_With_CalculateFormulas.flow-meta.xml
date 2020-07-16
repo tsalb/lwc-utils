@@ -11,11 +11,11 @@
             <targetReference>Show_Contacts</targetReference>
         </connector>
         <dataTypeMappings>
-            <typeName>T__originalCollection</typeName>
+            <typeName>U__hydratedCollection</typeName>
             <typeValue>Contact</typeValue>
         </dataTypeMappings>
         <dataTypeMappings>
-            <typeName>U__hydratedCollection</typeName>
+            <typeName>T__originalCollection</typeName>
             <typeValue>Contact</typeValue>
         </dataTypeMappings>
         <inputParameters>
@@ -67,7 +67,7 @@
         <name>Show_Contacts</name>
         <label>Show Contacts</label>
         <locationX>446</locationX>
-        <locationY>226</locationY>
+        <locationY>227</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -83,6 +83,36 @@
                 <name>recordCollection</name>
                 <value>
                     <elementReference>Calculate_Name_Fields.hydratedCollection</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>shownFields</name>
+                <value>
+                    <stringValue>Name, Email, Phone, AccountId, Account_Information__c, CreatedById</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>sortedBy</name>
+                <value>
+                    <stringValue>Name</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>editableFields</name>
+                <value>
+                    <stringValue>Name, Email, Phone, AccountId</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>showRecordCount</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>sortableFields</name>
+                <value>
+                    <stringValue>Name, Email, Phone, AccountId, Account_Information__c, CreatedById</stringValue>
                 </value>
             </inputParameters>
             <isRequired>true</isRequired>

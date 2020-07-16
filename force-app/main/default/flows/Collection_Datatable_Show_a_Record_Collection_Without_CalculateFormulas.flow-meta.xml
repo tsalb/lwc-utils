@@ -41,7 +41,7 @@
         <name>Show_Contacts</name>
         <label>Show Contacts</label>
         <locationX>326</locationX>
-        <locationY>225</locationY>
+        <locationY>226</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -57,6 +57,36 @@
                 <name>recordCollection</name>
                 <value>
                     <elementReference>Get_Contacts_With_A_Names</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>shownFields</name>
+                <value>
+                    <stringValue>Name, Email, Phone, AccountId, Account_Information__c, CreatedById</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>sortableFields</name>
+                <value>
+                    <stringValue>Name, Email, Phone, AccountId, Account_Information__c, CreatedById</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>showRecordCount</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>sortedBy</name>
+                <value>
+                    <stringValue>Name</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>editableFields</name>
+                <value>
+                    <stringValue>Name, Email, Phone, AccountId</stringValue>
                 </value>
             </inputParameters>
             <isRequired>true</isRequired>

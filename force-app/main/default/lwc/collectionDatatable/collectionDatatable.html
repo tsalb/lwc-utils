@@ -34,6 +34,8 @@
 
 <template>
     <c-datatable
+        unique-boundary={uniqueBoundary}
+        key-field="Id"
         title={title}
         show-record-count={showRecordCount}
         checkbox-type={checkboxType}
@@ -42,5 +44,7 @@
         sorted-by={sortedBy}
         sorted-direction={sortedDirection}
         column-widths-mode={columnWidthsMode}
+        onrefresh={handleRefresh}
+        onsave={handleSave}
     ></c-datatable>
 </template>

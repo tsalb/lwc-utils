@@ -85,7 +85,15 @@ export default class Datatable extends LightningElement {
     @api useRelativeMaxHeight = false;
 
     // Sorting
-    @api sortedBy;
+    @api
+    get sortedBy() {
+        return this._sortedBy;
+    }
+    set sortedBy(value) {
+        if (value) {
+            this._sortedBy = value.replace('.', '_');
+        }
+    }
     @api sortedDirection = 'asc';
     @api
     get sortableFields() {
@@ -118,6 +126,7 @@ export default class Datatable extends LightningElement {
     }
 
     // Inline editing
+    @api isSaveToServer;
     @api
     get editableFields() {
         return this._editableFields;
@@ -189,10 +198,7 @@ export default class Datatable extends LightningElement {
         this._setTableData(data);
         console.log(this.tableData);
         console.log(this.tableColumns);
-        // for inline-edit success
-        if (this._draftSuccessIds.size) {
-            this._clearDraftValues([...this._draftSuccessIds.keys()]);
-        }
+        this.clearDraftValuesOnSuccess();
         this.showSpinner = false;
     }
 
@@ -200,6 +206,13 @@ export default class Datatable extends LightningElement {
     refreshTable() {
         this.showSpinner = true;
         this.dispatchEvent(new CustomEvent('refresh'));
+    }
+
+    @api
+    clearDraftValuesOnSuccess() {
+        if (this._draftSuccessIds.size) {
+            this._clearDraftValues([...this._draftSuccessIds.keys()]);
+        }
     }
 
     // private
@@ -490,6 +503,25 @@ export default class Datatable extends LightningElement {
 
     // Avoid using the event because the payload doesn't have name compound fields
     async handleSave() {
+        if (!this.isSaveToServer) {
+            // For collectionDatatable we just write user values to tableData, regardless of validation
+            const rowKeyToDraftValuesMap = new Map(this.draftValues.map(draft => [draft[this.keyField], draft]));
+            this.tableData = this.tableData.map(row => {
+                const rowDraftValues = rowKeyToDraftValuesMap.get(row[this.keyField]);
+                return { ...row, ...rowDraftValues };
+            });
+            // Output to the flow
+            const payload = {
+                detail: {
+                    editedRows: this.tableData.filter(row => rowKeyToDraftValuesMap.has(row[this.keyField])),
+                    allRows: this.tableData
+                }
+            };
+            this.dispatchEvent(new CustomEvent('save', payload));
+            // Finally, Remove the bottom bar
+            this.draftValues = [];
+            return;
+        }
         // Provides data to paint errors if needed, luckily draftValues come in ordered by row number
         const rowKeyToRowNumberMap = new Map(
             this.draftValues.map(draft => [
@@ -498,12 +530,14 @@ export default class Datatable extends LightningElement {
             ])
         );
 
-        //console.log(rowKeyToRowNumberMap);
-        //console.log(this.draftValues);
+        console.log(rowKeyToRowNumberMap);
+        console.log(this.draftValues);
 
         // On partial save rows, this helps signal which rows succeeded by clearing them out
         this.showSpinner = true;
         const saveResults = await tableService.updateDraftValues(this.draftValues, rowKeyToRowNumberMap);
+
+        console.log(saveResults);
 
         if (saveResults.errors.rows && Object.keys(saveResults.errors.rows).length) {
             this.saveErrors = saveResults.errors;

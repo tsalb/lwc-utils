@@ -23,7 +23,6 @@ In this README:
     - [collectionDatatable - Features and Examples](#collectiondatatable---features-and-examples)
 - [Installation](#installation)
   - [With Examples](#with-examples)
-  - [Core Components Only](#core-components-only)
   - [Configuration and Getting Started](#configuration-and-getting-started)
 
 <!-- omit in toc -->
@@ -43,17 +42,17 @@ I hope they will help you do the same.
 
 ## Component Library Overview
 
-| Component Name | Description | Component Type |
-|-|-|-|
-| `messageService`<br><br>[Example](#messageService)<br>[Code](./force-app/main/default/lwc/messageService/messageService.js#L41) | Use one API to communicate **within** or **across** both Aura and LWC technologies.<br><br>Use this component instead of manually publishing / subscribing to `Lightning Message Service` (LMS).<br><br>Provides a psuedo-namespacing property called `boundary` which can separate subscribers by string, `recordId` etc. | LWC:<br>- Service |
-| `DialogService`<br><br>[Example](#DialogService)<br>[Code](./force-app/main/default/aura/DialogService) | Provide LWCs access to `lightning:overlayLibrary` to create dialogs (modals) via LMS.<br><br>Both Aura and LWCs can be created dynamically and injected as the dialog body.<br><br>Both Aura's public `attributes` and LWC's `@api` properties can be passed in. | Aura:<br>- Service |
-| `MessageServiceHandler`<br><br>[Example](#MessageServiceHandler)<br>[Code](./force-app/main/default/aura/MessageServiceHandler) | Provides access to `DialogService` by handling the `opendialog` LMS event.<br><br>This is a hidden component you need to place on the flexipage or utility bar (hidden, empty label). | Aura:<br>- Service<br>- Utility Bar <br>- Record Flexipage |
-| `EventFooter`<br><br>[Code](./force-app/main/default/aura/EventFooter) | Dynamic footer for lwc dialogs. Meant to be used by `DialogService`.<br><br>Contains an instance of `messageService` listening for the `closedialog` LMS Event.<br><br>Unfortunately, `component.getReference()` does not work on LWCs. Write your own action button in the dialog body. | Aura:<br>- Service |
-| `ModalFooter`<br><br>[Code](./force-app/main/default/aura/ModalFooter) | Dynamic footer for aura dialogs. Meant to be used by `DialogService`.<br><br>Connects a primary action on the target dialog body to the footer's main action via `component.getReference()`<br><br>Enables writing functions directly on the dialog body and `DialogService.modal()` will connect it to a primary action. | Aura:<br>- Service |
-| `FlowWrapper`<br><br>[Example](#FlowWrapper)<br>[Code](./force-app/main/default/aura/FlowWrapper) | Helps with dynamic flow creation, for example, inside a dialog body created from `DialogService`.<br><br>Can be used with `dialogAutoCloser` on the final screen to automatically close a Flow.<br><br>See [`flowWizardLauncherExample`](./force-app/main/default/lwc/flowWizardLauncherExample/flowWizardLauncherExample.js#L19) | Aura:<br>- Service |
-| `dialogAutoCloser`<br><br>[Example](#dialogAutoCloser)<br>[Code](./force-app/main/default/lwc/dialogAutoCloser) | Contains a progress bar and timer message (optional).<br><br>Automatically publishes a `closedialog` LMS event and bubbles the same `closedialog` Custom Event when timer hits 0.<br><br>Use `uniqueBoundary` to target a specific dialog to close if [Tab-Focused Dialogs is Enabled](https://releasenotes.docs.salesforce.com/en-us/winter20/release-notes/rn_console_dialogs.htm) | LWC:<br>- Service<br>- Flow Screen |
-| `soqlDatatable`<br><br>[Example](#soqlDatatable)<br>[Code](./force-app/main/default/lwc/soqlDatatable) | A SOQL powered list view. <br><br>Meant to replace any related list / list view.<br><br>Supports record context, in-line editing, configurable table/row actions, output of selected rows to Flow (or other LWCs) and more.<br><br>See example for full features. | LWC:<br>- Service<br>- App Flexipage<br>- Record Flexipage<br>- Flow Screen |
-| `collectionDatatable`<br><br>[Example](#collectionDatatable)<br>[Code](./force-app/main/default/lwc/collectionDatatable) | Display Record Collections inside Flow Screens.<br><br>Meant to mimic a related list / list view.<br><br>Can be populated from a Flow's `Get Records` or `soqlDatatable.selectedRows` output. | LWC:<br>- Flow Screen |
+| Component Name                                                                                                                  | Description                                                                                                                                                                                                                                                                                                                                                                          | Component Type                                                              |
+| ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| `messageService`<br><br>[Example](#messageService)<br>[Code](./force-app/main/default/lwc/messageService/messageService.js#L41) | Use one API to communicate **within** or **across** both Aura and LWC technologies.<br><br>Use this component instead of manually publishing / subscribing to `Lightning Message Service` (LMS).<br><br>Provides a psuedo-namespacing property called `boundary` which can separate subscribers by string, `recordId` etc.                                                           | LWC:<br>- Service                                                           |
+| `DialogService`<br><br>[Example](#DialogService)<br>[Code](./force-app/main/default/aura/DialogService)                         | Provide LWCs access to `lightning:overlayLibrary` to create dialogs (modals) via LMS.<br><br>Both Aura and LWCs can be created dynamically and injected as the dialog body.<br><br>Both Aura's public `attributes` and LWC's `@api` properties can be passed in.                                                                                                                     | Aura:<br>- Service                                                          |
+| `MessageServiceHandler`<br><br>[Example](#MessageServiceHandler)<br>[Code](./force-app/main/default/aura/MessageServiceHandler) | Provides access to `DialogService` by handling the `opendialog` LMS event.<br><br>This is a hidden component you need to place on the flexipage or utility bar (hidden, empty label).                                                                                                                                                                                                | Aura:<br>- Service<br>- Utility Bar <br>- Record Flexipage                  |
+| `EventFooter`<br><br>[Code](./force-app/main/default/aura/EventFooter)                                                          | Dynamic footer for lwc dialogs. Meant to be used by `DialogService`.<br><br>Contains an instance of `messageService` listening for the `closedialog` LMS Event.<br><br>Unfortunately, `component.getReference()` does not work on LWCs. Write your own action button in the dialog body.                                                                                             | Aura:<br>- Service                                                          |
+| `ModalFooter`<br><br>[Code](./force-app/main/default/aura/ModalFooter)                                                          | Dynamic footer for aura dialogs. Meant to be used by `DialogService`.<br><br>Connects a primary action on the target dialog body to the footer's main action via `component.getReference()`<br><br>Enables writing functions directly on the dialog body and `DialogService.modal()` will connect it to a primary action.                                                            | Aura:<br>- Service                                                          |
+| `FlowWrapper`<br><br>[Example](#FlowWrapper)<br>[Code](./force-app/main/default/aura/FlowWrapper)                               | Helps with dynamic flow creation, for example, inside a dialog body created from `DialogService`.<br><br>Can be used with `dialogAutoCloser` on the final screen to automatically close a Flow.<br><br>See [`flowWizardLauncherExample`](./force-app/main/default/lwc/flowWizardLauncherExample/flowWizardLauncherExample.js#L19)                                                    | Aura:<br>- Service                                                          |
+| `dialogAutoCloser`<br><br>[Example](#dialogAutoCloser)<br>[Code](./force-app/main/default/lwc/dialogAutoCloser)                 | Contains a progress bar and timer message (optional).<br><br>Automatically publishes a `closedialog` LMS event and bubbles the same `closedialog` Custom Event when timer hits 0.<br><br>Use `uniqueBoundary` to target a specific dialog to close if [Tab-Focused Dialogs is Enabled](https://releasenotes.docs.salesforce.com/en-us/winter20/release-notes/rn_console_dialogs.htm) | LWC:<br>- Service<br>- Flow Screen                                          |
+| `soqlDatatable`<br><br>[Example](#soqlDatatable)<br>[Code](./force-app/main/default/lwc/soqlDatatable)                          | A SOQL powered list view. <br><br>Meant to replace any related list / list view.<br><br>Supports record context, in-line editing, configurable table/row actions, output of selected rows to Flow (or other LWCs) and more.<br><br>See example for full features.                                                                                                                    | LWC:<br>- Service<br>- App Flexipage<br>- Record Flexipage<br>- Flow Screen |
+| `collectionDatatable`<br><br>[Example](#collectionDatatable)<br>[Code](./force-app/main/default/lwc/collectionDatatable)        | Display Record Collections inside Flow Screens.<br><br>Meant to mimic a related list / list view.<br><br>Can be populated from a Flow's `Get Records` or `soqlDatatable.selectedRows` output.                                                                                                                                                                                        | LWC:<br>- Flow Screen                                                       |
 ### messageService
 
 Designed to ease the friction of inter-component (and technology) communication. This component is both the publisher and the subscriber to reduce implementation friction.
@@ -143,22 +142,22 @@ this._messageService.dialogService(dialogServicePayload);
 
 **Attributes**
 
-| name | type | access | required | default | description |
-|-|-|-|-|-|-|
-| boundary | string | public | no |  | Filter subscription messages like a namespace.<br><br>e.g. `recordId` if you only want same components on same record flexipage to handle the publish.<br><br>e.g. `sample_app_lwc` as reference among various components that share the same functionality.<br><br>Enablement of `APPLICATION_SCOPE` like in [this diagram](/readme-images/rn_lc_lms_scope.png) is not currently enabled. |
+| name     | type   | access | required | default | description                                                                                                                                                                                                                                                                                                                                                                                |
+| -------- | ------ | ------ | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| boundary | string | public | no       |         | Filter subscription messages like a namespace.<br><br>e.g. `recordId` if you only want same components on same record flexipage to handle the publish.<br><br>e.g. `sample_app_lwc` as reference among various components that share the same functionality.<br><br>Enablement of `APPLICATION_SCOPE` like in [this diagram](/readme-images/rn_lc_lms_scope.png) is not currently enabled. |
 
 **Public Methods**
 
-| name | arguments | description |
-|-|-|-|
-| dialogService | (`payload`) | `payload` is in the shape required by `MessageServiceHandler`. Examples:<br>[`flowWizardLauncherExample`](./force-app/main/default/lwc/flowWizardLauncherExample/flowWizardLauncherExample.js#L18)<br>[`lwcContactDatatable`](./force-app/main/default/lwc/lwcContactDatatable/lwcContactDatatable.js#L73)<br>[`soqlDatatableLauncherExample`](./force-app/main/default/lwc/soqlDatatableLauncherExample/soqlDatatableLauncherExample.js#L12) |
-| notifyClose |  | Uses `publishOpen` to fire a `closedialog` LMS Event which will close any dialog opened by `DialogService` |
-| publish | (`payload`) | Leverages LMS's `publish` functionality.<br>Defaults to no `boundary`.<br>If `boundary` is set, all subscribers will require the same `boundary`. |
-| publishOpen | (`payload`) | Leverage LMS's `publish` functionality without `boundary`. Any subscriber can react to this event.<br>// TODO Useful for `closedialog` unless this [critical update](https://releasenotes.docs.salesforce.com/en-us/winter20/release-notes/rn_console_dialogs.htm) is enabled.<br>// TODO When a user can simultaneously open multiple dialogs in service console, it's better to set a `boundary`. |
-| forceRefreshView |  | Uses `eval("$A.get('e.force:refreshView').fire();");` directly. |
-| notifySuccess | (`title`, `message` = null) | Convenience function for `ShowToastEvent` |
-| notifyInfo | (`title`, `message` = null) | Convenience function for `ShowToastEvent` |
-| notifySingleError | (`title`, `error` = '') | Convenience function for `ShowToastEvent`.<br>`error` object can be passed directly in, it will be reduced/parsed by `c-utils.reduceError`. |
+| name              | arguments                   | description                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ----------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| dialogService     | (`payload`)                 | `payload` is in the shape required by `MessageServiceHandler`. Examples:<br>[`flowWizardLauncherExample`](./force-app/main/default/lwc/flowWizardLauncherExample/flowWizardLauncherExample.js#L18)<br>[`lwcContactDatatable`](./force-app/main/default/lwc/lwcContactDatatable/lwcContactDatatable.js#L73)<br>[`soqlDatatableLauncherExample`](./force-app/main/default/lwc/soqlDatatableLauncherExample/soqlDatatableLauncherExample.js#L12) |
+| notifyClose       |                             | Uses `publishOpen` to fire a `closedialog` LMS Event which will close any dialog opened by `DialogService`                                                                                                                                                                                                                                                                                                                                    |
+| publish           | (`payload`)                 | Leverages LMS's `publish` functionality.<br>Defaults to no `boundary`.<br>If `boundary` is set, all subscribers will require the same `boundary`.                                                                                                                                                                                                                                                                                             |
+| publishOpen       | (`payload`)                 | Leverage LMS's `publish` functionality without `boundary`. Any subscriber can react to this event.<br>// TODO Useful for `closedialog` unless this [critical update](https://releasenotes.docs.salesforce.com/en-us/winter20/release-notes/rn_console_dialogs.htm) is enabled.<br>// TODO When a user can simultaneously open multiple dialogs in service console, it's better to set a `boundary`.                                           |
+| forceRefreshView  |                             | Uses `eval("$A.get('e.force:refreshView').fire();");` directly.                                                                                                                                                                                                                                                                                                                                                                               |
+| notifySuccess     | (`title`, `message` = null) | Convenience function for `ShowToastEvent`                                                                                                                                                                                                                                                                                                                                                                                                     |
+| notifyInfo        | (`title`, `message` = null) | Convenience function for `ShowToastEvent`                                                                                                                                                                                                                                                                                                                                                                                                     |
+| notifySingleError | (`title`, `error` = '')     | Convenience function for `ShowToastEvent`.<br>`error` object can be passed directly in, it will be reduced/parsed by `c-utils.reduceError`.                                                                                                                                                                                                                                                                                                   |
 </details>
 
 ### DialogService
@@ -176,9 +175,9 @@ It is not recommended to use this component directly.
 
 **Attributes**
 
-| name | type | access | required | default | description |
-|-|-|-|-|-|-|
-| overlayPromise | Object | public | no |  | Stores the returned overlay promise from `overlayLibrary`.<br><br>If a `callback` is specified by the caller, this is returned. |
+| name           | type   | access | required | default | description                                                                                                                     |
+| -------------- | ------ | ------ | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| overlayPromise | Object | public | no       |         | Stores the returned overlay promise from `overlayLibrary`.<br><br>If a `callback` is specified by the caller, this is returned. |
 
 **Public Methods**
 
@@ -186,13 +185,13 @@ Arguments for this component are not in JS Object `{}` notation so that they can
 
 For that reason, it is recommended to use `messageService` / `MessageServiceHandler` to call these functions.
 
-| name | arguments | description |
-|-|-|-|
-| showPopover | (<br>  `body`,<br>  `bodyParams`,<br>  `referenceSelector`,<br>  `cssClass`,<br>  `callback`<br>) | No examples for this one yet. |
-| modal | (<br>  `auraId`,<br>  `headerLabel`,<br>  `body`,<br>  `bodyParams`,<br>  `mainActionReference`,<br>  `mainActionLabel`,<br>  `callback`,<br>) | Compatible with Aura dialog bodies.<br><br>`body` is the component name (Aura notation) to be created in a dialog.<br><br>`bodyParams` are public attributes to be passed from the caller to the body.<br><br>`mainActionReference` uses `component.getReference` to connect the primary action in `ModalFooter` to a function on the body to be created.<br>This allows you to avoid writing a button specifically at the bottom of the body to be created.<br><br>`mainActionLabel` changes the label of the primary action on `ModalFooter`.<br><br>`callback` is optionally specified to return the `overlayPromise` if needed. Alternatively, listen for the `dialogready` LMS Event. |
-| modalLarge | (<br>  `auraId`,<br>  `headerLabel`,<br>  `body`,<br>  `bodyParams`,<br>  `mainActionReference`,<br>  `mainActionLabel`,<br>  `callback`,<br>  `isLargeModal = true`<br>) | Compatible with Aura dialog bodies.<br><br>Same as `modal`, with wider dialog box using `slds-modal_large` |
-| bodyModal | (<br>  `auraId`,<br>  `headerLabel`,<br>  `body`,<br>  `bodyParams`,<br>  `callback`<br>) | Compatible with LWC dialog bodies.<br><br>Same as `modal` except without connectivity to a `mainAction` via `component.getReference` which doesn't work on LWCs, even with `@api` functions.<br><br>Instead, a slim footer called `EventFooter` is created which is subscribing to the `dialogclose` event for closing the dialog.<br><br>Write your own `Cancel` and `Primary Action` button on the dialog body that is dynamically being created. |
-| bodyModalLarge | (<br>  `auraId`,<br>  `headerLabel`,<br>  `body`,<br>  `bodyParams`,<br>  `callback`,<br>  `isLargeModal = true`<br>) | Compatible with LWC dialog bodies.<br><br>Same as `bodyModal`, with wider dialog box using `slds-modal_large` |
+| name           | arguments                                                                                                                                                                 | description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| showPopover    | (<br>  `body`,<br>  `bodyParams`,<br>  `referenceSelector`,<br>  `cssClass`,<br>  `callback`<br>)                                                                         | No examples for this one yet.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| modal          | (<br>  `auraId`,<br>  `headerLabel`,<br>  `body`,<br>  `bodyParams`,<br>  `mainActionReference`,<br>  `mainActionLabel`,<br>  `callback`,<br>)                            | Compatible with Aura dialog bodies.<br><br>`body` is the component name (Aura notation) to be created in a dialog.<br><br>`bodyParams` are public attributes to be passed from the caller to the body.<br><br>`mainActionReference` uses `component.getReference` to connect the primary action in `ModalFooter` to a function on the body to be created.<br>This allows you to avoid writing a button specifically at the bottom of the body to be created.<br><br>`mainActionLabel` changes the label of the primary action on `ModalFooter`.<br><br>`callback` is optionally specified to return the `overlayPromise` if needed. Alternatively, listen for the `dialogready` LMS Event. |
+| modalLarge     | (<br>  `auraId`,<br>  `headerLabel`,<br>  `body`,<br>  `bodyParams`,<br>  `mainActionReference`,<br>  `mainActionLabel`,<br>  `callback`,<br>  `isLargeModal = true`<br>) | Compatible with Aura dialog bodies.<br><br>Same as `modal`, with wider dialog box using `slds-modal_large`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| bodyModal      | (<br>  `auraId`,<br>  `headerLabel`,<br>  `body`,<br>  `bodyParams`,<br>  `callback`<br>)                                                                                 | Compatible with LWC dialog bodies.<br><br>Same as `modal` except without connectivity to a `mainAction` via `component.getReference` which doesn't work on LWCs, even with `@api` functions.<br><br>Instead, a slim footer called `EventFooter` is created which is subscribing to the `dialogclose` event for closing the dialog.<br><br>Write your own `Cancel` and `Primary Action` button on the dialog body that is dynamically being created.                                                                                                                                                                                                                                        |
+| bodyModalLarge | (<br>  `auraId`,<br>  `headerLabel`,<br>  `body`,<br>  `bodyParams`,<br>  `callback`,<br>  `isLargeModal = true`<br>)                                                     | Compatible with LWC dialog bodies.<br><br>Same as `bodyModal`, with wider dialog box using `slds-modal_large`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 </details>
 
 ### MessageServiceHandler
@@ -286,10 +285,10 @@ The component itself is very simple, as it's meant to be called via `DialogServi
 
 **Attributes**
 
-| name | type | access | required | default | description |
-|-|-|-|-|-|-|
-| flowApiName | String | public | yes |  | Developer Name of the flow to be dynamically created by `lightning:flow` |
-| inputVariables | Object[] | public | yes |  | Array of inputs in flow's `[{ name: 'flowVarName', type: 'String', value: 'my cool string value!' }]` |
+| name           | type     | access | required | default | description                                                                                           |
+| -------------- | -------- | ------ | -------- | ------- | ----------------------------------------------------------------------------------------------------- |
+| flowApiName    | String   | public | yes      |         | Developer Name of the flow to be dynamically created by `lightning:flow`                              |
+| inputVariables | Object[] | public | yes      |         | Array of inputs in flow's `[{ name: 'flowVarName', type: 'String', value: 'my cool string value!' }]` |
 
 **Public Methods**
 
@@ -348,10 +347,10 @@ However, there are a couple more ways to use it:
 
 **Attributes**
 
-| name | type | access | required | default | description |
-|-|-|-|-|-|-|
-| messageTemplate | String | public | no | Auto closing in {timer} seconds | Message to display to user while countdown is running |
-| timer | Number | public | no | 5 | Seconds until the component launches the `closedialog` LMS event |
+| name            | type   | access | required | default                         | description                                                      |
+| --------------- | ------ | ------ | -------- | ------------------------------- | ---------------------------------------------------------------- |
+| messageTemplate | String | public | no       | Auto closing in {timer} seconds | Message to display to user while countdown is running            |
+| timer           | Number | public | no       | 5                               | Seconds until the component launches the `closedialog` LMS event |
 
 **Public Methods**
 
@@ -497,12 +496,12 @@ The button is configured to the `SOQL_Datatable_Flow_Action_Update_Contacts_with
 
 All of the following **must** be implemented as variables if the Screen Flow backs an action, otherwise you will get an error.
 
-| Name | Type | Value |
-|-|-|-|
-| SelectedRows | SObject[] | Choose the correct Object type in a Record Collection. |
-| FirstSelectedRow | SObject | First Selected Row, choose the correct Object in a Record variable. |
-| UniqueBoundary | String | For `dialogAutoCloser` to refresh the table that opened the Screen Flow.  |
-| SourceRecordId | String | The recordId of the page that the `soqlDatatable` is placed on. |
+| Name             | Type      | Value                                                                    |
+| ---------------- | --------- | ------------------------------------------------------------------------ |
+| SelectedRows     | SObject[] | Choose the correct Object type in a Record Collection.                   |
+| FirstSelectedRow | SObject   | First Selected Row, choose the correct Object in a Record variable.      |
+| UniqueBoundary   | String    | For `dialogAutoCloser` to refresh the table that opened the Screen Flow. |
+| SourceRecordId   | String    | The recordId of the page that the `soqlDatatable` is placed on.          |
 
 When the flow is done, it auto-closes using `dialogAutoCloser`.
 
@@ -734,14 +733,15 @@ cd lwc-utils
 
 Option 2 - Installation URL:
 
-[Summer 20 Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGbuIAG)
+[Summer 20 Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QH04IAG)
 
 Option 3 - Unlocked Package:
 
 ```
-sfdx force:package:install --package "LWC Utils with Examples@0.1.0-7"
+sfdx force:package:install --package "LWC Utils with Examples@0.1.0-8"
 ```
 
+<!--
 ### Core Components Only
 
 Option 1 - Installation URL:
@@ -753,6 +753,7 @@ Option 2 - Unlocked Package:
 ```
 sfdx force:package:install --package "LWC Utils Core@0.1.0-5"
 ```
+-->
 
 ### Configuration and Getting Started
 
@@ -760,7 +761,7 @@ If you're working with the examples, you can view the `LWC Utils` sample app and
 
 There are also many example `Flows` that have been set up as well.
 
-For both installations, please review the following:
+After installation, please review the following:
 
 - `Datatable_Config__mdt`
 - `Datatable_Lookup_Config__mdt`

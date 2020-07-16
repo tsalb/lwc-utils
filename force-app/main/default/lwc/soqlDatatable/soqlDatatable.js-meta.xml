@@ -17,27 +17,27 @@
             <property name="showRefreshButton" label="Show Refresh" type="Boolean" default="false"/>
             <property name="queryString" label="SOQL String" type="String" placeholder="SELECT Id, Name FROM Account LIMIT 10" required="true"/>
             <property name="checkboxType" label="Checkbox Type" type="String" default="None" datasource="None,Multi,Single"/>
-            <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of field api names for inline editing. Does not support parent fieldNames"/>
-            <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API Names. If parent fieldNames, use _ instaed of . (e.g. Account_Name)"/>
-            <property name="sortedBy" label="Default Sort Field" type="String" description="Field API name, if parent fieldName use _ instead of . (e.g. Account_Name)"/>
+            <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of Field API names for inline editing. Does not support parent relationship (Account.Type). Saving writes to server"/>
+            <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API names. Parent relationship is supported (e.g. Account.Type)."/>
+            <property name="sortedBy" label="Default Sort Field" type="String" description="Single Field API Name. Parent relationship is supported (e.g. Account.Type)."/>
             <property name="sortedDirection" label="Default Sort Direction" type="String" datasource="asc,desc" default="asc"/>
             <property name="actionConfigDevName" label="Action Configuration" type="String" description="Configure table and row actions with a record in Datatable_Config__mdt"/>
-            <property name="lookupConfigDevName" label="Lookup Configuration" type="String" description="Configure in-line edit lookup search behavior with a record in Datatable_Config__mdt"/>
+            <property name="lookupConfigDevName" label="Lookup Configuration" type="String" description="Configure inline edit lookup search behavior with a record in Datatable_Config__mdt"/>
             <property name="useRelativeMaxHeight" label="Limit Height (Relative to screen)" type="Boolean" description="Force table height to 60% of the vertical screen space." default="false"/>
         </targetConfig>
         <targetConfig targets="lightning__RecordPage">
-            <property name="isRecordBind" label="Use Record Binding in SOQL String" type="Boolean" description="Use $CurrentRecord or $recordId in your SOQL query to bind record data or just the recordId. User must have FLS access." default="true"/>
+            <property name="isRecordBind" label="Use Record Binding in SOQL String" type="Boolean" description="Use $CurrentRecord or $recordId in your SOQL query to use record context. User must have FLS access." default="true"/>
             <property name="title" label="Title" type="String"/>
             <property name="showRecordCount" label="Show Record Count" type="Boolean" default="false"/>
             <property name="showRefreshButton" label="Show Refresh" type="Boolean" default="false"/>
-            <property name="queryString" label="SOQL String" type="String" placeholder="SELECT Id, Name FROM Account LIMIT 10" required="true"/>
+            <property name="queryString" label="SOQL String" type="String" placeholder="SELECT Id, Name FROM Account LIMIT 10" description="Parent (one level) relationships supported (e.g. Account.Type). Use Record Bind enables use of $CurrentRecord or $recordId keywords." required="true"/>
             <property name="checkboxType" label="Checkbox Type" type="String" default="None" datasource="None,Multi,Single"/>
-            <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of field api names for inline editing. Does not support parent fieldNames"/>
-            <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API Names. If parent fieldNames, use _ instaed of . (e.g. Account_Name)"/>
-            <property name="sortedBy" label="Default Sort Field" type="String" description="Field API name, if parent fieldName use _ instead of . (e.g. Account_Name)"/>
+            <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of Field API names for inline editing. Does not support parent relationship (Account.Type). Saving writes to server."/>
+            <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API names. Parent relationship is supported (e.g. Account.Type)."/>
+            <property name="sortedBy" label="Default Sort Field" type="String" description="Single Field API Name. Parent relationship is supported (e.g. Account.Type)."/>
             <property name="sortedDirection" label="Default Sort Direction" type="String" datasource="asc,desc" default="asc"/>
             <property name="actionConfigDevName" label="Action Configuration" type="String" description="Configure table and row actions with a record in Datatable_Config__mdt"/>
-            <property name="lookupConfigDevName" label="Lookup Configuration" type="String" description="Configure in-line edit lookup search behavior with a record in Datatable_Config__mdt"/>
+            <property name="lookupConfigDevName" label="Lookup Configuration" type="String" description="Configure inline edit lookup search behavior with a record in Datatable_Config__mdt"/>
             <property name="useRelativeMaxHeight" label="Limit Height (Relative to screen)" type="Boolean" description="Force table height to 60% of the vertical screen space." default="false"/>
         </targetConfig>
         <targetConfig targets="lightning__FlowScreen">
@@ -45,11 +45,11 @@
             <property name="recordId" label="Record Id" type="String" role="inputOnly"/>
             <property name="title" label="Title" type="String" role="inputOnly"/>
             <property name="showRecordCount" label="Show Record Count" type="Boolean" role="inputOnly" default="false"/>
-            <property name="queryString" label="SOQL String" type="String" default="SELECT ... FROM ..." description="Use 'recordId' (no quotes) to bind to recordId property." required="true" role="inputOnly"/>
+            <property name="queryString" label="SOQL String" type="String" default="SELECT ... FROM ..." description="Use $recordId in your SOQL to bind to that value. Alternatively, use a Formula variable which merges flow variable values. $CurrentRecord is not supported in Screen Flows." required="true" role="inputOnly"/>
             <property name="checkboxType" label="Checkbox Type" type="String" description="None, Multi, or Single" role="inputOnly"/>
-            <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of field api names for inline editing. Does not support parent fieldNames" role="inputOnly"/>
-            <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API Names. If parent fieldNames, use _ instaed of . (e.g. Account_Name)" role="inputOnly"/>
-            <property name="sortedBy" label="Default Sort Field" type="String" description="Field API name, if parent fieldName use _ instead of . (e.g. Account_Name)" role="inputOnly"/>
+            <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of Field API names for inline editing. Does not support parent relationship (Account.Type). Saving writes to server." role="inputOnly"/>
+            <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API names. Parent relationship is supported (e.g. Account.Type)." role="inputOnly"/>
+            <property name="sortedBy" label="Default Sort Field" type="String" description="Single Field API Name. Parent relationship is supported (e.g. Account.Type)." role="inputOnly"/>
             <property name="sortedDirection" label="Default Sort Direction" type="String" default="asc" description="asc or desc" role="inputOnly"/>
             <!-- OUTPUTS -->
             <property name="selectedRows" label="Selected Rows" type="{sObj[]}" role="outputOnly"/>

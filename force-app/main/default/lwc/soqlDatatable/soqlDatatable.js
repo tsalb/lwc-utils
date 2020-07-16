@@ -177,14 +177,21 @@ export default class SoqlDatatable extends LightningElement {
                 return;
             }
             if (this.queryString.includes('$recordId')) {
-                this.queryString = this.queryString.replace('$recordId', `'${this.recordId}'`);
+                this.queryString = this.queryString.replace(/\$recordId/g, `'${this.recordId}'`);
             }
             // Backwards compat, this needs to go second since syntax above is preferred
             if (this.queryString.includes('recordId')) {
-                this.queryString = this.queryString.replace('recordId', `'${this.recordId}'`);
+                this.queryString = this.queryString.replace(/recordId/g, `'${this.recordId}'`);
             }
             // This one needs some heavier processing via wire
             if (this.queryString.includes('$CurrentRecord')) {
+                if (!this.objectApiName) {
+                    this._notifyError(
+                        'Missing objectApiName',
+                        '$CurrentRecord API can only be used on the Record Flexipage'
+                    );
+                    return;
+                }
                 const matches = this.queryString.match(/(\$[\w.]*)/g);
                 matches.forEach(original => {
                     const config = {

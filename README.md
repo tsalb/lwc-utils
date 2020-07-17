@@ -405,11 +405,49 @@ Please submit issues to this repo if you find one that cannot be merged correctl
 </details>
 
 <details>
+    <summary>Row Selection Events and Flow outputs</summary>
+
+⠀
+
+When this component's `checkboxType` is configured to `Multi` or `Single`, the base `datatable` emits a `rowselection` event which can be handled by any parent LWC:
+
+```js
+// datatable.js
+case 'rowselection': {
+    this.dispatchEvent(
+        new CustomEvent('rowselection', {
+            detail: { selectedRows: this.selectedRows },
+            bubbles: true,
+            composed: true
+        })
+    );
+    break;
+}
+```
+```html
+<c-soql-datatable
+    ...
+    onrowselection={handleRowSelection}
+    ...
+></c-soql-datatable>
+```
+```js
+handleRowSelection(event) {
+    console.log(event.detail.selectedRows); // this.selectedRows from base datatable.js
+}
+```
+
+This component also outputs `selectedRows` and `firstSelectedRow` to Flow screens as output variables. See the specification section for details.
+</details>
+
+<details>
     <summary>Inline Editing / Mass Inline Editing</summary>
 
 ⠀
 
 Define which fields can be editable in a comma separated list in the `Editable Fields` design attribute. For data types that are supported in the vanilla `lightning-datatable`, such as `date`, `text`, `number`, those are relied on as heavily as possible.
+
+> **Note**: All edits on `save` will be saved to database using Lightning Data Service `updateRecords`. Errors will be handled using `lightning-datatable` formatted error handling.
 
 For data types such as `picklist` and `lookup` which are yet to be [supported](https://trailblazer.salesforce.com/ideaView?id=0873A000000PZJ4QAO), this component provides custom data types as follows.
 
@@ -634,11 +672,30 @@ As you can see, it's possible to parameterize a payload back to Aura's `$A.creat
 
 **Attributes**
 
-`// TODO`
+| name                 | type      | access | required | default | description                                                                                                                                                                                             |
+| -------------------- | --------- | ------ | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| isRecordBind         | Boolean   | public |          | true    | Only on Record Page. Use $CurrentRecord or $recordId in your SOQL query to use record context. User must have FLS access.                                                                               |
+| title                | String    | public | no       |         |                                                                                                                                                                                                         |
+| showRecordCount      | Boolean   | public |          | false   |                                                                                                                                                                                                         |
+| showRefreshButton    | Boolean   | public |          | false   |                                                                                                                                                                                                         |
+| queryString          | String    | public | yes      |         | Order of fields in the SOQL string determine order of columns. Parent (one level) relationships supported (e.g. Account.Type)                                                                           |
+| checkboxType         | String    | public | no       | None    | None, Multi, or Single (outputs radios). This allows the component to emit the `rowselection` event.<br><br>For Screen Flows this populates the `selectedRows` and `firstSelectedRow` output variables. |
+| editableFields       | String[]  | public | no       |         | Comma separated list of Field API names for inline editing. Does not support parent relationship (Account.Type). Saving writes to server.                                                               |
+| sortableFields       | String[]  | public | no       |         | Comma separated list of Field API names. Parent relationship is supported (e.g. Account.Type).                                                                                                          |
+| sortedBy             | String    | public | no       |         | Single Field API Name. Parent relationship is supported (e.g. Account.Type).                                                                                                                            |
+| sortedDirection      | String    | public | no       | asc     |                                                                                                                                                                                                         |
+| actionConfigDevName  | String    | public | no       |         | Not available on Flow Screen. Configure table and row actions with a record in `Datatable_Config__mdt`.                                                                                                 |
+| lookupConfigDevName  | String    | public | no       |         | Not available on Flow Screen. Configure inline edit lookup search behavior with a record in `Datatable_Config__mdt`.                                                                                    |
+| useRelativeMaxHeight | Boolean   | public |          | false   | Force table height to 60% of the vertical screen space.                                                                                                                                                 |
+| selectedRows         | SObject[] | public |          |         | Uses `FlowAttributeChangeEvent` to notify changes to Flow Screens.                                                                                                                                      |
+| firstSelectedRow     | SObject   | public |          |         | Uses `FlowAttributeChangeEvent` to notify changes to Flow Screens.                                                                                                                                      |  |
 
 **Public Methods**
 
-`// TODO`
+| name         | arguments | description                         |
+| ------------ | --------- | ----------------------------------- |
+| refreshTable |           | Refreshes the table (imperatively). |
+</details>
 </details>
 
 ### collectionDatatable
@@ -667,7 +724,7 @@ Another component called `Collection Datatable` is able to display any Flow `Rec
 </p>
 
 > **Note:** You can use the SOQL Datatable's `selectedRows` output directly as an input to `collectionDatatable`. You can also assign `selectedRows` to a flow Record Collection variable as well.
-> 
+
 </details>
 
 <details>
@@ -684,11 +741,13 @@ Details incoming...
 </details>
 
 <details>
-    <summary>Inline Editing (Future Enhancement)</summary>
+    <summary>Inline Editing</summary>
 
 ⠀
 
-Direct inline editing inside a Flow Screen will be a future enhancement.
+Define which fields can be editable in a comma separated list in the `Editable Fields` design attribute. See [soqlDatatable - Features and Examples](#soqldatatable---features-and-examples) for full details.
+
+> **Note**: All edits on `save` will **not** be saved to database. All error handling on edited rows must be handled by your flow manually.
 
 </details>
 
@@ -696,15 +755,9 @@ Direct inline editing inside a Flow Screen will be a future enhancement.
 <details>
     <summary>collectionDatatable Specification</summary>
 
-⠀
-
-**Attributes**
-
-`// TODO`
-
-**Public Methods**
-
-`// TODO`
+```
+// TODO, pending final API design
+```
 </details>
 
 ## Installation

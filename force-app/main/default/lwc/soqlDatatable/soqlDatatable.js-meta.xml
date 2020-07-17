@@ -15,7 +15,7 @@
             <property name="title" label="Title" type="String"/>
             <property name="showRecordCount" label="Show Record Count" type="Boolean" default="false"/>
             <property name="showRefreshButton" label="Show Refresh" type="Boolean" default="false"/>
-            <property name="queryString" label="SOQL String" type="String" placeholder="SELECT Id, Name FROM Account LIMIT 10" required="true"/>
+            <property name="queryString" label="SOQL String" type="String" placeholder="SELECT Id, Name FROM Account LIMIT 10" description="Parent (one level) relationships supported (e.g. Account.Type)." required="true"/>
             <property name="checkboxType" label="Checkbox Type" type="String" default="None" datasource="None,Multi,Single"/>
             <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of Field API names for inline editing. Does not support parent relationship (Account.Type). Saving writes to server"/>
             <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API names. Parent relationship is supported (e.g. Account.Type)."/>

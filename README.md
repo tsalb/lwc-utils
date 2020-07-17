@@ -4,8 +4,8 @@
 Reusable LWCs to 10x your solution building speed.
 
 - `messageService`: Lightning Message Service (LMS) simplified component messaging.
-- `SOQL Datatable`: Leverage SOQL to power your list views, related lists, and Screen Flows.
-- `Collection Datatable`: Display Collections and Selected Rows from SOQL Datatable in Screen Flows.
+- `SOQL Datatable`: Leverage SOQL to power your list views, related lists, and even Screen Flows.
+- `Collection Datatable`: Manage Record Collections variables in Screen Flows.
 - Design patterns leveraging both Aura and LWC to dynamically create dialogs (modals) for better UX.
 - Launch Screen Flows dynamically inside a dialog (modal) from anywhere.
 
@@ -733,12 +733,12 @@ cd lwc-utils
 
 Option 2 - Installation URL:
 
-[Summer 20 Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QH04IAG)
+[Summer 20 Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QHgYIAW)
 
 Option 3 - Unlocked Package:
 
 ```
-sfdx force:package:install --package "LWC Utils with Examples@0.1.0-8"
+sfdx force:package:install --package "LWC Utils with Examples@0.1.0-9"
 ```
 
 <!--

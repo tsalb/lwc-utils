@@ -65,6 +65,8 @@ export default class CollectionDatatable extends LightningElement {
     columnWidthsMode = 'auto';
 
     // Flow outputs
+    @api selectedRows;
+    @api firstSelectedRow;
     @api editedRows;
     @api allRows;
 
@@ -167,8 +169,18 @@ export default class CollectionDatatable extends LightningElement {
         }
     }
 
+    // Event Handlers
+
+    handleRowSelection(event) {
+        if (event.detail.selectedRows && event.detail.selectedRows.length) {
+            this.selectedRows = event.detail.selectedRows.map(row => this._getCleanRow(row));
+            this.firstSelectedRow = this._getCleanRow(event.detail.selectedRows[0]);
+            this.dispatchEvent(new FlowAttributeChangeEvent('selectedRows', this.selectedRows));
+            this.dispatchEvent(new FlowAttributeChangeEvent('firstSelectedRow', this.firstSelectedRow));
+        }
+    }
+
     handleSave(event) {
-        //this._messageService.publish({ key: 'resetlookup' });
         if (event.detail.editedRows && event.detail.editedRows.length) {
             const editedRowsClean = event.detail.editedRows.map(row => this._getCleanRow(row));
             console.log(editedRowsClean);
@@ -180,6 +192,8 @@ export default class CollectionDatatable extends LightningElement {
             this.dispatchEvent(new FlowAttributeChangeEvent('allRows', allRowsClean));
         }
     }
+
+    // Private functions
 
     _getCleanRow(row) {
         for (let fieldName in row) {

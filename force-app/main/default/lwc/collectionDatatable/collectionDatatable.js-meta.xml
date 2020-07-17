@@ -20,6 +20,8 @@
             <property name="sortedBy" label="Default Sort Field" type="String" description="Single Field API Name. Parent relationship is supported (e.g. Account.Type)." role="inputOnly"/>
             <property name="sortedDirection" label="Default Sort Direction" type="String" default="asc" description="asc or desc" role="inputOnly"/>
             <!-- OUTPUTS -->
+            <property name="selectedRows" label="Selected Rows" type="{sObj[]}" role="outputOnly"/>
+            <property name="firstSelectedRow" label="First Selected Row" type="{sObj}" role="outputOnly"/>
             <property name="editedRows" label="Edited Rows" type="{sObj[]}" description="Only rows with saved changes." role="outputOnly"/>
             <property name="allRows" label="All Rows" type="{sObj[]}" role="outputOnly"/>
         </targetConfig>

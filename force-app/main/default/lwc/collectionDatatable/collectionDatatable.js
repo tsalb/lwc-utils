@@ -69,6 +69,8 @@ export default class CollectionDatatable extends LightningElement {
     @api allRows;
 
     // private
+    _isRendered;
+    _messageService;
     _displayTypeMap = new Map();
     _singleRecordId;
     _objectApiName;
@@ -102,6 +104,14 @@ export default class CollectionDatatable extends LightningElement {
             // ALSO TODO - surface an object api name prop on this design file
             // this.initializeFromCollection()
         }
+    }
+
+    renderedCallback() {
+        if (this._isRendered) {
+            return;
+        }
+        this._isRendered = true;
+        this._messageService = this.template.querySelector('c-message-service');
     }
 
     initializeFromWire(recordId) {
@@ -158,6 +168,7 @@ export default class CollectionDatatable extends LightningElement {
     }
 
     handleSave(event) {
+        //this._messageService.publish({ key: 'resetlookup' });
         if (event.detail.editedRows && event.detail.editedRows.length) {
             const editedRowsClean = event.detail.editedRows.map(row => this._getCleanRow(row));
             console.log(editedRowsClean);
@@ -187,10 +198,13 @@ export default class CollectionDatatable extends LightningElement {
             fieldName: hasConfig ? fieldConfig.apiName : fieldName,
             type: hasConfig ? this._displayTypeMap.get(fieldConfig.dataType.toUpperCase()) : 'text'
         };
-        // A little more processing is needed
+        // A little more processing is needed for custom data types
         if (columnDefinition.type === 'customLookup' && this._referenceFieldsMap.has(fieldName)) {
             const lookupTypeAttributes = {
                 typeAttributes: {
+                    columnName: hasConfig ? fieldConfig.apiName : fieldName,
+                    fieldApiName: hasConfig ? fieldConfig.apiName : fieldName,
+                    // objectApiName: not sure how to do this one yet
                     href: { fieldName: fieldName },
                     target: '_parent',
                     displayValue: { fieldName: this._referenceFieldsMap.get(fieldName) },
@@ -199,6 +213,17 @@ export default class CollectionDatatable extends LightningElement {
             };
             columnDefinition = { ...columnDefinition, ...lookupTypeAttributes };
         }
+        if (columnDefinition.type === 'customPicklist') {
+            // const picklistTypeAttributes = {
+            //     typeAttributes: {
+            //         columnName: hasConfig ? fieldConfig.apiName : fieldName,
+            //         fieldApiName: hasConfig ? fieldConfig.apiName : fieldName,
+            //         picklistRecordTypeId: 'oof not sure how to get this yet'
+            //     }
+            // };
+            // columnDefinition = { ...columnDefinition, ...picklistTypeAttributes };
+        }
+        console.log(columnDefinition);
         return columnDefinition;
     }
 

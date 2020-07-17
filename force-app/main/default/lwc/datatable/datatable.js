@@ -504,12 +504,17 @@ export default class Datatable extends LightningElement {
     // Avoid using the event because the payload doesn't have name compound fields
     async handleSave() {
         if (!this.isSaveToServer) {
+            console.log(this.draftValues);
             // For collectionDatatable we just write user values to tableData, regardless of validation
             const rowKeyToDraftValuesMap = new Map(this.draftValues.map(draft => [draft[this.keyField], draft]));
+            console.log(rowKeyToDraftValuesMap);
+            // Sets draft values directly onto tableData
             this.tableData = this.tableData.map(row => {
                 const rowDraftValues = rowKeyToDraftValuesMap.get(row[this.keyField]);
                 return { ...row, ...rowDraftValues };
             });
+            // Clears out custom data types
+            this._clearDraftValues([...rowKeyToDraftValuesMap.keys()]);
             // Output to the flow
             const payload = {
                 detail: {

@@ -33,6 +33,8 @@
 -->
 
 <template>
+    <c-message-service boundary={uniqueBoundary}></c-message-service>
+
     <c-datatable
         unique-boundary={uniqueBoundary}
         key-field="Id"
@@ -44,7 +46,6 @@
         sorted-by={sortedBy}
         sorted-direction={sortedDirection}
         column-widths-mode={columnWidthsMode}
-        onrefresh={handleRefresh}
         onsave={handleSave}
     ></c-datatable>
 </template>

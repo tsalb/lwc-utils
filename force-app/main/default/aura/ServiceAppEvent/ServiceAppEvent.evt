@@ -1,5 +1,0 @@
-<!--c:ServiceAppEvent-->
-<aura:event type="APPLICATION">
-  <aura:attribute name="appEventKey" type="String"/>
-  <aura:attribute name="appEventValue" type="Object"/>
-</aura:event>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>49.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Dialog Auto Close</masterLabel>
+    <description>Auto closes dialog after a specified amount of time</description>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="messageTemplate" label="Message Template" type="String" role="inputOnly" default="Auto closing in {timer} seconds" description="Use {timer} for merging the number into the message"/>
+            <property name="timer" label="Timer (Seconds)" type="Integer" role="inputOnly" default="5"/>
+            <property name="uniqueBoundary" label="Unique Boundary" type="String" role="inputOnly" description="Use the UniqueBoundary property, helps scope which table to refresh when multiple are on the screen"/>
+            <property name="isRefreshTable" label="Refresh SOQL Datatable" type="Boolean" role="inputOnly" default="false"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

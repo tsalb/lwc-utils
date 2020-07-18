@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Configures what data shows up while using the customLookup data type inline editing.</description>
+    <label>Datatable Lookup Config</label>
+    <pluralLabel>Datatable Lookup Config</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>decorate</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>richTextValue</name>
+                    <value>&lt;ol&gt;&lt;li&gt;&lt;span style=&quot;font-family: courier;&quot;&gt;lightning-button&lt;/span&gt; creates a JSON &lt;span style=&quot;font-family: courier;&quot;&gt;payload&lt;/span&gt; with some Flow details onclick.&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;font-family: courier;&quot;&gt;payload&lt;/span&gt; is then handed to &lt;span style=&quot;font-family: courier;&quot;&gt;messageService&lt;/span&gt;.&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;font-family: courier;&quot;&gt;messageService&lt;/span&gt; passes it to a label-less (but rendered) Aura component in the utility bar called &lt;span style=&quot;font-family: courier;&quot;&gt;MessageServiceHandler&lt;/span&gt;.&lt;/li&gt;&lt;li&gt;Once inside aura, it dynamically creates an LWC dialog body via &lt;span style=&quot;font-family: courier;&quot;&gt;lightning:overlayLibrary.&lt;/span&gt;&lt;/li&gt;&lt;/ol&gt;</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:richText</componentName>
+            </componentInstance>
+        </itemInstances>
+        <name>column1</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentName>flowWizardLauncherExample</componentName>
+            </componentInstance>
+        </itemInstances>
+        <name>column2</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <masterLabel>LWC Launching Flow</masterLabel>
+    <template>
+        <name>flexipage:appHomeTemplateTwoColumns</name>
+    </template>
+    <type>AppPage</type>
+</FlexiPage>

@@ -19,8 +19,8 @@
     <decisions>
         <name>Route_Template_Choice</name>
         <label>Route Template Choice</label>
-        <locationX>272</locationX>
-        <locationY>52</locationY>
+        <locationX>377</locationX>
+        <locationY>276</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Date_Parser_Selected</name>
@@ -71,14 +71,19 @@
     <screens>
         <name>Choose_Wizard_Template</name>
         <label>Choose Wizard Template</label>
-        <locationX>152</locationX>
-        <locationY>50</locationY>
+        <locationX>176</locationX>
+        <locationY>273</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
             <targetReference>Route_Template_Choice</targetReference>
         </connector>
+        <fields>
+            <name>Welcome_Message</name>
+            <fieldText>&lt;p&gt;Welcome {!UserName}!&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
         <fields>
             <name>Wizard_Template_Options</name>
             <choiceReferences>DateParser</choiceReferences>
@@ -94,15 +99,34 @@
     <screens>
         <name>Confirmation_Screen</name>
         <label>Confirmation Screen</label>
-        <locationX>645</locationX>
-        <locationY>209</locationY>
+        <locationX>716</locationX>
+        <locationY>328</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>Confirmation_Message</name>
-            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;Thanks for playing with &lt;a href=&quot;https://moment.github.io/luxon/index.html&quot; target=&quot;_blank&quot;&gt;Luxon&lt;/a&gt;,&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;You can close this dialog anytime.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;Thanks for playing with &lt;a href=&quot;https://moment.github.io/luxon/index.html&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;Luxon&lt;/a&gt;.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>Dialog_Auto_Close</name>
+            <extensionName>c:dialogAutoCloser</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>timer</name>
+                <value>
+                    <numberValue>3.0</numberValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>messageTemplate</name>
+                <value>
+                    <stringValue>This wizard will auto close in {timer} seconds</stringValue>
+                </value>
+            </inputParameters>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <showFooter>false</showFooter>
         <showHeader>false</showHeader>
@@ -110,8 +134,8 @@
     <screens>
         <name>Date_Parser_Show_and_Select</name>
         <label>Date Parser - Show and Select</label>
-        <locationX>490</locationX>
-        <locationY>48</locationY>
+        <locationX>536</locationX>
+        <locationY>136</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -125,7 +149,7 @@
             <inputParameters>
                 <name>flowCacheJSON</name>
                 <value>
-                    <elementReference>flowCacheJSON</elementReference>
+                    <elementReference>cache</elementReference>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -142,7 +166,7 @@
             </inputParameters>
             <isRequired>true</isRequired>
             <outputParameters>
-                <assignToReference>flowCacheJSON</assignToReference>
+                <assignToReference>cache</assignToReference>
                 <name>flowCacheJSON</name>
             </outputParameters>
         </fields>
@@ -152,9 +176,9 @@
     <screens>
         <name>Date_Parser_View_Result</name>
         <label>Date Parser - View Result</label>
-        <locationX>491</locationX>
-        <locationY>209</locationY>
-        <allowBack>false</allowBack>
+        <locationX>717</locationX>
+        <locationY>136</locationY>
+        <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
@@ -179,12 +203,12 @@
             <inputParameters>
                 <name>flowCacheJSON</name>
                 <value>
-                    <elementReference>flowCacheJSON</elementReference>
+                    <elementReference>cache</elementReference>
                 </value>
             </inputParameters>
             <isRequired>true</isRequired>
             <outputParameters>
-                <assignToReference>flowCacheJSON</assignToReference>
+                <assignToReference>cache</assignToReference>
                 <name>flowCacheJSON</name>
             </outputParameters>
         </fields>
@@ -194,8 +218,8 @@
     <screens>
         <name>Default_Screen</name>
         <label>Default Screen</label>
-        <locationX>279</locationX>
-        <locationY>292</locationY>
+        <locationX>387</locationX>
+        <locationY>543</locationY>
         <allowBack>true</allowBack>
         <allowFinish>false</allowFinish>
         <allowPause>false</allowPause>
@@ -218,10 +242,17 @@
     </start>
     <status>Active</status>
     <variables>
-        <name>flowCacheJSON</name>
+        <name>cache</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
-        <isInput>false</isInput>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>UserName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
         <isOutput>false</isOutput>
     </variables>
 </Flow>

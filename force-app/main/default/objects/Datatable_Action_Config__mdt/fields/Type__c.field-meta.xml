@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type__c</fullName>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <label>Type</label>
+    <required>true</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Flow Table Action - Primary</fullName>
+                <default>false</default>
+                <label>Flow Table Action - Primary</label>
+            </value>
+            <value>
+                <fullName>Flow Table Action - Secondary</fullName>
+                <default>false</default>
+                <label>Flow Table Action - Secondary</label>
+            </value>
+            <value>
+                <fullName>LWC Table Action - Primary</fullName>
+                <default>false</default>
+                <label>LWC Table Action - Primary</label>
+            </value>
+            <value>
+                <fullName>LWC Table Action - Secondary</fullName>
+                <default>false</default>
+                <label>LWC Table Action - Secondary</label>
+            </value>
+            <value>
+                <fullName>Row Action</fullName>
+                <default>false</default>
+                <label>Row Action</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

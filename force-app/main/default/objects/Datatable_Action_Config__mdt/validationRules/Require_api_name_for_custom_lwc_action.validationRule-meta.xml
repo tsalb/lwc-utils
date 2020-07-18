@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_api_name_for_custom_lwc_action</fullName>
+    <active>true</active>
+    <errorConditionFormula>TEXT( Type__c ) == &apos;Row Action&apos;
+&amp;&amp;
+TEXT( Row_Action_Name__c ) == &apos;custom_lwc&apos;
+&amp;&amp;
+ISBLANK( LWC_Name__c )</errorConditionFormula>
+    <errorDisplayField>LWC_Name__c</errorDisplayField>
+    <errorMessage>Required for &apos;custom_lwc&apos; Row Action</errorMessage>
+</ValidationRule>

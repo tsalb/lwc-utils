@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Datatable_Config__c</fullName>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <label>Datatable Config</label>
+    <referenceTo>Datatable_Config__mdt</referenceTo>
+    <relationshipLabel>Datatable Lookup Config</relationshipLabel>
+    <relationshipName>Datatable_Lookup_Config</relationshipName>
+    <required>true</required>
+    <type>MetadataRelationship</type>
+    <unique>false</unique>
+</CustomField>

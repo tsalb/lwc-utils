@@ -711,24 +711,33 @@ This was designed to provide data dense feedback to the user on what they're wor
 #### collectionDatatable - Features and Examples
 
 <details>
-    <summary>Displaying Selected Records from SOQL Datatable</summary>
+    <summary>Manipulate a Record Collection</summary>
 
 ⠀
 
-This Screen Flow uses the ability for `SOQL Datatable` to output a `List<SObject>` directly in Flow.
+This example shows inline editing (single and mass) as well as how to handle saving edited records afterwards.
 
-Another component called `Collection Datatable` is able to display any Flow `Record Collection`.
+![collection-datatable-manipulate.png](readme-images/collection-datatable-manipulate.png?raw=true)
+
+</details>
+
+<details>
+    <summary>Show Selection in Collection Datatable</summary>
+
+⠀
+
+This Screen Flow uses the ability for `soqlDatatable` to output a directly to `collectionDatatable`.
 
 <p align="center">
     <img src="./readme-images/soql-datatable-to-collection-datatable-flow.png" width="640">
 </p>
 
-> **Note:** You can use the SOQL Datatable's `selectedRows` output directly as an input to `collectionDatatable`. You can also assign `selectedRows` to a flow Record Collection variable as well.
+> **Note:** You can also assign `soqlDatatable`'s `selectedRows` output to a Record Collection variable as well.
 
 </details>
 
 <details>
-    <summary>Combining SOQL and Collection Datatable with Flow inputs</summary>
+    <summary>With Flow Inputs and Collection Datatable</summary>
 
 ⠀
 

@@ -61,6 +61,7 @@ export default class DatatableEditableCell extends LightningElement {
     _container;
     _isCleared;
 
+    @api
     get showMassEdit() {
         return (
             this.selectedRows &&
@@ -123,7 +124,7 @@ export default class DatatableEditableCell extends LightningElement {
         const currentInputValue = this._editElement[this.editCellValueProp];
         const isAppliedToMultipleRows = this.template.querySelector('.mass-input-checkbox').checked;
 
-        //console.log(currentInputValue);
+        console.log(currentInputValue);
 
         if (isAppliedToMultipleRows) {
             let rowIdentifierToValues = {};
@@ -144,7 +145,13 @@ export default class DatatableEditableCell extends LightningElement {
                 value: { rowIdentifierToValues: rowIdentifierToValues }
             });
         } else {
+            if (this._displayElement.name === 'lookup-display') {
+                this.dispatchEvent(
+                    new CustomEvent('setdraftvalueforlookup', { detail: { draftValue: currentInputValue } })
+                );
+            }
             this.draftValue = currentInputValue;
+            this._isCleared = !this.draftValue;
             this.forceClosePopover();
         }
     }
@@ -255,8 +262,16 @@ export default class DatatableEditableCell extends LightningElement {
             const currentCellIdentifier = `${this.rowKeyValue}_${this.objectApiName}_${this.fieldApiName}`;
             if (identifierMap.has(currentCellIdentifier)) {
                 const incomingDraftValue = identifierMap.get(currentCellIdentifier);
+                // Special considerations for custom data types
+                if (this._displayElement.name === 'lookup-display') {
+                    this.dispatchEvent(
+                        new CustomEvent('setdraftvalueforlookup', { detail: { draftValue: incomingDraftValue } })
+                    );
+                } else {
+                    this._displayElement[this.displayCellValueProp] = incomingDraftValue;
+                }
                 this.draftValue = incomingDraftValue;
-                this._displayElement[this.displayCellValueProp] = incomingDraftValue;
+                this._isCleared = !this.draftValue;
                 this.forceClosePopover();
             }
         }
@@ -271,7 +286,7 @@ export default class DatatableEditableCell extends LightningElement {
 
     notifyCellChanged() {
         // When user doesn't click apply
-        if (this.showMassEdit && !this.draftValue) {
+        if (this.showMassEdit && !this.draftValue && !this._isCleared) {
             return;
         }
         // Match UX of vanilla datatable when no changes made

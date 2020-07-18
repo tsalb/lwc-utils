@@ -48,7 +48,13 @@ export default class Lookup extends LightningElement {
 
     @api
     get value() {
-        return this.selected || this._value;
+        if (this.isCleared) {
+            return null;
+        }
+        if (this.selected) {
+            return this.selected;
+        }
+        return this._value;
     }
     set value(val) {
         this._value = val;
@@ -72,6 +78,7 @@ export default class Lookup extends LightningElement {
     record;
     error;
     activeId = '';
+    isCleared = false;
 
     @api checkValidity() {
         return !this.required || (this.value && this.value.length > 14);
@@ -178,6 +185,7 @@ export default class Lookup extends LightningElement {
 
     handleSelected(event) {
         event.stopPropagation();
+        this.isCleared = false;
         this.selected = event.detail.selectedRecordId;
         this.record = this.records.find(record => record.Id === this.selected);
         this.inputValue = this.record[this.title];
@@ -248,6 +256,7 @@ export default class Lookup extends LightningElement {
     }
 
     clearSelection() {
+        this.isCleared = true;
         this.selected = '';
         this.record = null;
         this.inputValue = '';

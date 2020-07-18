@@ -30,7 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 
 export default class DatatableLookupCell extends LightningElement {
     // LWC specific attributes
@@ -67,23 +68,44 @@ export default class DatatableLookupCell extends LightningElement {
     @api columnName;
     @api fieldApiName;
 
+    // For when lookup id changes
+    @wire(getRecord, { recordId: '$_selectedRecordId', fields: '$_titleField' })
+    lookupRecord;
+
     configIconName;
     configTitle;
     configSubtitle;
 
     // private
+    _isRendered;
+    _editableCell;
     _isCleared = false;
+    _titleField;
     _selectedRecordId;
-    _selectedDisplayValue;
 
     get cellDisplayValue() {
         if (this._isCleared) {
             return null;
         }
-        if (this._selectedDisplayValue) {
-            return this._selectedDisplayValue;
+        if (this._selectedRecordId) {
+            console.log(this.lookupRecord.data);
+            return getFieldValue(this.lookupRecord.data, this._titleField);
         }
         return this.displayValue;
+    }
+
+    renderedCallback() {
+        if (this._isRendered) {
+            return;
+        }
+        this._isRendered = true;
+        this._editableCell = this.template.querySelector('c-datatable-editable-cell');
+    }
+
+    // For mass edit
+    handleSetDraftValueForLookup(event) {
+        this._selectedRecordId = event.detail.draftValue;
+        this._isCleared = !this._selectedRecordId;
     }
 
     handleLookupConfigLoad(event) {
@@ -97,6 +119,8 @@ export default class DatatableLookupCell extends LightningElement {
             this.configIconName = cellConfig.Icon_Name__c;
             this.configTitle = cellConfig.Title_Field__c;
             this.configSubtitle = cellConfig.Subtitle_Field__c;
+            // Configure lookup changes if edit mode is used
+            this._titleField = `${this.referenceObjectApiName}.${this.configTitle}`;
         }
     }
 
@@ -104,12 +128,13 @@ export default class DatatableLookupCell extends LightningElement {
     handleReset() {
         this._isCleared = false;
         this._selectedRecordId = null;
-        this._selectedDisplayValue = null;
     }
 
     handleSelected(event) {
+        if (this._editableCell.showMassEdit) {
+            return;
+        }
         this._selectedRecordId = event.detail.selectedRecordId;
-        this._selectedDisplayValue = event.detail.selectedDisplayValue;
-        this._isCleared = !this._selectedRecordId && !this._selectedDisplayValue;
+        this._isCleared = !this._selectedRecordId;
     }
 }

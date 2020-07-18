@@ -510,6 +510,20 @@ The actual lookup edit cell is a fork of the one authored by jlyon87 as found [h
 </details>
 
 <details>
+    <summary>Column Sorting</summary>
+
+⠀
+
+Add a list of Field API names to the `sortableFields` property to enable this feature. Parent notation (one level up) is supported.
+
+Optionally, set default `Sort Field` and `Sort Direction` to have the asc/desc indicator automatically show when the table is initialized.
+
+Multi-sort and filtering will not be supported.
+
+Global search is on the roadmap (like regular list views)
+</details>
+
+<details>
     <summary>Configurable Flow and LWC actions</summary>
 
 ⠀
@@ -758,6 +772,14 @@ Define which fields can be editable in a comma separated list in the `Editable F
 
 > **Note**: All edits on `save` will **not** be saved to database. All error handling on edited rows must be handled by your flow manually.
 
+</details>
+
+<details>
+    <summary>Column Sorting</summary>
+
+⠀
+
+Same as `soqlDatatable`. See [soqlDatatable - Features and Examples](#soqldatatable---features-and-examples) for full details.
 </details>
 
 

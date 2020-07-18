@@ -172,6 +172,10 @@ export default class SoqlDatatable extends LightningElement {
     async refreshTable() {
         const cache = await this.fetchTableCache();
         if (cache) {
+            // Currently on App flexipage or $CurrentRecord API not enabled
+            if (!this._objectApiName) {
+                this._objectApiName = cache.objectApiName;
+            }
             this.initializeTable(cache);
         }
     }
@@ -211,11 +215,12 @@ export default class SoqlDatatable extends LightningElement {
                     };
                     this._mergeMap.set(original, config);
                 });
+                // Allow LDS to finish field merging queryString, starting with objectInfo
+                // Unfortunately since we can't control order of wires, we fake it with assignment of vars
+                this._objectApiName = this.objectApiName;
                 return;
             }
         }
-        // Delay getObjectInfo wire until dependencies were set
-        this._objectApiName = this.objectApiName;
         this._finalQueryString = this.queryString;
         this.validateQueryStringAndInitialize();
     }
@@ -272,6 +277,9 @@ export default class SoqlDatatable extends LightningElement {
 
     _getCleanRow(row) {
         for (let fieldName in row) {
+            if (typeof row[fieldName] === 'object') {
+                continue;
+            }
             if (!this._objectFieldsMap.has(fieldName)) {
                 delete row[fieldName];
             }

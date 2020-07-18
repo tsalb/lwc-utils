@@ -197,6 +197,9 @@ export default class CollectionDatatable extends LightningElement {
 
     _getCleanRow(row) {
         for (let fieldName in row) {
+            if (typeof row[fieldName] === 'object') {
+                continue;
+            }
             if (!this._objectFieldsMap.has(fieldName)) {
                 delete row[fieldName];
             }

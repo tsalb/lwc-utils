@@ -88,10 +88,17 @@ export default class DatatableLookupCell extends LightningElement {
             return null;
         }
         if (this._selectedRecordId) {
-            console.log(this.lookupRecord.data);
-            return getFieldValue(this.lookupRecord.data, this._titleField);
+            return this.lookupTitleField;
+        }
+        if (this.value && !this.displayValue) {
+            this._selectedRecordId = this.value;
+            return this.lookupTitleField;
         }
         return this.displayValue;
+    }
+
+    get lookupTitleField() {
+        return getFieldValue(this.lookupRecord.data, this._titleField);
     }
 
     renderedCallback() {
@@ -128,6 +135,8 @@ export default class DatatableLookupCell extends LightningElement {
     handleReset() {
         this._isCleared = false;
         this._selectedRecordId = null;
+        // Force template refresh
+        this.target = this.target;
     }
 
     handleSelected(event) {

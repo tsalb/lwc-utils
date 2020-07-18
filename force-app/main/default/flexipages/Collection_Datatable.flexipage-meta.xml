@@ -9,20 +9,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>flowName</name>
-                    <value>Collection_Datatable_Show_a_Record_Collection_Without_CalculateFormulas</value>
-                </componentInstanceProperties>
-                <componentName>flowruntime:interview</componentName>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>flowLayout</name>
-                    <value>oneColumn</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>flowName</name>
-                    <value>Collection_Datatable_Show_a_Record_Collection_With_CalculateFormulas</value>
+                    <value>Collection_Datatable_Manipulate_a_Record_Collection</value>
                 </componentInstanceProperties>
                 <componentName>flowruntime:interview</componentName>
             </componentInstance>

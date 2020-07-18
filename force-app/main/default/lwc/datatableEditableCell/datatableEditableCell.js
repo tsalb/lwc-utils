@@ -124,7 +124,7 @@ export default class DatatableEditableCell extends LightningElement {
         const currentInputValue = this._editElement[this.editCellValueProp];
         const isAppliedToMultipleRows = this.template.querySelector('.mass-input-checkbox').checked;
 
-        console.log(currentInputValue);
+        //console.log(currentInputValue);
 
         if (isAppliedToMultipleRows) {
             let rowIdentifierToValues = {};
@@ -230,7 +230,7 @@ export default class DatatableEditableCell extends LightningElement {
             this._displayElement[this.displayCellValueProp] = this.cellDisplayValue;
         }
         if (this._displayElement.name === 'lookup-display') {
-            this.dispatchEvent(new CustomEvent('reset'));
+            this.dispatchEvent(new CustomEvent('resetforlookup'));
         }
     }
 

@@ -52,13 +52,6 @@ const ROW_ACTION_CHECK = 'Row Action';
 // Datatable_Lookup_Config__mdt
 const DATATABLE_LOOKUP_CONFIG_DEFAULT = 'Default_Lookup_Config';
 
-// HACK ALERT START
-// Currently, there is no way to to inject css into a base component, lightning-datatable
-// This is needed to support overflow of customPicklist and customLookup when there are only a few rows
-import datatableStyleOverrides from '@salesforce/resourceUrl/Datatable_CSS_Override';
-import { loadStyle } from 'lightning/platformResourceLoader';
-// HACK ALERT END
-
 export default class Datatable extends LightningElement {
     @api recordId;
     @api
@@ -276,7 +269,6 @@ export default class Datatable extends LightningElement {
         }
         this._isRendered = true;
         this._messageService = this.template.querySelector('c-message-service');
-        loadStyle(this, datatableStyleOverrides + '/datatable.css');
     }
 
     // Event Handlers
@@ -595,11 +587,9 @@ export default class Datatable extends LightningElement {
                 }
             }
             if (col.type === 'customLookup') {
-                if (col.typeAttributes.isEditable) {
-                    // Warm the cache with a variable assignment for each c-datatable-lookup-cell
-                    // messageService then publishes this to each one when the edit mode is accessed
-                    this._lookupConfigDevName = this.lookupConfigDevName || DATATABLE_LOOKUP_CONFIG_DEFAULT;
-                }
+                // Warm the cache with a variable assignment for each c-datatable-lookup-cell
+                // messageService then publishes this to each one when the edit mode is accessed
+                this._lookupConfigDevName = this.lookupConfigDevName || DATATABLE_LOOKUP_CONFIG_DEFAULT;
             }
             finalColumns.push(col);
         }

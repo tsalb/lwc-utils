@@ -1,7 +1,0 @@
-/** LWC loadStyle hack
-*  https://salesforce.stackexchange.com/questions/246887/target-inner-elements-of-standard-lightning-web-components-with-css/252852#252852
-*/
-div.slds-scrollable_y {
-    overflow-y: visible !important;
-    overflow-x: visible !important;
-}

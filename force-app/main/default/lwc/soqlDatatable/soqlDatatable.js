@@ -88,6 +88,7 @@ export default class SoqlDatatable extends LightningElement {
 
     // Table and Row Actions
     @api actionConfigDevName;
+
     /// For inline edit lookup search behavior
     @api lookupConfigDevName;
 
@@ -116,9 +117,10 @@ export default class SoqlDatatable extends LightningElement {
     _mergeMap = new Map();
     _objectApiName;
     _objectInfo;
+    _objectFieldsMap = new Map();
     _getRecordFields = [];
 
-    // Goes first if there is a $CurrentRecord in the SOQL String
+    // Goes first
     @wire(getObjectInfo, { objectApiName: '$_objectApiName' })
     currentObjectWire({ error, data }) {
         if (error) {
@@ -126,9 +128,17 @@ export default class SoqlDatatable extends LightningElement {
         } else if (data) {
             this._objectInfo = data;
             console.log(this._objectInfo);
-            this._getRecordFields = Array.from(this._mergeMap.values()).map(
-                config => config.objectQualifiedFieldApiName
-            );
+
+            // For cleaning columns on output
+            this._objectFieldsMap = new Map(Object.entries(this._objectInfo.fields));
+            console.log(this._objectFieldsMap);
+
+            // For merge values in the queryString
+            if (this.isRecordBind && this.queryString.includes('$CurrentRecord')) {
+                this._getRecordFields = Array.from(this._mergeMap.values()).map(
+                    config => config.objectQualifiedFieldApiName
+                );
+            }
         }
     }
 
@@ -201,12 +211,11 @@ export default class SoqlDatatable extends LightningElement {
                     };
                     this._mergeMap.set(original, config);
                 });
-                // Allow LDS to finish field merging queryString, starting with objectInfo
-                // Unfortunately since we can't control order of wires, we fake it with assignment of vars
-                this._objectApiName = this.objectApiName;
                 return;
             }
         }
+        // Delay getObjectInfo wire until dependencies were set
+        this._objectApiName = this.objectApiName;
         this._finalQueryString = this.queryString;
         this.validateQueryStringAndInitialize();
     }
@@ -246,14 +255,28 @@ export default class SoqlDatatable extends LightningElement {
     // Event Handlers
 
     handleRowSelection(event) {
-        this.selectedRows = event.detail.selectedRows;
-        this.firstSelectedRow = event.detail.selectedRows[0];
-        this.dispatchEvent(new FlowAttributeChangeEvent('selectedRows', this.selectedRows));
-        this.dispatchEvent(new FlowAttributeChangeEvent('firstSelectedRow', this.firstSelectedRow));
+        if (event.detail.selectedRows && event.detail.selectedRows.length) {
+            this.selectedRows = event.detail.selectedRows.map(row => this._getCleanRow(row));
+            this.firstSelectedRow = this._getCleanRow(event.detail.selectedRows[0]);
+            this.dispatchEvent(new FlowAttributeChangeEvent('selectedRows', this.selectedRows));
+            this.dispatchEvent(new FlowAttributeChangeEvent('firstSelectedRow', this.firstSelectedRow));
+            console.log(JSON.parse(JSON.stringify(this.selectedRows)));
+        }
     }
 
     handleRefresh() {
         this.refreshTable();
+    }
+
+    // Private functions
+
+    _getCleanRow(row) {
+        for (let fieldName in row) {
+            if (!this._objectFieldsMap.has(fieldName)) {
+                delete row[fieldName];
+            }
+        }
+        return row;
     }
 
     // Private toast functions

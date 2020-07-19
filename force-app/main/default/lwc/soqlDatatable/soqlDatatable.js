@@ -88,6 +88,7 @@ export default class SoqlDatatable extends LightningElement {
 
     // Table and Row Actions
     @api actionConfigDevName;
+
     /// For inline edit lookup search behavior
     @api lookupConfigDevName;
 
@@ -116,9 +117,10 @@ export default class SoqlDatatable extends LightningElement {
     _mergeMap = new Map();
     _objectApiName;
     _objectInfo;
+    _objectFieldsMap = new Map();
     _getRecordFields = [];
 
-    // Goes first if there is a $CurrentRecord in the SOQL String
+    // Goes first
     @wire(getObjectInfo, { objectApiName: '$_objectApiName' })
     currentObjectWire({ error, data }) {
         if (error) {
@@ -126,9 +128,17 @@ export default class SoqlDatatable extends LightningElement {
         } else if (data) {
             this._objectInfo = data;
             console.log(this._objectInfo);
-            this._getRecordFields = Array.from(this._mergeMap.values()).map(
-                config => config.objectQualifiedFieldApiName
-            );
+
+            // For cleaning columns on output
+            this._objectFieldsMap = new Map(Object.entries(this._objectInfo.fields));
+            console.log(this._objectFieldsMap);
+
+            // For merge values in the queryString
+            if (this.isRecordBind && this.queryString.includes('$CurrentRecord')) {
+                this._getRecordFields = Array.from(this._mergeMap.values()).map(
+                    config => config.objectQualifiedFieldApiName
+                );
+            }
         }
     }
 
@@ -162,11 +172,15 @@ export default class SoqlDatatable extends LightningElement {
     async refreshTable() {
         const cache = await this.fetchTableCache();
         if (cache) {
+            // Currently on App flexipage or $CurrentRecord API not enabled
+            if (!this._objectApiName) {
+                this._objectApiName = cache.objectApiName;
+            }
             this.initializeTable(cache);
         }
     }
 
-    async connectedCallback() {
+    connectedCallback() {
         if (!this.queryString) {
             return;
         }
@@ -246,14 +260,31 @@ export default class SoqlDatatable extends LightningElement {
     // Event Handlers
 
     handleRowSelection(event) {
-        this.selectedRows = event.detail.selectedRows;
-        this.firstSelectedRow = event.detail.selectedRows[0];
-        this.dispatchEvent(new FlowAttributeChangeEvent('selectedRows', this.selectedRows));
-        this.dispatchEvent(new FlowAttributeChangeEvent('firstSelectedRow', this.firstSelectedRow));
+        if (event.detail.selectedRows && event.detail.selectedRows.length) {
+            this.selectedRows = event.detail.selectedRows.map(row => this._getCleanRow(row));
+            this.firstSelectedRow = this._getCleanRow(event.detail.selectedRows[0]);
+            this.dispatchEvent(new FlowAttributeChangeEvent('selectedRows', this.selectedRows));
+            this.dispatchEvent(new FlowAttributeChangeEvent('firstSelectedRow', this.firstSelectedRow));
+            console.log(JSON.parse(JSON.stringify(this.selectedRows)));
+        }
     }
 
     handleRefresh() {
         this.refreshTable();
+    }
+
+    // Private functions
+
+    _getCleanRow(row) {
+        for (let fieldName in row) {
+            if (typeof row[fieldName] === 'object') {
+                continue;
+            }
+            if (!this._objectFieldsMap.has(fieldName)) {
+                delete row[fieldName];
+            }
+        }
+        return row;
     }
 
     // Private toast functions

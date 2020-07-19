@@ -122,12 +122,14 @@ export default class DatatableLookupCell extends LightningElement {
             const cellConfig = lookupMap.has(this.referenceObjectApiName)
                 ? lookupMap.get(this.referenceObjectApiName)
                 : lookupMap.get('All');
-            // Send these down to the open source component
-            this.configIconName = cellConfig.Icon_Name__c;
-            this.configTitle = cellConfig.Title_Field__c;
-            this.configSubtitle = cellConfig.Subtitle_Field__c;
-            // Configure lookup changes if edit mode is used
-            this._titleField = `${this.referenceObjectApiName}.${this.configTitle}`;
+            if (cellConfig) {
+                // Send these down to the open source component
+                this.configIconName = cellConfig.Icon_Name__c;
+                this.configTitle = cellConfig.Title_Field__c;
+                this.configSubtitle = cellConfig.Subtitle_Field__c;
+                // Configure lookup changes if edit mode is used
+                this._titleField = `${this.referenceObjectApiName}.${this.configTitle}`;
+            }
         }
     }
 

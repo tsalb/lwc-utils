@@ -180,7 +180,7 @@ export default class SoqlDatatable extends LightningElement {
         }
     }
 
-    async connectedCallback() {
+    connectedCallback() {
         if (!this.queryString) {
             return;
         }

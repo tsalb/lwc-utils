@@ -59,4 +59,18 @@ export default class DatatablePicklistCell extends LightningElement {
     @api objectApiName;
     @api columnName;
     @api fieldApiName;
+
+    // private
+    _picklistRecordTypeId;
+
+    // Event Handlers
+
+    handlePicklistConfigLoad(event) {
+        const payload = event.detail.value;
+        if (payload.recordTypeIdMap) {
+            const rtMap = new Map(Object.entries(payload.recordTypeIdMap));
+            // TODO make recordId always included, when available, to customPicklist datatype. For now, this is OK.
+            this._picklistRecordTypeId = rtMap.get(this.rowKeyValue);
+        }
+    }
 }

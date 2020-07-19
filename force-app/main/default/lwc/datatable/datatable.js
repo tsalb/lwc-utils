@@ -591,6 +591,10 @@ export default class Datatable extends LightningElement {
                 // messageService then publishes this to each one when the edit mode is accessed
                 this._lookupConfigDevName = this.lookupConfigDevName || DATATABLE_LOOKUP_CONFIG_DEFAULT;
             }
+            // Never show the auto-queried RecordTypeId
+            if (col.fieldName.toLowerCase() === 'recordtypeid') {
+                continue;
+            }
             finalColumns.push(col);
         }
         if (this.showRowMenuActions) {

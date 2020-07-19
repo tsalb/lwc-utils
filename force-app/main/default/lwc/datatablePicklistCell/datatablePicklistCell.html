@@ -33,6 +33,12 @@
 -->
 
 <template>
+    <!-- prettier-ignore -->
+    <c-message-service 
+        boundary={tableBoundary}
+        onpicklistconfigload={handlePicklistConfigLoad}
+    ></c-message-service>
+
     <c-datatable-editable-cell
         table-boundary={tableBoundary}
         original-value={value}
@@ -46,7 +52,11 @@
         field-api-name={fieldApiName}
         change-event-name="selected"
     >
-        <lightning-formatted-text slot="displayCell" value={value}></lightning-formatted-text>
+        <!-- prettier-ignore -->
+        <lightning-formatted-text
+            slot="displayCell"
+            value={value}
+        ></lightning-formatted-text>
         <c-picklist
             name="picklist-edit"
             slot="editCell"

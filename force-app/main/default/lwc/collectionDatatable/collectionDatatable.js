@@ -33,8 +33,11 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord } from 'lightning/uiRecordApi';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
-import getDisplayTypeMap from '@salesforce/apex/DataTableService.getDisplayTypeMap';
 import { generateUUID, reduceErrors, createFlattenedSetFromDelimitedString } from 'c/utils';
+
+// Background services from apex
+import getDisplayTypeMap from '@salesforce/apex/DataTableService.getDisplayTypeMap';
+import getRecordTypeIdMap from '@salesforce/apex/DataTableService.getRecordTypeIdMap';
 
 // Toast and Errors
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -74,6 +77,9 @@ export default class CollectionDatatable extends LightningElement {
     _isRendered;
     _messageService;
     _displayTypeMap = new Map();
+    _initializationType;
+    _hasCustomPicklist;
+    _recordTypeIdMap = new Map();
     _singleRecordId;
     _objectApiName;
     _objectInfo;
@@ -95,16 +101,12 @@ export default class CollectionDatatable extends LightningElement {
         // Use the serverside configured display map for column creation client-side
         this._displayTypeMap = new Map(Object.entries(await getDisplayTypeMap()));
 
-        // Collections can be either from a getRecord (which will contain Ids) or Record (Single) collection.
+        // Collections can be either from a Get Record element or un-inserted Record Collection.
         const recordIdRow = this.recordCollection.find(row => row.hasOwnProperty('Id'));
-
-        // Should ever only be one or the other, unless I learn some new things about how flow works
         if (recordIdRow) {
-            this.initializeFromWire(recordIdRow.Id);
+            this.initializeFromRecordId(recordIdRow.Id);
         } else {
-            // TODO - this should be a fallback if no objectApiName was given by the configuration
-            // ALSO TODO - surface an object api name prop on this design file
-            // this.initializeFromCollection()
+            this.initializeFromCollection();
         }
     }
 
@@ -116,13 +118,16 @@ export default class CollectionDatatable extends LightningElement {
         this._messageService = this.template.querySelector('c-message-service');
     }
 
-    initializeFromWire(recordId) {
+    async initializeFromRecordId(recordId) {
+        this._initializationType = 'recordId';
+        // Start the wire now
         this._singleRecordId = recordId;
     }
 
-    // initializeFromCollection(objectApiName) {
-    //     this._objectApiName = objectApiName;
-    // }
+    initializeFromCollection() {
+        this._initializationType = 'collection';
+        // todo
+    }
 
     @wire(getRecord, { recordId: '$_singleRecordId', layoutTypes: 'Compact' })
     wiredSingleRecord({ error, data }) {
@@ -159,13 +164,21 @@ export default class CollectionDatatable extends LightningElement {
             );
             console.log(this._referenceFieldsMap);
 
+            // Columns need special flags set within them for custom data types
             const columns = [];
             this.shownFields.forEach(fieldName => {
                 columns.push(this._createBaseColumnAttribute(fieldName));
             });
+
+            // We initialize the table first
             this.template
                 .querySelector('c-datatable')
                 .initializeTable(this._objectApiName, columns, this.recordCollection);
+
+            // Then check if we need to send some recordTypeId payload to the customPicklist data types
+            if (this._initializationType === 'recordId' && this._hasCustomPicklist) {
+                this._initializeRecordTypeIds();
+            }
         }
     }
 
@@ -221,7 +234,7 @@ export default class CollectionDatatable extends LightningElement {
                 typeAttributes: {
                     columnName: hasConfig ? fieldConfig.apiName : fieldName,
                     fieldApiName: hasConfig ? fieldConfig.apiName : fieldName,
-                    // objectApiName: not sure how to do this one yet
+                    objectApiName: this._objectApiName,
                     href: { fieldName: fieldName },
                     target: '_parent',
                     displayValue: { fieldName: this._referenceFieldsMap.get(fieldName) },
@@ -231,17 +244,36 @@ export default class CollectionDatatable extends LightningElement {
             columnDefinition = { ...columnDefinition, ...lookupTypeAttributes };
         }
         if (columnDefinition.type === 'customPicklist') {
-            // const picklistTypeAttributes = {
-            //     typeAttributes: {
-            //         columnName: hasConfig ? fieldConfig.apiName : fieldName,
-            //         fieldApiName: hasConfig ? fieldConfig.apiName : fieldName,
-            //         picklistRecordTypeId: 'oof not sure how to get this yet'
-            //     }
-            // };
-            // columnDefinition = { ...columnDefinition, ...picklistTypeAttributes };
+            this._hasCustomPicklist = true;
+            const picklistTypeAttributes = {
+                typeAttributes: {
+                    columnName: hasConfig ? fieldConfig.apiName : fieldName,
+                    fieldApiName: hasConfig ? fieldConfig.apiName : fieldName,
+                    objectApiName: this._objectApiName
+                }
+            };
+            columnDefinition = { ...columnDefinition, ...picklistTypeAttributes };
         }
         console.log(columnDefinition);
         return columnDefinition;
+    }
+
+    async _initializeRecordTypeIds() {
+        // JS Maps don't travel well over messageService, so we send it in its original form
+        const recordTypeIdMap = await getRecordTypeIdMap({ recordIds: this.recordCollection.map(row => row.Id) });
+
+        // Store it here for future roadmap if necessary
+        this._recordTypeIdMap = new Map(Object.entries(recordTypeIdMap));
+
+        // Size check is easier on the converted type
+        if (this._recordTypeIdMap.size) {
+            // Picklist columns should have been initialized now.
+            // If this breaks, we need datatable.js to initiate this instead
+            this._messageService.publish({
+                key: 'picklistconfigload',
+                value: { recordTypeIdMap: recordTypeIdMap }
+            });
+        }
     }
 
     _notifySingleError(title, error) {

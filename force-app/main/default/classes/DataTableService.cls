@@ -77,6 +77,9 @@ public inherited sharing class DataTableService {
     private static final String DATATABLE_ACTION_CONFIG_TYPE = 'Actions';
     private static final String DATATABLE_LOOKUP_CONFIG_TYPE = 'Lookups';
 
+    // TODO move to custom metadata config later for performance tuning
+    private static final Integer ROW_LIMITER = 500;
+
     @AuraEnabled(cacheable=true)
     public static String getQueryExceptionMessage(String queryString) {
         System.debug(LoggingLevel.INFO, 'getQueryExceptionMessage queryString is: ' + queryString);
@@ -96,6 +99,31 @@ public inherited sharing class DataTableService {
             result.put(String.valueOf(type), DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(type));
         }
         return result;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Map<Id, Id> getRecordTypeIdMap(List<Id> recordIds) {
+        Map<Id, Id> recordTypeIdMap = new Map<Id, Id>();
+
+        // Validate
+        Set<String> objectNames = new Set<String>();
+        for (Id recordId : recordIds) {
+            objectNames.add(recordId.getSobjectType().getDescribe().getName());
+        }
+        if (objectNames.size() != 1) {
+            throw new DataTableServiceException('Only one type of SObject is allowed.');
+        }
+
+        // And then check if we need this
+        String objectName = new List<String>(objectNames)[0];
+        Boolean hasRecordTypes = DataTableService.recordTypeIdsForObject(objectName).size() > 1;
+        if (hasRecordTypes) {
+            String queryString = 'SELECT Id, RecordTypeId FROM ' + objectName + ' LIMIT ' + ROW_LIMITER;
+            for (SObject obj : Database.query(queryString)) {
+                recordTypeIdMap.put(obj.Id, (Id) obj.get('RecordTypeId'));
+            }
+        }
+        return recordTypeIdMap;
     }
 
     @AuraEnabled(cacheable=true)
@@ -138,7 +166,7 @@ public inherited sharing class DataTableService {
     @AuraEnabled
     public static Map<String, Object> getTableCache(Map<String, Object> tableRequest) {
         if (!tableRequest.containsKey(QUERY_STRING_KEY)) {
-            throw new AuraHandledException('Missing Query.');
+            throw new DataTableServiceException('Missing Query.');
         }
         // Gather Schema information from incoming query string
         String queryString = (String) tableRequest.get(QUERY_STRING_KEY);
@@ -199,7 +227,12 @@ public inherited sharing class DataTableService {
      * @return             [List of dynamically queried SObjects]
      */
     private static List<SObject> getSObjectDataFromQueryString(String queryString) {
+        // Safety first
         String.escapeSingleQuotes(queryString);
+        // Performance second
+        if (!queryString.containsIgnoreCase(' LIMIT ')) {
+            queryString += ' LIMIT ' + ROW_LIMITER;
+        }
         System.debug(LoggingLevel.INFO, 'getSObjectDataFromQueryString FINAL queryString is: ' + queryString);
         return Database.query(queryString);
     }
@@ -227,7 +260,7 @@ public inherited sharing class DataTableService {
         try {
             return Database.query(queryString);
         } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
+            throw new DataTableServiceException(e.getMessage());
         }
     }
 
@@ -304,7 +337,7 @@ public inherited sharing class DataTableService {
             String columnType = String.valueOf(fieldColumn.get('type'));
 
             if (columnType.equalsIgnoreCase('location')) {
-                throw new AuraHandledException(
+                throw new DataTableServiceException(
                     'Geolocation fields must be queried with __Longitude__s and __Latitude__s suffixes.'
                 );
             }
@@ -404,5 +437,8 @@ public inherited sharing class DataTableService {
             }
         }
         return cleanFieldName.replace('__c', '__r') + '.' + nameField.getDescribe().getName();
+    }
+
+    private class DataTableServiceException extends Exception {
     }
 }

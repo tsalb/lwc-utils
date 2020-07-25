@@ -67,10 +67,6 @@ export default class Datatable extends LightningElement {
     // MessageService boundary, for when multiple instances are on same page
     @api uniqueBoundary;
 
-    // SOQL
-    @api queryString;
-    @api isRecordBind = false;
-
     // Misc
     @api columnWidthsMode = 'auto'; // override salesforce default
     @api showRefreshButton = false;

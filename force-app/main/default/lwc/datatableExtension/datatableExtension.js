@@ -96,7 +96,7 @@ export default class datatableExtension extends LightningDatatable {
             template: customFormula,
             typeAttributes: [
                 // LWC specific attributes
-                'hyperlinked',
+                'isHtmlFormula',
                 // Defaults
                 'tableBoundary',
                 'rowKeyAttribute',

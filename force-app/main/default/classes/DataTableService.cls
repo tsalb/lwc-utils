@@ -339,10 +339,13 @@ public inherited sharing class DataTableService {
             // Formula fields may output text links via the HYPERLINK formula
             if (field.isCalculated() && columnType.equalsIgnoreCase('text')) {
                 String formulaValue = field.getCalculatedFormula();
-                if (String.isNotBlank(formulaValue) && formulaValue.containsIgnoreCase('hyperlink')) {
+                if (
+                    String.isNotBlank(formulaValue) &&
+                    (formulaValue.containsIgnoreCase('hyperlink') || formulaValue.containsIgnoreCase('image'))
+                ) {
                     fieldColumn.put('type', 'customFormula');
                     Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);
-                    typeAttributes.put('hyperlinked', true);
+                    typeAttributes.put('isHtmlFormula', true);
                     fieldColumn.put('typeAttributes', typeAttributes);
                 }
             }

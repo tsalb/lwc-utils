@@ -34,7 +34,7 @@ import { LightningElement, api } from 'lwc';
 
 export default class DatatableFormulaCell extends LightningElement {
     // LWC specific
-    @api isHyperlink;
+    @api isHtmlFormula;
 
     // Defaults for custom data type
     @api value; // comes in from datatable as the value of the name field
@@ -55,7 +55,7 @@ export default class DatatableFormulaCell extends LightningElement {
         this._isRendered = true;
         const container = this.template.querySelector('.container');
 
-        if (this.isHyperlink && this.value) {
+        if (this.isHtmlFormula && this.value) {
             container.innerHTML = this.value;
         }
     }

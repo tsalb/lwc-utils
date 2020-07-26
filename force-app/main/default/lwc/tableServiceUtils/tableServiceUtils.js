@@ -105,7 +105,7 @@ const createDataTableError = (datatableErrorRows, recordIdToRowNumberMap) => {
     for (let [key, value] of errorMap.entries()) {
         value.rowNumber = recordIdToRowNumberMap.get(key);
         value.messages.forEach(msg => {
-            tableMessages.push(`Row ${value.rowNumber} ${msg}`);
+            tableMessages.push(`Row ${value.rowNumber}: ${msg}`);
         });
     }
     return {

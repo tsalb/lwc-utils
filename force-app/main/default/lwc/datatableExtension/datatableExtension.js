@@ -36,6 +36,7 @@ import LightningDatatable from 'lightning/datatable';
 import customName from './customName.html';
 import customPicklist from './customPicklist.html';
 import customLookup from './customLookup.html';
+import customFormula from './customFormula.html';
 
 export default class datatableExtension extends LightningDatatable {
     static customTypes = {
@@ -45,7 +46,7 @@ export default class datatableExtension extends LightningDatatable {
                 // LWC specific attributes
                 'href',
                 'target',
-                // Defaults for datatable-edit-cell
+                // Defaults
                 'tableBoundary',
                 'rowKeyAttribute',
                 'rowKeyValue',
@@ -63,7 +64,7 @@ export default class datatableExtension extends LightningDatatable {
                 // After a lot of random debugging, it appears that recordTypeId is a reserved typeAttribute
                 // which is not passed down correctly if used, so the workaround is to use something more custom
                 'picklistRecordTypeId',
-                // Defaults for datatable-edit-cell
+                // Defaults
                 'tableBoundary',
                 'rowKeyAttribute',
                 'rowKeyValue',
@@ -81,11 +82,25 @@ export default class datatableExtension extends LightningDatatable {
                 'target',
                 'displayValue',
                 'referenceObjectApiName',
-                // Defaults for datatable-edit-cell
+                // Defaults
                 'tableBoundary',
                 'rowKeyAttribute',
                 'rowKeyValue',
                 'isEditable',
+                'objectApiName',
+                'columnName',
+                'fieldApiName'
+            ]
+        },
+        customFormula: {
+            template: customFormula,
+            typeAttributes: [
+                // LWC specific attributes
+                'hyperlinked',
+                // Defaults
+                'tableBoundary',
+                'rowKeyAttribute',
+                'rowKeyValue',
                 'objectApiName',
                 'columnName',
                 'fieldApiName'

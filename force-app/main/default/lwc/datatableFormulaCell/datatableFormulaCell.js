@@ -1,4 +1,3 @@
-<!--
 /**
  * BSD 3-Clause License
  *
@@ -30,29 +29,34 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
--->
 
-<template>
-    <c-message-service boundary={uniqueBoundary} onrefreshsoqldatatable={handleRefresh}></c-message-service>
+import { LightningElement, api } from 'lwc';
 
-    <c-datatable
-        unique-boundary={uniqueBoundary}
-        is-save-to-server
-        key-field="Id"
-        title={title}
-        record-id={recordId}
-        show-record-count={showRecordCount}
-        show-refresh-button={showRefreshButton}
-        checkbox-type={checkboxType}
-        editable-fields={editableFields}
-        sortable-fields={sortableFields}
-        sorted-by={sortedBy}
-        sorted-direction={sortedDirection}
-        onrowselection={handleRowSelection}
-        onrefresh={handleRefresh}
-        show-spinner={showSpinner}
-        action-config-dev-name={actionConfigDevName}
-        lookup-config-dev-name={lookupConfigDevName}
-        use-relative-max-height={useRelativeMaxHeight}
-    ></c-datatable>
-</template>
+export default class DatatableFormulaCell extends LightningElement {
+    // LWC specific
+    @api isHyperlink;
+
+    // Defaults for custom data type
+    @api value; // comes in from datatable as the value of the name field
+    @api tableBoundary;
+    @api rowKeyAttribute;
+    @api rowKeyValue;
+    @api objectApiName;
+    @api columnName;
+    @api fieldApiName;
+
+    // private
+    _isRendered;
+
+    renderedCallback() {
+        if (this._isRendered) {
+            return;
+        }
+        this._isRendered = true;
+        const container = this.template.querySelector('.container');
+
+        if (this.isHyperlink && this.value) {
+            container.innerHTML = this.value;
+        }
+    }
+}

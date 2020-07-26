@@ -33,26 +33,14 @@
 -->
 
 <template>
-    <c-message-service boundary={uniqueBoundary} onrefreshsoqldatatable={handleRefresh}></c-message-service>
-
-    <c-datatable
-        unique-boundary={uniqueBoundary}
-        is-save-to-server
-        key-field="Id"
-        title={title}
-        record-id={recordId}
-        show-record-count={showRecordCount}
-        show-refresh-button={showRefreshButton}
-        checkbox-type={checkboxType}
-        editable-fields={editableFields}
-        sortable-fields={sortableFields}
-        sorted-by={sortedBy}
-        sorted-direction={sortedDirection}
-        onrowselection={handleRowSelection}
-        onrefresh={handleRefresh}
-        show-spinner={showSpinner}
-        action-config-dev-name={actionConfigDevName}
-        lookup-config-dev-name={lookupConfigDevName}
-        use-relative-max-height={useRelativeMaxHeight}
-    ></c-datatable>
+    <c-datatable-formula-cell
+        is-hyperlink={typeAttributes.hyperlinked}
+        value={value}
+        table-boundary={typeAttributes.tableBoundary}
+        row-key-attribute={typeAttributes.rowKeyAttribute}
+        row-key-value={typeAttributes.rowKeyValue}
+        object-api-name={typeAttributes.objectApiName}
+        column-name={typeAttributes.columnName}
+        field-api-name={typeAttributes.fieldApiName}
+    ></c-datatable-formula-cell>
 </template>

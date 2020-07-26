@@ -336,6 +336,17 @@ public inherited sharing class DataTableService {
             // Some native data types need some default typeAttributes
             String columnType = String.valueOf(fieldColumn.get('type'));
 
+            // Formula fields may output text links via the HYPERLINK formula
+            if (field.isCalculated() && columnType.equalsIgnoreCase('text')) {
+                String formulaValue = field.getCalculatedFormula();
+                if (String.isNotBlank(formulaValue) && formulaValue.containsIgnoreCase('hyperlink')) {
+                    fieldColumn.put('type', 'customFormula');
+                    Map<String, Object> typeAttributes = getTypeAttributes(fieldColumn);
+                    typeAttributes.put('hyperlinked', true);
+                    fieldColumn.put('typeAttributes', typeAttributes);
+                }
+            }
+
             if (columnType.equalsIgnoreCase('location')) {
                 throw new DataTableServiceException(
                     'Geolocation fields must be queried with __Longitude__s and __Latitude__s suffixes.'

@@ -141,8 +141,8 @@ export default class Datatable extends LightningElement {
     secondaryConfig = {};
     rowActionConfigs = [];
 
-    get recordCount() {
-        return this.tableData ? this.tableData.length : 0;
+    get recordCountDisplay() {
+        return this.tableData && this.tableData.length ? `(${this.tableData.length})` : '';
     }
 
     get hasActions() {

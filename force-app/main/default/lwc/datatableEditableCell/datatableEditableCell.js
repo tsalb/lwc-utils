@@ -70,6 +70,10 @@ export default class DatatableEditableCell extends LightningElement {
         );
     }
 
+    get isViewMode() {
+        return !this.isEditMode;
+    }
+
     get checkboxLabel() {
         return `Update ${this.selectedRows.length} selected items`;
     }
@@ -100,7 +104,13 @@ export default class DatatableEditableCell extends LightningElement {
             event.preventDefault();
             return;
         }
-        this.showEditIcon = event.type === 'mouseenter';
+        const isEnter = event.type === 'mouseenter';
+        this.showEditIcon = isEnter;
+        if (isEnter) {
+            event.target.classList.add('hover-bg');
+        } else {
+            event.target.classList.remove('hover-bg');
+        }
     }
 
     enableEditMode() {
@@ -325,7 +335,7 @@ export default class DatatableEditableCell extends LightningElement {
     // Class Expressions
 
     get calculateLayoutClass() {
-        let css = 'slds-p-horizontal_xx-small slds-has-flexi-truncate ';
+        let css = 'slds-p-horizontal_x-small slds-has-flexi-truncate ';
         if (this.draftValue || this._isCleared) {
             css += 'slds-is-edited';
         }

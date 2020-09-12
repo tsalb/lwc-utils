@@ -40,11 +40,12 @@
         oncanceldraft={handleCancelDraftValue}
     ></c-message-service>
 
+    <!-- Container element that listens to clicks inside and outside -->
     <section onmouseenter={toggleShowEditIcon} onmouseleave={toggleShowEditIcon}>
-        <lightning-layout horizontal-align="spread" class={calculateLayoutClass}>
-            <template if:false={isEditMode}>
+        <template if:true={isViewMode}>
+            <lightning-layout horizontal-align="spread" class={calculateLayoutClass}>
                 <slot name="displayCell" onslotchange={handleDisplayCellSlotChange}>
-                    <!-- display contents goes here -->
+                    <!-- display lwc here -->
                 </slot>
                 <lightning-button-icon
                     class={calculateEditIconClass}
@@ -53,41 +54,39 @@
                     alternative-text="Edit"
                     onclick={enableEditMode}
                 ></lightning-button-icon>
-            </template>
-            <template if:true={isEditMode}>
-                <div class="slds-dropdown slds-dropdown_left cell-dropdown">
-                    <lightning-layout multiple-rows>
-                        <lightning-layout-item size="12">
-                            <slot name="editCell" onslotchange={handleEditCellSlotChange}>
-                                <!-- edit mode lwc goes here -->
-                            </slot>
-                        </lightning-layout-item>
-                        <template if:true={showMassEdit}>
-                            <lightning-layout-item size="12">
-                                <lightning-input
-                                    class="mass-input-checkbox slds-p-around_xx-small"
-                                    type="checkbox"
-                                    label={checkboxLabel}
-                                ></lightning-input>
-                                <div class="slds-popover__footer">
-                                    <lightning-layout horizontal-align="end">
-                                        <lightning-button
-                                            class="slds-p-right_xx-small"
-                                            label="Cancel"
-                                            onclick={handleMassEditCancel}
-                                        ></lightning-button>
-                                        <lightning-button
-                                            label="Apply"
-                                            variant="brand"
-                                            onclick={handleMassEditApply}
-                                        ></lightning-button>
-                                    </lightning-layout>
-                                </div>
-                            </lightning-layout-item>
-                        </template>
-                    </lightning-layout>
-                </div>
-            </template>
-        </lightning-layout>
+            </lightning-layout>
+        </template>
+        <template if:true={isEditMode}>
+            <lightning-layout multiple-rows class="slds-dropdown slds-dropdown_left cell-dropdown">
+                <lightning-layout-item size="12">
+                    <slot name="editCell" onslotchange={handleEditCellSlotChange}>
+                        <!-- edit lwc here -->
+                    </slot>
+                </lightning-layout-item>
+                <template if:true={showMassEdit}>
+                    <lightning-layout-item size="12">
+                        <lightning-input
+                            class="mass-input-checkbox slds-p-around_xx-small"
+                            type="checkbox"
+                            label={checkboxLabel}
+                        ></lightning-input>
+                        <div class="slds-popover__footer">
+                            <lightning-layout horizontal-align="end">
+                                <lightning-button
+                                    class="slds-p-right_xx-small"
+                                    label="Cancel"
+                                    onclick={handleMassEditCancel}
+                                ></lightning-button>
+                                <lightning-button
+                                    label="Apply"
+                                    variant="brand"
+                                    onclick={handleMassEditApply}
+                                ></lightning-button>
+                            </lightning-layout>
+                        </div>
+                    </lightning-layout-item>
+                </template>
+            </lightning-layout>
+        </template>
     </section>
 </template>

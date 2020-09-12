@@ -803,8 +803,6 @@ All of the following are available as Flow output variables.
 
 ## Installation
 
-This repo uses APIs from Summer 20 (49.0), so make sure your sandbox/org meets this requirements.
-
 Currently, this package is in BETA. Install will only work on a sandbox / dev org.
 
 ### With Examples
@@ -827,12 +825,12 @@ cd lwc-utils
 
 Option 2 - Installation URL:
 
-[Summer 20 Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QJlAIAW)
+[Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000BFpEIAW)
 
 Option 3 - Unlocked Package:
 
 ```
-sfdx force:package:install --package "LWC Utils with Examples@0.1.0-12"
+sfdx force:package:install --package "LWC Utils with Examples@0.1.0-13"
 ```
 
 <!--

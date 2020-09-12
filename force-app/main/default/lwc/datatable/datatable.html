@@ -39,7 +39,7 @@
         <div slot="title">
             <slot name="title">
                 <template if:true={showRecordCount}>
-                    {title} ({recordCount})
+                    {title} {recordCountDisplay}
                 </template>
                 <template if:false={showRecordCount}>
                     {title}

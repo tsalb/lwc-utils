@@ -21,8 +21,9 @@ In this README:
     - [soqlDatatable - Features and Examples](#soqldatatable---features-and-examples)
   - [collectionDatatable](#collectiondatatable)
     - [collectionDatatable - Features and Examples](#collectiondatatable---features-and-examples)
-- [Installation](#installation)
-  - [With Examples](#with-examples)
+- [Deploy (Unlocked Package)](#deploy-unlocked-package)
+  - [LWC Utils](#lwc-utils)
+  - [LWC Utils Recipes](#lwc-utils-recipes)
   - [Configuration and Getting Started](#configuration-and-getting-started)
 
 <!-- omit in toc -->
@@ -801,55 +802,25 @@ All of the following are available as Flow output variables.
 
 </details>
 
-## Installation
+## Deploy (Unlocked Package)
 
-Currently, this package is in BETA. Install will only work on a sandbox / dev org.
+### LWC Utils
 
-### With Examples
+This unlocked package contains only the lib, no examples (recipes) that showcase their implementations. If you're working with this library for the first time, I recommend you install the "LWC Utils Recipes" in a sandbox **after** you install this.
 
-Option 1 - SFDX + Scratch Orgs:
+Sandbox: `https://test.salesforce.com/packaging/installPackage.apexp?p0=04t1Q000001QhOyQAK`
 
-1) See pre-requisite steps in the official [lwc-recipes](https://github.com/trailheadapps/lwc-recipes#installing-the-app-using-a-scratch-org) repo.
+PROD: `https://login.salesforce.com/packaging/installPackage.apexp?p0=04t1Q000001QhOyQAK`
 
-2) Clone this repo to a desired directory and navigate into it:
+### LWC Utils Recipes
 
-```
-git clone https://github.com/tsalb/lwc-utils
-cd lwc-utils
-```
+This unlocked package must be installed **after** the above. This cannot be installed in PROD.
 
-3) Use VSCode's [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) (or equivalent) to:
-- SFDX: Create a Default Scratch Org.
-- SFDX: Push Source to Default Scratch Org.
-- SFDX: Open Default Org.
-
-Option 2 - Installation URL:
-
-[Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000BFpEIAW)
-
-Option 3 - Unlocked Package:
-
-```
-sfdx force:package:install --package "LWC Utils with Examples@0.1.0-13"
-```
-
-<!--
-### Core Components Only
-
-Option 1 - Installation URL:
-
-[Summer 20 Sandbox / Dev Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tB0000000QGbpIAG)
-
-Option 2 - Unlocked Package:
-
-```
-sfdx force:package:install --package "LWC Utils Core@0.1.0-5"
-```
--->
+Sandbox: `https://test.salesforce.com/packaging/installPackage.apexp?p0=04t1Q000001QhP3QAK`
 
 ### Configuration and Getting Started
 
-If you're working with the examples, you can view the `LWC Utils` sample app and navigate around.
+With the "LWC Utils Recipes", two sample apps (`LWC Utils` and `LWC Utils Console`) have been included to showcase various ways to implement the library.
 
 There are also many example `Flows` that have been set up as well.
 

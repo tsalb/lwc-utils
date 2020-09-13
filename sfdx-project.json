@@ -1,29 +1,36 @@
 {
     "packageDirectories": [
         {
-            "path": "force-app",
-            "package": "LWC Utils with Examples",
-            "versionName": "ver 0.1",
-            "versionNumber": "0.1.0.NEXT"
+            "path": "utils-core",
+            "default": true,
+            "package": "LWC Utils",
+            "versionName": "ver 1.0.0",
+            "versionNumber": "1.0.0.NEXT",
+            "postInstallUrl": "https://github.com/tsalb/lwc-utils#component-library-overview",
+            "releaseNotesUrl": "https://github.com/tsalb/lwc-utils/releases"
+        },
+        {
+            "path": "utils-recipes",
+            "default": false,
+            "package": "LWC Utils Recipes",
+            "versionName": "ver 1.0.0",
+            "versionNumber": "1.0.0.NEXT",
+            "postInstallUrl": "https://github.com/tsalb/lwc-utils#configuration-and-getting-started",
+            "releaseNotesUrl": "https://github.com/tsalb/lwc-utils/releases",
+            "dependencies": [
+                {
+                    "package": "LWC Utils@1.0.0-0"
+                }
+            ]
         }
     ],
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
     "sourceApiVersion": "49.0",
     "packageAliases": {
-        "LWC Utils with Examples": "0HoB0000000TNIaKAO",
-        "LWC Utils with Examples@0.1.0-1": "04tB0000000QGMhIAO",
-        "LWC Utils with Examples@0.1.0-2": "04tB0000000QGMwIAO",
-        "LWC Utils with Examples@0.1.0-3": "04tB0000000QGN1IAO",
-        "LWC Utils with Examples@0.1.0-4": "04tB0000000QGN6IAO",
-        "LWC Utils with Examples@0.1.0-5": "04tB0000000QGbaIAG",
-        "LWC Utils with Examples@0.1.0-6": "04tB0000000QGbkIAG",
-        "LWC Utils with Examples@0.1.0-7": "04tB0000000QGbuIAG",
-        "LWC Utils with Examples@0.1.0-8": "04tB0000000QH04IAG",
-        "LWC Utils with Examples@0.1.0-9": "04tB0000000QHgYIAW",
-        "LWC Utils with Examples@0.1.0-10": "04tB0000000QISdIAO",
-        "LWC Utils with Examples@0.1.0-11": "04tB0000000QISxIAO",
-        "LWC Utils with Examples@0.1.0-12": "04tB0000000QJlAIAW",
-        "LWC Utils with Examples@0.1.0-13": "04tB0000000BFpEIAW"
+        "LWC Utils": "0Ho1Q000000blJiSAI",
+        "LWC Utils@1.0.0-0": "04t1Q000001QhOyQAK",
+        "LWC Utils Recipes": "0Ho1Q000000blJnSAI",
+        "LWC Utils Recipes@1.0.0-0": "04t1Q000001QhP3QAK"
     }
 }

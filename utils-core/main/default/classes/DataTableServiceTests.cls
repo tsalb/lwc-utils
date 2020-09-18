@@ -361,4 +361,29 @@ private class DataTableServiceTests {
         System.assertEquals(true, hasDate);
         System.assertEquals(true, hasDateTime);
     }
+
+    @isTest
+    static void test_query_should_not_return_disallowed_query_data() {
+        //Disallowed permission set mutes User "Title" field
+        PermissionSet disallowed = [SELECT Id FROM PermissionSet WHERE Name = 'Disallowed'];
+        insert new PermissionSetAssignment(PermissionSetId = disallowed.Id, AssigneeId = UserInfo.getUserId());
+
+        Map<String, Object> tableServiceRequest = new Map<String, Object>();
+        Map<String, Object> tableServiceResponse = new Map<String, Object>();
+
+        String queryString = 'SELECT Id, Title FROM User LIMIT 1';
+        tableServiceRequest.put(DataTableService.QUERY_STRING_KEY, queryString);
+
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            Test.startTest();
+            tableServiceResponse = DataTableService.getTableCache(tableServiceRequest);
+            Test.stopTest();
+        }
+
+        List<User> tableData = (List<User>) tableServiceResponse.get(
+            DataTableService.TABLE_DATA_KEY
+        );
+        System.assertEquals(1, tableData.size());
+        System.assertEquals(null, tableData[0].Title);
+    }
 }

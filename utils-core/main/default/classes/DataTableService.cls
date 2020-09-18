@@ -234,7 +234,7 @@ public inherited sharing class DataTableService {
             queryString += ' LIMIT ' + ROW_LIMITER;
         }
         System.debug(LoggingLevel.INFO, 'getSObjectDataFromQueryString FINAL queryString is: ' + queryString);
-        return Database.query(queryString);
+        return getSObjectsWithAllowedFields(queryString);
     }
 
     /**
@@ -257,11 +257,7 @@ public inherited sharing class DataTableService {
                 idSet.add(sObjectId.trim());
             }
         }
-        try {
-            return Database.query(queryString);
-        } catch (Exception e) {
-            throw new DataTableServiceException(e.getMessage());
-        }
+        return getSObjectsWithAllowedFields(queryString);
     }
 
     /**
@@ -451,6 +447,16 @@ public inherited sharing class DataTableService {
             }
         }
         return cleanFieldName.replace('__c', '__r') + '.' + nameField.getDescribe().getName();
+    }
+
+    private static List<SObject> getSObjectsWithAllowedFields(String queryString) {
+        try {
+            List<SObject> queriedRecords = Database.query(queryString);
+            Security.stripInaccessible(AccessType.READABLE, queriedRecords);
+            return queriedRecords;
+        } catch (Exception e) {
+            throw new DataTableServiceException(e.getMessage());
+        }
     }
 
     private class DataTableServiceException extends Exception {

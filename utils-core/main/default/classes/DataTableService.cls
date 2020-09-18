@@ -452,8 +452,7 @@ public inherited sharing class DataTableService {
     private static List<SObject> getSObjectsWithAllowedFields(String queryString) {
         try {
             List<SObject> queriedRecords = Database.query(queryString);
-            Security.stripInaccessible(AccessType.READABLE, queriedRecords);
-            return queriedRecords;
+            return Security.stripInaccessible(AccessType.READABLE, queriedRecords).getRecords();
         } catch (Exception e) {
             throw new DataTableServiceException(e.getMessage());
         }

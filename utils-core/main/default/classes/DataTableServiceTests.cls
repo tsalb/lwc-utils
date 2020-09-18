@@ -361,4 +361,68 @@ private class DataTableServiceTests {
         System.assertEquals(true, hasDate);
         System.assertEquals(true, hasDateTime);
     }
+
+    @isTest
+    static void test_query_should_not_return_disallowed_query_data() {
+        List<FieldPermissions> revenueFieldPermissions = [
+            SELECT Id, PermissionsEdit, PermissionsRead
+            FROM FieldPermissions
+            WHERE Parent.Profile.Name = 'Standard User' AND Field = 'Account.AnnualRevenue'
+        ];
+
+        for(FieldPermissions fp : revenueFieldPermissions) {
+            fp.PermissionsEdit = false;
+            fp.PermissionsRead = false;
+        }
+        update revenueFieldPermissions;
+
+        System.runAs(getAnotherUser()) {
+            Test.startTest();
+            insertAccountAndTest();
+            Test.stopTest();
+        }
+    }
+
+    private static User getAnotherUser() {
+        //the fields listed here are the required ones to create a User
+        User user = [
+            SELECT Id, LastName, Email, Alias, TimeZoneSidKey, LocaleSidKey,
+                EmailEncodingKey, ProfileId, LanguageLocaleKey
+            FROM User
+            WHERE Id != :UserInfo.getUserId()
+            AND Profile.Name = 'Standard User'
+            LIMIT 1
+        ];
+        User standardUser = user.clone();
+        standardUser.Username = 'tsalb@example.com';
+        standardUser.CommunityNickname = 'tsalt';
+        standardUser.Email = standardUser.Username;
+        insert standardUser;
+        return standardUser;
+    }
+
+    @future
+    private static void insertAccountAndTest() {
+        // has to be @future to avoid mixed DML between setup object (PermissionSet/PermissionSetAssignment and Account)
+        insert new Account(Name = 'Testington', AnnualRevenue = 100);
+
+        Map<String, Object> tableServiceRequest = new Map<String, Object>();
+        String queryString = 'SELECT Id, AnnualRevenue FROM Account LIMIT 1';
+        tableServiceRequest.put(DataTableService.QUERY_STRING_KEY, queryString);
+
+        Map<String, Object> tableServiceResponse = DataTableService.getTableCache(tableServiceRequest);
+        List<Account> tableData = (List<Account>) tableServiceResponse.get(
+            DataTableService.TABLE_DATA_KEY
+        );
+
+        System.assertEquals(1, tableData.size());
+        //System.SObjectException: SObject row was retrieved via SOQL without querying the requested field: Account.AnnualRevenue
+        //when you try to do the assert directly, so let's pull this old trick
+        Map<String, Object> deserializedAccount = (Map<String, Object>)JSON.deserializeUntyped(JSON.serialize(tableData[0]));
+        System.assertEquals(
+            false,
+            deserializedAccount.containsKey(Account.AnnualRevenue.getDescribe().getName()),
+            'AnnualRevenue was returned incorrectly'
+        );
+    }
 }

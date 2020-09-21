@@ -383,6 +383,54 @@ private class DataTableServiceTests {
         }
     }
 
+    @isTest
+    static void test_query_should_allow_aggregate_query_without_alias() {
+        Map<String, Object> tableServiceRequest = new Map<String, Object>();
+        String queryString = 'SELECT Count(Id), Sum(AnnualRevenue) FROM Account';
+        tableServiceRequest.put(DataTableService.QUERY_STRING_KEY, queryString);
+
+        Map<String, Object> tableServiceResponse = DataTableService.getTableCache(tableServiceRequest);
+        List<AggregateResult> results = (List<AggregateResult>) tableServiceResponse.get(
+            DataTableService.TABLE_DATA_KEY
+        );
+        System.assertEquals(1, results.size(), 'Aggregate result was not properly returned');
+        System.assertEquals(0, results[0].get('expr0'), 'Count(Id) was not properly returned');
+        System.assertEquals(null, results[0].get('expr1'), 'Sum(AnnualRevenue) was not properly returned');
+    }
+
+    @isTest
+    static void test_query_should_allow_aggregate_query_with_alias() {
+        Map<String, Object> tableServiceRequest = new Map<String, Object>();
+        String queryString = 'SELECT Count(Id) CountStar, Sum(AnnualRevenue) AnnualRevenueSummed FROM Account';
+        tableServiceRequest.put(DataTableService.QUERY_STRING_KEY, queryString);
+
+        Map<String, Object> tableServiceResponse = DataTableService.getTableCache(tableServiceRequest);
+        List<AggregateResult> results = (List<AggregateResult>) tableServiceResponse.get(
+            DataTableService.TABLE_DATA_KEY
+        );
+        System.assertEquals(1, results.size(), 'Aggregate result was not properly returned');
+        System.assertEquals(0, results[0].get('CountStar'), 'Aliased count was not properly returned');
+        System.assertEquals(null, results[0].get('AnnualRevenueSummed'), 'Aliased sum was not properly returned');
+    }
+
+    @isTest
+    static void test_query_should_allow_grouping() {
+        insert new Account(AnnualRevenue = 350000, Name = 'TestGrouping');
+
+        Map<String, Object> tableServiceRequest = new Map<String, Object>();
+        String queryString = 'SELECT Count(Id) CountStar, Sum(AnnualRevenue) AnnualRevenueSummed, Name FROM Account GROUP BY Name';
+        tableServiceRequest.put(DataTableService.QUERY_STRING_KEY, queryString);
+
+        Map<String, Object> tableServiceResponse = DataTableService.getTableCache(tableServiceRequest);
+        List<AggregateResult> results = (List<AggregateResult>) tableServiceResponse.get(
+            DataTableService.TABLE_DATA_KEY
+        );
+        System.assertEquals(1, results.size(), 'Aggregate result was not properly returned');
+        System.assertEquals(1, results[0].get('CountStar'), 'Aliased count was not properly returned');
+        System.assertEquals(350000, results[0].get('AnnualRevenueSummed'), 'Aliased sum was not properly returned');
+        System.assertEquals('TestGrouping', results[0].get('Name'));
+    }
+
     private static User getAnotherUser() {
         //the fields listed here are the required ones to create a User
         User user = [

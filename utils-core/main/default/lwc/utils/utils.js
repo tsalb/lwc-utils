@@ -121,7 +121,11 @@ const reduceErrors = errors => {
                 }
                 // UI API DML, Apex and network errors
                 else if (error.body && typeof error.body.message === 'string') {
-                    return error.body.message;
+                    let errorMessage = error.body.message;
+                    if (typeof error.body.stackTrace === 'string') {
+                        errorMessage += `\n${error.body.stackTrace}`;
+                    }
+                    return errorMessage;
                 }
                 // PAGE ERRORS
                 else if (error.body && error.body.pageErrors.length) {

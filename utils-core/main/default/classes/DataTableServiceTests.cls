@@ -370,7 +370,7 @@ private class DataTableServiceTests {
             WHERE Parent.Profile.Name = 'Standard User' AND Field = 'Account.AnnualRevenue'
         ];
 
-        for(FieldPermissions fp : revenueFieldPermissions) {
+        for (FieldPermissions fp : revenueFieldPermissions) {
             fp.PermissionsEdit = false;
             fp.PermissionsRead = false;
         }
@@ -383,20 +383,70 @@ private class DataTableServiceTests {
         }
     }
 
+    @isTest
+    static void test_query_should_allow_aggregate_query_without_alias() {
+        Map<String, Object> tableServiceRequest = new Map<String, Object>();
+        String queryString = 'SELECT Count(Id), Sum(AnnualRevenue) FROM Account';
+        tableServiceRequest.put(DataTableService.QUERY_STRING_KEY, queryString);
+
+        Map<String, Object> tableServiceResponse = DataTableService.getTableCache(tableServiceRequest);
+        List<AggregateResult> results = (List<AggregateResult>) tableServiceResponse.get(
+            DataTableService.TABLE_DATA_KEY
+        );
+        System.assertEquals(1, results.size(), 'Aggregate result was not properly returned');
+        System.assertEquals(0, results[0].get('expr0'), 'Count(Id) was not properly returned');
+        System.assertEquals(null, results[0].get('expr1'), 'Sum(AnnualRevenue) was not properly returned');
+    }
+
+    @isTest
+    static void test_query_should_allow_aggregate_query_with_alias() {
+        Map<String, Object> tableServiceRequest = new Map<String, Object>();
+        String queryString = 'SELECT Count(Id) CountStar, Sum(AnnualRevenue) AnnualRevenueSummed FROM Account';
+        tableServiceRequest.put(DataTableService.QUERY_STRING_KEY, queryString);
+
+        Map<String, Object> tableServiceResponse = DataTableService.getTableCache(tableServiceRequest);
+        List<AggregateResult> results = (List<AggregateResult>) tableServiceResponse.get(
+            DataTableService.TABLE_DATA_KEY
+        );
+        System.assertEquals(1, results.size(), 'Aggregate result was not properly returned');
+        System.assertEquals(0, results[0].get('CountStar'), 'Aliased count was not properly returned');
+        System.assertEquals(null, results[0].get('AnnualRevenueSummed'), 'Aliased sum was not properly returned');
+    }
+
+    @isTest
+    static void test_query_should_allow_grouping() {
+        insert new Account(AnnualRevenue = 350000, Name = 'TestGrouping');
+
+        Map<String, Object> tableServiceRequest = new Map<String, Object>();
+        String queryString = 'SELECT Count(Id) CountStar, Sum(AnnualRevenue) AnnualRevenueSummed, Name FROM Account GROUP BY Name';
+        tableServiceRequest.put(DataTableService.QUERY_STRING_KEY, queryString);
+
+        Map<String, Object> tableServiceResponse = DataTableService.getTableCache(tableServiceRequest);
+        List<AggregateResult> results = (List<AggregateResult>) tableServiceResponse.get(
+            DataTableService.TABLE_DATA_KEY
+        );
+        System.assertEquals(1, results.size(), 'Aggregate result was not properly returned');
+        System.assertEquals(1, results[0].get('CountStar'), 'Aliased count was not properly returned');
+        System.assertEquals(350000, results[0].get('AnnualRevenueSummed'), 'Aliased sum was not properly returned');
+        System.assertEquals('TestGrouping', results[0].get('Name'));
+    }
+
     private static User getAnotherUser() {
         //the fields listed here are the required ones to create a User
-        User user = [
-            SELECT Id, LastName, Email, Alias, TimeZoneSidKey, LocaleSidKey,
-                EmailEncodingKey, ProfileId, LanguageLocaleKey
-            FROM User
-            WHERE Id != :UserInfo.getUserId()
-            AND Profile.Name = 'Standard User'
-            LIMIT 1
-        ];
-        User standardUser = user.clone();
-        standardUser.Username = 'tsalb@example.com';
-        standardUser.CommunityNickname = 'tsalt';
-        standardUser.Email = standardUser.Username;
+        Profile standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User'];
+        User standardUser = new User(
+            Alias = 'tsalt',
+            CommunityNickname = 'tsalt',
+            Email = 'tsalb@example.com',
+            EmailEncodingKey = 'ISO-8859-1',
+            FirstName = 'temp_sf_dev',
+            LanguageLocaleKey = 'en_US',
+            LastName = 'Tsalb',
+            LocaleSidKey = 'en_US',
+            ProfileId = standardProfile.Id,
+            TimeZoneSidKey = 'America/Los_Angeles',
+            Username = 'tsalb' + System.now().millisecond() + '@example.com'
+        );
         insert standardUser;
         return standardUser;
     }
@@ -411,14 +461,14 @@ private class DataTableServiceTests {
         tableServiceRequest.put(DataTableService.QUERY_STRING_KEY, queryString);
 
         Map<String, Object> tableServiceResponse = DataTableService.getTableCache(tableServiceRequest);
-        List<Account> tableData = (List<Account>) tableServiceResponse.get(
-            DataTableService.TABLE_DATA_KEY
-        );
+        List<Account> tableData = (List<Account>) tableServiceResponse.get(DataTableService.TABLE_DATA_KEY);
 
         System.assertEquals(1, tableData.size());
         //System.SObjectException: SObject row was retrieved via SOQL without querying the requested field: Account.AnnualRevenue
         //when you try to do the assert directly, so let's pull this old trick
-        Map<String, Object> deserializedAccount = (Map<String, Object>)JSON.deserializeUntyped(JSON.serialize(tableData[0]));
+        Map<String, Object> deserializedAccount = (Map<String, Object>) JSON.deserializeUntyped(
+            JSON.serialize(tableData[0])
+        );
         System.assertEquals(
             false,
             deserializedAccount.containsKey(Account.AnnualRevenue.getDescribe().getName()),

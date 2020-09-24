@@ -71,6 +71,15 @@ public inherited sharing class DataTableService {
         Schema.DisplayType.URL => 'url'
     };
 
+    private static final Set<String> AGGREGATE_QUERY_DELIMITERS = new Set<String>{
+        'avg',
+        'count',
+        'count_distinct',
+        'min',
+        'max',
+        'sum'
+    };
+
     private static Set<Id> RECORD_TYPE_IDS { private get; private set; }
     private static Map<String, String> LOOKUP_FIELD_TO_NAME_FIELD_MAP = new Map<String, String>();
 
@@ -187,8 +196,8 @@ public inherited sharing class DataTableService {
         // Columns are derived first for customLookup detection by populating LOOKUP_FIELD_TO_NAME_FIELD_MAP
         List<Map<String, Object>> tableColumns = DataTableService.getColumnData(queryString, queryObject);
         if (!LOOKUP_FIELD_TO_NAME_FIELD_MAP.isEmpty()) {
-            for (String lookupNameField : new List<String>(LOOKUP_FIELD_TO_NAME_FIELD_MAP.values())) {
-                if (!queryString.containsIgnoreCase(lookupNameField)) {
+            for (String lookupNameField : LOOKUP_FIELD_TO_NAME_FIELD_MAP.values()) {
+                if (!queryString.containsIgnoreCase(lookupNameField) && !isAggregateQuery(queryString)) {
                     queryString = addFieldToQueryString(lookupNameField, queryString);
                     tableRequest.put(QUERY_STRING_KEY, queryString);
                 }
@@ -230,11 +239,11 @@ public inherited sharing class DataTableService {
         // Safety first
         String.escapeSingleQuotes(queryString);
         // Performance second
-        if (!queryString.containsIgnoreCase(' LIMIT ')) {
+        if (!queryString.containsIgnoreCase(' LIMIT ') && shouldAddLimit(queryString)) {
             queryString += ' LIMIT ' + ROW_LIMITER;
         }
         System.debug(LoggingLevel.INFO, 'getSObjectDataFromQueryString FINAL queryString is: ' + queryString);
-        return getSObjectsWithAllowedFields(queryString);
+        return getSObjectsWithAllowedFields(queryString, null);
     }
 
     /**
@@ -257,7 +266,7 @@ public inherited sharing class DataTableService {
                 idSet.add(sObjectId.trim());
             }
         }
-        return getSObjectsWithAllowedFields(queryString);
+        return getSObjectsWithAllowedFields(queryString, idSet);
     }
 
     /**
@@ -294,8 +303,15 @@ public inherited sharing class DataTableService {
                 Schema.SObjectType referenceTo = fieldMap.get(parentReference).getDescribe().getReferenceTo().get(0);
                 currentSObjectType = referenceTo;
                 field = referenceTo.getDescribe().fields.getMap().get(fieldName.substringAfterLast('.')).getDescribe();
-            } else {
+            } else if (fieldMap.containsKey(fieldName)) {
                 field = fieldMap.get(fieldName).getDescribe();
+            } else if (isAggregateQuery(fieldName)) {
+                String aggQueryFieldLabel = getAggregateQueryFieldLabel(fieldName);
+                fieldColumn.put('label', aggQueryFieldLabel);
+                fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(Schema.DisplayType.Integer));
+                fieldColumn.put('fieldName', getAggregateQueryFieldName(fieldName, aggQueryFieldLabel));
+                tableColumns.add(fieldColumn);
+                continue;
             }
 
             // Respect FLS
@@ -438,6 +454,48 @@ public inherited sharing class DataTableService {
         return queryStart + ', ' + String.escapeSingleQuotes(field) + ' FROM ' + queryEnd;
     }
 
+    private static Boolean isAggregateQuery(String queryString) {
+        Boolean isAggregateQuery = false;
+        for (String aggQueryDelimiter : AGGREGATE_QUERY_DELIMITERS) {
+            if (queryString.containsIgnoreCase(aggQueryDelimiter + '(')) {
+                isAggregateQuery = true;
+                break;
+            }
+        }
+        return isAggregateQuery;
+    }
+
+    private static String getAggregateQueryFieldLabel(String fieldName) {
+        Integer expressionEnd = fieldName.indexOf(')') + 1;
+        if (expressionEnd == fieldName.length()) {
+            //there isn't an alias, just use the expression itself
+            return fieldName;
+        }
+        //sometimes people put a space after the expression end and before the field alias, trim the result
+        return fieldName.substring(expressionEnd, fieldName.length()).trim();
+    }
+
+    private static Integer aggQueryExpressionNameCounter = 0;
+    private static String getAggregateQueryFieldName(String fieldName, String fieldLabel) {
+        //Any aggregated field in a SELECT list that does not have an alias automatically gets an implied alias with a format "expr{i}"
+        //where i denotes the order of the aggregated fields with no explicit aliases.
+        if (fieldName == fieldLabel) {
+            String baseString = 'expr{0}';
+            String returnString = String.format(baseString, new List<String>{ aggQueryExpressionNameCounter.format() });
+            aggQueryExpressionNameCounter++;
+            return returnString;
+        } else if (fieldName.indexOf(')') + 1 < fieldName.length()) {
+            //there is an alias
+            return fieldLabel;
+        }
+        return fieldName;
+    }
+
+    private static Boolean shouldAddLimit(String queryString) {
+        //You can't use a LIMIT clause in a query that uses an aggregate function, but does not use a GROUP BY clause.
+        return isAggregateQuery(queryString) ? queryString.containsIgnoreCase('group by') : true;
+    }
+
     private static String getLookupNameField(Schema.DescribeFieldResult field, String cleanFieldName) {
         Schema.SObjectField nameField;
         for (Schema.SObjectField curField : field.getReferenceTo().get(0).getDescribe().fields.getMap().values()) {
@@ -449,12 +507,16 @@ public inherited sharing class DataTableService {
         return cleanFieldName.replace('__c', '__r') + '.' + nameField.getDescribe().getName();
     }
 
-    private static List<SObject> getSObjectsWithAllowedFields(String queryString) {
+    private static List<SObject> getSObjectsWithAllowedFields(String queryString, Set<Id> idSet) {
         try {
             List<SObject> queriedRecords = Database.query(queryString);
+            //stripInaccessible doesn't support AggregateResult SObjects
+            if (isAggregateQuery(queryString)) {
+                return queriedRecords;
+            }
             return Security.stripInaccessible(AccessType.READABLE, queriedRecords).getRecords();
         } catch (Exception e) {
-            throw new DataTableServiceException(e.getMessage());
+            throw new DataTableServiceException(e.getMessage() + '\nInner stack trace: ' + e.getStackTraceString());
         }
     }
 

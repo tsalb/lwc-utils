@@ -433,18 +433,20 @@ private class DataTableServiceTests {
 
     private static User getAnotherUser() {
         //the fields listed here are the required ones to create a User
-        User user = [
-            SELECT Id, LastName, Email, Alias, TimeZoneSidKey, LocaleSidKey,
-                EmailEncodingKey, ProfileId, LanguageLocaleKey
-            FROM User
-            WHERE Id != :UserInfo.getUserId()
-            AND Profile.Name = 'Standard User'
-            LIMIT 1
-        ];
-        User standardUser = user.clone();
-        standardUser.Username = 'tsalb@example.com';
-        standardUser.CommunityNickname = 'tsalt';
-        standardUser.Email = standardUser.Username;
+        Profile standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User'];
+        User standardUser = new User(
+            Alias = 'tsalt',
+            CommunityNickname = 'tsalt',
+            Email = 'tsalb@example.com',
+            EmailEncodingKey = 'ISO-8859-1',
+            FirstName = 'temp_sf_dev',
+            LanguageLocaleKey = 'en_US',
+            LastName = 'Tsalb',
+            LocaleSidKey = 'en_US',
+            ProfileId = standardProfile.Id,
+            TimeZoneSidKey = 'America/Los_Angeles',
+            Username = 'tsalb' + System.now().millisecond() + '@example.com'
+        );
         insert standardUser;
         return standardUser;
     }

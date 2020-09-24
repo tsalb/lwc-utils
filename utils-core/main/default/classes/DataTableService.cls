@@ -72,7 +72,12 @@ public inherited sharing class DataTableService {
     };
 
     private static final Set<String> AGGREGATE_QUERY_DELIMITERS = new Set<String>{
-        'avg', 'count', 'count_distinct', 'min', 'max', 'sum'
+        'avg',
+        'count',
+        'count_distinct',
+        'min',
+        'max',
+        'sum'
     };
 
     private static Set<Id> RECORD_TYPE_IDS { private get; private set; }
@@ -298,9 +303,9 @@ public inherited sharing class DataTableService {
                 Schema.SObjectType referenceTo = fieldMap.get(parentReference).getDescribe().getReferenceTo().get(0);
                 currentSObjectType = referenceTo;
                 field = referenceTo.getDescribe().fields.getMap().get(fieldName.substringAfterLast('.')).getDescribe();
-            } else if(fieldMap.containsKey(fieldName)) {
+            } else if (fieldMap.containsKey(fieldName)) {
                 field = fieldMap.get(fieldName).getDescribe();
-            } else if(isAggregateQuery(fieldName)) {
+            } else if (isAggregateQuery(fieldName)) {
                 String aggQueryFieldLabel = getAggregateQueryFieldLabel(fieldName);
                 fieldColumn.put('label', aggQueryFieldLabel);
                 fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(Schema.DisplayType.Integer));
@@ -451,8 +456,8 @@ public inherited sharing class DataTableService {
 
     private static Boolean isAggregateQuery(String queryString) {
         Boolean isAggregateQuery = false;
-        for(String aggQueryDelimiter : AGGREGATE_QUERY_DELIMITERS) {
-            if(queryString.containsIgnoreCase(aggQueryDelimiter + '(')) {
+        for (String aggQueryDelimiter : AGGREGATE_QUERY_DELIMITERS) {
+            if (queryString.containsIgnoreCase(aggQueryDelimiter + '(')) {
                 isAggregateQuery = true;
                 break;
             }
@@ -462,7 +467,7 @@ public inherited sharing class DataTableService {
 
     private static String getAggregateQueryFieldLabel(String fieldName) {
         Integer expressionEnd = fieldName.indexOf(')') + 1;
-        if(expressionEnd == fieldName.length()) {
+        if (expressionEnd == fieldName.length()) {
             //there isn't an alias, just use the expression itself
             return fieldName;
         }
@@ -474,12 +479,12 @@ public inherited sharing class DataTableService {
     private static String getAggregateQueryFieldName(String fieldName, String fieldLabel) {
         //Any aggregated field in a SELECT list that does not have an alias automatically gets an implied alias with a format "expr{i}"
         //where i denotes the order of the aggregated fields with no explicit aliases.
-        if(fieldName == fieldLabel) {
+        if (fieldName == fieldLabel) {
             String baseString = 'expr{0}';
             String returnString = String.format(baseString, new List<String>{ aggQueryExpressionNameCounter.format() });
             aggQueryExpressionNameCounter++;
             return returnString;
-        } else if(fieldName.indexOf(')') + 1 < fieldName.length()) {
+        } else if (fieldName.indexOf(')') + 1 < fieldName.length()) {
             //there is an alias
             return fieldLabel;
         }
@@ -506,7 +511,7 @@ public inherited sharing class DataTableService {
         try {
             List<SObject> queriedRecords = Database.query(queryString);
             //stripInaccessible doesn't support AggregateResult SObjects
-            if(isAggregateQuery(queryString)) {
+            if (isAggregateQuery(queryString)) {
                 return queriedRecords;
             }
             return Security.stripInaccessible(AccessType.READABLE, queriedRecords).getRecords();

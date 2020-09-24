@@ -370,7 +370,7 @@ private class DataTableServiceTests {
             WHERE Parent.Profile.Name = 'Standard User' AND Field = 'Account.AnnualRevenue'
         ];
 
-        for(FieldPermissions fp : revenueFieldPermissions) {
+        for (FieldPermissions fp : revenueFieldPermissions) {
             fp.PermissionsEdit = false;
             fp.PermissionsRead = false;
         }
@@ -461,14 +461,14 @@ private class DataTableServiceTests {
         tableServiceRequest.put(DataTableService.QUERY_STRING_KEY, queryString);
 
         Map<String, Object> tableServiceResponse = DataTableService.getTableCache(tableServiceRequest);
-        List<Account> tableData = (List<Account>) tableServiceResponse.get(
-            DataTableService.TABLE_DATA_KEY
-        );
+        List<Account> tableData = (List<Account>) tableServiceResponse.get(DataTableService.TABLE_DATA_KEY);
 
         System.assertEquals(1, tableData.size());
         //System.SObjectException: SObject row was retrieved via SOQL without querying the requested field: Account.AnnualRevenue
         //when you try to do the assert directly, so let's pull this old trick
-        Map<String, Object> deserializedAccount = (Map<String, Object>)JSON.deserializeUntyped(JSON.serialize(tableData[0]));
+        Map<String, Object> deserializedAccount = (Map<String, Object>) JSON.deserializeUntyped(
+            JSON.serialize(tableData[0])
+        );
         System.assertEquals(
             false,
             deserializedAccount.containsKey(Account.AnnualRevenue.getDescribe().getName()),

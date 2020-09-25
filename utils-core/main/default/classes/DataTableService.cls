@@ -295,6 +295,16 @@ public inherited sharing class DataTableService {
                 continue;
             }
 
+            // Aggregate Query support
+            if (isAggregateQuery(fieldName)) {
+                String aggQueryFieldLabel = getAggregateQueryFieldLabel(fieldName);
+                fieldColumn.put('label', aggQueryFieldLabel);
+                fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(Schema.DisplayType.Integer));
+                fieldColumn.put('fieldName', getAggregateQueryFieldName(fieldName, aggQueryFieldLabel));
+                tableColumns.add(fieldColumn);
+                continue;
+            }
+
             // Handles parent relationships, to a degree
             if (fieldName.contains('.')) {
                 String parentReference = fieldName.contains('__r')
@@ -303,15 +313,8 @@ public inherited sharing class DataTableService {
                 Schema.SObjectType referenceTo = fieldMap.get(parentReference).getDescribe().getReferenceTo().get(0);
                 currentSObjectType = referenceTo;
                 field = referenceTo.getDescribe().fields.getMap().get(fieldName.substringAfterLast('.')).getDescribe();
-            } else if (fieldMap.containsKey(fieldName)) {
+            } else {
                 field = fieldMap.get(fieldName).getDescribe();
-            } else if (isAggregateQuery(fieldName)) {
-                String aggQueryFieldLabel = getAggregateQueryFieldLabel(fieldName);
-                fieldColumn.put('label', aggQueryFieldLabel);
-                fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(Schema.DisplayType.Integer));
-                fieldColumn.put('fieldName', getAggregateQueryFieldName(fieldName, aggQueryFieldLabel));
-                tableColumns.add(fieldColumn);
-                continue;
             }
 
             // Respect FLS

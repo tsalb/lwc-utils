@@ -41,6 +41,7 @@ import getLookupConfig from '@salesforce/apex/DataTableService.getLookupConfig';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { reduceErrors, createFlattenedSetFromDelimitedString } from 'c/utils';
 
+const COLUMN_LABEL_DELIMITER = '=>';
 const MAX_ROW_SELECTION = 200;
 const OBJECTS_WITH_COMPOUND_NAMES = ['Contact'];
 
@@ -91,6 +92,14 @@ export default class Datatable extends LightningElement {
     }
     set sortableFields(value = '') {
         this._sortableFields = createFlattenedSetFromDelimitedString(value, ',');
+    }
+
+    @api
+    get columnLabels() {
+        return this._columnLabels;
+    }
+    set columnLabels(value = '') {
+        this._columnLabels = value === '' ? [] : value.split(',');
     }
 
     // Row selections
@@ -555,6 +564,14 @@ export default class Datatable extends LightningElement {
         }
         const finalColumns = [];
         for (let col of tableColumns) {
+            // Never show the auto-queried RecordTypeId
+            if (col.fieldName.toLowerCase() === 'recordtypeid') {
+                continue;
+            }
+            //Column label replacement
+            if (this.columnLabels && this.columnLabels.length > 0) {
+                this._setFieldLabel(col);
+            }
             // Sorting
             if (this.sortableFields && this.sortableFields.size) {
                 // If parent fields require sorting, use _ in place of . for the fieldName.
@@ -588,10 +605,7 @@ export default class Datatable extends LightningElement {
                 // messageService then publishes this to each one when the edit mode is accessed
                 this._lookupConfigDevName = this.lookupConfigDevName || DATATABLE_LOOKUP_CONFIG_DEFAULT;
             }
-            // Never show the auto-queried RecordTypeId
-            if (col.fieldName.toLowerCase() === 'recordtypeid') {
-                continue;
-            }
+
             finalColumns.push(col);
         }
         if (this.showRowMenuActions) {
@@ -605,6 +619,16 @@ export default class Datatable extends LightningElement {
         }
         this.tableColumns = finalColumns;
         this._notifyPublicEvent('columnsload');
+    }
+
+    _setFieldLabel(singleColumn) {
+        const fieldIndex = this.columnLabels.findIndex(colToLabel => colToLabel.indexOf(singleColumn.fieldName) > -1);
+        if (fieldIndex > -1) {
+            const fieldApiNameToLabelTuple = this.columnLabels[fieldIndex].split(COLUMN_LABEL_DELIMITER);
+            if (fieldApiNameToLabelTuple.length === 2) {
+                singleColumn.label = fieldApiNameToLabelTuple[1].trim();
+            }
+        }
     }
 
     _setTableData(tableData, isRefresh) {

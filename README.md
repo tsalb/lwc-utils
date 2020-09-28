@@ -1,5 +1,5 @@
 <!-- omit in toc -->
-# LWC Utils 
+# LWC Utils
 
 Reusable LWCs to 10x your solution building speed.
 
@@ -65,7 +65,7 @@ Some components in this library, like `soqlDatatable`, will generate a UUID to h
 This component uses `Lightning Message Service` on `OpenChannel__c` to message `payloads` in a `key` / `value` format as defined in `OpenChannel__c` like this:
 
 ```js
-const payload = { 
+const payload = {
     key: 'coolevent',
     value: {
         hello: 'world',
@@ -163,7 +163,7 @@ this._messageService.dialogService(dialogServicePayload);
 
 ### DialogService
 
-This component is composed inside `MessageServiceHandler` and provides it with the public methods for creating modals via Aura's `overlayLibrary`. 
+This component is composed inside `MessageServiceHandler` and provides it with the public methods for creating modals via Aura's `overlayLibrary`.
 
 Primarily used by `messageService` for message publishing, `MessageServiceHandler` receives the subscription and delegates to this component.
 
@@ -213,7 +213,7 @@ const flowOrDialogServicePayload = {
 }
 ```
 
-This component is very simple which just listens and delegates to `DialogService`. 
+This component is very simple which just listens and delegates to `DialogService`.
 
 It can easily be extended to include other Aura only APIs, such as `lightning:workspaceAPI`.
 
@@ -328,7 +328,7 @@ However, there are a couple more ways to use it:
 ```js
     @api messageTemplate = 'Auto closing in {timer} seconds';
     @api timer = 5;
-    
+
     ...
 
     renderedCallback() {
@@ -398,7 +398,7 @@ WHERE AccountId = $recordId
 AND MailingState = $CurrentRecord.BillingState
 ```
 
-This uses Lightning Data Service (`getRecord`) to retrieve and resolve the record values, so make sure your user(s) have FLS enabled for any fields you plan on using the `$CurrentRecord` feature with.  
+This uses Lightning Data Service (`getRecord`) to retrieve and resolve the record values, so make sure your user(s) have FLS enabled for any fields you plan on using the `$CurrentRecord` feature with.
 
 All data types that can be SOQL-ed are supported for `$CurrentRecord`.
 
@@ -494,7 +494,7 @@ The actual lookup edit cell is a fork of the one authored by jlyon87 as found [h
     <img src="./readme-images/soql-datatable-inline-edit-mass.png" width="900">
 </p>
 
-- Partial save across rows is supported. 
+- Partial save across rows is supported.
     - Error display user experience is aligned to **native list views**.
     - If one row errors, all fields/columns for that row fail as well until all errors are resolved.
 
@@ -510,6 +510,13 @@ The actual lookup edit cell is a fork of the one authored by jlyon87 as found [h
 
 </details>
 
+<details id="soql-datatable---custom-column-labels>
+    <summary>Custom Column Labels</summary>
+
+
+Define custom labels for any column selected. To override, provide a comma-separated list using the `columnLabels` metadata property. Notation uses the Apex Map class's fat arrow notation (`=>`) for mapping the API Name to your new label: `fieldApiName1=>newLabel, fieldApiName2=>new label with spaces 2`. By default, the Label for the Field API Name in question is used.
+</details>
+
 <details>
     <summary>Column Sorting</summary>
 
@@ -521,7 +528,7 @@ Optionally, set default `Sort Field` and `Sort Direction` to have the asc/desc i
 
 Multi-sort and filtering will not be supported.
 
-Global search is on the roadmap (like regular list views)
+Global search is [on the roadmap (like regular list views)](https://github.com/tsalb/lwc-utils/issues/9)
 </details>
 
 <details>
@@ -777,6 +784,13 @@ Define which fields can be editable in a comma separated list in the `Editable F
 </details>
 
 <details>
+    <summary>Custom Column Labels</summary>
+
+
+Same as `soqlDatatable`. See [soqlDatatable - Custom Column Labels](#soql-datatable---custom-column-labels) for full details.
+</details>
+
+<details>
     <summary>Column Sorting</summary>
 
 ⠀
@@ -834,7 +848,7 @@ After installation, please review the following:
 For `soqlDatatable` to successfully launch any configured Table / Row action (Flow and LWC) you must:
 
 1) Map a `Datatable_Config__mdt` that has a `Type__c` field that contains the text `Actions`.
-2) Place `MessageServiceHandler` somewhere on the App / Record Flexipage or the Utility bar. This component launches dialogs/modals. 
+2) Place `MessageServiceHandler` somewhere on the App / Record Flexipage or the Utility bar. This component launches dialogs/modals.
 
 For `soqlDatatable` inline editing of any Lookup data types, you must:
 

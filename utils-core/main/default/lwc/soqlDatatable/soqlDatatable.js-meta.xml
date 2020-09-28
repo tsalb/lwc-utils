@@ -23,7 +23,8 @@
             <property name="sortedDirection" label="Default Sort Direction" type="String" datasource="asc,desc" default="asc"/>
             <property name="actionConfigDevName" label="Action Configuration" type="String" description="Configure table and row actions with a record in Datatable_Config__mdt"/>
             <property name="lookupConfigDevName" label="Lookup Configuration" type="String" description="Configure inline edit lookup search behavior with a record in Datatable_Config__mdt"/>
-            <property name="useRelativeMaxHeight" label="Limit Height (Relative to screen)" type="Boolean" description="Force table height to 60% of the vertical screen space." default="false"/>
+            <property name="useRelativeMaxHeight" label="Limit Height (Relative to screen)" type="Boolean" description="Force table height to 60% of the vertical screen space. To set a custom percentage, use this in conjunction with customRelativeMaxHeight" default="false"/>
+            <property name="customRelativeMaxHeight" label="Custom Relative Max Height" type="String" description="Set custom max height relative to the vertical screen space. useRelativeMaxHeight must be true for this to work." default=""/>
         </targetConfig>
         <targetConfig targets="lightning__RecordPage">
             <property name="isRecordBind" label="Use Record Binding in SOQL String" type="Boolean" description="Use $CurrentRecord or $recordId in your SOQL query to use record context. User must have FLS access." default="true"/>
@@ -38,7 +39,8 @@
             <property name="sortedDirection" label="Default Sort Direction" type="String" datasource="asc,desc" default="asc"/>
             <property name="actionConfigDevName" label="Action Configuration" type="String" description="Configure table and row actions with a record in Datatable_Config__mdt"/>
             <property name="lookupConfigDevName" label="Lookup Configuration" type="String" description="Configure inline edit lookup search behavior with a record in Datatable_Config__mdt"/>
-            <property name="useRelativeMaxHeight" label="Limit Height (Relative to screen)" type="Boolean" description="Force table height to 60% of the vertical screen space." default="false"/>
+            <property name="useRelativeMaxHeight" label="Limit Height (Relative to screen)" type="Boolean" description="Force table height to 60% of the vertical screen space. To set a custom percentage, use this in conjunction with customRelativeMaxHeight" default="false"/>
+            <property name="customRelativeMaxHeight" label="Custom Relative Max Height" type="String" description="Set custom max height relative to the vertical screen space. useRelativeMaxHeight must be true for this to work." default=""/>
         </targetConfig>
         <targetConfig targets="lightning__FlowScreen">
             <propertyType name="sObj" extends="SObject" label="Object"/>

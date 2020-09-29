@@ -79,6 +79,7 @@ export default class SoqlDatatable extends LightningElement {
 
     @api queryString;
     @api checkboxType;
+    @api columnLabels;
     @api editableFields;
 
     @api sortableFields;

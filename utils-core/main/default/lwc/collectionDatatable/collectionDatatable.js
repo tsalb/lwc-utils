@@ -60,6 +60,7 @@ export default class CollectionDatatable extends LightningElement {
     set shownFields(value = '') {
         this._shownFields = createFlattenedSetFromDelimitedString(value, ',');
     }
+    @api columnLabels;
     @api editableFields;
     @api sortableFields;
     @api sortedBy;

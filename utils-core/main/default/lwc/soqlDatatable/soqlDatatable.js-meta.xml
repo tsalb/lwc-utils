@@ -18,6 +18,7 @@
             <property name="queryString" label="SOQL String" type="String" placeholder="SELECT Id, Name FROM Account LIMIT 10" description="Parent (one level) relationships supported (e.g. Account.Type)." required="true"/>
             <property name="checkboxType" label="Checkbox Type" type="String" default="None" datasource="None,Multi,Single"/>
             <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of Field API names for inline editing. Does not support parent relationship (Account.Type). Saving writes to server"/>
+            <property name="columnLabels" label="Column Labels" type="String" description="Comma-separated key/value pair consisting of fieldApiName=>newLabel. For example, to replace the default Username: Username=>My Custom Username Label"/>
             <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API names. Parent relationship is supported (e.g. Account.Type)."/>
             <property name="sortedBy" label="Default Sort Field" type="String" description="Single Field API Name. Parent relationship is supported (e.g. Account.Type)."/>
             <property name="sortedDirection" label="Default Sort Direction" type="String" datasource="asc,desc" default="asc"/>
@@ -34,6 +35,7 @@
             <property name="queryString" label="SOQL String" type="String" placeholder="SELECT Id, Name FROM Account LIMIT 10" description="Parent (one level) relationships supported (e.g. Account.Type). Use Record Bind enables use of $CurrentRecord or $recordId keywords." required="true"/>
             <property name="checkboxType" label="Checkbox Type" type="String" default="None" datasource="None,Multi,Single"/>
             <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of Field API names for inline editing. Does not support parent relationship (Account.Type). Saving writes to server."/>
+                        <property name="columnLabels" label="Column Labels" type="String" description="Comma-separated key/value pair consisting of fieldApiName=>newLabel. For example, to replace the default Username: Username=>My Custom Username Label"/>
             <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API names. Parent relationship is supported (e.g. Account.Type)."/>
             <property name="sortedBy" label="Default Sort Field" type="String" description="Single Field API Name. Parent relationship is supported (e.g. Account.Type)."/>
             <property name="sortedDirection" label="Default Sort Direction" type="String" datasource="asc,desc" default="asc"/>
@@ -50,6 +52,7 @@
             <property name="queryString" label="SOQL String" type="String" default="SELECT ... FROM ..." description="Use $recordId in your SOQL to bind to that value. Alternatively, use a Formula variable which merges flow variable values. $CurrentRecord is not supported in Screen Flows." required="true" role="inputOnly"/>
             <property name="checkboxType" label="Checkbox Type" type="String" description="None, Multi, or Single" role="inputOnly"/>
             <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of Field API names for inline editing. Does not support parent relationship (Account.Type). Saving writes to server." role="inputOnly"/>
+            <property name="columnLabels" label="Column Labels" type="String" description="Comma-separated key/value pair consisting of fieldApiName=>newLabel. For example, to replace the default Username: Username=>My Custom Username Label" role="inputOnly"/>
             <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API names. Parent relationship is supported (e.g. Account.Type)." role="inputOnly"/>
             <property name="sortedBy" label="Default Sort Field" type="String" description="Single Field API Name. Parent relationship is supported (e.g. Account.Type)." role="inputOnly"/>
             <property name="sortedDirection" label="Default Sort Direction" type="String" default="asc" description="asc or desc" role="inputOnly"/>

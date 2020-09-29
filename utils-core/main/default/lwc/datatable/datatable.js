@@ -41,6 +41,7 @@ import getLookupConfig from '@salesforce/apex/DataTableService.getLookupConfig';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { reduceErrors, createFlattenedSetFromDelimitedString } from 'c/utils';
 
+const COLUMN_LABEL_DELIMITER = '=>';
 const MAX_ROW_SELECTION = 200;
 const OBJECTS_WITH_COMPOUND_NAMES = ['Contact'];
 
@@ -91,6 +92,28 @@ export default class Datatable extends LightningElement {
     }
     set sortableFields(value = '') {
         this._sortableFields = createFlattenedSetFromDelimitedString(value, ',');
+    }
+
+    @api
+    get columnLabels() {
+        return this._columnLabelsMap;
+    }
+    set columnLabels(value = '') {
+        if (value !== '') {
+            const columnMappingArr = value.trim().split(',');
+            // When this has keys, it will be used to reassign labels during column construction
+            this._columnLabelsMap = new Map(
+                columnMappingArr
+                    .filter(mapping => mapping.includes(COLUMN_LABEL_DELIMITER))
+                    .map(mapping => {
+                        // Gets rid of any excess spaces around the delimiter
+                        // Map can be initialized from arrays
+                        return mapping.split(COLUMN_LABEL_DELIMITER).map(part => part.trim());
+                    })
+            );
+        } else {
+            this._columnLabelsMap = new Map();
+        }
     }
 
     // Row selections
@@ -555,6 +578,14 @@ export default class Datatable extends LightningElement {
         }
         const finalColumns = [];
         for (let col of tableColumns) {
+            // Never show the auto-queried RecordTypeId
+            if (col.fieldName.toLowerCase() === 'recordtypeid') {
+                continue;
+            }
+            // Column label replacement
+            if (this.columnLabels && this.columnLabels.size) {
+                this._setFieldLabel(col);
+            }
             // Sorting
             if (this.sortableFields && this.sortableFields.size) {
                 // If parent fields require sorting, use _ in place of . for the fieldName.
@@ -588,10 +619,7 @@ export default class Datatable extends LightningElement {
                 // messageService then publishes this to each one when the edit mode is accessed
                 this._lookupConfigDevName = this.lookupConfigDevName || DATATABLE_LOOKUP_CONFIG_DEFAULT;
             }
-            // Never show the auto-queried RecordTypeId
-            if (col.fieldName.toLowerCase() === 'recordtypeid') {
-                continue;
-            }
+
             finalColumns.push(col);
         }
         if (this.showRowMenuActions) {
@@ -605,6 +633,12 @@ export default class Datatable extends LightningElement {
         }
         this.tableColumns = finalColumns;
         this._notifyPublicEvent('columnsload');
+    }
+
+    _setFieldLabel(singleColumn) {
+        if (this.columnLabels.has(singleColumn.fieldName)) {
+            singleColumn.label = this.columnLabels.get(singleColumn.fieldName);
+        }
     }
 
     _setTableData(tableData, isRefresh) {

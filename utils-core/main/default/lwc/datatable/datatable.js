@@ -96,10 +96,24 @@ export default class Datatable extends LightningElement {
 
     @api
     get columnLabels() {
-        return this._columnLabels;
+        return this._columnLabelsMap;
     }
     set columnLabels(value = '') {
-        this._columnLabels = value === '' ? [] : value.split(',');
+        if (value !== '') {
+            const columnMappingArr = value.trim().split(',');
+            // When this has keys, it will be used to reassign labels during column construction
+            this._columnLabelsMap = new Map(
+                columnMappingArr
+                    .filter(mapping => mapping.includes(COLUMN_LABEL_DELIMITER))
+                    .map(mapping => {
+                        // Gets rid of any excess spaces around the delimiter
+                        // Map can be initialized from arrays
+                        return mapping.split(COLUMN_LABEL_DELIMITER).map(part => part.trim());
+                    })
+            );
+        } else {
+            this._columnLabelsMap = new Map();
+        }
     }
 
     // Row selections
@@ -568,8 +582,8 @@ export default class Datatable extends LightningElement {
             if (col.fieldName.toLowerCase() === 'recordtypeid') {
                 continue;
             }
-            //Column label replacement
-            if (this.columnLabels && this.columnLabels.length > 0) {
+            // Column label replacement
+            if (this.columnLabels && this.columnLabels.size) {
                 this._setFieldLabel(col);
             }
             // Sorting
@@ -622,12 +636,8 @@ export default class Datatable extends LightningElement {
     }
 
     _setFieldLabel(singleColumn) {
-        const fieldIndex = this.columnLabels.findIndex(colToLabel => colToLabel.indexOf(singleColumn.fieldName) > -1);
-        if (fieldIndex > -1) {
-            const fieldApiNameToLabelTuple = this.columnLabels[fieldIndex].split(COLUMN_LABEL_DELIMITER);
-            if (fieldApiNameToLabelTuple.length === 2) {
-                singleColumn.label = fieldApiNameToLabelTuple[1].trim();
-            }
+        if (this.columnLabels.has(singleColumn.fieldName)) {
+            singleColumn.label = this.columnLabels.get(singleColumn.fieldName);
         }
     }
 

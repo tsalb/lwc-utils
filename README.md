@@ -510,11 +510,18 @@ The actual lookup edit cell is a fork of the one authored by jlyon87 as found [h
 
 </details>
 
-<details id="soql-datatable---custom-column-labels>
+<details id="soql-datatable---custom-column-labels">
     <summary>Custom Column Labels</summary>
 
 
-Define custom labels for any column selected. To override, provide a comma-separated list using the `columnLabels` metadata property. Notation uses the Apex Map class's fat arrow notation (`=>`) for mapping the API Name to your new label: `fieldApiName1=>newLabel, fieldApiName2=>new label with spaces 2`. By default, the Label for the Field API Name in question is used.
+
+Define custom labels for any column selected. To override, provide a comma-separated list using the `columnLabels` metadata property. Notation uses the Apex Map class's fat arrow notation (`=>`) for mapping the API Name to your new label: `fieldApiName1=>newLabel, fieldApiName2=>new label with spaces 2`. By default, the Label for the Field API Name in question is used. Custom labels are trimmed before being displayed, thus all four of the below are valid ways to supply labels:
+
+- `fieldApiName1 =>newLabel`
+- `fieldApiName1 => newLabel`
+- `fieldApiName1=> newLabel`
+- `fieldApiName1=>newLabel`
+
 </details>
 
 <details>

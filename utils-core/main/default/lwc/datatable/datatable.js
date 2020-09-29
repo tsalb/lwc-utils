@@ -72,6 +72,7 @@ export default class Datatable extends LightningElement {
     @api showRefreshButton = false;
     @api showSpinner = false;
     @api useRelativeMaxHeight = false;
+    @api customRelativeMaxHeight;
 
     // Sorting
     @api
@@ -768,7 +769,7 @@ export default class Datatable extends LightningElement {
     get containerClass() {
         let css = 'slds-border_top slds-border_bottom slds-border_left slds-border_right slds-is-relative ';
         if (this.useRelativeMaxHeight) {
-            css += 'table-vh ';
+            css += !!this.customRelativeMaxHeight ? '' : 'table-vh ';
         }
         return css;
     }
@@ -779,5 +780,12 @@ export default class Datatable extends LightningElement {
             css += 'slds-p-right_small ';
         }
         return css;
+    }
+
+    get customRelativeHeight() {
+        if (this.useRelativeMaxHeight && !!this.customRelativeMaxHeight) {
+            return `height: ${this.customRelativeMaxHeight}vh;`;
+        }
+        return '';
     }
 }

@@ -85,6 +85,7 @@ export default class SoqlDatatable extends LightningElement {
     @api sortedBy;
     @api sortedDirection = 'asc';
     @api useRelativeMaxHeight = false;
+    @api customRelativeMaxHeight;
 
     // Table and Row Actions
     @api actionConfigDevName;

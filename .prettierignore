@@ -8,3 +8,6 @@
 coverage/
 .vscode
 *.md
+
+# For meta files, etc
+*.xml

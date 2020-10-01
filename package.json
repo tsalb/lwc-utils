@@ -1,0 +1,50 @@
+{
+    "name": "lwc-utils",
+    "version": "1.0.2",
+    "scripts": {
+        "lint": "prettier --write utils-core utils-recipes",
+        "reinstall": "npm ci"
+    },
+    "author": "tsalb",
+    "license": "BSD 3",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/tsalb/lwc-utils"
+    },
+    "keywords": [
+        "lwc",
+        "lwc-utils",
+        "salesforce",
+        "util",
+        "datatable",
+        "lightning"
+    ],
+    "bugs": {
+        "url": "https://github.com/tsalb/lwc-utils/issues"
+    },
+    "homepage": "https://github.com/tsalb/lwc-utils#readme",
+    "devDependencies": {
+        "@salesforce/eslint-config-lwc": "^0.7.0",
+        "@salesforce/eslint-plugin-aura": "^1.4.0",
+        "eslint": "^7.8.0",
+        "eslint-config-prettier": "^6.11.0",
+        "husky": "^4.3.0",
+        "lint-staged": "^10.4.0",
+        "prettier": "^2.1.1",
+        "prettier-plugin-apex": "^1.6.0",
+        "rimraf": "^3.0.2"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}": [
+            "prettier --write"
+        ],
+        "**/{aura|lwc}/**": [
+            "eslint"
+        ]
+    }
+}

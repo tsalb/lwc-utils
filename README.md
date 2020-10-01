@@ -726,9 +726,18 @@ Invalid SOQL queries will be reported via toast message on the page the soqlData
 
 **Aggregate Query Considerations**
 
- - `LIMIT` clauses are not supported in aggregate queries without a `GROUP BY` clause
- - You can alias column labels the same way that you can in SOQL: either with a space or without a space. `avg(Id)myAvg` and `avg(Id) myAvg` thus are both labeled `myAvg` within your datatable
- - Non-aliased aggregate fields would typically be returned as `expr0`, `expr1`, etc — instead, we swap out these `expr` labels for the aggregate query in question: e.g. `avg(Id)` is labeled `avg(Id)` within your datatable
+- Aliases do not support spaces or dashes. Use underscores if needed (e.g. `SUM(ExpectedRevenue) Revenue_Sum`).
+- `LIMIT` clauses are not supported in aggregate queries without a `GROUP BY` clause.
+- You can alias column labels the same way that you can in SOQL: either with a space or without a space. `avg(Id)myAvg` and `avg(Id) myAvg` thus are both labeled `myAvg` within your datatable.
+- Non-aliased aggregate fields would typically be returned as `expr0`, `expr1`, etc — instead, we swap out these `expr` labels for the aggregate query in question: e.g. `avg(Id)` is labeled `avg(Id)` within your datatable.
+- [Date Functions](https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_soql_select_date_functions.htm) are supported.
+
+ **Aggregate Query Limitations**
+
+ These may be on the roadmap to fix, but for now please be aware of:
+
+ - Using max/min with any `Date` or `DateTime` field does not currently display properly.
+
 
 </details>
 

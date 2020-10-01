@@ -62,6 +62,10 @@
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
+        <tab>Aggregate_SOQL_Datatable</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>SOQL_Datatable</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>

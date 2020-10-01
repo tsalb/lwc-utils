@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>checkboxType</name>
+                    <value>None</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>customRelativeMaxHeight</name>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>queryString</name>
+                    <value>SELECT COUNT(Id) FROM Account</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showRecordCount</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showRefreshButton</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>sortedDirection</name>
+                    <value>asc</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>title</name>
+                    <value>SELECT COUNT(Id) FROM Account</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>useRelativeMaxHeight</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentName>soqlDatatable</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>checkboxType</name>
+                    <value>None</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>customRelativeMaxHeight</name>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>queryString</name>
+                    <value>SELECT SUM(ExpectedRevenue) Max_Revenue, FISCAL_YEAR(CloseDate) Close_Date_Year, FISCAL_MONTH(CloseDate) Close_Date_Month FROM Opportunity GROUP BY CloseDate</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showRecordCount</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showRefreshButton</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>sortedDirection</name>
+                    <value>asc</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>title</name>
+                    <value>SELECT SUM(ExpectedRevenue) Max_Revenue, FISCAL_YEAR(CloseDate) Close_Date_Year, FISCAL_MONTH(CloseDate) Close_Date_Month FROM Opportunity GROUP BY CloseDate</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>useRelativeMaxHeight</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentName>soqlDatatable</componentName>
+            </componentInstance>
+        </itemInstances>
+        <name>main</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <masterLabel>Aggregate SOQL Datatable</masterLabel>
+    <template>
+        <name>flexipage:defaultAppHomeTemplate</name>
+    </template>
+    <type>AppPage</type>
+</FlexiPage>

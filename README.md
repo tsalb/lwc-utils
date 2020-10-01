@@ -696,6 +696,43 @@ As you can see, it's possible to parameterize a payload back to Aura's `$A.creat
 </details>
 
 <details>
+    <summary>Support for Aggregate Queries</summary>
+
+
+
+You can make use of valid aggregate queries to create dynamic rollup summaries, particularly when combined with the power of the `$recordId` bind variable on record flexipages, like showing a quick snapshot of Opportunity values:
+
+![soqlDatatable aggregate query example](readme-images/soql-datatable-aggregate-query-example.png?raw=true)
+
+soqlDatatable supports the following aggregate query methods:
+
+- avg
+- count
+- count_distinct
+- min
+- max
+- sum
+
+The _only_ aggregate query operation not supported is the raw `count` call (without a field API name specified), as this kind of query returns a number instead of `AggregateResult` SObjects:
+
+```sql
+--returns an integer
+SELECT Count()
+FROM User
+WHERE Profile.Name = 'Standard User'
+```
+
+Invalid SOQL queries will be reported via toast message on the page the soqlDatatable is on.
+
+**Aggregate Query Considerations**
+
+ - `LIMIT` clauses are not supported in aggregate queries without a `GROUP BY` clause
+ - You can alias column labels the same way that you can in SOQL: either with a space or without a space. `avg(Id)myAvg` and `avg(Id) myAvg` thus are both labeled `myAvg` within your datatable
+ - Non-aliased aggregate fields would typically be returned as `expr0`, `expr1`, etc — instead, we swap out these `expr` labels for the aggregate query in question: e.g. `avg(Id)` is labeled `avg(Id)` within your datatable
+
+</details>
+
+<details>
     <summary>soqlDatatable Specification</summary>
 
 

@@ -80,6 +80,22 @@ public inherited sharing class DataTableService {
         'sum'
     };
 
+    private static final Set<String> DATE_FUNCTION_DELIMITERS = new Set<String>{
+        'calendar_month',
+        'calendar_quarter',
+        'calendar_year',
+        'day_in_month',
+        'day_in_week',
+        'day_in_year',
+        'day_only',
+        'fiscal_month',
+        'fiscal_quarter',
+        'fiscal_year',
+        'hour_in_day',
+        'week_in_month',
+        'week_in_year'
+    };
+
     private static Set<Id> RECORD_TYPE_IDS { private get; private set; }
     private static Map<String, String> LOOKUP_FIELD_TO_NAME_FIELD_MAP = new Map<String, String>();
 
@@ -295,12 +311,15 @@ public inherited sharing class DataTableService {
                 continue;
             }
 
-            // Aggregate Query support
-            if (isAggregateQuery(fieldName)) {
-                String aggQueryFieldLabel = getAggregateQueryFieldLabel(fieldName);
+            // Aggregate queries can be the normal min/max/sum/avg but also have supporting date functions to slice and dice them
+            if (isAggregateQuery(fieldName) || isDateFunction(fieldName)) {
+                String aggQueryFieldLabel = getExpressionFieldLabel(fieldName);
+                Schema.DisplayType displayType = isAggregateQuery(fieldName)
+                    ? Schema.DisplayType.INTEGER
+                    : Schema.DisplayType.STRING;
                 fieldColumn.put('label', aggQueryFieldLabel);
-                fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(Schema.DisplayType.Integer));
-                fieldColumn.put('fieldName', getAggregateQueryFieldName(fieldName, aggQueryFieldLabel));
+                fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(displayType));
+                fieldColumn.put('fieldName', getExpressionFieldName(fieldName, aggQueryFieldLabel));
                 tableColumns.add(fieldColumn);
                 continue;
             }
@@ -468,34 +487,46 @@ public inherited sharing class DataTableService {
         return isAggregateQuery;
     }
 
-    private static String getAggregateQueryFieldLabel(String fieldName) {
-        Integer expressionEnd = fieldName.indexOf(')') + 1;
-        if (expressionEnd == fieldName.length()) {
-            //there isn't an alias, just use the expression itself
-            return fieldName;
+    private static Boolean isDateFunction(String fieldName) {
+        Boolean isDateFunction = false;
+        for (String delim : DATE_FUNCTION_DELIMITERS) {
+            if (fieldName.containsIgnoreCase(delim + '(')) {
+                isDateFunction = true;
+                break;
+            }
         }
-        //sometimes people put a space after the expression end and before the field alias, trim the result
-        return fieldName.substring(expressionEnd, fieldName.length()).trim();
+        return isDateFunction;
     }
 
-    private static Integer aggQueryExpressionNameCounter = 0;
-    private static String getAggregateQueryFieldName(String fieldName, String fieldLabel) {
-        //Any aggregated field in a SELECT list that does not have an alias automatically gets an implied alias with a format "expr{i}"
-        //where i denotes the order of the aggregated fields with no explicit aliases.
+    private static String getExpressionFieldLabel(String fieldName) {
+        Integer expressionEnd = fieldName.indexOf(')') + 1;
+        Boolean hasAlias = expressionEnd != fieldName.length();
+        if (hasAlias) {
+            // sometimes people put a space after the expression end and before the field alias, trim the result
+            return fieldName.substring(expressionEnd, fieldName.length()).trim();
+        } else {
+            return fieldName;
+        }
+    }
+
+    private static Integer expressionNameCounter = 0;
+    private static String getExpressionFieldName(String fieldName, String fieldLabel) {
+        // Any aggregated field in a SELECT list that does not have an alias automatically gets an implied alias with a format "expr{i}"
+        // where i denotes the order of the aggregated fields with no explicit aliases.
         if (fieldName == fieldLabel) {
             String baseString = 'expr{0}';
-            String returnString = String.format(baseString, new List<String>{ aggQueryExpressionNameCounter.format() });
-            aggQueryExpressionNameCounter++;
+            String returnString = String.format(baseString, new List<String>{ expressionNameCounter.format() });
+            expressionNameCounter++;
             return returnString;
         } else if (fieldName.indexOf(')') + 1 < fieldName.length()) {
-            //there is an alias
+            // there is an alias
             return fieldLabel;
         }
         return fieldName;
     }
 
     private static Boolean shouldAddLimit(String queryString) {
-        //You can't use a LIMIT clause in a query that uses an aggregate function, but does not use a GROUP BY clause.
+        // You can't use a LIMIT clause in a query that uses an aggregate function, but does not use a GROUP BY clause.
         return isAggregateQuery(queryString) ? queryString.containsIgnoreCase('group by') : true;
     }
 
@@ -513,7 +544,7 @@ public inherited sharing class DataTableService {
     private static List<SObject> getSObjectsWithAllowedFields(String queryString, Set<Id> idSet) {
         try {
             List<SObject> queriedRecords = Database.query(queryString);
-            //stripInaccessible doesn't support AggregateResult SObjects
+            // stripInaccessible doesn't support AggregateResult SObjects
             if (isAggregateQuery(queryString)) {
                 return queriedRecords;
             }

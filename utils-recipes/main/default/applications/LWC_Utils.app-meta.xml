@@ -13,6 +13,7 @@
     <tabs>Sample_App_Aura</tabs>
     <tabs>Sample_App_LWC</tabs>
     <tabs>SOQL_Datatable</tabs>
+    <tabs>Aggregate_SOQL_Datatable</tabs>
     <tabs>Collection_Datatable</tabs>
     <tabs>LWC_Launching_Flow</tabs>
     <uiType>Lightning</uiType>

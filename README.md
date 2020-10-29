@@ -542,6 +542,7 @@ Global search is [on the roadmap (like regular list views)](https://github.com/t
     <summary>Configurable Flow and LWC actions</summary>
 
 ⠀
+>**Important Note**: There is additional config needed to make Configurable actions work. Please see the [getting started](https://github.com/tsalb/lwc-utils#configuration-and-getting-started) section of the README.
 
 Each `soqlDatatable` can be have one defined **Action Configuration** (`Datatable_Config__mdt`) to define both Table level (supporting multi / single select) and Row Level actions. This can be the same `Datatable_Config__mdt` as used in the **Lookup Configuration** section.
 

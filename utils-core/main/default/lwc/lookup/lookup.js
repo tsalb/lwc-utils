@@ -170,7 +170,7 @@ export default class Lookup extends LightningElement {
         if (ACTIONABLE_KEYS.includes(event.code)) {
             keyAction[event.code]();
         } else {
-            if (this.inputValue.length > 2) {
+            if (this.inputValue.length >= 2) {
                 this.debounceSearch();
             } else if (this.inputValue.length === 0) {
                 this.records = [];

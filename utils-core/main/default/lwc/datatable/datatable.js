@@ -123,17 +123,21 @@ export default class Datatable extends LightningElement {
         return this._checkboxType;
     }
     set checkboxType(value = 'None') {
+        this._checkboxType = value;
         switch (value) {
             case 'Multi':
                 this.maxRowSelection = MAX_ROW_SELECTION;
                 this.isHideCheckbox = false;
+                this.isShowRowNumber = true;
                 break;
             case 'Single':
                 this.maxRowSelection = 1;
                 this.isHideCheckbox = false;
+                this.isShowRowNumber = true;
                 break;
             default:
                 this.isHideCheckbox = true;
+                this.isShowRowNumber = false;
                 break;
         }
     }
@@ -154,6 +158,7 @@ export default class Datatable extends LightningElement {
 
     // Template and getters
     isHideCheckbox = true;
+    isShowRowNumber = false;
     maxRowSelection = MAX_ROW_SELECTION;
 
     tableData = [];
@@ -289,6 +294,10 @@ export default class Datatable extends LightningElement {
         }
         this._isRendered = true;
         this._messageService = this.template.querySelector('c-message-service');
+        // Fixes display of row numbers beyond 99
+        if (this.checkboxType === 'Multi') {
+            this.template.querySelector('c-datatable-extension').setAttribute('show-row-number-column');
+        }
     }
 
     // Event Handlers
@@ -478,6 +487,9 @@ export default class Datatable extends LightningElement {
                 };
                 this.handleLwcAction(payload);
                 break;
+            }
+            default: {
+                // nothing
             }
         }
     }
@@ -803,7 +815,7 @@ export default class Datatable extends LightningElement {
     get containerClass() {
         let css = 'slds-border_top slds-border_bottom slds-border_left slds-border_right slds-is-relative ';
         if (this.useRelativeMaxHeight) {
-            css += !!this.customRelativeMaxHeight ? '' : 'table-vh ';
+            css += this.customRelativeMaxHeight ? '' : 'table-vh ';
         }
         return css;
     }

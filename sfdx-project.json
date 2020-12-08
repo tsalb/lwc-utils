@@ -26,7 +26,7 @@
     ],
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "49.0",
+    "sourceApiVersion": "50.0",
     "packageAliases": {
         "LWC Utils": "0Ho1Q000000blJiSAI",
         "LWC Utils@1.0.0-0": "04t1Q000001QhOyQAK",

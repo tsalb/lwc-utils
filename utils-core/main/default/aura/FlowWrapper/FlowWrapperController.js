@@ -39,7 +39,7 @@
     handleStatusChange: function (component, event, helper) {
         let status = event.getParam('status');
         let payload = event.getParams();
-        console.log(JSON.parse(JSON.stringify(payload)));
+        //console.log(JSON.parse(JSON.stringify(payload)));
         if (status === 'FINISHED') {
             helper.messageService(component).publish({ key: 'flowfinish' });
         }

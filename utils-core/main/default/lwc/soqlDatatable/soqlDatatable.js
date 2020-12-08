@@ -129,11 +129,11 @@ export default class SoqlDatatable extends LightningElement {
             this._notifySingleError('getObjectInfo error', error);
         } else if (data) {
             this._objectInfo = data;
-            console.log(this._objectInfo);
+            //console.log(this._objectInfo);
 
             // For cleaning columns on output
             this._objectFieldsMap = new Map(Object.entries(this._objectInfo.fields));
-            console.log(this._objectFieldsMap);
+            //console.log(this._objectFieldsMap);
 
             // For merge values in the queryString
             if (this.isRecordBind && this.queryString.includes('$CurrentRecord')) {
@@ -165,7 +165,7 @@ export default class SoqlDatatable extends LightningElement {
                 }
             }
             this._finalQueryString = this.queryString;
-            console.log(this._finalQueryString);
+            //console.log(this._finalQueryString);
             this.validateQueryStringAndInitialize();
         }
     }
@@ -267,7 +267,7 @@ export default class SoqlDatatable extends LightningElement {
             this.firstSelectedRow = this._getCleanRow(event.detail.selectedRows[0]);
             this.dispatchEvent(new FlowAttributeChangeEvent('selectedRows', this.selectedRows));
             this.dispatchEvent(new FlowAttributeChangeEvent('firstSelectedRow', this.firstSelectedRow));
-            console.log(JSON.parse(JSON.stringify(this.selectedRows)));
+            //console.log(JSON.parse(JSON.stringify(this.selectedRows)));
         }
     }
 

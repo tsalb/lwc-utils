@@ -1,6 +1,6 @@
 {
     "name": "lwc-utils",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "scripts": {
         "lint": "prettier --write utils-core utils-recipes",
         "reinstall": "npm ci"
@@ -30,8 +30,8 @@
         "eslint-config-prettier": "^6.11.0",
         "husky": "^4.3.0",
         "lint-staged": "^10.4.0",
-        "prettier": "^2.1.1",
-        "prettier-plugin-apex": "^1.6.0",
+        "prettier": "^2.2.1",
+        "prettier-plugin-apex": "^1.7.0",
         "rimraf": "^3.0.2"
     },
     "husky": {

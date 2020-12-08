@@ -61,7 +61,7 @@
                             })
                         );
                 } else {
-                    console.log('popoverBody error is: ' + error[0].message);
+                    console.error('popoverBody error is: ' + error[0].message);
                 }
             })
         ); // end helper
@@ -130,12 +130,12 @@
                                     }
                                 );
                             } else {
-                                console.log('mainAction error is: ' + error[0].message);
+                                console.error('mainAction error is: ' + error[0].message);
                             }
                         })
                     ); // end helper.createButton
                 } else {
-                    console.log('modalBody error is: ' + error[0].message);
+                    console.error('modalBody error is: ' + error[0].message);
                 }
             })
         ); // end helper.createBody
@@ -180,7 +180,7 @@
                         })
                     );
                 } else {
-                    console.log('modalBody error is: ' + error[0].message);
+                    console.error('modalBody error is: ' + error[0].message);
                 }
             })
         ); // end helper.createBody

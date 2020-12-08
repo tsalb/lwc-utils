@@ -123,17 +123,21 @@ export default class Datatable extends LightningElement {
         return this._checkboxType;
     }
     set checkboxType(value = 'None') {
+        this._checkboxType = value;
         switch (value) {
             case 'Multi':
                 this.maxRowSelection = MAX_ROW_SELECTION;
                 this.isHideCheckbox = false;
+                this.isShowRowNumber = true;
                 break;
             case 'Single':
                 this.maxRowSelection = 1;
                 this.isHideCheckbox = false;
+                this.isShowRowNumber = true;
                 break;
             default:
                 this.isHideCheckbox = true;
+                this.isShowRowNumber = false;
                 break;
         }
     }
@@ -154,6 +158,7 @@ export default class Datatable extends LightningElement {
 
     // Template and getters
     isHideCheckbox = true;
+    isShowRowNumber = false;
     maxRowSelection = MAX_ROW_SELECTION;
 
     tableData = [];
@@ -209,8 +214,8 @@ export default class Datatable extends LightningElement {
         this._objectApiName = objectApiName;
         this._setTableColumns(columns);
         this._setTableData(data);
-        console.log(this.tableData);
-        console.log(this.tableColumns);
+        //console.log(this.tableData);
+        //console.log(this.tableColumns);
         this.clearDraftValuesOnSuccess();
         this.showSpinner = false;
     }
@@ -251,7 +256,7 @@ export default class Datatable extends LightningElement {
             this._notifySingleError('getObjectInfo error', error);
         } else if (data) {
             this._objectInfo = data;
-            console.log(this._objectInfo);
+            //console.log(this._objectInfo);
         }
     }
 
@@ -262,7 +267,7 @@ export default class Datatable extends LightningElement {
             this._notifySingleError('getActionConfig error', error);
         } else if (data) {
             this._actionConfigs = data;
-            console.log(this._actionConfigs);
+            //console.log(this._actionConfigs);
             // Table Actions
             this.primaryConfig = this._actionConfigs.find(cfg => cfg.Type__c.includes(PRIMARY_CONFIG_CHECK));
             this.secondaryConfig = this._actionConfigs.find(cfg => cfg.Type__c.includes(SECONDARY_CONFIG_CHECK));
@@ -277,7 +282,7 @@ export default class Datatable extends LightningElement {
         if (error) {
             this._notifySingleError('getLookupEditConfig error', error);
         } else if (data) {
-            console.log(data);
+            //console.log(data);
             // This is ok to use now since this wire is only accessed after the table column set
             this._messageService.publish({ key: 'lookupconfigload', value: { lookupConfigs: data } });
         }
@@ -289,6 +294,10 @@ export default class Datatable extends LightningElement {
         }
         this._isRendered = true;
         this._messageService = this.template.querySelector('c-message-service');
+        // Fixes display of row numbers beyond 99
+        if (this.checkboxType === 'Multi') {
+            this.template.querySelector('c-datatable-extension').setAttribute('show-row-number-column');
+        }
     }
 
     // Event Handlers
@@ -366,7 +375,7 @@ export default class Datatable extends LightningElement {
                 }
             }
         };
-        console.log(flowPayload);
+        //console.log(flowPayload);
         this._messageService.dialogService(flowPayload);
     }
 
@@ -479,6 +488,9 @@ export default class Datatable extends LightningElement {
                 this.handleLwcAction(payload);
                 break;
             }
+            default: {
+                // nothing
+            }
         }
     }
 
@@ -516,10 +528,10 @@ export default class Datatable extends LightningElement {
     // Avoid using the event because the payload doesn't have name compound fields
     async handleSave() {
         if (!this.isSaveToServer) {
-            console.log(this.draftValues);
+            //console.log(this.draftValues);
             // For collectionDatatable we just write user values to tableData, regardless of validation
             const rowKeyToDraftValuesMap = new Map(this.draftValues.map(draft => [draft[this.keyField], draft]));
-            console.log(rowKeyToDraftValuesMap);
+            //console.log(rowKeyToDraftValuesMap);
             // Sets draft values directly onto tableData
             this.tableData = this.tableData.map(row => {
                 const rowDraftValues = rowKeyToDraftValuesMap.get(row[this.keyField]);
@@ -547,14 +559,14 @@ export default class Datatable extends LightningElement {
             ])
         );
 
-        console.log(rowKeyToRowNumberMap);
-        console.log(this.draftValues);
+        //console.log(rowKeyToRowNumberMap);
+        //console.log(this.draftValues);
 
         // On partial save rows, this helps signal which rows succeeded by clearing them out
         this.showSpinner = true;
         const saveResults = await tableService.updateDraftValues(this.draftValues, rowKeyToRowNumberMap);
 
-        console.log(saveResults);
+        //console.log(saveResults);
 
         if (saveResults.errors.rows && Object.keys(saveResults.errors.rows).length) {
             this.saveErrors = saveResults.errors;
@@ -692,7 +704,7 @@ export default class Datatable extends LightningElement {
 
     _getRowActions(row, doneCallback) {
         let actions = [];
-        console.log(this.rowActionConfigs);
+        //console.log(this.rowActionConfigs);
         // These are pre-sorted by order by server
         this.rowActionConfigs.forEach(cfg => {
             // "Native" actions
@@ -803,7 +815,7 @@ export default class Datatable extends LightningElement {
     get containerClass() {
         let css = 'slds-border_top slds-border_bottom slds-border_left slds-border_right slds-is-relative ';
         if (this.useRelativeMaxHeight) {
-            css += !!this.customRelativeMaxHeight ? '' : 'table-vh ';
+            css += this.customRelativeMaxHeight ? '' : 'table-vh ';
         }
         return css;
     }

@@ -70,7 +70,7 @@ export default class EmpApi extends LightningElement {
         // Invoke subscribe method of empApi. Pass reference to messageCallback
         subscribe(this.channel, -1, messageCallback).then(response => {
             // Response contains the subscription information on successful subscribe call
-            console.log('Successfully subscribed to : ', JSON.stringify(response.channel));
+            //console.log('Successfully subscribed to : ', JSON.stringify(response.channel));
             this._subscription = response;
         });
     }
@@ -79,7 +79,7 @@ export default class EmpApi extends LightningElement {
     unsubscribe() {
         // Invoke unsubscribe method of empApi
         unsubscribe(this._subscription, response => {
-            console.log('unsubscribe() response: ', JSON.stringify(response));
+            //console.log('unsubscribe() response: ', JSON.stringify(response));
             // Response is true for successful unsubscribe
         });
     }
@@ -87,7 +87,7 @@ export default class EmpApi extends LightningElement {
     registerErrorListener() {
         // Invoke onError empApi method
         onError(error => {
-            console.log('Received error from server: ', JSON.stringify(error));
+            //console.log('Received error from server: ', JSON.stringify(error));
             // Error contains the server-side error
         });
     }

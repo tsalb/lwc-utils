@@ -30,7 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
+import { getPicklistValues } from 'lightning/uiObjectInfoApi';
 
 const MASTER_RECORD_TYPE_ID = '012000000000000AAA';
 
@@ -51,7 +52,7 @@ export default class DatatablePicklistCell extends LightningElement {
     }
 
     // Required properties for datatable-edit-cell
-    @api value; // comes in from datatable as the value of the name field
+    @api value; // comes in from datatable as the picklist api value
     @api tableBoundary;
     @api rowKeyAttribute;
     @api rowKeyValue;
@@ -60,8 +61,45 @@ export default class DatatablePicklistCell extends LightningElement {
     @api columnName;
     @api fieldApiName;
 
+    // Duplicate this wire at the container level to reconcile label / api name mismatches
+    @wire(getPicklistValues, { recordTypeId: '$picklistRecordTypeId', fieldApiName: '$fieldDescribe' })
+    wiredPicklistValues({ error, data }) {
+        if (error) {
+            this._errors.push(error);
+            console.error('Error', error);
+        } else if (data) {
+            this._valueToLabelMap = new Map(data.values.map(({ label, value }) => [value, label]));
+        }
+    }
+
     // private
+    _isRendered;
+    _editableCell;
+    _errors = [];
+    _valueToLabelMap = new Map();
     _picklistRecordTypeId;
+    _selectedValue;
+
+    get cellDisplayValue() {
+        if (this._isCleared) {
+            return null;
+        }
+        if (this._valueToLabelMap.size && !this._selectedValue) {
+            return this._valueToLabelMap.get(this.value);
+        }
+        if (this._valueToLabelMap.size && this._selectedValue) {
+            return this._valueToLabelMap.get(this._selectedValue);
+        }
+        return this.value;
+    }
+
+    renderedCallback() {
+        if (this._isRendered) {
+            return;
+        }
+        this._isRendered = true;
+        this._editableCell = this.template.querySelector('c-datatable-editable-cell');
+    }
 
     // Event Handlers
 
@@ -72,5 +110,26 @@ export default class DatatablePicklistCell extends LightningElement {
             // TODO make recordId always included, when available, to customPicklist datatype. For now, this is OK.
             this._picklistRecordTypeId = rtMap.get(this.rowKeyValue);
         }
+    }
+
+    handleSelected(event) {
+        if (this._editableCell.showMassEdit) {
+            return;
+        }
+        this._selectedValue = event.detail.selectedValue;
+        this._isCleared = !this.value;
+    }
+
+    handleReset() {
+        this._isCleared = false;
+        this._selectedValue = null;
+        // Force template refresh
+        this.value = this.value;
+    }
+
+    // For mass edit
+    handleSetDraftValue(event) {
+        this._selectedValue = event.detail.draftValue;
+        this._isCleared = !this._selectedValue;
     }
 }

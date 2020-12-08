@@ -66,7 +66,7 @@ export default class DatatableDeleteRowForm extends LightningElement {
             this._messageService.notifySuccess(`Succesfully Deleted "${this.row.Name}".`);
             this._refreshViewAndClose();
         } catch (error) {
-            console.log(error);
+            //console.log(error);
             this._messageService.notifySingleError('Error Deleting Row', error);
         } finally {
             this.showSpinner = false;

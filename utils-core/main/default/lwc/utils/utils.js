@@ -93,7 +93,6 @@ const reduceErrors = errors => {
             .filter(error => !!error)
             // Extract an error message
             .map(error => {
-                console.log(error);
                 // UI API read errors
                 if (Array.isArray(error.body)) {
                     return error.body.map(e => e.message);

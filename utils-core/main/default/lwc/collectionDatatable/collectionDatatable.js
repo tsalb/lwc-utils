@@ -148,11 +148,11 @@ export default class CollectionDatatable extends LightningElement {
 
             // Flatten here, we want to recover any possible customLookup name values
             this.recordCollection = flattenQueryResult(this.recordCollection);
-            console.log(this.recordCollection);
+            //console.log(this.recordCollection);
 
             // Creating columns means parsing LDS and matching that to design props or what's in the record collection
             this._objectFieldsMap = new Map(Object.entries(this._objectInfo.fields));
-            console.log(this._objectFieldsMap);
+            //console.log(this._objectFieldsMap);
 
             this._referenceFieldsMap = new Map(
                 Array.from(this._objectFieldsMap.values())
@@ -163,7 +163,7 @@ export default class CollectionDatatable extends LightningElement {
                         return [field.apiName, flatNameField];
                     })
             );
-            console.log(this._referenceFieldsMap);
+            //console.log(this._referenceFieldsMap);
 
             // Columns need special flags set within them for custom data types
             const columns = [];
@@ -197,12 +197,12 @@ export default class CollectionDatatable extends LightningElement {
     handleSave(event) {
         if (event.detail.editedRows && event.detail.editedRows.length) {
             const editedRowsClean = event.detail.editedRows.map(row => this._getCleanRow(row));
-            console.log(editedRowsClean);
+            //console.log(editedRowsClean);
             this.dispatchEvent(new FlowAttributeChangeEvent('editedRows', editedRowsClean));
         }
         if (event.detail.allRows && event.detail.allRows.length) {
             const allRowsClean = event.detail.allRows.map(row => this._getCleanRow(row));
-            console.log(allRowsClean);
+            //console.log(allRowsClean);
             this.dispatchEvent(new FlowAttributeChangeEvent('allRows', allRowsClean));
         }
     }
@@ -255,7 +255,7 @@ export default class CollectionDatatable extends LightningElement {
             };
             columnDefinition = { ...columnDefinition, ...picklistTypeAttributes };
         }
-        console.log(columnDefinition);
+        //console.log(columnDefinition);
         return columnDefinition;
     }
 

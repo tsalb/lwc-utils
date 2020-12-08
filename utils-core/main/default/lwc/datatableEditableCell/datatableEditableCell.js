@@ -150,14 +150,15 @@ export default class DatatableEditableCell extends LightningElement {
 
             //console.log(rowIdentifierToValues);
 
+            // Publishes to all instances of itself
             this._messageService.publish({
                 key: 'setdraftvalue',
                 value: { rowIdentifierToValues: rowIdentifierToValues }
             });
         } else {
-            if (this._displayElement.name === 'lookup-display') {
+            if (this._displayElement.name === 'lookup-display' || this._displayElement.name === 'picklist-display') {
                 this.dispatchEvent(
-                    new CustomEvent('setdraftvalueforlookup', { detail: { draftValue: currentInputValue } })
+                    new CustomEvent('customcellsetdraftvalue', { detail: { draftValue: currentInputValue } })
                 );
             }
             this.draftValue = currentInputValue;
@@ -239,8 +240,8 @@ export default class DatatableEditableCell extends LightningElement {
         if (this.displayCellValueProp) {
             this._displayElement[this.displayCellValueProp] = this.cellDisplayValue;
         }
-        if (this._displayElement.name === 'lookup-display') {
-            this.dispatchEvent(new CustomEvent('resetforlookup'));
+        if (this._displayElement.name === 'lookup-display' || this._displayElement.name === 'picklist-display') {
+            this.dispatchEvent(new CustomEvent('customcellreset'));
         }
     }
 
@@ -256,8 +257,8 @@ export default class DatatableEditableCell extends LightningElement {
         if (!this.isEditable) {
             return;
         }
-        const payload = JSON.parse(JSON.stringify(event.detail.value)); // un-proxify for ease of debugging
-
+        // un-proxify for ease of debugging
+        const payload = JSON.parse(JSON.stringify(event.detail.value));
         //console.log(payload);
 
         if (payload.rowKeysToNull && payload.rowKeysToNull.includes(this.rowKeyValue)) {
@@ -273,9 +274,12 @@ export default class DatatableEditableCell extends LightningElement {
             if (identifierMap.has(currentCellIdentifier)) {
                 const incomingDraftValue = identifierMap.get(currentCellIdentifier);
                 // Special considerations for custom data types
-                if (this._displayElement.name === 'lookup-display') {
+                if (
+                    this._displayElement.name === 'lookup-display' ||
+                    this._displayElement.name === 'picklist-display'
+                ) {
                     this.dispatchEvent(
-                        new CustomEvent('setdraftvalueforlookup', { detail: { draftValue: incomingDraftValue } })
+                        new CustomEvent('customcellsetdraftvalue', { detail: { draftValue: incomingDraftValue } })
                     );
                 } else {
                     this._displayElement[this.displayCellValueProp] = incomingDraftValue;

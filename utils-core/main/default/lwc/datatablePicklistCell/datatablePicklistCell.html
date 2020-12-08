@@ -33,16 +33,15 @@
 -->
 
 <template>
-    <!-- prettier-ignore -->
-    <c-message-service 
+    <c-message-service
         boundary={tableBoundary}
         onpicklistconfigload={handlePicklistConfigLoad}
+        onrefreshsoqldatatable={handleReset}
     ></c-message-service>
 
     <c-datatable-editable-cell
         table-boundary={tableBoundary}
         original-value={value}
-        display-cell-value-prop="value"
         edit-cell-value-prop="value"
         is-editable={isEditable}
         row-key-attribute={rowKeyAttribute}
@@ -51,19 +50,22 @@
         column-name={columnName}
         field-api-name={fieldApiName}
         change-event-name="selected"
+        oncustomcellsetdraftvalue={handleSetDraftValue}
+        oncustomcellreset={handleReset}
     >
-        <!-- prettier-ignore -->
         <lightning-formatted-text
             slot="displayCell"
-            value={value}
+            name="picklist-display"
+            value={cellDisplayValue}
         ></lightning-formatted-text>
         <c-picklist
-            name="picklist-edit"
             slot="editCell"
+            name="picklist-edit"
             field-describe={fieldDescribe}
             record-type-id={picklistRecordTypeId}
             value={value}
             variant="label-hidden"
+            onselected={handleSelected}
         ></c-picklist>
     </c-datatable-editable-cell>
 </template>

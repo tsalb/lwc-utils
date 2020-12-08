@@ -109,11 +109,7 @@ export default class DatatableLookupCell extends LightningElement {
         this._editableCell = this.template.querySelector('c-datatable-editable-cell');
     }
 
-    // For mass edit
-    handleSetDraftValueForLookup(event) {
-        this._selectedRecordId = event.detail.draftValue;
-        this._isCleared = !this._selectedRecordId;
-    }
+    // Event Handlers
 
     handleLookupConfigLoad(event) {
         const payload = event.detail.value;
@@ -133,7 +129,14 @@ export default class DatatableLookupCell extends LightningElement {
         }
     }
 
-    // It's easier for the lookup custom data type to have logic here, unlike the picklist custom data type
+    handleSelected(event) {
+        if (this._editableCell.showMassEdit) {
+            return;
+        }
+        this._selectedRecordId = event.detail.selectedRecordId;
+        this._isCleared = !this._selectedRecordId;
+    }
+
     handleReset() {
         this._isCleared = false;
         this._selectedRecordId = null;
@@ -141,11 +144,9 @@ export default class DatatableLookupCell extends LightningElement {
         this.target = this.target;
     }
 
-    handleSelected(event) {
-        if (this._editableCell.showMassEdit) {
-            return;
-        }
-        this._selectedRecordId = event.detail.selectedRecordId;
+    // For mass edit
+    handleSetDraftValue(event) {
+        this._selectedRecordId = event.detail.draftValue;
         this._isCleared = !this._selectedRecordId;
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AuraDefinitionBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>49.0</apiVersion>
-    <description>Leverages Lightning Data Service to perform quick single-object, single-record DMLs.</description>
+  <apiVersion>50.0</apiVersion>
+  <description>Leverages Lightning Data Service to perform quick single-object, single-record DMLs.</description>
 </AuraDefinitionBundle>

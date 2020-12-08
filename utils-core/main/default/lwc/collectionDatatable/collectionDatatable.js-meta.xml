@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>49.0</apiVersion>
-    <isExposed>true</isExposed>
-    <masterLabel>Collection Datatable</masterLabel>
-    <description>Displays a Record Collection in a table format.</description>
-    <targets>
-        <target>lightning__FlowScreen</target>
-    </targets>
-    <targetConfigs>
-        <targetConfig targets="lightning__FlowScreen">
-            <propertyType name="sObj" extends="SObject" label="Object"/>
-            <property name="recordCollection" label="Record Collection" type="{sObj[]}"/>
-            <property name="title" label="Title" type="String" role="inputOnly"/>
-            <property name="showRecordCount" label="Show Record Count" type="Boolean" role="inputOnly"/>
-            <property name="checkboxType" label="Checkbox Type" type="String" description="None, Multi, or Single" role="inputOnly"/>
-            <property name="shownFields" label="Shown Fields" type="String" description="Comma separated list of Field API names to show. Parent relationship is supported (e.g. Account.Type)." role="inputOnly" required="true" default="Name"/>
-            <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of Field API names for inline editing. Does not support parent relationship (Account.Type). Saving does not write to server." role="inputOnly"/>
-            <property name="columnLabels" label="Column Labels" type="String" description="Comma-separated key/value pair consisting of fieldApiName=>newLabel. For example, to replace the default Username: Username=>My Custom Username Label" role="inputOnly"/>
-            <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API names. Parent relationship is supported (e.g. Account.Type)." role="inputOnly"/>
-            <property name="sortedBy" label="Default Sort Field" type="String" description="Single Field API Name. Parent relationship is supported (e.g. Account.Type)." role="inputOnly"/>
-            <property name="sortedDirection" label="Default Sort Direction" type="String" default="asc" description="asc or desc" role="inputOnly"/>
-            <!-- OUTPUTS -->
-            <property name="selectedRows" label="Selected Rows" type="{sObj[]}" role="outputOnly"/>
-            <property name="firstSelectedRow" label="First Selected Row" type="{sObj}" role="outputOnly"/>
-            <property name="editedRows" label="Edited Rows" type="{sObj[]}" description="Only rows with saved changes." role="outputOnly"/>
-            <property name="allRows" label="All Rows" type="{sObj[]}" role="outputOnly"/>
-        </targetConfig>
-    </targetConfigs>
+  <apiVersion>50.0</apiVersion>
+  <isExposed>true</isExposed>
+  <masterLabel>Collection Datatable</masterLabel>
+  <description>Displays a Record Collection in a table format.</description>
+  <targets>
+    <target>lightning__FlowScreen</target>
+  </targets>
+  <targetConfigs>
+    <targetConfig targets="lightning__FlowScreen">
+      <propertyType name="sObj" extends="SObject" label="Object"/>
+      <property name="recordCollection" label="Record Collection" type="{sObj[]}"/>
+      <property name="title" label="Title" type="String" role="inputOnly"/>
+      <property name="showRecordCount" label="Show Record Count" type="Boolean" role="inputOnly"/>
+      <property name="checkboxType" label="Checkbox Type" type="String" description="None, Multi, or Single" role="inputOnly"/>
+      <property name="shownFields" label="Shown Fields" type="String" description="Comma separated list of Field API names to show. Parent relationship is supported (e.g. Account.Type)." role="inputOnly" required="true" default="Name"/>
+      <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of Field API names for inline editing. Does not support parent relationship (Account.Type). Saving does not write to server." role="inputOnly"/>
+      <property name="columnLabels" label="Column Labels" type="String" description="Comma-separated key/value pair consisting of fieldApiName=>newLabel. For example, to replace the default Username: Username=>My Custom Username Label" role="inputOnly"/>
+      <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API names. Parent relationship is supported (e.g. Account.Type)." role="inputOnly"/>
+      <property name="sortedBy" label="Default Sort Field" type="String" description="Single Field API Name. Parent relationship is supported (e.g. Account.Type)." role="inputOnly"/>
+      <property name="sortedDirection" label="Default Sort Direction" type="String" default="asc" description="asc or desc" role="inputOnly"/>
+      <!-- OUTPUTS -->
+      <property name="selectedRows" label="Selected Rows" type="{sObj[]}" role="outputOnly"/>
+      <property name="firstSelectedRow" label="First Selected Row" type="{sObj}" role="outputOnly"/>
+      <property name="editedRows" label="Edited Rows" type="{sObj[]}" description="Only rows with saved changes." role="outputOnly"/>
+      <property name="allRows" label="All Rows" type="{sObj[]}" role="outputOnly"/>
+    </targetConfig>
+  </targetConfigs>
 </LightningComponentBundle>

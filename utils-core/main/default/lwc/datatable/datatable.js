@@ -294,10 +294,6 @@ export default class Datatable extends LightningElement {
         }
         this._isRendered = true;
         this._messageService = this.template.querySelector('c-message-service');
-        // Fixes display of row numbers beyond 99
-        if (this.checkboxType === 'Multi') {
-            this.template.querySelector('c-datatable-extension').setAttribute('show-row-number-column');
-        }
     }
 
     // Event Handlers

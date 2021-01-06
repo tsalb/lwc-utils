@@ -75,6 +75,7 @@ export default class DatatablePicklistCell extends LightningElement {
     // private
     _isRendered;
     _editableCell;
+    _isCleared = false;
     _errors = [];
     _valueToLabelMap = new Map();
     _picklistRecordTypeId;
@@ -117,14 +118,14 @@ export default class DatatablePicklistCell extends LightningElement {
             return;
         }
         this._selectedValue = event.detail.selectedValue;
-        this._isCleared = !this.value;
+        this._isCleared = !this._selectedValue;
     }
 
     handleReset() {
         this._isCleared = false;
         this._selectedValue = null;
         // Force template refresh
-        this.value = this.value;
+        this.tableBoundary = this.tableBoundary;
     }
 
     // For mass edit

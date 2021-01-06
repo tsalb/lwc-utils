@@ -4,8 +4,8 @@
             "path": "utils-core",
             "default": true,
             "package": "LWC Utils",
-            "versionName": "ver 1.1.1",
-            "versionNumber": "1.1.1.NEXT",
+            "versionName": "ver 1.2.0",
+            "versionNumber": "1.2.0.NEXT",
             "postInstallUrl": "https://github.com/tsalb/lwc-utils#component-library-overview",
             "releaseNotesUrl": "https://github.com/tsalb/lwc-utils/releases"
         },
@@ -39,6 +39,7 @@
         "LWC Utils Recipes@1.1.0-1": "04t1Q000001QhWiQAK",
         "LWC Utils Recipes@1.1.0-2": "04t1Q000001QhWnQAK",
         "LWC Utils@1.1.1-1": "04t1Q000001QhneQAC",
-        "LWC Utils@1.1.1-2": "04t1Q000001QhnjQAC"
+        "LWC Utils@1.1.1-2": "04t1Q000001QhnjQAC",
+        "LWC Utils@1.2.0-1": "04t1Q000001QhtwQAC"
     }
 }

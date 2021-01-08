@@ -42,7 +42,7 @@
                 <template if:false={showRecordCount}> {title} </template>
             </slot>
         </div>
-        <div class={containerClass} style={customRelativeHeight}>
+        <div class={containerClass} style={customHeightStyle}>
             <template if:true={showSpinner}>
                 <lightning-spinner alternative-text="Loading"></lightning-spinner>
             </template>

@@ -85,10 +85,17 @@ export default class DatatablePicklistCell extends LightningElement {
         if (this._isCleared) {
             return null;
         }
-        if (this._valueToLabelMap.size && !this._selectedValue) {
+        if (!this._valueToLabelMap || this._valueToLabelMap.size === 0) {
+            return this.value;
+        }
+        // Supports if database has a value not currently in the picklist options
+        if (!this._valueToLabelMap.has(this.value)) {
+            return this.value;
+        }
+        if (this._valueToLabelMap.has(this.value)) {
             return this._valueToLabelMap.get(this.value);
         }
-        if (this._valueToLabelMap.size && this._selectedValue) {
+        if (this._selectedValue) {
             return this._valueToLabelMap.get(this._selectedValue);
         }
         return this.value;

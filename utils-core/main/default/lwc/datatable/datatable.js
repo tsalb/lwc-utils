@@ -72,8 +72,9 @@ export default class Datatable extends LightningElement {
     @api columnWidthsMode = 'auto'; // override salesforce default
     @api showRefreshButton = false;
     @api showSpinner = false;
-    @api useRelativeMaxHeight = false;
+    @api customHeight;
     @api customRelativeMaxHeight;
+    @api useRelativeMaxHeight = false;
 
     // Sorting
     @api
@@ -816,18 +817,21 @@ export default class Datatable extends LightningElement {
         return css;
     }
 
+    get customHeightStyle() {
+        if (this.useRelativeMaxHeight && !!this.customRelativeMaxHeight) {
+            return `height: ${this.customRelativeMaxHeight}vh;`;
+        }
+        if (!this.useRelativeMaxHeight && this.customHeight) {
+            return `height: ${this.customHeight}px;`;
+        }
+        return '';
+    }
+
     get refreshClass() {
         let css = 'slds-p-left_x-small ';
         if (!this.showTableActions) {
             css += 'slds-p-right_small ';
         }
         return css;
-    }
-
-    get customRelativeHeight() {
-        if (this.useRelativeMaxHeight && !!this.customRelativeMaxHeight) {
-            return `height: ${this.customRelativeMaxHeight}vh;`;
-        }
-        return '';
     }
 }

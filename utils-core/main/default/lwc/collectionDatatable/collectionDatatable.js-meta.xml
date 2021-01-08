@@ -20,6 +20,7 @@
       <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API names. Parent relationship is supported (e.g. Account.Type)." role="inputOnly"/>
       <property name="sortedBy" label="Default Sort Field" type="String" description="Single Field API Name. Parent relationship is supported (e.g. Account.Type)." role="inputOnly"/>
       <property name="sortedDirection" label="Default Sort Direction" type="String" default="asc" description="asc or desc" role="inputOnly"/>
+      <property name="customHeight" label="Table Height (px)" type="String" description="Sets a table height in pixels. Leave blank for default." role="inputOnly"/>
       <!-- OUTPUTS -->
       <property name="selectedRows" label="Selected Rows" type="{sObj[]}" role="outputOnly"/>
       <property name="firstSelectedRow" label="First Selected Row" type="{sObj}" role="outputOnly"/>

@@ -65,6 +65,7 @@ export default class CollectionDatatable extends LightningElement {
     @api sortableFields;
     @api sortedBy;
     @api sortedDirection;
+    @api customHeight;
 
     columnWidthsMode = 'auto';
 

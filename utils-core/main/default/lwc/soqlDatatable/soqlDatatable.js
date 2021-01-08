@@ -96,6 +96,10 @@ export default class SoqlDatatable extends LightningElement {
     /// For inline edit lookup search behavior
     @api lookupConfigDevName;
 
+    // LWC loadStyle hack - to help with picklist and lookup menu overflows
+    // https://salesforce.stackexchange.com/questions/246887/target-inner-elements-of-standard-lightning-web-components-with-css/252852#252852
+    @api useLoadStyleHackForOverflow;
+
     // Flow outputs
     @api selectedRows;
     @api firstSelectedRow;

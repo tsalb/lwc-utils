@@ -21,6 +21,7 @@
       <property name="sortedBy" label="Default Sort Field" type="String" description="Single Field API Name. Parent relationship is supported (e.g. Account.Type)." role="inputOnly"/>
       <property name="sortedDirection" label="Default Sort Direction" type="String" default="asc" description="asc or desc" role="inputOnly"/>
       <property name="customHeight" label="Table Height (px)" type="String" description="Sets a table height in pixels. Leave blank for default." role="inputOnly"/>
+      <property name="useLoadStyleHackForOverflow" label=".Allow Overflow (EXPERIMENTAL)" type="Boolean" description="WARNING: Removes scrolling within datatable, only use for small number of rows. Enable this for a small number of rows that require in-line edit. This overrides any custom table heights and allow for picklist and lookup edit menus to display on top of th edatatable. However, you may experience some weird CSS issues."/>
       <!-- OUTPUTS -->
       <property name="selectedRows" label="Selected Rows" type="{sObj[]}" role="outputOnly"/>
       <property name="firstSelectedRow" label="First Selected Row" type="{sObj}" role="outputOnly"/>

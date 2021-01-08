@@ -53,6 +53,11 @@ const ROW_ACTION_CHECK = 'Row Action';
 // Datatable_Lookup_Config__mdt
 const DATATABLE_LOOKUP_CONFIG_DEFAULT = 'Default_Lookup_Config';
 
+// LWC loadStyle hack - to help with picklist and lookup menu overflows
+// https://salesforce.stackexchange.com/questions/246887/target-inner-elements-of-standard-lightning-web-components-with-css/252852#252852
+import datatableLoadStyleHack from '@salesforce/resourceUrl/datatableLoadStyleHack';
+import { loadStyle } from 'lightning/platformResourceLoader';
+
 export default class Datatable extends LightningElement {
     @api recordId;
     @api
@@ -156,6 +161,10 @@ export default class Datatable extends LightningElement {
     // Datatable_Config__mdt configs
     @api actionConfigDevName;
     @api lookupConfigDevName;
+
+    // LWC loadStyle hack - to help with picklist and lookup menu overflows
+    // https://salesforce.stackexchange.com/questions/246887/target-inner-elements-of-standard-lightning-web-components-with-css/252852#252852
+    @api useLoadStyleHackForOverflow;
 
     // Template and getters
     isHideCheckbox = true;
@@ -295,6 +304,10 @@ export default class Datatable extends LightningElement {
         }
         this._isRendered = true;
         this._messageService = this.template.querySelector('c-message-service');
+        // See imports for loadStyle hack
+        if (this.useLoadStyleHackForOverflow) {
+            loadStyle(this, datatableLoadStyleHack + '/scrollable-overflow-visible.css');
+        }
     }
 
     // Event Handlers
@@ -810,19 +823,20 @@ export default class Datatable extends LightningElement {
     // Class expressions
 
     get containerClass() {
-        let css = 'slds-border_top slds-border_bottom slds-border_left slds-border_right slds-is-relative ';
-        if (this.useRelativeMaxHeight) {
-            css += this.customRelativeMaxHeight ? '' : 'table-vh ';
-        }
-        return css;
+        return 'slds-border_top slds-border_bottom slds-border_left slds-border_right slds-is-relative';
     }
 
     get customHeightStyle() {
-        if (this.useRelativeMaxHeight && !!this.customRelativeMaxHeight) {
-            return `height: ${this.customRelativeMaxHeight}vh;`;
+        if (this.useLoadStyleHackForOverflow) {
+            return '';
         }
-        if (!this.useRelativeMaxHeight && this.customHeight) {
+        if (this.customHeight) {
             return `height: ${this.customHeight}px;`;
+        }
+        if (this.useRelativeMaxHeight) {
+            // 62vh tries to take into account both global header and utility bar
+            const viewHeight = this.customRelativeMaxHeight ? this.customRelativeMaxHeight : '62';
+            return `height: ${viewHeight}vh;`;
         }
         return '';
     }

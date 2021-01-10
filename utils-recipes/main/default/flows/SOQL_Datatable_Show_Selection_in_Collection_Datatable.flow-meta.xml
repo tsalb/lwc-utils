@@ -1,11 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <assignments>
+        <name>Set_Count</name>
+        <label>Set Count</label>
+        <locationX>176</locationX>
+        <locationY>400</locationY>
+        <assignmentItems>
+            <assignToReference>SelectedContactsCount</assignToReference>
+            <operator>AssignCount</operator>
+            <value>
+                <elementReference>SelectedContacts</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Has_Selected_Contacts</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>Has_Selected_Contacts</name>
+        <label>Has Selected Contacts</label>
+        <locationX>309</locationX>
+        <locationY>403</locationY>
+        <defaultConnector>
+            <targetReference>No_Contacts_Selected</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>False</defaultConnectorLabel>
+        <rules>
+            <name>True</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>SelectedContactsCount</leftValueReference>
+                <operator>GreaterThan</operator>
+                <rightValue>
+                    <numberValue>0.0</numberValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Selected_Contacts_Loop</targetReference>
+            </connector>
+            <label>True</label>
+        </rules>
+    </decisions>
     <interviewLabel>SOQL Datatable - Show Selection in Collection Datatable {!$Flow.CurrentDateTime}</interviewLabel>
     <label>SOQL Datatable - Show Selection in Collection Datatable</label>
+    <loops>
+        <name>Selected_Contacts_Loop</name>
+        <label>Selected Contacts Loop</label>
+        <locationX>458</locationX>
+        <locationY>402</locationY>
+        <collectionReference>SelectedContacts</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Show_Row_Data</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Confirm_Selected_Contacts</targetReference>
+        </noMoreValuesConnector>
+    </loops>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
             <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
         </value>
     </processMetadataValues>
     <processMetadataValues>
@@ -18,8 +80,8 @@
     <screens>
         <name>Confirm_Selected_Contacts</name>
         <label>Confirm Selected Contacts</label>
-        <locationX>347</locationX>
-        <locationY>197</locationY>
+        <locationX>676</locationX>
+        <locationY>407</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -40,11 +102,27 @@
             <inputParameters>
                 <name>shownFields</name>
                 <value>
-                    <stringValue>Name, Email, Account.Name, Account.Type</stringValue>
+                    <stringValue>Name, Email, AccountId, Account.Type</stringValue>
                 </value>
             </inputParameters>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>No_Contacts_Selected</name>
+        <label>No Contacts Selected</label>
+        <locationX>310</locationX>
+        <locationY>564</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>false</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>No_Contacts_Selected_Message</name>
+            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;No Contacts selected, please go back&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -58,7 +136,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>Confirm_Selected_Contacts</targetReference>
+            <targetReference>Set_Count</targetReference>
         </connector>
         <fields>
             <name>Queried_Contacts_Table</name>
@@ -71,7 +149,7 @@
             <inputParameters>
                 <name>queryString</name>
                 <value>
-                    <stringValue>SELECT Name, Email, Account.Name, Account.Type FROM Contact LIMIT 5</stringValue>
+                    <stringValue>SELECT Name, Email, AccountId, Account.Type FROM Contact LIMIT 5</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -85,6 +163,25 @@
                 <assignToReference>SelectedContacts</assignToReference>
                 <name>selectedRows</name>
             </outputParameters>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Show_Row_Data</name>
+        <label>Show Row Data</label>
+        <locationX>460</locationX>
+        <locationY>206</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Selected_Contacts_Loop</targetReference>
+        </connector>
+        <fields>
+            <name>Row_Data_Text</name>
+            <fieldText>&lt;p&gt;Below is Account Info for: {!Selected_Contacts_Loop.Name}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Account Name: {!Selected_Contacts_Loop.Account.Name}&lt;/p&gt;&lt;p&gt;Account Type: {!Selected_Contacts_Loop.Account.Type}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;IMPORTANT&lt;/b&gt;: You must query the field with SOQL so it can be displayed here. &lt;span style=&quot;font-family: courier;&quot;&gt;soqlDatatable&lt;/span&gt; does not automatically pull in fields for display in a flow that is not explicitly queried.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -104,5 +201,16 @@
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <objectType>Contact</objectType>
+    </variables>
+    <variables>
+        <name>SelectedContactsCount</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>0</scale>
+        <value>
+            <numberValue>0.0</numberValue>
+        </value>
     </variables>
 </Flow>

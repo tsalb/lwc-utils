@@ -53,11 +53,6 @@ const ROW_ACTION_CHECK = 'Row Action';
 // Datatable_Lookup_Config__mdt
 const DATATABLE_LOOKUP_CONFIG_DEFAULT = 'Default_Lookup_Config';
 
-// LWC loadStyle hack - to help with picklist and lookup menu overflows
-// https://salesforce.stackexchange.com/questions/246887/target-inner-elements-of-standard-lightning-web-components-with-css/252852#252852
-import datatableLoadStyleHack from '@salesforce/resourceUrl/datatableLoadStyleHack';
-import { loadStyle } from 'lightning/platformResourceLoader';
-
 export default class Datatable extends LightningElement {
     @api recordId;
     @api
@@ -163,7 +158,7 @@ export default class Datatable extends LightningElement {
     @api lookupConfigDevName;
 
     // LWC loadStyle hack - to help with picklist and lookup menu overflows
-    // https://salesforce.stackexchange.com/questions/246887/target-inner-elements-of-standard-lightning-web-components-with-css/252852#252852
+    // https://salesforce.stackexchange.com/a/270624
     @api useLoadStyleHackForOverflow;
 
     // Template and getters
@@ -304,9 +299,18 @@ export default class Datatable extends LightningElement {
         }
         this._isRendered = true;
         this._messageService = this.template.querySelector('c-message-service');
-        // See imports for loadStyle hack
+        // Assists with in-line edit on tables with only a few rows
         if (this.useLoadStyleHackForOverflow) {
-            loadStyle(this, datatableLoadStyleHack + '/scrollable-overflow-visible.css');
+            const style = document.createElement('style');
+            style.innerText = `
+                .${this.extensionBoundaryClass} .slds-scrollable_x {
+                  overflow: visible !important;
+                }
+                .${this.extensionBoundaryClass} .slds-scrollable_y {
+                  overflow: visible !important;
+                }
+            `;
+            this.template.querySelector(`.${this.extensionBoundaryClass}`).appendChild(style);
         }
     }
 
@@ -823,7 +827,17 @@ export default class Datatable extends LightningElement {
     // Class expressions
 
     get containerClass() {
-        return 'slds-border_top slds-border_bottom slds-border_left slds-border_right slds-is-relative';
+        return [
+            'slds-border_top',
+            'slds-border_bottom',
+            'slds-border_left',
+            'slds-border_right',
+            'slds-is-relative'
+        ].join(' ');
+    }
+
+    get extensionBoundaryClass() {
+        return `extension-boundary-class-${this.uniqueBoundary}`;
     }
 
     get customHeightStyle() {

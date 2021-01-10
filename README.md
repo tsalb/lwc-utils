@@ -878,15 +878,15 @@ All of the following are available as Flow output variables.
 
 This unlocked package contains only the lib, no examples (recipes) that showcase their implementations. If you're working with this library for the first time, I recommend you install the "LWC Utils Recipes" in a sandbox **after** you install this.
 
-Sandbox: `https://test.salesforce.com/packaging/installPackage.apexp?p0=04t1Q000001QhvEQAS`
+Sandbox: `https://test.salesforce.com/packaging/installPackage.apexp?p0=04t1Q000001QhvTQAS`
 
-PROD: `https://login.salesforce.com/packaging/installPackage.apexp?p0=04t1Q000001QhvEQAS`
+PROD: `https://login.salesforce.com/packaging/installPackage.apexp?p0=04t1Q000001QhvTQAS`
 
 ### LWC Utils Recipes
 
 This unlocked package must be installed **after** the above. This cannot be installed in PROD.
 
-Sandbox: `https://test.salesforce.com/packaging/installPackage.apexp?p0=04t1Q000001QhWnQAK`
+Sandbox: `https://test.salesforce.com/packaging/installPackage.apexp?p0=04t1Q000001QhvYQAS`
 
 ### Configuration and Getting Started
 

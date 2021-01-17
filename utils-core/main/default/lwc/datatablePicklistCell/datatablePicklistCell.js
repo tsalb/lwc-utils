@@ -36,108 +36,108 @@ import { getPicklistValues } from 'lightning/uiObjectInfoApi';
 const MASTER_RECORD_TYPE_ID = '012000000000000AAA';
 
 export default class DatatablePicklistCell extends LightningElement {
-    // Properties for this specific LWC
-    // After a lot of random debugging, it appears that recordTypeId is a reserved typeAttribute
-    // which is not passed down correctly if used, so the workaround is to use a custom prop name
-    @api
-    get picklistRecordTypeId() {
-        return this._picklistRecordTypeId || MASTER_RECORD_TYPE_ID;
+  // Properties for this specific LWC
+  // After a lot of random debugging, it appears that recordTypeId is a reserved typeAttribute
+  // which is not passed down correctly if used, so the workaround is to use a custom prop name
+  @api
+  get picklistRecordTypeId() {
+    return this._picklistRecordTypeId || MASTER_RECORD_TYPE_ID;
+  }
+  set picklistRecordTypeId(value) {
+    this._picklistRecordTypeId = value || MASTER_RECORD_TYPE_ID;
+  }
+
+  get fieldDescribe() {
+    return `${this.objectApiName}.${this.fieldApiName}`;
+  }
+
+  // Required properties for datatable-edit-cell
+  @api value; // comes in from datatable as the picklist api value
+  @api tableBoundary;
+  @api rowKeyAttribute;
+  @api rowKeyValue;
+  @api isEditable;
+  @api objectApiName;
+  @api columnName;
+  @api fieldApiName;
+
+  // Duplicate this wire at the container level to reconcile label / api name mismatches
+  @wire(getPicklistValues, { recordTypeId: '$picklistRecordTypeId', fieldApiName: '$fieldDescribe' })
+  wiredPicklistValues({ error, data }) {
+    if (error) {
+      this._errors.push(error);
+      console.error('Error', error);
+    } else if (data) {
+      this._valueToLabelMap = new Map(data.values.map(({ label, value }) => [value, label]));
     }
-    set picklistRecordTypeId(value) {
-        this._picklistRecordTypeId = value || MASTER_RECORD_TYPE_ID;
+  }
+
+  // private
+  _isRendered;
+  _editableCell;
+  _isCleared = false;
+  _errors = [];
+  _valueToLabelMap = new Map();
+  _picklistRecordTypeId;
+  _selectedValue;
+
+  get cellDisplayValue() {
+    if (this._isCleared) {
+      return null;
     }
-
-    get fieldDescribe() {
-        return `${this.objectApiName}.${this.fieldApiName}`;
+    if (!this._valueToLabelMap || this._valueToLabelMap.size === 0) {
+      return this.value;
     }
-
-    // Required properties for datatable-edit-cell
-    @api value; // comes in from datatable as the picklist api value
-    @api tableBoundary;
-    @api rowKeyAttribute;
-    @api rowKeyValue;
-    @api isEditable;
-    @api objectApiName;
-    @api columnName;
-    @api fieldApiName;
-
-    // Duplicate this wire at the container level to reconcile label / api name mismatches
-    @wire(getPicklistValues, { recordTypeId: '$picklistRecordTypeId', fieldApiName: '$fieldDescribe' })
-    wiredPicklistValues({ error, data }) {
-        if (error) {
-            this._errors.push(error);
-            console.error('Error', error);
-        } else if (data) {
-            this._valueToLabelMap = new Map(data.values.map(({ label, value }) => [value, label]));
-        }
+    // Supports if database has a value not currently in the picklist options
+    if (!this._valueToLabelMap.has(this.value)) {
+      return this.value;
     }
-
-    // private
-    _isRendered;
-    _editableCell;
-    _isCleared = false;
-    _errors = [];
-    _valueToLabelMap = new Map();
-    _picklistRecordTypeId;
-    _selectedValue;
-
-    get cellDisplayValue() {
-        if (this._isCleared) {
-            return null;
-        }
-        if (!this._valueToLabelMap || this._valueToLabelMap.size === 0) {
-            return this.value;
-        }
-        // Supports if database has a value not currently in the picklist options
-        if (!this._valueToLabelMap.has(this.value)) {
-            return this.value;
-        }
-        if (this._valueToLabelMap.has(this.value)) {
-            return this._valueToLabelMap.get(this.value);
-        }
-        if (this._selectedValue) {
-            return this._valueToLabelMap.get(this._selectedValue);
-        }
-        return this.value;
+    if (this._valueToLabelMap.has(this.value)) {
+      return this._valueToLabelMap.get(this.value);
     }
-
-    renderedCallback() {
-        if (this._isRendered) {
-            return;
-        }
-        this._isRendered = true;
-        this._editableCell = this.template.querySelector('c-datatable-editable-cell');
+    if (this._selectedValue) {
+      return this._valueToLabelMap.get(this._selectedValue);
     }
+    return this.value;
+  }
 
-    // Event Handlers
-
-    handlePicklistConfigLoad(event) {
-        const payload = event.detail.value;
-        if (payload.recordTypeIdMap) {
-            const rtMap = new Map(Object.entries(payload.recordTypeIdMap));
-            // TODO make recordId always included, when available, to customPicklist datatype. For now, this is OK.
-            this._picklistRecordTypeId = rtMap.get(this.rowKeyValue);
-        }
+  renderedCallback() {
+    if (this._isRendered) {
+      return;
     }
+    this._isRendered = true;
+    this._editableCell = this.template.querySelector('c-datatable-editable-cell');
+  }
 
-    handleSelected(event) {
-        if (this._editableCell.showMassEdit) {
-            return;
-        }
-        this._selectedValue = event.detail.selectedValue;
-        this._isCleared = !this._selectedValue;
-    }
+  // Event Handlers
 
-    handleReset() {
-        this._isCleared = false;
-        this._selectedValue = null;
-        // Force template refresh
-        this.tableBoundary = this.tableBoundary;
+  handlePicklistConfigLoad(event) {
+    const payload = event.detail.value;
+    if (payload.recordTypeIdMap) {
+      const rtMap = new Map(Object.entries(payload.recordTypeIdMap));
+      // TODO make recordId always included, when available, to customPicklist datatype. For now, this is OK.
+      this._picklistRecordTypeId = rtMap.get(this.rowKeyValue);
     }
+  }
 
-    // For mass edit
-    handleSetDraftValue(event) {
-        this._selectedValue = event.detail.draftValue;
-        this._isCleared = !this._selectedValue;
+  handleSelected(event) {
+    if (this._editableCell.showMassEdit) {
+      return;
     }
+    this._selectedValue = event.detail.selectedValue;
+    this._isCleared = !this._selectedValue;
+  }
+
+  handleReset() {
+    this._isCleared = false;
+    this._selectedValue = null;
+    // Force template refresh
+    this.tableBoundary = this.tableBoundary;
+  }
+
+  // For mass edit
+  handleSetDraftValue(event) {
+    this._selectedValue = event.detail.draftValue;
+    this._isCleared = !this._selectedValue;
+  }
 }

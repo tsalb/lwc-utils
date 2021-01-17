@@ -31,7 +31,7 @@
  */
 
 ({
-    handleCancel: function (component) {
-        component.find('overlayLib').notifyClose();
-    }
+  handleCancel: function (component) {
+    component.find('overlayLib').notifyClose();
+  }
 });

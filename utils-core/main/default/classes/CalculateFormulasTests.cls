@@ -32,24 +32,24 @@
 
 @isTest
 private class CalculateFormulasTests {
-    @isTest
-    static void test_request_should_get_response_but_with_no_hydrated_sobjects() {
-        List<User> userList = [SELECT Id, Name, Email FROM User LIMIT 1];
-        List<String> fieldsToRecalc = new List<String>{ 'Email' };
-        List<CalculateFormulas.FlowInput> inputs = new List<CalculateFormulas.FlowInput>();
+  @isTest
+  static void test_request_should_get_response_but_with_no_hydrated_sobjects() {
+    List<User> userList = [SELECT Id, Name, Email FROM User LIMIT 1];
+    List<String> fieldsToRecalc = new List<String>{ 'Email' };
+    List<CalculateFormulas.FlowInput> inputs = new List<CalculateFormulas.FlowInput>();
 
-        CalculateFormulas.FlowInput input = new CalculateFormulas.FlowInput();
-        input.originalCollection = userList;
-        input.formulaFieldsToCalculate = fieldsToRecalc;
-        inputs.add(input);
+    CalculateFormulas.FlowInput input = new CalculateFormulas.FlowInput();
+    input.originalCollection = userList;
+    input.formulaFieldsToCalculate = fieldsToRecalc;
+    inputs.add(input);
 
-        Test.startTest();
-        List<CalculateFormulas.FlowOutput> outputs = CalculateFormulas.calculateFormulasFor(inputs);
-        Test.stopTest();
+    Test.startTest();
+    List<CalculateFormulas.FlowOutput> outputs = CalculateFormulas.calculateFormulasFor(inputs);
+    Test.stopTest();
 
-        System.assertEquals(1, outputs.size());
-        List<SObject> hydratedCollection = outputs[0].hydratedCollection;
-        // No formula fields on User means Formula.recalculateFormulas() will return nothing
-        System.assertEquals(0, hydratedCollection.size());
-    }
+    System.assertEquals(1, outputs.size());
+    List<SObject> hydratedCollection = outputs[0].hydratedCollection;
+    // No formula fields on User means Formula.recalculateFormulas() will return nothing
+    System.assertEquals(0, hydratedCollection.size());
+  }
 }

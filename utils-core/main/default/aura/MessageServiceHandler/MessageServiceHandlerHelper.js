@@ -31,73 +31,73 @@
  */
 
 ({
-    dialogService: function (component) {
-        return component.find('dialogService');
-    },
-    messageService: function (component) {
-        return component.find('messageService');
-    },
-    singleton: function (component) {
-        return component.find('singleton');
-    },
-    executeDialogService: function (component, payload) {
-        let flowModalConfig;
-        if (payload.method.startsWith('flow')) {
-            flowModalConfig = {
-                auraId: 'flow-wizard-container',
-                headerLabel: payload.config.flowHeaderLabel,
-                component: 'c:FlowWrapper',
-                componentParams: {
-                    flowApiName: payload.config.componentParams.flowApiName,
-                    inputVariables: payload.config.componentParams.inputVariables
-                }
-            };
+  dialogService: function (component) {
+    return component.find('dialogService');
+  },
+  messageService: function (component) {
+    return component.find('messageService');
+  },
+  singleton: function (component) {
+    return component.find('singleton');
+  },
+  executeDialogService: function (component, payload) {
+    let flowModalConfig;
+    if (payload.method.startsWith('flow')) {
+      flowModalConfig = {
+        auraId: 'flow-wizard-container',
+        headerLabel: payload.config.flowHeaderLabel,
+        component: 'c:FlowWrapper',
+        componentParams: {
+          flowApiName: payload.config.componentParams.flowApiName,
+          inputVariables: payload.config.componentParams.inputVariables
         }
-        switch (payload.method) {
-            case 'modal':
-                this.modal(component, payload.config);
-                break;
-            case 'bodyModal':
-                this.bodyModal(component, payload.config);
-                break;
-            case 'bodyModalLarge':
-                this.bodyModalLarge(component, payload.config);
-                break;
-            case 'flow':
-                this.bodyModal(component, flowModalConfig);
-                break;
-            case 'flowLarge':
-                this.bodyModalLarge(component, flowModalConfig);
-                break;
-            default:
-            // nothing
-        }
-    },
-    // mainActionReference only works for aura components
-    modal: function (component, config) {
-        this.dialogService(component).modal(
-            config.auraId,
-            config.headerLabel,
-            config.component,
-            config.componentParams,
-            config.mainActionReference,
-            config.mainActionLabel
-        );
-    },
-    bodyModal: function (component, config) {
-        this.dialogService(component).bodyModal(
-            config.auraId,
-            config.headerLabel,
-            config.component,
-            config.componentParams
-        );
-    },
-    bodyModalLarge: function (component, config) {
-        this.dialogService(component).bodyModalLarge(
-            config.auraId,
-            config.headerLabel,
-            config.component,
-            config.componentParams
-        );
+      };
     }
+    switch (payload.method) {
+      case 'modal':
+        this.modal(component, payload.config);
+        break;
+      case 'bodyModal':
+        this.bodyModal(component, payload.config);
+        break;
+      case 'bodyModalLarge':
+        this.bodyModalLarge(component, payload.config);
+        break;
+      case 'flow':
+        this.bodyModal(component, flowModalConfig);
+        break;
+      case 'flowLarge':
+        this.bodyModalLarge(component, flowModalConfig);
+        break;
+      default:
+      // nothing
+    }
+  },
+  // mainActionReference only works for aura components
+  modal: function (component, config) {
+    this.dialogService(component).modal(
+      config.auraId,
+      config.headerLabel,
+      config.component,
+      config.componentParams,
+      config.mainActionReference,
+      config.mainActionLabel
+    );
+  },
+  bodyModal: function (component, config) {
+    this.dialogService(component).bodyModal(
+      config.auraId,
+      config.headerLabel,
+      config.component,
+      config.componentParams
+    );
+  },
+  bodyModalLarge: function (component, config) {
+    this.dialogService(component).bodyModalLarge(
+      config.auraId,
+      config.headerLabel,
+      config.component,
+      config.componentParams
+    );
+  }
 });

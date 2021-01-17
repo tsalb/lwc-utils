@@ -31,16 +31,16 @@
  */
 
 ({
-    handleDialogService: function (component, event, helper) {
-        const payload = event.getParam('value');
-        const singleton = helper.singleton(component);
+  handleDialogService: function (component, event, helper) {
+    const payload = event.getParam('value');
+    const singleton = helper.singleton(component);
 
-        if (singleton.getIsCreatingModal()) {
-            return;
-        }
-        // DialogServiceHelper.js will turn this off
-        singleton.setIsCreatingModal(true);
-
-        helper.executeDialogService(component, payload);
+    if (singleton.getIsCreatingModal()) {
+      return;
     }
+    // DialogServiceHelper.js will turn this off
+    singleton.setIsCreatingModal(true);
+
+    helper.executeDialogService(component, payload);
+  }
 });

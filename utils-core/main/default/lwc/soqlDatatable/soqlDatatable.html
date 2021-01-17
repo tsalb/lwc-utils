@@ -33,30 +33,30 @@
 -->
 
 <template>
-    <c-message-service boundary={uniqueBoundary} onrefreshsoqldatatable={handleRefresh}></c-message-service>
+  <c-message-service boundary={uniqueBoundary} onrefreshsoqldatatable={handleRefresh}></c-message-service>
 
-    <c-datatable
-        unique-boundary={uniqueBoundary}
-        is-save-to-server
-        key-field="Id"
-        title={title}
-        record-id={recordId}
-        show-record-count={showRecordCount}
-        show-refresh-button={showRefreshButton}
-        checkbox-type={checkboxType}
-        column-labels={columnLabels}
-        custom-height={customHeight}
-        custom-relative-max-height={customRelativeMaxHeight}
-        use-relative-max-height={useRelativeMaxHeight}
-        editable-fields={editableFields}
-        use-load-style-hack-for-overflow={useLoadStyleHackForOverflow}
-        sortable-fields={sortableFields}
-        sorted-by={sortedBy}
-        sorted-direction={sortedDirection}
-        onrowselection={handleRowSelection}
-        onrefresh={handleRefresh}
-        show-spinner={showSpinner}
-        action-config-dev-name={actionConfigDevName}
-        lookup-config-dev-name={lookupConfigDevName}
-    ></c-datatable>
+  <c-datatable
+    unique-boundary={uniqueBoundary}
+    is-save-to-server
+    key-field="Id"
+    title={title}
+    record-id={recordId}
+    show-record-count={showRecordCount}
+    show-refresh-button={showRefreshButton}
+    checkbox-type={checkboxType}
+    column-labels={columnLabels}
+    custom-height={customHeight}
+    custom-relative-max-height={customRelativeMaxHeight}
+    use-relative-max-height={useRelativeMaxHeight}
+    editable-fields={editableFields}
+    use-load-style-hack-for-overflow={useLoadStyleHackForOverflow}
+    sortable-fields={sortableFields}
+    sorted-by={sortedBy}
+    sorted-direction={sortedDirection}
+    onrowselection={handleRowSelection}
+    onrefresh={handleRefresh}
+    show-spinner={showSpinner}
+    action-config-dev-name={actionConfigDevName}
+    lookup-config-dev-name={lookupConfigDevName}
+  ></c-datatable>
 </template>

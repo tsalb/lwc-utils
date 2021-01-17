@@ -33,42 +33,42 @@
 import { LightningElement, api } from 'lwc';
 
 export default class DatatableEditRowForm extends LightningElement {
-    @api row;
-    @api objectApiName;
-    @api uniqueBoundary;
-    showSpinner = true;
+  @api row;
+  @api objectApiName;
+  @api uniqueBoundary;
+  showSpinner = true;
 
-    // private
-    _isRendered;
-    _messageService;
+  // private
+  _isRendered;
+  _messageService;
 
-    renderedCallback() {
-        if (this._isRendered) {
-            return;
-        }
-        this._isRendered = true;
-        this._messageService = this.template.querySelector('c-message-service');
+  renderedCallback() {
+    if (this._isRendered) {
+      return;
     }
+    this._isRendered = true;
+    this._messageService = this.template.querySelector('c-message-service');
+  }
 
-    handleLoad() {
-        this.showSpinner = false;
-    }
+  handleLoad() {
+    this.showSpinner = false;
+  }
 
-    handleCancel() {
-        this._messageService.notifyClose();
-    }
+  handleCancel() {
+    this._messageService.notifyClose();
+  }
 
-    handleSuccess() {
-        this._messageService.notifySuccess('Successfully Updated');
-        this._messageService._refreshViewAndClose();
-    }
+  handleSuccess() {
+    this._messageService.notifySuccess('Successfully Updated');
+    this._messageService._refreshViewAndClose();
+  }
 
-    _refreshViewAndClose() {
-        if (this.uniqueBoundary) {
-            this._messageService.publish({ key: 'refreshsoqldatatable' });
-        } else {
-            this._messageService.forceRefreshView();
-        }
-        this._messageService.notifyClose();
+  _refreshViewAndClose() {
+    if (this.uniqueBoundary) {
+      this._messageService.publish({ key: 'refreshsoqldatatable' });
+    } else {
+      this._messageService.forceRefreshView();
     }
+    this._messageService.notifyClose();
+  }
 }

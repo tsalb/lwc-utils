@@ -34,119 +34,119 @@ import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 
 export default class DatatableLookupCell extends LightningElement {
-    // LWC specific attributes
-    @api
-    get href() {
-        if (!this.value || this._isCleared) {
-            return null;
-        }
-        if (this._href) {
-            return this._href;
-        }
-        if (this._selectedRecordId) {
-            return `/${this._selectedRecordId}`;
-        }
-        if (this.value.startsWith('/')) {
-            return this.value;
-        }
-        return `/${this.value}`;
+  // LWC specific attributes
+  @api
+  get href() {
+    if (!this.value || this._isCleared) {
+      return null;
     }
-    set href(value) {
-        this._href = value && value.startsWith('/') ? value : `/${value}`;
+    if (this._href) {
+      return this._href;
     }
-    @api target = '_parent';
-    @api displayValue;
-    @api referenceObjectApiName;
-
-    // Required properties for datatable-edit-cell
-    @api value; // comes in from datatable as the value of the name field
-    @api tableBoundary;
-    @api rowKeyAttribute;
-    @api rowKeyValue;
-    @api isEditable;
-    @api objectApiName;
-    @api columnName;
-    @api fieldApiName;
-
-    // For when lookup id changes
-    @wire(getRecord, { recordId: '$_selectedRecordId', fields: '$_titleField' })
-    lookupRecord;
-
-    configIconName;
-    configTitle;
-    configSubtitle;
-
-    // private
-    _isRendered;
-    _editableCell;
-    _isCleared = false;
-    _titleField;
-    _selectedRecordId;
-
-    get cellDisplayValue() {
-        if (this._isCleared) {
-            return null;
-        }
-        if (this._selectedRecordId) {
-            return this.lookupTitleField;
-        }
-        if (this.value && !this.displayValue) {
-            this._selectedRecordId = this.value;
-            return this.lookupTitleField;
-        }
-        return this.displayValue;
+    if (this._selectedRecordId) {
+      return `/${this._selectedRecordId}`;
     }
-
-    get lookupTitleField() {
-        return getFieldValue(this.lookupRecord.data, this._titleField);
+    if (this.value.startsWith('/')) {
+      return this.value;
     }
+    return `/${this.value}`;
+  }
+  set href(value) {
+    this._href = value && value.startsWith('/') ? value : `/${value}`;
+  }
+  @api target = '_parent';
+  @api displayValue;
+  @api referenceObjectApiName;
 
-    renderedCallback() {
-        if (this._isRendered) {
-            return;
-        }
-        this._isRendered = true;
-        this._editableCell = this.template.querySelector('c-datatable-editable-cell');
+  // Required properties for datatable-edit-cell
+  @api value; // comes in from datatable as the value of the name field
+  @api tableBoundary;
+  @api rowKeyAttribute;
+  @api rowKeyValue;
+  @api isEditable;
+  @api objectApiName;
+  @api columnName;
+  @api fieldApiName;
+
+  // For when lookup id changes
+  @wire(getRecord, { recordId: '$_selectedRecordId', fields: '$_titleField' })
+  lookupRecord;
+
+  configIconName;
+  configTitle;
+  configSubtitle;
+
+  // private
+  _isRendered;
+  _editableCell;
+  _isCleared = false;
+  _titleField;
+  _selectedRecordId;
+
+  get cellDisplayValue() {
+    if (this._isCleared) {
+      return null;
     }
-
-    // Event Handlers
-
-    handleLookupConfigLoad(event) {
-        const payload = event.detail.value;
-        if (payload.lookupConfigs && payload.lookupConfigs.length) {
-            const lookupMap = new Map(payload.lookupConfigs.map(obj => [obj.Object_API_Name__c, obj]));
-            const cellConfig = lookupMap.has(this.referenceObjectApiName)
-                ? lookupMap.get(this.referenceObjectApiName)
-                : lookupMap.get('All');
-            if (cellConfig) {
-                // Send these down to the open source component
-                this.configIconName = cellConfig.Icon_Name__c;
-                this.configTitle = cellConfig.Title_Field__c;
-                this.configSubtitle = cellConfig.Subtitle_Field__c;
-                // Configure lookup changes if edit mode is used
-                this._titleField = `${this.referenceObjectApiName}.${this.configTitle}`;
-            }
-        }
+    if (this._selectedRecordId) {
+      return this.lookupTitleField;
     }
-
-    handleSelected(event) {
-        if (this._editableCell.showMassEdit) {
-            return;
-        }
-        this._selectedRecordId = event.detail.selectedRecordId;
-        this._isCleared = !this._selectedRecordId;
+    if (this.value && !this.displayValue) {
+      this._selectedRecordId = this.value;
+      return this.lookupTitleField;
     }
+    return this.displayValue;
+  }
 
-    handleReset() {
-        this._isCleared = false;
-        this._selectedRecordId = null;
-        // Force template refresh
-        this.target = this.target;
-    }
+  get lookupTitleField() {
+    return getFieldValue(this.lookupRecord.data, this._titleField);
+  }
 
-    // For mass edit
-    handleSetDraftValue(event) {
-        this._selectedRecordId = event.detail.draftValue;
-        this._isCleared = !this._selectedRecordId;
+  renderedCallback() {
+    if (this._isRendered) {
+      return;
     }
+    this._isRendered = true;
+    this._editableCell = this.template.querySelector('c-datatable-editable-cell');
+  }
+
+  // Event Handlers
+
+  handleLookupConfigLoad(event) {
+    const payload = event.detail.value;
+    if (payload.lookupConfigs && payload.lookupConfigs.length) {
+      const lookupMap = new Map(payload.lookupConfigs.map(obj => [obj.Object_API_Name__c, obj]));
+      const cellConfig = lookupMap.has(this.referenceObjectApiName)
+        ? lookupMap.get(this.referenceObjectApiName)
+        : lookupMap.get('All');
+      if (cellConfig) {
+        // Send these down to the open source component
+        this.configIconName = cellConfig.Icon_Name__c;
+        this.configTitle = cellConfig.Title_Field__c;
+        this.configSubtitle = cellConfig.Subtitle_Field__c;
+        // Configure lookup changes if edit mode is used
+        this._titleField = `${this.referenceObjectApiName}.${this.configTitle}`;
+      }
+    }
+  }
+
+  handleSelected(event) {
+    if (this._editableCell.showMassEdit) {
+      return;
+    }
+    this._selectedRecordId = event.detail.selectedRecordId;
+    this._isCleared = !this._selectedRecordId;
+  }
+
+  handleReset() {
+    this._isCleared = false;
+    this._selectedRecordId = null;
+    // Force template refresh
+    this.target = this.target;
+  }
+
+  // For mass edit
+  handleSetDraftValue(event) {
+    this._selectedRecordId = event.detail.draftValue;
+    this._isCleared = !this._selectedRecordId;
+  }
 }

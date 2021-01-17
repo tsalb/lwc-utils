@@ -31,10 +31,10 @@
  */
 
 ({
-    flow: function (component) {
-        return component.find('flow');
-    },
-    messageService: function (component) {
-        return component.find('messageService');
-    }
+  flow: function (component) {
+    return component.find('flow');
+  },
+  messageService: function (component) {
+    return component.find('messageService');
+  }
 });

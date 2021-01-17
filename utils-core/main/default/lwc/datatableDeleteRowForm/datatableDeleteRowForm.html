@@ -33,30 +33,27 @@
 -->
 
 <template>
-    <c-message-service boundary={uniqueBoundary}></c-message-service>
+  <c-message-service boundary={uniqueBoundary}></c-message-service>
 
-    <template if:true={row}>
-        <lightning-layout multiple-rows="true" horizontal-align="end" class="slds-is-relative">
-            <template if:true={showSpinner}>
-                <lightning-spinner alternative-text="Deleting"></lightning-spinner>
-            </template>
-            <!-- content -->
-            <lightning-layout-item size="12">
-                <lightning-formatted-text
-                    class="slds-align_absolute-center"
-                    value={messageTemplate}
-                ></lightning-formatted-text>
-            </lightning-layout-item>
-            <!-- actions -->
-            <lightning-layout-item class="slds-p-top_large">
-                <lightning-button label="Cancel" class="slds-p-right_x-small" onclick={handleCancel}></lightning-button>
-                <lightning-button
-                    label="Confirm"
-                    variant="brand"
-                    onclick={handleConfirm}
-                    disabled={showSpinner}
-                ></lightning-button>
-            </lightning-layout-item>
-        </lightning-layout>
-    </template>
+  <template if:true={row}>
+    <lightning-layout multiple-rows="true" horizontal-align="end" class="slds-is-relative">
+      <template if:true={showSpinner}>
+        <lightning-spinner alternative-text="Deleting"></lightning-spinner>
+      </template>
+      <!-- content -->
+      <lightning-layout-item size="12">
+        <lightning-formatted-text class="slds-align_absolute-center" value={messageTemplate}></lightning-formatted-text>
+      </lightning-layout-item>
+      <!-- actions -->
+      <lightning-layout-item class="slds-p-top_large">
+        <lightning-button label="Cancel" class="slds-p-right_x-small" onclick={handleCancel}></lightning-button>
+        <lightning-button
+          label="Confirm"
+          variant="brand"
+          onclick={handleConfirm}
+          disabled={showSpinner}
+        ></lightning-button>
+      </lightning-layout-item>
+    </lightning-layout>
+  </template>
 </template>

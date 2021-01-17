@@ -1,23 +1,23 @@
 <aura:component controller="DataServiceCtrl">
-    <!-- ServiceHeader.cmp -->
-    <aura:method name="fetchAccountCombobox" action="{! c.handleFetchAccountCombobox }">
-        <aura:attribute name="callback" type="function" />
-    </aura:method>
+  <!-- ServiceHeader.cmp -->
+  <aura:method name="fetchAccountCombobox" action="{! c.handleFetchAccountCombobox }">
+    <aura:attribute name="callback" type="function" />
+  </aura:method>
 
-    <!-- ServiceLargeSection.cmp -->
-    <aura:method name="fetchContactsByAccountId" action="{! c.handleFetchContactsByAccountId }">
-        <aura:attribute name="accountIdEventArg" type="String" />
-        <aura:attribute name="callback" type="function" />
-    </aura:method>
+  <!-- ServiceLargeSection.cmp -->
+  <aura:method name="fetchContactsByAccountId" action="{! c.handleFetchContactsByAccountId }">
+    <aura:attribute name="accountIdEventArg" type="String" />
+    <aura:attribute name="callback" type="function" />
+  </aura:method>
 
-    <!-- ServiceSmallSection.cmp -->
-    <aura:method name="updateMultiContactAddress" action="{! c.handleUpdateMultiContactAddress }">
-        <aura:attribute name="contactList" type="Object[]" />
-        <aura:attribute name="contactMailingStreet" type="String" />
-        <aura:attribute name="contactMailingCity" type="String" />
-        <aura:attribute name="contactMailingState" type="String" />
-        <aura:attribute name="contactMailingZip" type="String" />
-        <aura:attribute name="contactMailingCountry" type="String" />
-        <aura:attribute name="callback" type="function" />
-    </aura:method>
+  <!-- ServiceSmallSection.cmp -->
+  <aura:method name="updateMultiContactAddress" action="{! c.handleUpdateMultiContactAddress }">
+    <aura:attribute name="contactList" type="Object[]" />
+    <aura:attribute name="contactMailingStreet" type="String" />
+    <aura:attribute name="contactMailingCity" type="String" />
+    <aura:attribute name="contactMailingState" type="String" />
+    <aura:attribute name="contactMailingZip" type="String" />
+    <aura:attribute name="contactMailingCountry" type="String" />
+    <aura:attribute name="callback" type="function" />
+  </aura:method>
 </aura:component>

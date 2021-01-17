@@ -31,50 +31,50 @@
  */
 
 const generateUUID = () => {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = (Math.random() * 16) | 0,
-            v = c == 'x' ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-    });
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 };
 
 const createFlattenedSetFromDelimitedString = (string, delimiter) => {
-    return new Set(string.removeWhiteSpace().flatten().split(delimiter));
+  return new Set(string.removeWhiteSpace().flatten().split(delimiter));
 };
 
 // Side benefit that these will also extend the LWCs that use utils
 
 String.prototype.removeWhiteSpace = function () {
-    return this.replaceAll(/\s+/, '');
+  return this.replaceAll(/\s+/, '');
 };
 
 String.prototype.flatten = function () {
-    return this.replaceAll(/\./, '_');
+  return this.replaceAll(/\./, '_');
 };
 
 String.prototype.replaceAll = function (search, replace) {
-    return this.replace(new RegExp(search, 'g'), replace);
+  return this.replace(new RegExp(search, 'g'), replace);
 };
 
 // https://muffinresearch.co.uk/removing-leading-whitespace-in-es6-template-strings/
 const convertToSingleLineString = (strings, ...values) => {
-    // Interweave the strings with the substitution vars first.
-    let output = '';
-    for (let i = 0; i < values.length; i++) {
-        output += strings[i] + values[i];
-    }
-    output += strings[values.length];
+  // Interweave the strings with the substitution vars first.
+  let output = '';
+  for (let i = 0; i < values.length; i++) {
+    output += strings[i] + values[i];
+  }
+  output += strings[values.length];
 
-    // Split on newlines.
-    let lines = output.split(/(?:\r\n|\n|\r)/);
+  // Split on newlines.
+  let lines = output.split(/(?:\r\n|\n|\r)/);
 
-    // Rip out the leading whitespace.
-    return lines
-        .map(line => {
-            return line.replace(/^\s+/gm, '');
-        })
-        .join(' ')
-        .trim();
+  // Rip out the leading whitespace.
+  return lines
+    .map(line => {
+      return line.replace(/^\s+/gm, '');
+    })
+    .join(' ')
+    .trim();
 };
 
 /**
@@ -83,65 +83,64 @@ const convertToSingleLineString = (strings, ...values) => {
  * @return {String[]} Error messages
  */
 const reduceErrors = errors => {
-    if (!Array.isArray(errors)) {
-        errors = [errors];
-    }
+  if (!Array.isArray(errors)) {
+    errors = [errors];
+  }
 
-    return (
-        errors
-            // Remove null/undefined items
-            .filter(error => !!error)
-            // Extract an error message
-            .map(error => {
-                // UI API read errors
-                if (Array.isArray(error.body)) {
-                    return error.body.map(e => e.message);
-                }
-                // FIELD VALIDATION, FIELD, and trigger.addError
-                else if (
-                    error.body &&
-                    error.body.enhancedErrorType &&
-                    error.body.enhancedErrorType.toLowerCase() === 'recorderror' &&
-                    error.body.output
-                ) {
-                    let firstError = '';
-                    if (
-                        error.body.output.errors.length &&
-                        error.body.output.errors[0].errorCode.includes('_') // one of the many salesforce errors with underscores
-                    ) {
-                        firstError = error.body.output.errors[0].message;
-                    }
-                    if (!error.body.output.errors.length && error.body.output.fieldErrors) {
-                        // It's in a really weird format...
-                        firstError =
-                            error.body.output.fieldErrors[Object.keys(error.body.output.fieldErrors)[0]][0].message;
-                    }
-                    return firstError;
-                }
-                // UI API DML, Apex and network errors
-                else if (error.body && typeof error.body.message === 'string') {
-                    let errorMessage = error.body.message;
-                    if (typeof error.body.stackTrace === 'string') {
-                        errorMessage += `\n${error.body.stackTrace}`;
-                    }
-                    return errorMessage;
-                }
-                // PAGE ERRORS
-                else if (error.body && error.body.pageErrors.length) {
-                    return error.body.pageErrors[0].message;
-                }
-                // JS errors
-                else if (typeof error.message === 'string') {
-                    return error.message;
-                }
-                // Unknown error shape so try HTTP status text
-                return error.statusText;
-            })
-            // Flatten
-            .reduce((prev, curr) => prev.concat(curr), [])
-            // Remove empty strings
-            .filter(message => !!message)
-    );
+  return (
+    errors
+      // Remove null/undefined items
+      .filter(error => !!error)
+      // Extract an error message
+      .map(error => {
+        // UI API read errors
+        if (Array.isArray(error.body)) {
+          return error.body.map(e => e.message);
+        }
+        // FIELD VALIDATION, FIELD, and trigger.addError
+        else if (
+          error.body &&
+          error.body.enhancedErrorType &&
+          error.body.enhancedErrorType.toLowerCase() === 'recorderror' &&
+          error.body.output
+        ) {
+          let firstError = '';
+          if (
+            error.body.output.errors.length &&
+            error.body.output.errors[0].errorCode.includes('_') // one of the many salesforce errors with underscores
+          ) {
+            firstError = error.body.output.errors[0].message;
+          }
+          if (!error.body.output.errors.length && error.body.output.fieldErrors) {
+            // It's in a really weird format...
+            firstError = error.body.output.fieldErrors[Object.keys(error.body.output.fieldErrors)[0]][0].message;
+          }
+          return firstError;
+        }
+        // UI API DML, Apex and network errors
+        else if (error.body && typeof error.body.message === 'string') {
+          let errorMessage = error.body.message;
+          if (typeof error.body.stackTrace === 'string') {
+            errorMessage += `\n${error.body.stackTrace}`;
+          }
+          return errorMessage;
+        }
+        // PAGE ERRORS
+        else if (error.body && error.body.pageErrors.length) {
+          return error.body.pageErrors[0].message;
+        }
+        // JS errors
+        else if (typeof error.message === 'string') {
+          return error.message;
+        }
+        // Unknown error shape so try HTTP status text
+        return error.statusText;
+      })
+      // Flatten
+      .reduce((prev, curr) => prev.concat(curr), [])
+      // Remove empty strings
+      .filter(message => !!message)
+  );
 };
 
 export { generateUUID, createFlattenedSetFromDelimitedString, convertToSingleLineString, reduceErrors };

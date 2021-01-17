@@ -1,8 +1,8 @@
 <aura:component>
-    <aura:attribute name="contactRecordId" type="String" />
-    <aura:attribute name="queryString" type="String" />
-    <aura:handler name="init" value="{! this }" action="{! c.doInit }" />
-    <aura:if isTrue="{! v.queryString }">
-        <c:soqlDatatable queryString="{! v.queryString }"></c:soqlDatatable>
-    </aura:if>
+  <aura:attribute name="contactRecordId" type="String" />
+  <aura:attribute name="queryString" type="String" />
+  <aura:handler name="init" value="{! this }" action="{! c.doInit }" />
+  <aura:if isTrue="{! v.queryString }">
+    <c:soqlDatatable queryString="{! v.queryString }"></c:soqlDatatable>
+  </aura:if>
 </aura:component>

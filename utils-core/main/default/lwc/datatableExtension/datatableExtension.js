@@ -39,72 +39,72 @@ import customLookup from './customLookup.html';
 import customFormula from './customFormula.html';
 
 export default class datatableExtension extends LightningDatatable {
-    static customTypes = {
-        customName: {
-            template: customName,
-            typeAttributes: [
-                // LWC specific attributes
-                'href',
-                'target',
-                // Defaults
-                'tableBoundary',
-                'rowKeyAttribute',
-                'rowKeyValue',
-                'isEditable',
-                'objectApiName',
-                'columnName',
-                'fieldApiName',
-                'isCompoundName'
-            ]
-        },
-        customPicklist: {
-            template: customPicklist,
-            typeAttributes: [
-                // LWC specific attributes
-                // After a lot of random debugging, it appears that recordTypeId is a reserved typeAttribute
-                // which is not passed down correctly if used, so the workaround is to use something more custom
-                'picklistRecordTypeId',
-                // Defaults
-                'tableBoundary',
-                'rowKeyAttribute',
-                'rowKeyValue',
-                'isEditable',
-                'objectApiName',
-                'columnName',
-                'fieldApiName'
-            ]
-        },
-        customLookup: {
-            template: customLookup,
-            typeAttributes: [
-                // LWC specific attributes
-                'href',
-                'target',
-                'displayValue',
-                'referenceObjectApiName',
-                // Defaults
-                'tableBoundary',
-                'rowKeyAttribute',
-                'rowKeyValue',
-                'isEditable',
-                'objectApiName',
-                'columnName',
-                'fieldApiName'
-            ]
-        },
-        customFormula: {
-            template: customFormula,
-            typeAttributes: [
-                // LWC specific attributes
-                'isHtmlFormula',
-                // Defaults
-                'tableBoundary',
-                'rowKeyAttribute',
-                'rowKeyValue',
-                'objectApiName',
-                'columnName',
-                'fieldApiName'
-            ]
-        }
-    };
+  static customTypes = {
+    customName: {
+      template: customName,
+      typeAttributes: [
+        // LWC specific attributes
+        'href',
+        'target',
+        // Defaults
+        'tableBoundary',
+        'rowKeyAttribute',
+        'rowKeyValue',
+        'isEditable',
+        'objectApiName',
+        'columnName',
+        'fieldApiName',
+        'isCompoundName'
+      ]
+    },
+    customPicklist: {
+      template: customPicklist,
+      typeAttributes: [
+        // LWC specific attributes
+        // After a lot of random debugging, it appears that recordTypeId is a reserved typeAttribute
+        // which is not passed down correctly if used, so the workaround is to use something more custom
+        'picklistRecordTypeId',
+        // Defaults
+        'tableBoundary',
+        'rowKeyAttribute',
+        'rowKeyValue',
+        'isEditable',
+        'objectApiName',
+        'columnName',
+        'fieldApiName'
+      ]
+    },
+    customLookup: {
+      template: customLookup,
+      typeAttributes: [
+        // LWC specific attributes
+        'href',
+        'target',
+        'displayValue',
+        'referenceObjectApiName',
+        // Defaults
+        'tableBoundary',
+        'rowKeyAttribute',
+        'rowKeyValue',
+        'isEditable',
+        'objectApiName',
+        'columnName',
+        'fieldApiName'
+      ]
+    },
+    customFormula: {
+      template: customFormula,
+      typeAttributes: [
+        // LWC specific attributes
+        'isHtmlFormula',
+        // Defaults
+        'tableBoundary',
+        'rowKeyAttribute',
+        'rowKeyValue',
+        'objectApiName',
+        'columnName',
+        'fieldApiName'
+      ]
+    }
+  };
 }

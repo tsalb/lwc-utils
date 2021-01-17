@@ -33,35 +33,35 @@
 -->
 
 <template>
-    <c-message-service boundary={uniqueBoundary}></c-message-service>
-    <div class="slds-is-relative">
-        <template if:true={showSpinner}>
-            <lightning-spinner variant="base" alternative-text="Loading Form"></lightning-spinner>
-        </template>
-        <template if:true={row.RecordTypeId}>
-            <lightning-record-form
-                record-id={row.Id}
-                object-api-name={objectApiName}
-                record-type-id={row.RecordTypeId}
-                layout-type="Full"
-                columns="2"
-                density="compact"
-                mode="edit"
-                onload={handleLoad}
-                onsuccess={handleSuccess}
-            ></lightning-record-form>
-        </template>
-        <template if:false={row.RecordTypeId}>
-            <lightning-record-form
-                record-id={row.Id}
-                object-api-name={objectApiName}
-                layout-type="Full"
-                columns="2"
-                density="compact"
-                mode="edit"
-                onload={handleLoad}
-                onsuccess={handleSuccess}
-            ></lightning-record-form>
-        </template>
-    </div>
+  <c-message-service boundary={uniqueBoundary}></c-message-service>
+  <div class="slds-is-relative">
+    <template if:true={showSpinner}>
+      <lightning-spinner variant="base" alternative-text="Loading Form"></lightning-spinner>
+    </template>
+    <template if:true={row.RecordTypeId}>
+      <lightning-record-form
+        record-id={row.Id}
+        object-api-name={objectApiName}
+        record-type-id={row.RecordTypeId}
+        layout-type="Full"
+        columns="2"
+        density="compact"
+        mode="edit"
+        onload={handleLoad}
+        onsuccess={handleSuccess}
+      ></lightning-record-form>
+    </template>
+    <template if:false={row.RecordTypeId}>
+      <lightning-record-form
+        record-id={row.Id}
+        object-api-name={objectApiName}
+        layout-type="Full"
+        columns="2"
+        density="compact"
+        mode="edit"
+        onload={handleLoad}
+        onsuccess={handleSuccess}
+      ></lightning-record-form>
+    </template>
+  </div>
 </template>

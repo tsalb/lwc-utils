@@ -33,30 +33,30 @@
 import { LightningElement, api } from 'lwc';
 
 export default class DatatableFormulaCell extends LightningElement {
-    // LWC specific
-    @api isHtmlFormula;
+  // LWC specific
+  @api isHtmlFormula;
 
-    // Defaults for custom data type
-    @api value; // comes in from datatable as the value of the name field
-    @api tableBoundary;
-    @api rowKeyAttribute;
-    @api rowKeyValue;
-    @api objectApiName;
-    @api columnName;
-    @api fieldApiName;
+  // Defaults for custom data type
+  @api value; // comes in from datatable as the value of the name field
+  @api tableBoundary;
+  @api rowKeyAttribute;
+  @api rowKeyValue;
+  @api objectApiName;
+  @api columnName;
+  @api fieldApiName;
 
-    // private
-    _isRendered;
+  // private
+  _isRendered;
 
-    renderedCallback() {
-        if (this._isRendered) {
-            return;
-        }
-        this._isRendered = true;
-        const container = this.template.querySelector('.container');
-
-        if (this.isHtmlFormula && this.value) {
-            container.innerHTML = this.value;
-        }
+  renderedCallback() {
+    if (this._isRendered) {
+      return;
     }
+    this._isRendered = true;
+    const container = this.template.querySelector('.container');
+
+    if (this.isHtmlFormula && this.value) {
+      container.innerHTML = this.value;
+    }
+  }
 }

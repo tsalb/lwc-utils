@@ -252,9 +252,8 @@ public inherited sharing class DataTableService {
      * @return             [List of dynamically queried SObjects]
      */
     private static List<SObject> getSObjectDataFromQueryString(String queryString) {
-        // Safety first
-        String.escapeSingleQuotes(queryString);
-        // Performance second
+        // Performance for lightning-datatable base component can be poor after a few hundred rows
+        // So, always add one by default unless the user specifies their own LIMIT clause
         if (!queryString.containsIgnoreCase(' LIMIT ') && shouldAddLimit(queryString)) {
             queryString += ' LIMIT ' + ROW_LIMITER;
         }

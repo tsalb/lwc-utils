@@ -157,6 +157,7 @@ public inherited sharing class DataTableService {
     String configType = '%' + DATATABLE_ACTION_CONFIG_TYPE + '%';
     return [
       SELECT
+        DeveloperName,
         Datatable_Config__c,
         Type__c,
         Button_Label__c,

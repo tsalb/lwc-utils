@@ -21,9 +21,9 @@ Row Actions are dropdown actions on the far right for each individual row.</inli
                 <label>Table Action</label>
             </value>
             <value>
-                <fullName>Overflow Table Action</fullName>
+                <fullName>Table Overflow Action</fullName>
                 <default>false</default>
-                <label>Overflow Table Action</label>
+                <label>Table Overflow Action</label>
             </value>
             <value>
                 <fullName>Row Action</fullName>

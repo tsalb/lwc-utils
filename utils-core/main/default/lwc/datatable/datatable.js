@@ -49,6 +49,7 @@ const OBJECTS_WITH_COMPOUND_NAMES = ['Contact'];
 const LEGACY_TABLE_ACTION_ONE_STRING = 'Primary';
 const LEGACY_TABLE_ACTION_TWO_STRING = 'Secondary';
 const TABLE_ACTION_STRING = 'Table Action';
+const TABLE_OVERFLOW_ACTION_STRING = 'Table Overflow Action';
 const ROW_ACTION_STRING = 'Row Action';
 
 // Datatable_Lookup_Config__mdt
@@ -174,6 +175,7 @@ export default class Datatable extends LightningElement {
 
   primaryConfig = {};
   secondaryConfig = {};
+  overflowActionConfigs = [];
   rowActionConfigs = [];
 
   get recordCountDisplay() {
@@ -219,8 +221,7 @@ export default class Datatable extends LightningElement {
   }
 
   get hasOverflowTableActions() {
-    // todo
-    return false;
+    return this.overflowActionConfigs && this.overflowActionConfigs.length;
   }
 
   get showRowMenuActions() {
@@ -302,6 +303,9 @@ export default class Datatable extends LightningElement {
         this.secondaryConfig = this._actionConfigs.find(cfg => cfg.Type__c.includes(LEGACY_TABLE_ACTION_TWO_STRING));
       }
 
+      // Overflow Actions
+      this.overflowActionConfigs = this._actionConfigs.filter(cfg => cfg.Type__c === TABLE_OVERFLOW_ACTION_STRING);
+
       // Row Actions
       this.rowActionConfigs = this._actionConfigs.filter(cfg => cfg.Type__c === ROW_ACTION_STRING);
     }
@@ -352,6 +356,18 @@ export default class Datatable extends LightningElement {
       this.handleFlowAction(event);
     }
     if (type.toLowerCase().includes('lwc')) {
+      this.handleLwcAction(event);
+    }
+  }
+
+  handleTableOverflowAction(event) {
+    const config = this.overflowActionConfigs.find(cfg => cfg.DeveloperName === event.target.dataset.key);
+    const isFlow = config.Flow_API_Name__c && !config.LWC_Name__c;
+    // Since name can't be assigned dynamically via getter in a list, do this instead
+    event.target.name = isFlow ? config.Flow_API_Name__c : config.LWC_Name__c;
+    if (isFlow) {
+      this.handleFlowAction(event);
+    } else {
       this.handleLwcAction(event);
     }
   }

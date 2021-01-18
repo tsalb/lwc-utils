@@ -99,13 +99,19 @@
                   onclick={handleTableAction}
                 ></lightning-button>
               </template>
-              <!-- WIP 
               <template if:true={hasOverflowTableActions}>
                 <lightning-button-menu alternative-text="Additional Actions" class="slds-button_last">
-                  
+                  <template for:each={overflowActionConfigs} for:item="overflowAction">
+                    <lightning-menu-item
+                      key={overflowAction.DeveloperName}
+                      data-key={overflowAction.DeveloperName}
+                      data-dialog-size={overflowAction.Dialog_Size__c}
+                      label={overflowAction.Button_Label__c}
+                      onclick={handleTableOverflowAction}
+                    ></lightning-menu-item>
+                  </template>
                 </lightning-button-menu>
               </template>
-              -->
             </lightning-button-group>
           </lightning-layout-item>
         </template>

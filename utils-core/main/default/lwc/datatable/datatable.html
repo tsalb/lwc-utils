@@ -84,7 +84,7 @@
               <template if:true={hasPrimaryAction}>
                 <lightning-button
                   data-dialog-size={primaryConfig.Dialog_Size__c}
-                  data-type={primaryConfig.Type__c}
+                  data-type={primaryActionType}
                   name={primaryActionName}
                   label={primaryConfig.Button_Label__c}
                   onclick={handleTableAction}
@@ -93,12 +93,19 @@
               <template if:true={hasSecondaryAction}>
                 <lightning-button
                   data-dialog-size={secondaryConfig.Dialog_Size__c}
-                  data-type={secondaryConfig.Type__c}
+                  data-type={secondaryActionType}
                   name={secondaryActionName}
                   label={secondaryConfig.Button_Label__c}
                   onclick={handleTableAction}
                 ></lightning-button>
               </template>
+              <!-- WIP 
+              <template if:true={hasOverflowTableActions}>
+                <lightning-button-menu alternative-text="Additional Actions" class="slds-button_last">
+                  
+                </lightning-button-menu>
+              </template>
+              -->
             </lightning-button-group>
           </lightning-layout-item>
         </template>

@@ -157,17 +157,19 @@ public inherited sharing class DataTableService {
     String configType = '%' + DATATABLE_ACTION_CONFIG_TYPE + '%';
     return [
       SELECT
-        Order__c,
-        Row_Action_Name__c,
-        Button_Label__c,
-        Type__c,
         Datatable_Config__c,
-        Flow_API_Name__c,
+        Type__c,
+        Button_Label__c,
+        Order__c,
+        Table_Action_Name__c,
+        Overflow_Action_Name__c,
+        Row_Action_Name__c,
         LWC_Name__c,
+        Flow_API_Name__c,
         Dialog_Size__c
       FROM Datatable_Action_Config__mdt
       WHERE Datatable_Config__r.DeveloperName = :configName AND Datatable_Config__r.Type__c LIKE :configType
-      ORDER BY Order__c ASC
+      ORDER BY Type__c ASC, Order__c ASC
     ];
   }
 

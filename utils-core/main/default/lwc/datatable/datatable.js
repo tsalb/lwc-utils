@@ -46,9 +46,10 @@ const MAX_ROW_SELECTION = 200;
 const OBJECTS_WITH_COMPOUND_NAMES = ['Contact'];
 
 // Datatable_Action_Config__mdt
-const PRIMARY_CONFIG_CHECK = 'Primary';
-const SECONDARY_CONFIG_CHECK = 'Secondary';
-const ROW_ACTION_CHECK = 'Row Action';
+const LEGACY_TABLE_ACTION_ONE_STRING = 'Primary';
+const LEGACY_TABLE_ACTION_TWO_STRING = 'Secondary';
+const TABLE_ACTION_STRING = 'Table Action';
+const ROW_ACTION_STRING = 'Row Action';
 
 // Datatable_Lookup_Config__mdt
 const DATATABLE_LOOKUP_CONFIG_DEFAULT = 'Default_Lookup_Config';
@@ -191,8 +192,13 @@ export default class Datatable extends LightningElement {
     return this.primaryConfig && this.primaryConfig.Button_Label__c;
   }
 
+  get primaryActionType() {
+    return this.primaryConfig.Flow_API_Name__c ? 'flow' : 'lwc';
+  }
+
   get primaryActionName() {
-    return this.primaryConfig.Type__c.toLowerCase().includes('flow')
+    // prettier-ignore
+    return this.primaryConfig.Flow_API_Name__c
       ? this.primaryConfig.Flow_API_Name__c
       : this.primaryConfig.LWC_Name__c;
   }
@@ -201,10 +207,20 @@ export default class Datatable extends LightningElement {
     return this.secondaryConfig && this.secondaryConfig.Button_Label__c;
   }
 
+  get secondaryActionType() {
+    return this.secondaryConfig.Flow_API_Name__c ? 'flow' : 'lwc';
+  }
+
   get secondaryActionName() {
-    return this.secondaryConfig.Type__c.toLowerCase().includes('flow')
+    // prettier-ignore
+    return this.secondaryConfig.Flow_API_Name__c
       ? this.secondaryConfig.Flow_API_Name__c
       : this.secondaryConfig.LWC_Name__c;
+  }
+
+  get hasOverflowTableActions() {
+    // todo
+    return false;
   }
 
   get showRowMenuActions() {
@@ -273,11 +289,21 @@ export default class Datatable extends LightningElement {
     } else if (data) {
       this._actionConfigs = data;
       //console.log(this._actionConfigs);
+
       // Table Actions
-      this.primaryConfig = this._actionConfigs.find(cfg => cfg.Type__c.includes(PRIMARY_CONFIG_CHECK));
-      this.secondaryConfig = this._actionConfigs.find(cfg => cfg.Type__c.includes(SECONDARY_CONFIG_CHECK));
+      this.primaryConfig = this._actionConfigs.find(cfg => cfg.Type__c === TABLE_ACTION_STRING && cfg.Order__c === 1);
+      this.secondaryConfig = this._actionConfigs.find(cfg => cfg.Type__c === TABLE_ACTION_STRING && cfg.Order__c === 2);
+
+      // Table Actions - Legacy Format
+      if (!this.primaryConfig) {
+        this.primaryConfig = this._actionConfigs.find(cfg => cfg.Type__c.includes(LEGACY_TABLE_ACTION_ONE_STRING));
+      }
+      if (!this.secondaryConfig) {
+        this.secondaryConfig = this._actionConfigs.find(cfg => cfg.Type__c.includes(LEGACY_TABLE_ACTION_TWO_STRING));
+      }
+
       // Row Actions
-      this.rowActionConfigs = this._actionConfigs.filter(cfg => cfg.Type__c === ROW_ACTION_CHECK);
+      this.rowActionConfigs = this._actionConfigs.filter(cfg => cfg.Type__c === ROW_ACTION_STRING);
     }
   }
 

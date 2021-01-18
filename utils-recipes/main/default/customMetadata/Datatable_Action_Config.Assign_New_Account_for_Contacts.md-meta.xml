@@ -24,11 +24,19 @@
     </values>
     <values>
         <field>Order__c</field>
+        <value xsi:type="xsd:double">1.0</value>
+    </values>
+    <values>
+        <field>Overflow_Action_Name__c</field>
         <value xsi:nil="true"/>
     </values>
     <values>
         <field>Row_Action_Name__c</field>
         <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Table_Action_Name__c</field>
+        <value xsi:type="xsd:string">custom_flow</value>
     </values>
     <values>
         <field>Type__c</field>

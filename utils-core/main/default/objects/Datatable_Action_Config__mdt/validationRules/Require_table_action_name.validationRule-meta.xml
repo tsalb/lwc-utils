@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_table_action_name</fullName>
+    <active>true</active>
+    <errorConditionFormula>CONTAINS(LOWER(TEXT( Type__c )), &apos;table&apos;)
+&amp;&amp;
+NOT(CONTAINS(LOWER(TEXT( Type__c )), &apos;overflow&apos;))
+&amp;&amp;
+ISBLANK(TEXT( Table_Action_Name__c ))</errorConditionFormula>
+    <errorDisplayField>Table_Action_Name__c</errorDisplayField>
+    <errorMessage>Required for Table Actions</errorMessage>
+</ValidationRule>

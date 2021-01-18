@@ -2,7 +2,7 @@
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Require_order_for_row_actions</fullName>
     <active>true</active>
-    <errorConditionFormula>TEXT( Type__c ) == &apos;Row Action&apos;
+    <errorConditionFormula>CONTAINS(LOWER(TEXT(Type__c)), &apos;row&apos;)
 &amp;&amp;
 ISBLANK( Order__c )</errorConditionFormula>
     <errorDisplayField>Order__c</errorDisplayField>

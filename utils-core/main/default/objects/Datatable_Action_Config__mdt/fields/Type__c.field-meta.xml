@@ -33,26 +33,22 @@ Row Actions are dropdown actions on the far right for each individual row.</inli
             <value>
                 <fullName>Flow Table Action - Primary</fullName>
                 <default>false</default>
-                <isActive>false</isActive>
-                <label>Flow Table Action - Primary</label>
+                <label>Flow Table Action - Primary (OLD)</label>
             </value>
             <value>
                 <fullName>Flow Table Action - Secondary</fullName>
                 <default>false</default>
-                <isActive>false</isActive>
-                <label>Flow Table Action - Secondary</label>
+                <label>Flow Table Action - Secondary (OLD)</label>
             </value>
             <value>
                 <fullName>LWC Table Action - Primary</fullName>
                 <default>false</default>
-                <isActive>false</isActive>
-                <label>LWC Table Action - Primary</label>
+                <label>LWC Table Action - Primary (OLD)</label>
             </value>
             <value>
                 <fullName>LWC Table Action - Secondary</fullName>
                 <default>false</default>
-                <isActive>false</isActive>
-                <label>LWC Table Action - Secondary</label>
+                <label>LWC Table Action - Secondary (OLD)</label>
             </value>
         </valueSetDefinition>
     </valueSet>

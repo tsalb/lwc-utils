@@ -40,6 +40,6 @@
     </values>
     <values>
         <field>Type__c</field>
-        <value xsi:type="xsd:string">Flow Table Action - Primary</value>
+        <value xsi:type="xsd:string">Table Action</value>
     </values>
 </CustomMetadata>

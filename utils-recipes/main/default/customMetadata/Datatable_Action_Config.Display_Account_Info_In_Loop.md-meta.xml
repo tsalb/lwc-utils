@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <label>Clone Contacts</label>
+    <label>Display Account Info In Loop</label>
     <protected>false</protected>
     <values>
         <field>Button_Label__c</field>
-        <value xsi:type="xsd:string">Clone Contacts</value>
+        <value xsi:type="xsd:string">Display Account Info</value>
     </values>
     <values>
         <field>Datatable_Config__c</field>
@@ -16,7 +16,7 @@
     </values>
     <values>
         <field>Flow_API_Name__c</field>
-        <value xsi:type="xsd:string">SOQL_Datatable_Flow_Overflow_Action_Clone_Contacts</value>
+        <value xsi:type="xsd:string">SOQL_Datatable_Flow_Overflow_Action_Display_Account_Info_Looped</value>
     </values>
     <values>
         <field>LWC_Name__c</field>
@@ -40,6 +40,6 @@
     </values>
     <values>
         <field>Type__c</field>
-        <value xsi:type="xsd:string">Overflow Table Action</value>
+        <value xsi:type="xsd:string">Table Overflow Action</value>
     </values>
 </CustomMetadata>

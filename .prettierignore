@@ -11,3 +11,5 @@ coverage/
 
 # For meta files, etc
 *.xml
+*meta.xml
+sfdx-project.json

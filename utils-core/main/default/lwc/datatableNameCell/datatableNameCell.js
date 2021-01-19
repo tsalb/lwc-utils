@@ -33,33 +33,33 @@
 import { LightningElement, api } from 'lwc';
 
 export default class DatatableNameCell extends LightningElement {
-    // Properties specific to this cell type
-    @api
-    get href() {
-        if (!this.value) {
-            return null;
-        }
-        if (this._href) {
-            return this._href;
-        }
-        if (this.value.startsWith('/')) {
-            return this.value;
-        }
-        return `/${this.value}`;
+  // Properties specific to this cell type
+  @api
+  get href() {
+    if (!this.value) {
+      return null;
     }
-    set href(value) {
-        this._href = value && value.startsWith('/') ? value : `/${value}`;
+    if (this._href) {
+      return this._href;
     }
-    @api target = '_parent';
+    if (this.value.startsWith('/')) {
+      return this.value;
+    }
+    return `/${this.value}`;
+  }
+  set href(value) {
+    this._href = value && value.startsWith('/') ? value : `/${value}`;
+  }
+  @api target = '_parent';
 
-    // Required properties for datatable-edit-cell
-    @api value; // comes in from datatable as the value of the name field
-    @api tableBoundary;
-    @api rowKeyAttribute;
-    @api rowKeyValue;
-    @api isEditable;
-    @api objectApiName;
-    @api columnName;
-    @api fieldApiName;
-    @api isCompoundName;
+  // Required properties for datatable-edit-cell
+  @api value; // comes in from datatable as the value of the name field
+  @api tableBoundary;
+  @api rowKeyAttribute;
+  @api rowKeyValue;
+  @api isEditable;
+  @api objectApiName;
+  @api columnName;
+  @api fieldApiName;
+  @api isCompoundName;
 }

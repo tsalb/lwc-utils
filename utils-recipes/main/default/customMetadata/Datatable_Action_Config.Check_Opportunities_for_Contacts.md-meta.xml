@@ -24,6 +24,10 @@
     </values>
     <values>
         <field>Order__c</field>
+        <value xsi:type="xsd:double">2.0</value>
+    </values>
+    <values>
+        <field>Overflow_Action_Name__c</field>
         <value xsi:nil="true"/>
     </values>
     <values>
@@ -31,7 +35,11 @@
         <value xsi:nil="true"/>
     </values>
     <values>
+        <field>Table_Action_Name__c</field>
+        <value xsi:type="xsd:string">custom_lwc</value>
+    </values>
+    <values>
         <field>Type__c</field>
-        <value xsi:type="xsd:string">LWC Table Action - Secondary</value>
+        <value xsi:type="xsd:string">Table Action</value>
     </values>
 </CustomMetadata>

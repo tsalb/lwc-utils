@@ -1,37 +1,37 @@
 <aura:component implements="flexipage:availableForAllPageTypes">
-    <!-- Service Components boilerplate -->
-    <c:DataService aura:id="service" />
-    <c:QuickUpdateService aura:id="quickUpdateService" />
-    <!-- Unified messaging API -->
-    <c:messageService
-        aura:id="messageService"
-        boundary="sample_app_aura"
-        oncontactsupdated="{! c.handleAccountSelected }"
-        onaccountselected="{! c.handleAccountSelected }"
-        oncleartable="{! c.handleClearTable }"
-    />
+  <!-- Service Components boilerplate -->
+  <c:DataService aura:id="service" />
+  <c:QuickUpdateService aura:id="quickUpdateService" />
+  <!-- Unified messaging API -->
+  <c:messageService
+    aura:id="messageService"
+    boundary="sample_app_aura"
+    oncontactsupdated="{! c.handleAccountSelected }"
+    onaccountselected="{! c.handleAccountSelected }"
+    oncleartable="{! c.handleClearTable }"
+  />
 
-    <aura:attribute name="tableData" type="Object" />
-    <aura:attribute name="tableColumns" type="List" default="[]" />
+  <aura:attribute name="tableData" type="Object" />
+  <aura:attribute name="tableColumns" type="List" default="[]" />
 
-    <lightning:card title="Contacts">
-        <aura:set attribute="body">
-            <aura:if isTrue="{! not(empty( v.tableData )) }">
-                <div class="slds-border_top">
-                    <lightning:datatable
-                        aura:id="searchTable"
-                        data="{! v.tableData }"
-                        columns="{! v.tableColumns }"
-                        onrowaction="{! c.handleRowAction }"
-                        keyField="Id"
-                    />
-                </div>
-            </aura:if>
-        </aura:set>
-        <aura:set attribute="actions">
-            <aura:if isTrue="{! not(empty( v.tableData )) }">
-                <lightning:button label="Update Mailing Address" onclick="{! c.handleOpenUpdateAddressModal }" />
-            </aura:if>
-        </aura:set>
-    </lightning:card>
+  <lightning:card title="Contacts">
+    <aura:set attribute="body">
+      <aura:if isTrue="{! not(empty( v.tableData )) }">
+        <div class="slds-border_top">
+          <lightning:datatable
+            aura:id="searchTable"
+            data="{! v.tableData }"
+            columns="{! v.tableColumns }"
+            onrowaction="{! c.handleRowAction }"
+            keyField="Id"
+          />
+        </div>
+      </aura:if>
+    </aura:set>
+    <aura:set attribute="actions">
+      <aura:if isTrue="{! not(empty( v.tableData )) }">
+        <lightning:button label="Update Mailing Address" onclick="{! c.handleOpenUpdateAddressModal }" />
+      </aura:if>
+    </aura:set>
+  </lightning:card>
 </aura:component>

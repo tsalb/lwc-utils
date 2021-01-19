@@ -31,55 +31,55 @@
  */
 
 public inherited sharing class CalculateFormulas {
-    @InvocableMethod(label='Calculates Formulas for a Record Collection')
-    public static List<FlowOutput> calculateFormulasFor(List<FlowInput> inputs) {
-        List<FlowOutput> outputs = new List<FlowOutput>();
+  @InvocableMethod(label='Calculates Formulas for a Record Collection')
+  public static List<FlowOutput> calculateFormulasFor(List<FlowInput> inputs) {
+    List<FlowOutput> outputs = new List<FlowOutput>();
 
-        for (FlowInput curInput : inputs) {
-            List<SObject> collectionToHydrate = new List<SObject>();
-            for (SObject obj : curInput.originalCollection) {
-                for (String field : curInput.formulaFieldsToCalculate) {
-                    collectionToHydrate.add(setReadOnlyField(obj, field, null));
-                }
-            }
-            System.debug(LoggingLevel.INFO, 'CalculateFormulas collectionToHydrate: ' + collectionToHydrate);
-            FlowOutput output = new FlowOutput();
-            output.hydratedCollection = new List<SObject>();
-            for (FormulaRecalcResult result : Formula.recalculateFormulas(collectionToHydrate)) {
-                output.hydratedCollection.add(result.getSObject());
-            }
-            System.debug(LoggingLevel.INFO, 'CalculateFormulas hydratedCollection: ' + output.hydratedCollection);
-            outputs.add(output);
+    for (FlowInput curInput : inputs) {
+      List<SObject> collectionToHydrate = new List<SObject>();
+      for (SObject obj : curInput.originalCollection) {
+        for (String field : curInput.formulaFieldsToCalculate) {
+          collectionToHydrate.add(setReadOnlyField(obj, field, null));
         }
-        return outputs;
+      }
+      System.debug(LoggingLevel.INFO, 'CalculateFormulas collectionToHydrate: ' + collectionToHydrate);
+      FlowOutput output = new FlowOutput();
+      output.hydratedCollection = new List<SObject>();
+      for (FormulaRecalcResult result : Formula.recalculateFormulas(collectionToHydrate)) {
+        output.hydratedCollection.add(result.getSObject());
+      }
+      System.debug(LoggingLevel.INFO, 'CalculateFormulas hydratedCollection: ' + output.hydratedCollection);
+      outputs.add(output);
     }
+    return outputs;
+  }
 
-    private static SObject setReadOnlyField(SObject sobj, String fieldName, Object value) {
-        return setReadOnlyField(sobj, new Map<String, Object>{ fieldName => value });
+  private static SObject setReadOnlyField(SObject sobj, String fieldName, Object value) {
+    return setReadOnlyField(sobj, new Map<String, Object>{ fieldName => value });
+  }
+
+  private static SObject setReadOnlyField(SObject sobj, Map<String, Object> changesToFields) {
+    String serializedRecord = JSON.serialize(sobj);
+    Map<String, Object> deserializedRecordMap = (Map<String, Object>) JSON.deserializeUntyped(serializedRecord);
+    // Loop through the deserialized record map and put the field & value
+    // Since it's a map, if the field already exists on the SObject, it's updated (or added if it wasn't there already)
+    for (String sobjectField : changesToFields.keySet()) {
+      deserializedRecordMap.put(sobjectField, changesToFields.get(sobjectField));
     }
+    serializedRecord = JSON.serialize(deserializedRecordMap);
+    return (SObject) JSON.deserialize(serializedRecord, SObject.class);
+  }
 
-    private static SObject setReadOnlyField(SObject sobj, Map<String, Object> changesToFields) {
-        String serializedRecord = JSON.serialize(sobj);
-        Map<String, Object> deserializedRecordMap = (Map<String, Object>) JSON.deserializeUntyped(serializedRecord);
-        // Loop through the deserialized record map and put the field & value
-        // Since it's a map, if the field already exists on the SObject, it's updated (or added if it wasn't there already)
-        for (String sobjectField : changesToFields.keySet()) {
-            deserializedRecordMap.put(sobjectField, changesToFields.get(sobjectField));
-        }
-        serializedRecord = JSON.serialize(deserializedRecordMap);
-        return (SObject) JSON.deserialize(serializedRecord, SObject.class);
-    }
+  public class FlowInput {
+    @InvocableVariable(label='Record Collection to Rehydrate' required=true)
+    public List<SObject> originalCollection;
 
-    public class FlowInput {
-        @InvocableVariable(label='Record Collection to Rehydrate' required=true)
-        public List<SObject> originalCollection;
+    @InvocableVariable(label='Formula Fields to Recalculate' description='Comma separated list of Field API Names')
+    public List<String> formulaFieldsToCalculate = new List<String>();
+  }
 
-        @InvocableVariable(label='Formula Fields to Recalculate' description='Comma separated list of Field API Names')
-        public List<String> formulaFieldsToCalculate = new List<String>();
-    }
-
-    public class FlowOutput {
-        @InvocableVariable(label='Record Collection with Recalculated Formulas')
-        public List<SObject> hydratedCollection = new List<SObject>();
-    }
+  public class FlowOutput {
+    @InvocableVariable(label='Record Collection with Recalculated Formulas')
+    public List<SObject> hydratedCollection = new List<SObject>();
+  }
 }

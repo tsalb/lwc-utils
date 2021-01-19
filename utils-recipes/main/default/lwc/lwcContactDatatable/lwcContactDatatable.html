@@ -33,22 +33,22 @@
 -->
 
 <template>
-    <c-message-service
-        boundary="sample_app_lwc"
-        oncleartable={handleClearTable}
-        onaccountselected={handleAccountSelected}
-        onrefreshcontacts={handleRefreshContacts}
-    ></c-message-service>
+  <c-message-service
+    boundary="sample_app_lwc"
+    oncleartable={handleClearTable}
+    onaccountselected={handleAccountSelected}
+    onrefreshcontacts={handleRefreshContacts}
+  ></c-message-service>
 
-    <lightning-card title="Contacts">
-        <div if:true={contacts.data} class="slds-border_top">
-            <lightning-datatable
-                key-field="Id"
-                hide-checkbox-column
-                data={contacts.data}
-                columns={columns}
-                onrowaction={handleRowAction}
-            ></lightning-datatable>
-        </div>
-    </lightning-card>
+  <lightning-card title="Contacts">
+    <div if:true={contacts.data} class="slds-border_top">
+      <lightning-datatable
+        key-field="Id"
+        hide-checkbox-column
+        data={contacts.data}
+        columns={columns}
+        onrowaction={handleRowAction}
+      ></lightning-datatable>
+    </div>
+  </lightning-card>
 </template>

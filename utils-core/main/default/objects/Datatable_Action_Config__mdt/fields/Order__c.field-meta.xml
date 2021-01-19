@@ -3,10 +3,13 @@
     <fullName>Order__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>For Table / Overflow actions, determines order at top of table. Table can be 1 or 2. Overflow can be &gt;= 3.
+
+For Row Actions, determines order which the action shows up per row, in each row&apos;s dropdown menu.</inlineHelpText>
     <label>Order</label>
     <precision>2</precision>
-    <scale>0</scale>
     <required>false</required>
+    <scale>0</scale>
     <type>Number</type>
     <unique>false</unique>
 </CustomField>

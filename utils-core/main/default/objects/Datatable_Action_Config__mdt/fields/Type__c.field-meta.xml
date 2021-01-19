@@ -3,6 +3,11 @@
     <fullName>Type__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>Table actions are single / multi row above the table.
+
+Overflow actions are single / multi row dropdown actions above the table.
+
+Row Actions are dropdown actions on the far right for each individual row.</inlineHelpText>
     <label>Type</label>
     <required>true</required>
     <type>Picklist</type>
@@ -11,29 +16,39 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Flow Table Action - Primary</fullName>
+                <fullName>Table Action</fullName>
                 <default>false</default>
-                <label>Flow Table Action - Primary</label>
+                <label>Table Action</label>
             </value>
             <value>
-                <fullName>Flow Table Action - Secondary</fullName>
+                <fullName>Table Overflow Action</fullName>
                 <default>false</default>
-                <label>Flow Table Action - Secondary</label>
-            </value>
-            <value>
-                <fullName>LWC Table Action - Primary</fullName>
-                <default>false</default>
-                <label>LWC Table Action - Primary</label>
-            </value>
-            <value>
-                <fullName>LWC Table Action - Secondary</fullName>
-                <default>false</default>
-                <label>LWC Table Action - Secondary</label>
+                <label>Table Overflow Action</label>
             </value>
             <value>
                 <fullName>Row Action</fullName>
                 <default>false</default>
                 <label>Row Action</label>
+            </value>
+            <value>
+                <fullName>Flow Table Action - Primary</fullName>
+                <default>false</default>
+                <label>Flow Table Action - Primary (OLD)</label>
+            </value>
+            <value>
+                <fullName>Flow Table Action - Secondary</fullName>
+                <default>false</default>
+                <label>Flow Table Action - Secondary (OLD)</label>
+            </value>
+            <value>
+                <fullName>LWC Table Action - Primary</fullName>
+                <default>false</default>
+                <label>LWC Table Action - Primary (OLD)</label>
+            </value>
+            <value>
+                <fullName>LWC Table Action - Secondary</fullName>
+                <default>false</default>
+                <label>LWC Table Action - Secondary (OLD)</label>
             </value>
         </valueSetDefinition>
     </valueSet>

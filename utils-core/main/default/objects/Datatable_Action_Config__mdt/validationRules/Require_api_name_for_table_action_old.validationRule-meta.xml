@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Require_api_name_for_table_action</fullName>
+    <fullName>Require_api_name_for_table_action_old</fullName>
     <active>true</active>
     <errorConditionFormula>(
     CONTAINS( TEXT( Type__c ), &apos;Flow Table Action&apos; )

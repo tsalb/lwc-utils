@@ -3,6 +3,7 @@
     <fullName>Row_Action_Name__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>Used when Type = &apos;Row Action&apos;. Defines the actions for an individual row in the table.</inlineHelpText>
     <label>Row Action Name</label>
     <required>false</required>
     <type>Picklist</type>

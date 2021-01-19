@@ -33,23 +33,23 @@
 -->
 
 <template>
-    <c-message-service boundary="sample_app_lwc"></c-message-service>
+  <c-message-service boundary="sample_app_lwc"></c-message-service>
 
-    <lightning-card title="Top Accounts with Contacts">
-        <lightning-layout horizontal-align="center">
-            <lightning-layout-item size="5">
-                <lightning-combobox
-                    name="Accounts"
-                    label="Accounts"
-                    placeholder="Choose an Account"
-                    onchange={handleAccountOptionSelected}
-                    options={topAccounts}
-                >
-                </lightning-combobox>
-            </lightning-layout-item>
-        </lightning-layout>
-        <div slot="actions">
-            <lightning-button label="Clear Table" onclick={handleClearTable}> </lightning-button>
-        </div>
-    </lightning-card>
+  <lightning-card title="Top Accounts with Contacts">
+    <lightning-layout horizontal-align="center">
+      <lightning-layout-item size="5">
+        <lightning-combobox
+          name="Accounts"
+          label="Accounts"
+          placeholder="Choose an Account"
+          onchange={handleAccountOptionSelected}
+          options={topAccounts}
+        >
+        </lightning-combobox>
+      </lightning-layout-item>
+    </lightning-layout>
+    <div slot="actions">
+      <lightning-button label="Clear Table" onclick={handleClearTable}> </lightning-button>
+    </div>
+  </lightning-card>
 </template>

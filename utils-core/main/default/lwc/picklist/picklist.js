@@ -36,73 +36,73 @@ import { getPicklistValues } from 'lightning/uiObjectInfoApi';
 const VARIANTS = ['standard', 'label-hidden', 'label-inline', 'label-stacked'];
 
 export default class Picklist extends LightningElement {
-    @api fieldDescribe;
-    @api recordTypeId;
-    @api
-    get value() {
-        if (this._isCleared) {
-            return null;
-        }
-        if (this.selected) {
-            return this.selected;
-        }
-        return this._value;
+  @api fieldDescribe;
+  @api recordTypeId;
+  @api
+  get value() {
+    if (this._isCleared) {
+      return null;
     }
-    set value(value) {
-        this._value = value;
+    if (this.selected) {
+      return this.selected;
     }
-    @api
-    get variant() {
-        return this._variant;
-    }
-    set variant(val) {
-        if (!VARIANTS.includes(val)) throw new Error('Property variant expects values of ', VARIANTS.join(', '));
-        this._variant = val;
-    }
+    return this._value;
+  }
+  set value(value) {
+    this._value = value;
+  }
+  @api
+  get variant() {
+    return this._variant;
+  }
+  set variant(val) {
+    if (!VARIANTS.includes(val)) throw new Error('Property variant expects values of ', VARIANTS.join(', '));
+    this._variant = val;
+  }
 
-    @api label;
-    @api fieldLevelHelp;
-    @api disabled = false;
-    @api required = false;
+  @api label;
+  @api fieldLevelHelp;
+  @api disabled = false;
+  @api required = false;
 
-    @track options;
-    selected;
+  @track options;
+  selected;
 
-    // private
-    _errors = [];
-    _variant;
-    _isCleared = false;
+  // private
+  _errors = [];
+  _variant;
+  _isCleared = false;
 
-    @wire(getPicklistValues, { recordTypeId: '$recordTypeId', fieldApiName: '$fieldDescribe' })
-    wiredPicklistValues({ error, data }) {
-        if (error) {
-            this._errors.push(error);
-            console.error('Error', error);
-        } else if (data) {
-            this.options = data.values.map(({ label, value }) => ({ label, value }));
-            this.options.unshift({ label: '--None--', value: null });
-            this.setDefaultSelected(data);
-        }
+  @wire(getPicklistValues, { recordTypeId: '$recordTypeId', fieldApiName: '$fieldDescribe' })
+  wiredPicklistValues({ error, data }) {
+    if (error) {
+      this._errors.push(error);
+      console.error('Error', error);
+    } else if (data) {
+      this.options = data.values.map(({ label, value }) => ({ label, value }));
+      this.options.unshift({ label: '--None--', value: null });
+      this.setDefaultSelected(data);
     }
+  }
 
-    setDefaultSelected({ defaultValue }) {
-        if (this.value) {
-            this.selected = this.value;
-        } else if (defaultValue) {
-            this.selected = defaultValue.value;
-        } else {
-            this.selected = this.options[0].value;
-        }
+  setDefaultSelected({ defaultValue }) {
+    if (this.value) {
+      this.selected = this.value;
+    } else if (defaultValue) {
+      this.selected = defaultValue.value;
+    } else {
+      this.selected = this.options[0].value;
     }
+  }
 
-    handleChange(event) {
-        this.selected = event.target.value;
-        this._isCleared = !this.selected;
-        const payload = {
-            detail: {
-                selectedValue: this.selected
-            }
-        };
-        this.dispatchEvent(new CustomEvent('selected', payload));
-    }
+  handleChange(event) {
+    this.selected = event.target.value;
+    this._isCleared = !this.selected;
+    const payload = {
+      detail: {
+        selectedValue: this.selected
+      }
+    };
+    this.dispatchEvent(new CustomEvent('selected', payload));
+  }
 }

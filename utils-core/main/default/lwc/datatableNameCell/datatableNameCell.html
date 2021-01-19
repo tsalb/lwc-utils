@@ -33,25 +33,20 @@
 -->
 
 <template>
-    <c-datatable-editable-cell
-        table-boundary={tableBoundary}
-        original-value={value}
-        display-cell-value-prop="label"
-        edit-cell-value-prop="value"
-        is-editable={isEditable}
-        row-key-attribute={rowKeyAttribute}
-        row-key-value={rowKeyValue}
-        object-api-name={objectApiName}
-        column-name={columnName}
-        field-api-name={fieldApiName}
-        is-compound-name={isCompoundName}
-    >
-        <lightning-formatted-url
-            slot="displayCell"
-            value={href}
-            label={value}
-            target={target}
-        ></lightning-formatted-url>
-        <lightning-input slot="editCell" variant="label-hidden" value={value}></lightning-input>
-    </c-datatable-editable-cell>
+  <c-datatable-editable-cell
+    table-boundary={tableBoundary}
+    original-value={value}
+    display-cell-value-prop="label"
+    edit-cell-value-prop="value"
+    is-editable={isEditable}
+    row-key-attribute={rowKeyAttribute}
+    row-key-value={rowKeyValue}
+    object-api-name={objectApiName}
+    column-name={columnName}
+    field-api-name={fieldApiName}
+    is-compound-name={isCompoundName}
+  >
+    <lightning-formatted-url slot="displayCell" value={href} label={value} target={target}></lightning-formatted-url>
+    <lightning-input slot="editCell" variant="label-hidden" value={value}></lightning-input>
+  </c-datatable-editable-cell>
 </template>

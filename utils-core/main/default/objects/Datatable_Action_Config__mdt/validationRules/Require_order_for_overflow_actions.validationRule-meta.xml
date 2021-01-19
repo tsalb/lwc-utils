@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_order_for_overflow_actions</fullName>
+    <active>true</active>
+    <errorConditionFormula>CONTAINS(LOWER(TEXT(Type__c)), &apos;overflow&apos;)
+&amp;&amp;
+(
+  ISBLANK( Order__c )
+  || Order__c &lt; 3
+)</errorConditionFormula>
+    <errorDisplayField>Order__c</errorDisplayField>
+    <errorMessage>Required for Overflow actions. Must be &gt;= 3</errorMessage>
+</ValidationRule>

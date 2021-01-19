@@ -6,6 +6,8 @@
     <columns>Datatable_Config__c</columns>
     <columns>Type__c</columns>
     <columns>Order__c</columns>
+    <columns>Table_Action_Name__c</columns>
+    <columns>Overflow_Action_Name__c</columns>
     <columns>Row_Action_Name__c</columns>
     <columns>Button_Label__c</columns>
     <columns>Flow_API_Name__c</columns>

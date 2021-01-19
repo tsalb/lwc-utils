@@ -4,7 +4,11 @@
     <description>There is a bug around querying picklists in the WHERE clause from the child, so this is a text for now.</description>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
-    <inlineHelpText>Semicolon delimited to keep track of which child configs are used for this grouping record.</inlineHelpText>
+    <inlineHelpText>Limitation in multiselect / normal picklists. Valid inputs are:
+
+Actions
+Lookups
+Actions; Lookups</inlineHelpText>
     <label>Type</label>
     <length>255</length>
     <required>true</required>

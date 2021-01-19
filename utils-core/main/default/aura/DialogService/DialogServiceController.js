@@ -31,158 +31,156 @@
  */
 
 ({
-    createOverlayPopover: function (component, event, helper) {
-        let params = event.getParam('arguments');
+  createOverlayPopover: function (component, event, helper) {
+    let params = event.getParam('arguments');
 
-        helper.createBody(
-            component,
-            params,
-            $A.getCallback((error, popoverBody) => {
-                if (error) {
-                    alert('createOverlayPopover createBody error: ' + error);
-                    return;
+    helper.createBody(
+      component,
+      params,
+      $A.getCallback((error, popoverBody) => {
+        if (error) {
+          alert('createOverlayPopover createBody error: ' + error);
+          return;
+        }
+        if (popoverBody.isValid() && !$A.util.isUndefinedOrNull(popoverBody)) {
+          component
+            .find('overlayLib')
+            .showCustomPopover({
+              body: popoverBody,
+              referenceSelector: params.referenceSelector,
+              cssClass: params.cssClass
+            })
+            .then(
+              $A.getCallback(overlay => {
+                if (!$A.util.isEmpty(params.callback)) {
+                  params.callback({
+                    popover: overlay,
+                    popoverBody: popoverBody
+                  });
                 }
-                if (popoverBody.isValid() && !$A.util.isUndefinedOrNull(popoverBody)) {
-                    component
-                        .find('overlayLib')
-                        .showCustomPopover({
-                            body: popoverBody,
-                            referenceSelector: params.referenceSelector,
-                            cssClass: params.cssClass
+              })
+            );
+        } else {
+          console.error('popoverBody error is: ' + error[0].message);
+        }
+      })
+    ); // end helper
+  },
+  createOverlayModal: function (component, event, helper) {
+    let params = event.getParam('arguments');
+    // Creating the body first - this can be a custom component or text wrapped in formattedText
+    helper.createBody(
+      component,
+      params,
+      $A.getCallback((error, modalBody) => {
+        if (error) {
+          alert(error);
+          return;
+        }
+        if (modalBody.isValid() && !$A.util.isEmpty(modalBody)) {
+          // if mainActionReference has a c. prefix, it means we want an action on the body just created
+          let str = String(params.mainActionReference);
+          if (str.startsWith('c.')) {
+            params.mainActionReference = modalBody.getReference(params.mainActionReference);
+          }
+          helper.createButton(
+            params,
+            $A.getCallback((error, mainAction) => {
+              if (error) {
+                alert(error);
+                return;
+              }
+              if (mainAction.isValid() && !$A.util.isEmpty(mainAction)) {
+                // Final assembly
+                $A.createComponent(
+                  'c:ModalFooter',
+                  {
+                    actions: mainAction
+                  },
+                  (completedFooter, status, errorMessage) => {
+                    if (status === 'SUCCESS') {
+                      helper
+                        .overlayLib(component)
+                        .showCustomModal({
+                          header: params.headerLabel,
+                          body: modalBody,
+                          footer: completedFooter,
+                          showCloseButton: helper.defineShowCLoseButtonAttribute(params.showCloseButton),
+                          cssClass: helper.defineLargeModalAttribute(params.isLargeModal)
                         })
                         .then(
-                            $A.getCallback(overlay => {
-                                if (!$A.util.isEmpty(params.callback)) {
-                                    params.callback({
-                                        popover: overlay,
-                                        popoverBody: popoverBody
-                                    });
-                                }
-                            })
+                          $A.getCallback(overlay => {
+                            if (!$A.util.isEmpty(params.bodyParams)) {
+                              Object.keys(params.bodyParams).forEach((v, i, a) => {
+                                let valueProviderAdded = 'v.' + v;
+                                modalBody.set(valueProviderAdded, params.bodyParams[v]);
+                              });
+                            }
+                            component.set('v.overlayPromise', overlay);
+                            // prettier-ignore
+                            helper.messageService(component).publish({ key: 'dialogready' });
+                            if (!$A.util.isEmpty(params.callback)) {
+                              params.callback(overlay);
+                            }
+                          })
                         );
-                } else {
-                    console.error('popoverBody error is: ' + error[0].message);
-                }
-            })
-        ); // end helper
-    },
-    createOverlayModal: function (component, event, helper) {
-        let params = event.getParam('arguments');
-        // Creating the body first - this can be a custom component or text wrapped in formattedText
-        helper.createBody(
-            component,
-            params,
-            $A.getCallback((error, modalBody) => {
-                if (error) {
-                    alert(error);
-                    return;
-                }
-                if (modalBody.isValid() && !$A.util.isEmpty(modalBody)) {
-                    // if mainActionReference has a c. prefix, it means we want an action on the body just created
-                    let str = String(params.mainActionReference);
-                    if (str.startsWith('c.')) {
-                        params.mainActionReference = modalBody.getReference(params.mainActionReference);
                     }
-                    helper.createButton(
-                        params,
-                        $A.getCallback((error, mainAction) => {
-                            if (error) {
-                                alert(error);
-                                return;
-                            }
-                            if (mainAction.isValid() && !$A.util.isEmpty(mainAction)) {
-                                // Final assembly
-                                $A.createComponent(
-                                    'c:ModalFooter',
-                                    {
-                                        actions: mainAction
-                                    },
-                                    (completedFooter, status, errorMessage) => {
-                                        if (status === 'SUCCESS') {
-                                            helper
-                                                .overlayLib(component)
-                                                .showCustomModal({
-                                                    header: params.headerLabel,
-                                                    body: modalBody,
-                                                    footer: completedFooter,
-                                                    showCloseButton: helper.defineShowCLoseButtonAttribute(
-                                                        params.showCloseButton
-                                                    ),
-                                                    cssClass: helper.defineLargeModalAttribute(params.isLargeModal)
-                                                })
-                                                .then(
-                                                    $A.getCallback(overlay => {
-                                                        if (!$A.util.isEmpty(params.bodyParams)) {
-                                                            Object.keys(params.bodyParams).forEach((v, i, a) => {
-                                                                let valueProviderAdded = 'v.' + v;
-                                                                modalBody.set(valueProviderAdded, params.bodyParams[v]);
-                                                            });
-                                                        }
-                                                        component.set('v.overlayPromise', overlay);
-                                                        // prettier-ignore
-                                                        helper.messageService(component).publish({ key: 'dialogready' });
-                                                        if (!$A.util.isEmpty(params.callback)) {
-                                                            params.callback(overlay);
-                                                        }
-                                                    })
-                                                );
-                                        }
-                                    }
-                                );
-                            } else {
-                                console.error('mainAction error is: ' + error[0].message);
-                            }
-                        })
-                    ); // end helper.createButton
-                } else {
-                    console.error('modalBody error is: ' + error[0].message);
-                }
+                  }
+                );
+              } else {
+                console.error('mainAction error is: ' + error[0].message);
+              }
             })
-        ); // end helper.createBody
-    },
-    createOverlayModalWithEventFooter: function (component, event, helper) {
-        let params = event.getParam('arguments');
-        helper.createBody(
-            component,
-            params,
-            $A.getCallback((error, modalBody) => {
-                if (error) {
-                    alert(error);
-                    return;
-                }
-                if (modalBody.isValid() && !$A.util.isEmpty(modalBody)) {
-                    helper.createEventFooter(
-                        $A.getCallback((error, eventFooter) => {
-                            helper
-                                .overlayLib(component)
-                                .showCustomModal({
-                                    header: params.headerLabel,
-                                    body: modalBody,
-                                    footer: eventFooter,
-                                    showCloseButton: true,
-                                    cssClass: helper.defineLargeModalAttribute(params.isLargeModal)
-                                })
-                                .then(
-                                    $A.getCallback(overlay => {
-                                        if (!$A.util.isEmpty(params.bodyParams)) {
-                                            Object.keys(params.bodyParams).forEach((v, i, a) => {
-                                                let valueProviderAdded = 'v.' + v;
-                                                modalBody.set(valueProviderAdded, params.bodyParams[v]);
-                                            });
-                                        }
-                                        component.set('v.overlayPromise', overlay);
-                                        helper.messageService(component).publish({ key: 'dialogready' });
-                                        if (!$A.util.isEmpty(params.callback)) {
-                                            params.callback(overlay);
-                                        }
-                                    })
-                                );
-                        })
-                    );
-                } else {
-                    console.error('modalBody error is: ' + error[0].message);
-                }
+          ); // end helper.createButton
+        } else {
+          console.error('modalBody error is: ' + error[0].message);
+        }
+      })
+    ); // end helper.createBody
+  },
+  createOverlayModalWithEventFooter: function (component, event, helper) {
+    let params = event.getParam('arguments');
+    helper.createBody(
+      component,
+      params,
+      $A.getCallback((error, modalBody) => {
+        if (error) {
+          alert(error);
+          return;
+        }
+        if (modalBody.isValid() && !$A.util.isEmpty(modalBody)) {
+          helper.createEventFooter(
+            $A.getCallback((error, eventFooter) => {
+              helper
+                .overlayLib(component)
+                .showCustomModal({
+                  header: params.headerLabel,
+                  body: modalBody,
+                  footer: eventFooter,
+                  showCloseButton: true,
+                  cssClass: helper.defineLargeModalAttribute(params.isLargeModal)
+                })
+                .then(
+                  $A.getCallback(overlay => {
+                    if (!$A.util.isEmpty(params.bodyParams)) {
+                      Object.keys(params.bodyParams).forEach((v, i, a) => {
+                        let valueProviderAdded = 'v.' + v;
+                        modalBody.set(valueProviderAdded, params.bodyParams[v]);
+                      });
+                    }
+                    component.set('v.overlayPromise', overlay);
+                    helper.messageService(component).publish({ key: 'dialogready' });
+                    if (!$A.util.isEmpty(params.callback)) {
+                      params.callback(overlay);
+                    }
+                  })
+                );
             })
-        ); // end helper.createBody
-    }
+          );
+        } else {
+          console.error('modalBody error is: ' + error[0].message);
+        }
+      })
+    ); // end helper.createBody
+  }
 });

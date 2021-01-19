@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_order_for_table_actions</fullName>
+    <active>true</active>
+    <description>Validate the new data model for table actions</description>
+    <errorConditionFormula>/* Only apply it to the new datamodel */
+CONTAINS(LOWER(TEXT(Type__c)), &apos;table&apos;)
+&amp;&amp; 
+NOT(CONTAINS(LOWER(TEXT(Type__c)), &apos;primary&apos;))
+&amp;&amp; 
+NOT(CONTAINS(LOWER(TEXT(Type__c)), &apos;secondary&apos;))
+&amp;&amp; 
+NOT(CONTAINS(LOWER(TEXT(Type__c)), &apos;overflow&apos;))
+&amp;&amp;
+
+/* For some reason, converting to text works better for this */
+TEXT( Order__c ) != &apos;1&apos; 
+&amp;&amp; 
+TEXT( Order__c ) != &apos;2&apos;</errorConditionFormula>
+    <errorDisplayField>Order__c</errorDisplayField>
+    <errorMessage>Required for Table actions. Must be 1 or 2</errorMessage>
+</ValidationRule>

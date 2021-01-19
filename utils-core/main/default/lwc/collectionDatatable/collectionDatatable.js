@@ -49,245 +49,243 @@ import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
 import { flattenQueryResult } from 'c/tableServiceUtils';
 
 export default class CollectionDatatable extends LightningElement {
-    @api recordCollection;
-    @api title;
-    @api showRecordCount;
-    @api checkboxType;
-    @api
-    get shownFields() {
-        return this._shownFields;
+  @api recordCollection;
+  @api title;
+  @api showRecordCount;
+  @api checkboxType;
+  @api
+  get shownFields() {
+    return this._shownFields;
+  }
+  set shownFields(value = '') {
+    this._shownFields = createFlattenedSetFromDelimitedString(value, ',');
+  }
+  @api columnLabels;
+  @api editableFields;
+  @api sortableFields;
+  @api sortedBy;
+  @api sortedDirection;
+  @api customHeight;
+
+  // Flow outputs
+  @api selectedRows;
+  @api firstSelectedRow;
+  @api editedRows;
+  @api allRows;
+
+  // LWC loadStyle hack - to help with picklist and lookup menu overflows
+  // https://salesforce.stackexchange.com/a/270624
+  @api useLoadStyleHackForOverflow;
+
+  // private
+  _isRendered;
+  _messageService;
+  _displayTypeMap = new Map();
+  _initializationType;
+  _hasCustomPicklist;
+  _recordTypeIdMap = new Map();
+  _singleRecordId;
+  _objectApiName;
+  _objectInfo;
+  _objectFieldsMap = new Map();
+  _referenceFieldsMap = new Map();
+
+  // MessageService boundary, useful for when multiple instances are on same page
+  get uniqueBoundary() {
+    if (!this._uniqueBoundary) {
+      this._uniqueBoundary = generateUUID();
     }
-    set shownFields(value = '') {
-        this._shownFields = createFlattenedSetFromDelimitedString(value, ',');
+    return this._uniqueBoundary;
+  }
+
+  async connectedCallback() {
+    if (!this.recordCollection || !this.recordCollection.length) {
+      return;
     }
-    @api columnLabels;
-    @api editableFields;
-    @api sortableFields;
-    @api sortedBy;
-    @api sortedDirection;
-    @api customHeight;
+    // Use the serverside configured display map for column creation client-side
+    this._displayTypeMap = new Map(Object.entries(await getDisplayTypeMap()));
 
-    // Flow outputs
-    @api selectedRows;
-    @api firstSelectedRow;
-    @api editedRows;
-    @api allRows;
+    // Collections can be either from a Get Record element or un-inserted Record Collection.
+    const recordIdRow = this.recordCollection.find(row => row.hasOwnProperty('Id'));
+    if (recordIdRow) {
+      this.initializeFromRecordId(recordIdRow.Id);
+    } else {
+      this.initializeFromCollection();
+    }
+  }
 
-    // LWC loadStyle hack - to help with picklist and lookup menu overflows
-    // https://salesforce.stackexchange.com/a/270624
-    @api useLoadStyleHackForOverflow;
+  renderedCallback() {
+    if (this._isRendered) {
+      return;
+    }
+    this._isRendered = true;
+    this._messageService = this.template.querySelector('c-message-service');
+  }
 
-    // private
-    _isRendered;
-    _messageService;
-    _displayTypeMap = new Map();
-    _initializationType;
-    _hasCustomPicklist;
-    _recordTypeIdMap = new Map();
-    _singleRecordId;
-    _objectApiName;
-    _objectInfo;
-    _objectFieldsMap = new Map();
-    _referenceFieldsMap = new Map();
+  async initializeFromRecordId(recordId) {
+    this._initializationType = 'recordId';
+    // Start the wire now
+    this._singleRecordId = recordId;
+  }
 
-    // MessageService boundary, useful for when multiple instances are on same page
-    get uniqueBoundary() {
-        if (!this._uniqueBoundary) {
-            this._uniqueBoundary = generateUUID();
+  initializeFromCollection() {
+    this._initializationType = 'collection';
+    // todo
+  }
+
+  @wire(getRecord, { recordId: '$_singleRecordId', layoutTypes: 'Compact' })
+  wiredSingleRecord({ error, data }) {
+    if (error) {
+      this._notifySingleError('getRecord error', error);
+    } else if (data) {
+      this._objectApiName = data.apiName;
+    }
+  }
+
+  @wire(getObjectInfo, { objectApiName: '$_objectApiName' })
+  wiredObjectInfo({ error, data }) {
+    if (error) {
+      this._notifySingleError('getObjectInfo error', error);
+    } else if (data) {
+      this._objectInfo = data;
+
+      // Flatten here, we want to recover any possible customLookup name values
+      this.recordCollection = flattenQueryResult(this.recordCollection);
+      //console.log(this.recordCollection);
+
+      // Creating columns means parsing LDS and matching that to design props or what's in the record collection
+      this._objectFieldsMap = new Map(Object.entries(this._objectInfo.fields));
+      //console.log(this._objectFieldsMap);
+
+      this._referenceFieldsMap = new Map(
+        Array.from(this._objectFieldsMap.values())
+          .filter(field => field.reference && field.referenceToInfos.length)
+          .map(field => {
+            const referenceTo = field.referenceToInfos[0];
+            const flatNameField = `${field.relationshipName}_${referenceTo.nameFields[0]}`;
+            return [field.apiName, flatNameField];
+          })
+      );
+      //console.log(this._referenceFieldsMap);
+
+      // Columns need special flags set within them for custom data types
+      const columns = [];
+      this.shownFields.forEach(fieldName => {
+        columns.push(this._createBaseColumnAttribute(fieldName));
+      });
+
+      // We initialize the table first
+      this.template.querySelector('c-datatable').initializeTable(this._objectApiName, columns, this.recordCollection);
+
+      // Then check if we need to send some recordTypeId payload to the customPicklist data types
+      if (this._initializationType === 'recordId' && this._hasCustomPicklist) {
+        this._initializeRecordTypeIds();
+      }
+    }
+  }
+
+  // Event Handlers
+
+  handleRowSelection(event) {
+    if (event.detail.selectedRows && event.detail.selectedRows.length) {
+      this.selectedRows = event.detail.selectedRows.map(row => this._getCleanRow(row));
+      this.firstSelectedRow = this._getCleanRow(event.detail.selectedRows[0]);
+      this.dispatchEvent(new FlowAttributeChangeEvent('selectedRows', this.selectedRows));
+      this.dispatchEvent(new FlowAttributeChangeEvent('firstSelectedRow', this.firstSelectedRow));
+    }
+  }
+
+  handleSave(event) {
+    if (event.detail.editedRows && event.detail.editedRows.length) {
+      const editedRowsClean = event.detail.editedRows.map(row => this._getCleanRow(row));
+      //console.log(editedRowsClean);
+      this.dispatchEvent(new FlowAttributeChangeEvent('editedRows', editedRowsClean));
+    }
+    if (event.detail.allRows && event.detail.allRows.length) {
+      const allRowsClean = event.detail.allRows.map(row => this._getCleanRow(row));
+      //console.log(allRowsClean);
+      this.dispatchEvent(new FlowAttributeChangeEvent('allRows', allRowsClean));
+    }
+  }
+
+  // Private functions
+
+  _getCleanRow(row) {
+    for (let fieldName in row) {
+      if (typeof row[fieldName] === 'object') {
+        continue;
+      }
+      if (!this._objectFieldsMap.has(fieldName)) {
+        delete row[fieldName];
+      }
+    }
+    return row;
+  }
+
+  _createBaseColumnAttribute(fieldName) {
+    const fieldConfig = this._objectFieldsMap.get(fieldName);
+    const hasConfig = !!fieldConfig;
+    let columnDefinition = {
+      label: hasConfig ? fieldConfig.label : fieldName.split('_').join(' '),
+      fieldName: hasConfig ? fieldConfig.apiName : fieldName,
+      type: hasConfig ? this._displayTypeMap.get(fieldConfig.dataType.toUpperCase()) : 'text'
+    };
+    // A little more processing is needed for custom data types
+    if (columnDefinition.type === 'customLookup' && this._referenceFieldsMap.has(fieldName)) {
+      const lookupTypeAttributes = {
+        typeAttributes: {
+          columnName: hasConfig ? fieldConfig.apiName : fieldName,
+          fieldApiName: hasConfig ? fieldConfig.apiName : fieldName,
+          objectApiName: this._objectApiName,
+          href: { fieldName: fieldName },
+          target: '_parent',
+          displayValue: { fieldName: this._referenceFieldsMap.get(fieldName) },
+          referenceObjectApiName: this._objectFieldsMap.get(fieldName).referenceToInfos[0].apiName
         }
-        return this._uniqueBoundary;
+      };
+      columnDefinition = { ...columnDefinition, ...lookupTypeAttributes };
     }
-
-    async connectedCallback() {
-        if (!this.recordCollection || !this.recordCollection.length) {
-            return;
+    if (columnDefinition.type === 'customPicklist') {
+      this._hasCustomPicklist = true;
+      const picklistTypeAttributes = {
+        typeAttributes: {
+          columnName: hasConfig ? fieldConfig.apiName : fieldName,
+          fieldApiName: hasConfig ? fieldConfig.apiName : fieldName,
+          objectApiName: this._objectApiName
         }
-        // Use the serverside configured display map for column creation client-side
-        this._displayTypeMap = new Map(Object.entries(await getDisplayTypeMap()));
-
-        // Collections can be either from a Get Record element or un-inserted Record Collection.
-        const recordIdRow = this.recordCollection.find(row => row.hasOwnProperty('Id'));
-        if (recordIdRow) {
-            this.initializeFromRecordId(recordIdRow.Id);
-        } else {
-            this.initializeFromCollection();
-        }
+      };
+      columnDefinition = { ...columnDefinition, ...picklistTypeAttributes };
     }
+    //console.log(columnDefinition);
+    return columnDefinition;
+  }
 
-    renderedCallback() {
-        if (this._isRendered) {
-            return;
-        }
-        this._isRendered = true;
-        this._messageService = this.template.querySelector('c-message-service');
+  async _initializeRecordTypeIds() {
+    // JS Maps don't travel well over messageService, so we send it in its original form
+    const recordTypeIdMap = await getRecordTypeIdMap({ recordIds: this.recordCollection.map(row => row.Id) });
+
+    // Store it here for future roadmap if necessary
+    this._recordTypeIdMap = new Map(Object.entries(recordTypeIdMap));
+
+    // Size check is easier on the converted type
+    if (this._recordTypeIdMap.size) {
+      // Picklist columns should have been initialized now.
+      // If this breaks, we need datatable.js to initiate this instead
+      this._messageService.publish({
+        key: 'picklistconfigload',
+        value: { recordTypeIdMap: recordTypeIdMap }
+      });
     }
+  }
 
-    async initializeFromRecordId(recordId) {
-        this._initializationType = 'recordId';
-        // Start the wire now
-        this._singleRecordId = recordId;
-    }
-
-    initializeFromCollection() {
-        this._initializationType = 'collection';
-        // todo
-    }
-
-    @wire(getRecord, { recordId: '$_singleRecordId', layoutTypes: 'Compact' })
-    wiredSingleRecord({ error, data }) {
-        if (error) {
-            this._notifySingleError('getRecord error', error);
-        } else if (data) {
-            this._objectApiName = data.apiName;
-        }
-    }
-
-    @wire(getObjectInfo, { objectApiName: '$_objectApiName' })
-    wiredObjectInfo({ error, data }) {
-        if (error) {
-            this._notifySingleError('getObjectInfo error', error);
-        } else if (data) {
-            this._objectInfo = data;
-
-            // Flatten here, we want to recover any possible customLookup name values
-            this.recordCollection = flattenQueryResult(this.recordCollection);
-            //console.log(this.recordCollection);
-
-            // Creating columns means parsing LDS and matching that to design props or what's in the record collection
-            this._objectFieldsMap = new Map(Object.entries(this._objectInfo.fields));
-            //console.log(this._objectFieldsMap);
-
-            this._referenceFieldsMap = new Map(
-                Array.from(this._objectFieldsMap.values())
-                    .filter(field => field.reference && field.referenceToInfos.length)
-                    .map(field => {
-                        const referenceTo = field.referenceToInfos[0];
-                        const flatNameField = `${field.relationshipName}_${referenceTo.nameFields[0]}`;
-                        return [field.apiName, flatNameField];
-                    })
-            );
-            //console.log(this._referenceFieldsMap);
-
-            // Columns need special flags set within them for custom data types
-            const columns = [];
-            this.shownFields.forEach(fieldName => {
-                columns.push(this._createBaseColumnAttribute(fieldName));
-            });
-
-            // We initialize the table first
-            this.template
-                .querySelector('c-datatable')
-                .initializeTable(this._objectApiName, columns, this.recordCollection);
-
-            // Then check if we need to send some recordTypeId payload to the customPicklist data types
-            if (this._initializationType === 'recordId' && this._hasCustomPicklist) {
-                this._initializeRecordTypeIds();
-            }
-        }
-    }
-
-    // Event Handlers
-
-    handleRowSelection(event) {
-        if (event.detail.selectedRows && event.detail.selectedRows.length) {
-            this.selectedRows = event.detail.selectedRows.map(row => this._getCleanRow(row));
-            this.firstSelectedRow = this._getCleanRow(event.detail.selectedRows[0]);
-            this.dispatchEvent(new FlowAttributeChangeEvent('selectedRows', this.selectedRows));
-            this.dispatchEvent(new FlowAttributeChangeEvent('firstSelectedRow', this.firstSelectedRow));
-        }
-    }
-
-    handleSave(event) {
-        if (event.detail.editedRows && event.detail.editedRows.length) {
-            const editedRowsClean = event.detail.editedRows.map(row => this._getCleanRow(row));
-            //console.log(editedRowsClean);
-            this.dispatchEvent(new FlowAttributeChangeEvent('editedRows', editedRowsClean));
-        }
-        if (event.detail.allRows && event.detail.allRows.length) {
-            const allRowsClean = event.detail.allRows.map(row => this._getCleanRow(row));
-            //console.log(allRowsClean);
-            this.dispatchEvent(new FlowAttributeChangeEvent('allRows', allRowsClean));
-        }
-    }
-
-    // Private functions
-
-    _getCleanRow(row) {
-        for (let fieldName in row) {
-            if (typeof row[fieldName] === 'object') {
-                continue;
-            }
-            if (!this._objectFieldsMap.has(fieldName)) {
-                delete row[fieldName];
-            }
-        }
-        return row;
-    }
-
-    _createBaseColumnAttribute(fieldName) {
-        const fieldConfig = this._objectFieldsMap.get(fieldName);
-        const hasConfig = !!fieldConfig;
-        let columnDefinition = {
-            label: hasConfig ? fieldConfig.label : fieldName.split('_').join(' '),
-            fieldName: hasConfig ? fieldConfig.apiName : fieldName,
-            type: hasConfig ? this._displayTypeMap.get(fieldConfig.dataType.toUpperCase()) : 'text'
-        };
-        // A little more processing is needed for custom data types
-        if (columnDefinition.type === 'customLookup' && this._referenceFieldsMap.has(fieldName)) {
-            const lookupTypeAttributes = {
-                typeAttributes: {
-                    columnName: hasConfig ? fieldConfig.apiName : fieldName,
-                    fieldApiName: hasConfig ? fieldConfig.apiName : fieldName,
-                    objectApiName: this._objectApiName,
-                    href: { fieldName: fieldName },
-                    target: '_parent',
-                    displayValue: { fieldName: this._referenceFieldsMap.get(fieldName) },
-                    referenceObjectApiName: this._objectFieldsMap.get(fieldName).referenceToInfos[0].apiName
-                }
-            };
-            columnDefinition = { ...columnDefinition, ...lookupTypeAttributes };
-        }
-        if (columnDefinition.type === 'customPicklist') {
-            this._hasCustomPicklist = true;
-            const picklistTypeAttributes = {
-                typeAttributes: {
-                    columnName: hasConfig ? fieldConfig.apiName : fieldName,
-                    fieldApiName: hasConfig ? fieldConfig.apiName : fieldName,
-                    objectApiName: this._objectApiName
-                }
-            };
-            columnDefinition = { ...columnDefinition, ...picklistTypeAttributes };
-        }
-        //console.log(columnDefinition);
-        return columnDefinition;
-    }
-
-    async _initializeRecordTypeIds() {
-        // JS Maps don't travel well over messageService, so we send it in its original form
-        const recordTypeIdMap = await getRecordTypeIdMap({ recordIds: this.recordCollection.map(row => row.Id) });
-
-        // Store it here for future roadmap if necessary
-        this._recordTypeIdMap = new Map(Object.entries(recordTypeIdMap));
-
-        // Size check is easier on the converted type
-        if (this._recordTypeIdMap.size) {
-            // Picklist columns should have been initialized now.
-            // If this breaks, we need datatable.js to initiate this instead
-            this._messageService.publish({
-                key: 'picklistconfigload',
-                value: { recordTypeIdMap: recordTypeIdMap }
-            });
-        }
-    }
-
-    _notifySingleError(title, error) {
-        this.dispatchEvent(
-            new ShowToastEvent({
-                title: title,
-                message: reduceErrors(error)[0],
-                variant: 'error',
-                mode: 'sticky'
-            })
-        );
-    }
+  _notifySingleError(title, error) {
+    this.dispatchEvent(
+      new ShowToastEvent({
+        title: title,
+        message: reduceErrors(error)[0],
+        variant: 'error',
+        mode: 'sticky'
+      })
+    );
+  }
 }

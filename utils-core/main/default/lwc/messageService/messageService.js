@@ -39,97 +39,97 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { reduceErrors } from 'c/utils';
 
 export default class MessageService extends LightningElement {
-    @api boundary;
-    subscription = null;
-    @wire(MessageContext) messageContext;
+  @api boundary;
+  subscription = null;
+  @wire(MessageContext) messageContext;
 
-    connectedCallback() {
-        if (this.subscription) {
-            return;
-        }
-        this.subscription = subscribe(this.messageContext, OPEN_CHANNEL, payload => {
-            if (payload.hasOwnProperty('boundary') && payload.boundary !== this.boundary) {
-                return;
-            }
-            this.dispatchEvent(new CustomEvent(payload.key, { detail: { value: payload.value } }));
-        });
+  connectedCallback() {
+    if (this.subscription) {
+      return;
     }
+    this.subscription = subscribe(this.messageContext, OPEN_CHANNEL, payload => {
+      if (payload.hasOwnProperty('boundary') && payload.boundary !== this.boundary) {
+        return;
+      }
+      this.dispatchEvent(new CustomEvent(payload.key, { detail: { value: payload.value } }));
+    });
+  }
 
-    disconnectedCallback() {
-        unsubscribe(this.subscription);
-        this.subscription = null;
+  disconnectedCallback() {
+    unsubscribe(this.subscription);
+    this.subscription = null;
+  }
+
+  @api
+  dialogService(payload) {
+    this._messageServicePublish({ key: 'opendialog', value: payload });
+  }
+
+  @api
+  notifyClose() {
+    this._messageServicePublish({ key: 'closedialog' });
+  }
+
+  @api
+  publish(payload) {
+    if (this.boundary) {
+      this._messageServicePublishWithBoundary(payload);
+    } else {
+      this._messageServicePublish(payload);
     }
+  }
 
-    @api
-    dialogService(payload) {
-        this._messageServicePublish({ key: 'opendialog', value: payload });
-    }
+  @api
+  publishOpen(payload) {
+    this._messageServicePublish(payload);
+  }
 
-    @api
-    notifyClose() {
-        this._messageServicePublish({ key: 'closedialog' });
-    }
+  @api
+  forceRefreshView() {
+    eval("$A.get('e.force:refreshView').fire();");
+  }
 
-    @api
-    publish(payload) {
-        if (this.boundary) {
-            this._messageServicePublishWithBoundary(payload);
-        } else {
-            this._messageServicePublish(payload);
-        }
-    }
+  @api
+  notifySuccess(title, message = null) {
+    this.dispatchEvent(
+      new ShowToastEvent({
+        title: title,
+        message: message,
+        variant: 'success'
+      })
+    );
+  }
 
-    @api
-    publishOpen(payload) {
-        this._messageServicePublish(payload);
-    }
+  @api
+  notifyInfo(title, message = null) {
+    this.dispatchEvent(
+      new ShowToastEvent({
+        title: title,
+        message: message,
+        variant: 'info'
+      })
+    );
+  }
 
-    @api
-    forceRefreshView() {
-        eval("$A.get('e.force:refreshView').fire();");
-    }
+  @api
+  notifySingleError(title, error = '') {
+    this.dispatchEvent(
+      new ShowToastEvent({
+        title: title,
+        message: reduceErrors(error)[0],
+        variant: 'error',
+        mode: 'sticky'
+      })
+    );
+  }
 
-    @api
-    notifySuccess(title, message = null) {
-        this.dispatchEvent(
-            new ShowToastEvent({
-                title: title,
-                message: message,
-                variant: 'success'
-            })
-        );
-    }
+  // private
 
-    @api
-    notifyInfo(title, message = null) {
-        this.dispatchEvent(
-            new ShowToastEvent({
-                title: title,
-                message: message,
-                variant: 'info'
-            })
-        );
-    }
+  _messageServicePublish(payload) {
+    publish(this.messageContext, OPEN_CHANNEL, { key: payload.key, value: payload.value });
+  }
 
-    @api
-    notifySingleError(title, error = '') {
-        this.dispatchEvent(
-            new ShowToastEvent({
-                title: title,
-                message: reduceErrors(error)[0],
-                variant: 'error',
-                mode: 'sticky'
-            })
-        );
-    }
-
-    // private
-
-    _messageServicePublish(payload) {
-        publish(this.messageContext, OPEN_CHANNEL, { key: payload.key, value: payload.value });
-    }
-
-    _messageServicePublishWithBoundary(payload) {
-        publish(this.messageContext, OPEN_CHANNEL, { boundary: this.boundary, key: payload.key, value: payload.value });
-    }
+  _messageServicePublishWithBoundary(payload) {
+    publish(this.messageContext, OPEN_CHANNEL, { boundary: this.boundary, key: payload.key, value: payload.value });
+  }
 }

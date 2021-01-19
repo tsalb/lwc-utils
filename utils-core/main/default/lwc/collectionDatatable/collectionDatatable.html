@@ -33,22 +33,22 @@
 -->
 
 <template>
-    <c-message-service boundary={uniqueBoundary}></c-message-service>
+  <c-message-service boundary={uniqueBoundary}></c-message-service>
 
-    <c-datatable
-        unique-boundary={uniqueBoundary}
-        key-field="Id"
-        title={title}
-        show-record-count={showRecordCount}
-        checkbox-type={checkboxType}
-        column-labels={columnLabels}
-        custom-height={customHeight}
-        editable-fields={editableFields}
-        use-load-style-hack-for-overflow={useLoadStyleHackForOverflow}
-        sortable-fields={sortableFields}
-        sorted-by={sortedBy}
-        sorted-direction={sortedDirection}
-        onsave={handleSave}
-        onrowselection={handleRowSelection}
-    ></c-datatable>
+  <c-datatable
+    unique-boundary={uniqueBoundary}
+    key-field="Id"
+    title={title}
+    show-record-count={showRecordCount}
+    checkbox-type={checkboxType}
+    column-labels={columnLabels}
+    custom-height={customHeight}
+    editable-fields={editableFields}
+    use-load-style-hack-for-overflow={useLoadStyleHackForOverflow}
+    sortable-fields={sortableFields}
+    sorted-by={sortedBy}
+    sorted-direction={sortedDirection}
+    onsave={handleSave}
+    onrowselection={handleRowSelection}
+  ></c-datatable>
 </template>

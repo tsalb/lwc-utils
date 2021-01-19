@@ -30,14 +30,14 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <template>
-    <div onmousedown={clickRecord} class={itemClasses} role="option">
-        <span class="slds-media__figure slds-listbox__option-icon">
-            <lightning-icon icon-name={iconName}></lightning-icon>
-        </span>
+  <div onmousedown={clickRecord} class={itemClasses} role="option">
+    <span class="slds-media__figure slds-listbox__option-icon">
+      <lightning-icon icon-name={iconName}></lightning-icon>
+    </span>
 
-        <span class="slds-media__body">
-            <span class="slds-listbox__option-text slds-listbox__option-text_entity"> {label} </span>
-            <span class="slds-listbox__option-meta slds-listbox__option-meta_entity slds-truncate"> {subLabel} </span>
-        </span>
-    </div>
+    <span class="slds-media__body">
+      <span class="slds-listbox__option-text slds-listbox__option-text_entity"> {label} </span>
+      <span class="slds-listbox__option-meta slds-listbox__option-meta_entity slds-truncate"> {subLabel} </span>
+    </span>
+  </div>
 </template>

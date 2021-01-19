@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_exact_actions_or_lookups_text</fullName>
+    <active>true</active>
+    <description>Helps validate input, despite current workaround</description>
+    <errorConditionFormula>LOWER(Type__c) != &apos;actions; lookups&apos;
+&amp;&amp;
+LOWER(Type__c) != &apos;actions;lookups&apos;
+&amp;&amp;
+LOWER(Type__c) != &apos;lookups; actions&apos;
+&amp;&amp;
+LOWER(Type__c) != &apos;lookups;actions&apos;
+&amp;&amp;
+LOWER(Type__c) != &apos;actions&apos;
+&amp;&amp;
+LOWER(Type__c) != &apos;lookups&apos;</errorConditionFormula>
+    <errorDisplayField>Type__c</errorDisplayField>
+    <errorMessage>Valid values are `Actions`, `Actions; Lookups` or just `Lookups`.
+
+Please excuse this workaround.</errorMessage>
+</ValidationRule>

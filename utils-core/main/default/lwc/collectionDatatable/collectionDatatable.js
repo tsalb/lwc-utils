@@ -48,6 +48,9 @@ import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
 // Flatten data again, for when things are recalculated
 import { flattenQueryResult } from 'c/tableServiceUtils';
 
+// TODO: Tackle later
+/* eslint @lwc/lwc/no-api-reassignments: 0 */
+
 export default class CollectionDatatable extends LightningElement {
   @api recordCollection;
   @api title;
@@ -106,7 +109,7 @@ export default class CollectionDatatable extends LightningElement {
     this._displayTypeMap = new Map(Object.entries(await getDisplayTypeMap()));
 
     // Collections can be either from a Get Record element or un-inserted Record Collection.
-    const recordIdRow = this.recordCollection.find(row => row.hasOwnProperty('Id'));
+    const recordIdRow = this.recordCollection.find(row => Object.prototype.hasOwnProperty.call(row, 'Id'));
     if (recordIdRow) {
       this.initializeFromRecordId(recordIdRow.Id);
     } else {

@@ -54,12 +54,12 @@ const flattenQueryResult = (listOfObjects, objectApiName) => {
   for (let i = 0; i < listOfObjects.length; i++) {
     let obj = listOfObjects[i];
     for (let prop in obj) {
-      if (!obj.hasOwnProperty(prop)) {
+      if (!Object.prototype.hasOwnProperty.call(obj, prop)) {
         continue;
       }
-      if (typeof obj[prop] === 'object' && typeof obj[prop] !== 'Array') {
+      if (typeof obj[prop] === 'object' && !Array.isArray(obj[prop])) {
         obj = { ...obj, ...flattenObject(prop, obj[prop]) };
-      } else if (typeof obj[prop] === 'Array') {
+      } else if (Array.isArray(obj[prop])) {
         for (let j = 0; j < obj[prop].length; j++) {
           obj[`${prop}_${j}`] = { ...obj, ...flattenObject(prop, obj[prop]) };
         }

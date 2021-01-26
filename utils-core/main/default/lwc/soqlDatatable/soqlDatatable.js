@@ -43,6 +43,9 @@ import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { reduceErrors } from 'c/utils';
 
+// TODO: Tackle later
+/* eslint @lwc/lwc/no-api-reassignments: 0 */
+
 const DIRECT_MERGE_DATA_TYPES = [
   'anytype',
   'boolean',
@@ -249,11 +252,13 @@ export default class SoqlDatatable extends LightningElement {
 
   async fetchTableCache() {
     this.showSpinner = true;
+    let cache;
     try {
-      return await tableService.fetchTableCache({ queryString: this._finalQueryString });
+      cache = await tableService.fetchTableCache({ queryString: this._finalQueryString });
     } catch (error) {
       this._notifySingleError('fetchTableCache error', error);
     }
+    return cache;
   }
 
   initializeTable(cache) {

@@ -55,6 +55,9 @@ const ROW_ACTION_STRING = 'Row Action';
 // Datatable_Lookup_Config__mdt
 const DATATABLE_LOOKUP_CONFIG_DEFAULT = 'Default_Lookup_Config';
 
+// API props are controlled by soqlDatatable and collectionDatatable
+/* eslint @lwc/lwc/no-api-reassignments: 0 */
+
 export default class Datatable extends LightningElement {
   @api recordId;
   @api
@@ -754,6 +757,7 @@ export default class Datatable extends LightningElement {
     // checks if the two rows should switch places
     reverse = !reverse ? 1 : -1;
     return function (a, b) {
+      // eslint-disable-next-line no-sequences
       return (a = key(a) ? key(a) : ''), (b = key(b) ? key(b) : ''), reverse * ((a > b) - (b > a));
     };
   }
@@ -874,7 +878,7 @@ export default class Datatable extends LightningElement {
       'slds-border_top',
       'slds-border_bottom',
       'slds-border_left',
-      'slds-border_right', 
+      'slds-border_right',
       'slds-is-relative']
     .join(' ');
   }

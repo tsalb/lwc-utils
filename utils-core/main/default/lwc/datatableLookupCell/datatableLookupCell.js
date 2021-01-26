@@ -141,6 +141,7 @@ export default class DatatableLookupCell extends LightningElement {
     this._isCleared = false;
     this._selectedRecordId = null;
     // Force template refresh
+    // eslint-disable-next-line
     this.target = this.target;
   }
 

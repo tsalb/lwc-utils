@@ -79,16 +79,14 @@ export default class EmpApi extends LightningElement {
   unsubscribe() {
     // Invoke unsubscribe method of empApi
     unsubscribe(this._subscription, response => {
-      //console.log('unsubscribe() response: ', JSON.stringify(response));
-      // Response is true for successful unsubscribe
+      console.info('unsubscribe() response: ', JSON.stringify(response));
     });
   }
 
   registerErrorListener() {
     // Invoke onError empApi method
     onError(error => {
-      //console.log('Received error from server: ', JSON.stringify(error));
-      // Error contains the server-side error
+      console.error('Received error from server: ', JSON.stringify(error));
     });
   }
 

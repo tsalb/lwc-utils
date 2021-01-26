@@ -182,6 +182,7 @@ export default class DatatableEditableCell extends LightningElement {
       clicksInside--;
       // click was finally outside of _container, i.e. document click
       if (clicksInside < 0) {
+        // eslint-disable-next-line no-use-before-define
         removeAndCloseMenu();
       }
     };
@@ -310,6 +311,7 @@ export default class DatatableEditableCell extends LightningElement {
     // A little messy, cleanup later
     if (this.isCompoundName) {
       // https://stackoverflow.com/questions/29825464/javascript-split-split-string-by-last-dot
+      // eslint-disable-next-line no-useless-escape
       const nameParts = this.draftValue.split(/\ (?=[^\ ]+$)/);
       columnData = {
         FirstName: nameParts[0],
@@ -368,5 +370,7 @@ export default class DatatableEditableCell extends LightningElement {
     if (event.target.value && typeof event.target.value === 'string') {
       return event.target.value;
     }
+    // Shouldn't ever get here, but if it does
+    return event.target.value;
   }
 }

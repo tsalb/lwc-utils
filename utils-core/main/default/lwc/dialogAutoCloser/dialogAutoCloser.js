@@ -32,6 +32,9 @@
 
 import { LightningElement, api } from 'lwc';
 
+// TODO: Tackle later
+/* eslint @lwc/lwc/no-api-reassignments: 0 */
+
 export default class DialogAutoCloser extends LightningElement {
   @api messageTemplate;
   @api timer = 5;
@@ -72,6 +75,7 @@ export default class DialogAutoCloser extends LightningElement {
   }
 
   _startProgressInterval() {
+    // eslint-disable-next-line @lwc/lwc/no-async-operation
     this._progressInterval = setInterval(() => {
       if (this.timer === 0 || !this._timerInterval) {
         this._close();
@@ -82,6 +86,7 @@ export default class DialogAutoCloser extends LightningElement {
   }
 
   _startTimerInterval() {
+    // eslint-disable-next-line @lwc/lwc/no-async-operation
     this._timerInterval = setInterval(() => {
       if (this.timer === 0 || !this._progressInterval) {
         this._close();

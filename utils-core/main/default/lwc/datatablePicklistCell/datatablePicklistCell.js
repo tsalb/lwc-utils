@@ -132,6 +132,7 @@ export default class DatatablePicklistCell extends LightningElement {
     this._isCleared = false;
     this._selectedValue = null;
     // Force template refresh
+    // eslint-disable-next-line
     this.tableBoundary = this.tableBoundary;
   }
 

@@ -48,7 +48,7 @@ export default class MessageService extends LightningElement {
       return;
     }
     this.subscription = subscribe(this.messageContext, OPEN_CHANNEL, payload => {
-      if (payload.hasOwnProperty('boundary') && payload.boundary !== this.boundary) {
+      if (Object.prototype.hasOwnProperty.call(payload, 'boundary') && payload.boundary !== this.boundary) {
         return;
       }
       this.dispatchEvent(new CustomEvent(payload.key, { detail: { value: payload.value } }));
@@ -86,6 +86,7 @@ export default class MessageService extends LightningElement {
 
   @api
   forceRefreshView() {
+    // eslint-disable-next-line no-eval
     eval("$A.get('e.force:refreshView').fire();");
   }
 

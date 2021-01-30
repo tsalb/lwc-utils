@@ -33,27 +33,27 @@
 const generateUUID = () => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = (Math.random() * 16) | 0,
-      v = c == 'x' ? r : (r & 0x3) | 0x8;
+      v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 };
 
-const createFlattenedSetFromDelimitedString = (string, delimiter) => {
-  return new Set(string.removeWhiteSpace().flatten().split(delimiter));
-};
-
-// Side benefit that these will also extend the LWCs that use utils
-
-String.prototype.removeWhiteSpace = function () {
-  return this.replaceAll(/\s+/, '');
-};
-
-String.prototype.flatten = function () {
-  return this.replaceAll(/\./, '_');
-};
-
-String.prototype.replaceAll = function (search, replace) {
+const replaceAll = function (search, replace) {
   return this.replace(new RegExp(search, 'g'), replace);
+};
+
+const removeWhiteSpace = function () {
+  return replaceAll.call(this, (/\s+/, ''));
+};
+
+const flatten = function () {
+  return replaceAll.call(this, /\./, '_');
+};
+
+const createFlattenedSetFromDelimitedString = (string, delimiter) => {
+  const cleanString = removeWhiteSpace.call(string);
+  const flatString = flatten.call(cleanString);
+  return new Set(flatString.split(delimiter));
 };
 
 // https://muffinresearch.co.uk/removing-leading-whitespace-in-es6-template-strings/

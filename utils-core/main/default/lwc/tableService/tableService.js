@@ -40,6 +40,8 @@ const isRecordId = str => {
 };
 
 const checkQueryException = async queryString => {
+  // Here, we actually want to use await to denote a thenable value
+  // eslint-disable-next-line no-return-await
   return await getQueryExceptionMessage({ queryString: queryString });
 };
 
@@ -84,9 +86,8 @@ const updateDraftValues = async (draftValues, recordIdToRowNumberMap) => {
     response = saveResults;
   } catch (error) {
     response = error;
-  } finally {
-    return response;
   }
+  return response;
 };
 
 export { isRecordId, checkQueryException, fetchTableCache, updateDraftValues };

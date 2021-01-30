@@ -63,7 +63,7 @@ export default class DatatableDeleteRowForm extends LightningElement {
     this.showSpinner = true;
     try {
       await deleteRecord(this.row.Id);
-      this._messageService.notifySuccess(`Succesfully Deleted "${this.row.Name}".`);
+      this._messageService.notifySuccess(`Successfully Deleted "${this.row.Name}".`);
       this._refreshViewAndClose();
     } catch (error) {
       //console.log(error);

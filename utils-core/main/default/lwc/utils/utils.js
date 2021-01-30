@@ -38,16 +38,12 @@ const generateUUID = () => {
   });
 };
 
-const replaceAll = function (search, replace) {
-  return this.replace(new RegExp(search, 'g'), replace);
-};
-
 const removeWhiteSpace = function () {
-  return replaceAll.call(this, (/\s+/, ''));
+  return this.replaceAll(new RegExp('\\s+', 'g'), '');
 };
 
 const flatten = function () {
-  return replaceAll.call(this, /\./, '_');
+  return this.replaceAll(new RegExp('\\.', 'g'), '_');
 };
 
 const createFlattenedSetFromDelimitedString = (string, delimiter) => {

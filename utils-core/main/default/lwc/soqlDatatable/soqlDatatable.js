@@ -116,8 +116,8 @@ export default class SoqlDatatable extends LightningElement {
   @api useLoadStyleHackForOverflow;
 
   // Flow outputs
-  @api selectedRows;
-  @api firstSelectedRow;
+  @api selectedRows = [];
+  @api firstSelectedRow = {};
 
   // MessageService boundary, useful for when multiple instances are on same page
   get uniqueBoundary() {

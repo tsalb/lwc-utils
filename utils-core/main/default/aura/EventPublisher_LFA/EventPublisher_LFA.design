@@ -1,0 +1,9 @@
+<design:component label="Event Publisher">
+  <design:attribute
+    name="uniqueBoundary"
+    label="Unique Boundary"
+    description="If no boundary is used, event will publish across boundaries."
+  />
+  <design:attribute name="eventKey" label="Event Key" required="true" />
+  <design:attribute name="eventValue" label="Event Value" />
+</design:component>

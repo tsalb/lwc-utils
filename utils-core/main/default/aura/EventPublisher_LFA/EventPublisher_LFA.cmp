@@ -1,0 +1,10 @@
+<aura:component implements="lightning:availableForFlowActions">
+  <aura:attribute name="uniqueBoundary" type="String" access="public" />
+  <aura:attribute name="eventKey" type="String" access="public" />
+  <aura:attribute name="eventValue" type="String" access="public" />
+  <c:eventPublisher
+    uniqueBoundary="{! v.uniqueBoundary }"
+    eventKey="{! v.eventKey }"
+    eventValue="{! v.eventValue }"
+  ></c:eventPublisher>
+</aura:component>

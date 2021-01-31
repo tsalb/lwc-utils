@@ -1,6 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>50.0</apiVersion>
+    <actionCalls>
+        <description>Note that closedialog currently doesn&apos;t work with a uniqueBoundary - so leave it off!</description>
+        <name>Close_Dialog</name>
+        <label>Close Dialog</label>
+        <locationX>50</locationX>
+        <locationY>854</locationY>
+        <actionName>c:EventPublisher_LFA</actionName>
+        <actionType>component</actionType>
+        <inputParameters>
+            <name>eventKey</name>
+            <value>
+                <stringValue>closedialog</stringValue>
+            </value>
+        </inputParameters>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <actionCalls>
+        <name>Refresh_SOQL_Datatable</name>
+        <label>Refresh SOQL Datatable</label>
+        <locationX>50</locationX>
+        <locationY>734</locationY>
+        <actionName>c:EventPublisher_LFA</actionName>
+        <actionType>component</actionType>
+        <connector>
+            <targetReference>Close_Dialog</targetReference>
+        </connector>
+        <inputParameters>
+            <name>eventKey</name>
+            <value>
+                <stringValue>refreshsoqldatatable</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>uniqueBoundary</name>
+            <value>
+                <elementReference>UniqueBoundary</elementReference>
+            </value>
+        </inputParameters>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <apiVersion>51.0</apiVersion>
     <assignments>
         <name>Check_Count</name>
         <label>Check Count</label>
@@ -62,7 +102,7 @@
             <targetReference>Account_Info</targetReference>
         </nextValueConnector>
         <noMoreValuesConnector>
-            <targetReference>Finish</targetReference>
+            <targetReference>Refresh_SOQL_Datatable</targetReference>
         </noMoreValuesConnector>
     </loops>
     <processMetadataValues>
@@ -101,22 +141,6 @@
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
-        <name>Finish</name>
-        <label>Finish</label>
-        <locationX>50</locationX>
-        <locationY>734</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <fields>
-            <name>Finish_Text</name>
-            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;Flow finished - close manually&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>

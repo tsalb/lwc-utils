@@ -80,7 +80,19 @@ export default class SoqlDatatable extends LightningElement {
   @api showRecordCount = false;
   @api showRefreshButton = false;
 
-  @api queryString;
+  @api
+  get queryString() {
+    return this._queryString;
+  }
+  set queryString(value) {
+    if (value) {
+      this._queryString = value
+        .replaceAll(new RegExp('select ', 'ig'), 'SELECT ')
+        .replaceAll(new RegExp(' from ', 'ig'), ' FROM ')
+        .replaceAll(new RegExp(' where ', 'ig'), ' WHERE ')
+        .replaceAll(new RegExp(' limit ', 'ig'), ' LIMIT ');
+    }
+  }
   @api checkboxType;
   @api columnLabels;
   @api editableFields;
@@ -104,8 +116,8 @@ export default class SoqlDatatable extends LightningElement {
   @api useLoadStyleHackForOverflow;
 
   // Flow outputs
-  @api selectedRows;
-  @api firstSelectedRow;
+  @api selectedRows = [];
+  @api firstSelectedRow = {};
 
   // MessageService boundary, useful for when multiple instances are on same page
   get uniqueBoundary() {
@@ -121,6 +133,7 @@ export default class SoqlDatatable extends LightningElement {
   // private
   _isRendered;
   _messageService;
+  _queryString;
   _finalQueryString;
   _datatable;
 

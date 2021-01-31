@@ -71,10 +71,10 @@ export default class CollectionDatatable extends LightningElement {
   @api customHeight;
 
   // Flow outputs
-  @api selectedRows;
-  @api firstSelectedRow;
-  @api editedRows;
-  @api allRows;
+  @api selectedRows = [];
+  @api firstSelectedRow = {};
+  @api editedRows = [];
+  @api allRows = [];
 
   // LWC loadStyle hack - to help with picklist and lookup menu overflows
   // https://salesforce.stackexchange.com/a/270624

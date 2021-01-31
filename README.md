@@ -14,7 +14,7 @@ This repo showcases the best defaults for creating rich, interactive, data-dense
 - `lightning-datatable` from LWC.
 - `lightning:overlayLibrary` from Aura.
 - `lightning:flow` from Aura.
-  - `messageService` which abstracts [Lightning Message Service](https://developer.salesforce.com/docs/component-library/bundle/lightning-message-service) to stitch it all-together.
+- `messageService` which abstracts [Lightning Message Service](https://developer.salesforce.com/docs/component-library/bundle/lightning-message-service) to stitch it all-together.
 
 Salesforce has invested heavily into `LWC`, `Flow` and `Screen Flow` and has given [Architect Guidance](https://architect.salesforce.com/design/decision-guides/build-forms/) around how to build scalable and flexible solutions now and into the future.
 
@@ -24,10 +24,12 @@ I hope they will help you do the same.
 
 ## Getting Started
 
-1) Install [core](https://github.com/tsalb/lwc-utils/wiki/Installation#core).
+1) Take a look at the component [overview](https://github.com/tsalb/lwc-utils/wiki/Component-Library-Overview).
 
-2) For first time users, install [recipes](https://github.com/tsalb/lwc-utils/wiki/Installation#recipes) in a sandbox.
+2) Install [core](https://github.com/tsalb/lwc-utils/wiki/Installation#core).
 
-3) Read the [Configuration](https://github.com/tsalb/lwc-utils/wiki/Configuration).
+3) For first time users, install [recipes](https://github.com/tsalb/lwc-utils/wiki/Installation#recipes) in a sandbox.
 
-4) Skim the [FAQ](https://github.com/tsalb/lwc-utils/wiki/FAQ).
+4) Read the [Configuration](https://github.com/tsalb/lwc-utils/wiki/Configuration).
+
+5) Skim the [FAQ](https://github.com/tsalb/lwc-utils/wiki/FAQ).

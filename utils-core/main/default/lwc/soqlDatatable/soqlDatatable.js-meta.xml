@@ -29,7 +29,7 @@
       <property name="useLoadStyleHackForOverflow" label=".Allow Overflow (EXPERIMENTAL)" type="Boolean" description="Enable this when your datatable has a small number of rows but you need in-line edit. This will override any custom table heights and allow for picklist and lookup edit menus to display on top of th edatatable. However, you may experience some weird CSS issues."/>
     </targetConfig>
     <targetConfig targets="lightning__RecordPage">
-      <property name="isRecordBind" label="Use Record Binding in SOQL String" type="Boolean" description="Use $CurrentRecord or $recordId in your SOQL query to use record context. User must have FLS access." default="true"/>
+      <property name="isRecordBind" label="Enable $CurrentRecord API" type="Boolean" description="Allows merge of current record field values directly to SOQL. User must have FLS access." default="true"/>
       <property name="title" label="Title" type="String"/>
       <property name="showRecordCount" label="Show Record Count" type="Boolean" default="false"/>
       <property name="showRefreshButton" label="Show Refresh" type="Boolean" default="false"/>
@@ -48,10 +48,10 @@
     </targetConfig>
     <targetConfig targets="lightning__FlowScreen">
       <propertyType name="sObj" extends="SObject" label="Object"/>
-      <property name="recordId" label="Record Id" type="String" role="inputOnly"/>
+      <property name="recordId" label="Record Id" description="Must be a 15 or 18 digit SObject Id. Allows use of $recordId in your SOQL to merge to this value." type="String" role="inputOnly"/>
       <property name="title" label="Title" type="String" role="inputOnly"/>
       <property name="showRecordCount" label="Show Record Count" type="Boolean" role="inputOnly" default="false"/>
-      <property name="queryString" label="SOQL String" type="String" default="SELECT ... FROM ..." description="Use $recordId in your SOQL to bind to that value. Alternatively, use a Formula variable which merges flow variable values. $CurrentRecord is not supported in Screen Flows." required="true" role="inputOnly"/>
+      <property name="queryString" label="SOQL String" type="String" default="SELECT ... FROM ..." description="Use $recordId in your SOQL to bind to the Record Id given. Alternatively, use a String Formula to merge flow variables to create Dynamic SOQL. $CurrentRecord API is not supported in Screen Flows." required="true" role="inputOnly"/>
       <property name="checkboxType" label="Checkbox Type" type="String" description="None, Multi, or Single" role="inputOnly"/>
       <property name="editableFields" label="Editable Fields" type="String" description="Comma separated list of Field API names for inline editing. Does not support parent relationship (Account.Type). Saving writes to server." role="inputOnly"/>
       <property name="columnLabels" label="Column Labels" type="String" description="Comma-separated key/value pair consisting of fieldApiName=>newLabel. For example, to replace the default Username: Username=>My Custom Username Label" role="inputOnly"/>
@@ -59,7 +59,7 @@
       <property name="sortedBy" label="Default Sort Field" type="String" description="Single Field API Name. Parent relationship is supported (e.g. Account.Type)." role="inputOnly"/>
       <property name="sortedDirection" label="Default Sort Direction" type="String" default="asc" description="asc or desc" role="inputOnly"/>
       <property name="customHeight" label="Table Height (px)" type="String" description="Sets a table height in pixels. Leave blank for default." role="inputOnly"/>
-      <property name="useLoadStyleHackForOverflow" label=".Allow Overflow (EXPERIMENTAL)" type="Boolean" description="WARNING: Removes scrolling within datatable, only use for small number of rows. Enable this for a small number of rows that require in-line edit. This overrides any custom table heights and allow for picklist and lookup edit menus to display on top of th edatatable. However, you may experience some weird CSS issues." role="inputOnly"/>
+      <property name="useLoadStyleHackForOverflow" label="z - Allow Overflow (EXPERIMENTAL)" type="Boolean" description="WARNING: Removes scrolling within datatable, only use for small number of rows. Enable this for a small number of rows that require in-line edit. This overrides any custom table heights and allow for picklist and lookup edit menus to display on top of th edatatable. However, you may experience some weird CSS issues." role="inputOnly"/>
       <!-- OUTPUTS -->
       <property name="selectedRows" label="Selected Rows" type="{sObj[]}" role="outputOnly"/>
       <property name="firstSelectedRow" label="First Selected Row" type="{sObj}" role="outputOnly"/>

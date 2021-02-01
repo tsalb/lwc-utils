@@ -206,39 +206,35 @@ export default class SoqlDatatable extends LightningElement {
     if (!this.queryString) {
       return;
     }
-    // Record binding is more complex, so run some validations first
-    if (this.isRecordBind) {
-      if (!tableService.isRecordId(this.recordId)) {
-        this._notifyError('Invalid recordId', 'Must be 15 or 18 digit Salesforce Object recordId');
+    if (this.recordId && !tableService.isRecordId(this.recordId)) {
+      this._notifyError('Invalid Record Id', 'The recordId property must be 15 or 18 digit SObject Id');
+      return;
+    }
+    if (this.queryString.includes('$recordId')) {
+      this.queryString = this.queryString.replace(/\$recordId/g, `'${this.recordId}'`);
+    }
+    // Backwards compat, this needs to go second since syntax above is preferred
+    if (this.queryString.includes('recordId')) {
+      this.queryString = this.queryString.replace(/recordId/g, `'${this.recordId}'`);
+    }
+    if (this.isRecordBind && this.queryString.includes('$CurrentRecord')) {
+      if (!this.objectApiName) {
+        this._notifyError('Missing objectApiName', '$CurrentRecord API can only be used on the Record Flexipage');
         return;
       }
-      if (this.queryString.includes('$recordId')) {
-        this.queryString = this.queryString.replace(/\$recordId/g, `'${this.recordId}'`);
-      }
-      // Backwards compat, this needs to go second since syntax above is preferred
-      if (this.queryString.includes('recordId')) {
-        this.queryString = this.queryString.replace(/recordId/g, `'${this.recordId}'`);
-      }
-      // This one needs some heavier processing via wire
-      if (this.queryString.includes('$CurrentRecord')) {
-        if (!this.objectApiName) {
-          this._notifyError('Missing objectApiName', '$CurrentRecord API can only be used on the Record Flexipage');
-          return;
-        }
-        const matches = this.queryString.match(/(\$[\w.]*)/g);
-        matches.forEach(original => {
-          const config = {
-            objectQualifiedFieldApiName: original.replace('$CurrentRecord', this.objectApiName),
-            fieldApiName: original.replace('$CurrentRecord.', ''),
-            value: null // awaiting LDS
-          };
-          this._mergeMap.set(original, config);
-        });
-        // Allow LDS to finish field merging queryString, starting with objectInfo
-        // Unfortunately since we can't control order of wires, we fake it with assignment of vars
-        this._objectApiName = this.objectApiName;
-        return;
-      }
+      const matches = this.queryString.match(/(\$[\w.]*)/g);
+      matches.forEach(original => {
+        const config = {
+          objectQualifiedFieldApiName: original.replace('$CurrentRecord', this.objectApiName),
+          fieldApiName: original.replace('$CurrentRecord.', ''),
+          value: null // awaiting LDS
+        };
+        this._mergeMap.set(original, config);
+      });
+      // Allow LDS to finish field merging queryString, starting with objectInfo
+      // Unfortunately since we can't control order of wires, we fake it with assignment of vars
+      this._objectApiName = this.objectApiName;
+      return;
     }
     this._finalQueryString = this.queryString;
     this.validateQueryStringAndInitialize();

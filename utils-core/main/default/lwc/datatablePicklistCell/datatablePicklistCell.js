@@ -121,7 +121,7 @@ export default class DatatablePicklistCell extends LightningElement {
   }
 
   handleSelected(event) {
-    if (this._editableCell.showMassEdit) {
+    if (this._editableCell && this._editableCell.showMassEdit) {
       return;
     }
     this._selectedValue = event.detail.selectedValue;

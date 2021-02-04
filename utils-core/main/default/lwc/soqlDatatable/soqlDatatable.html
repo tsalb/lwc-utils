@@ -58,5 +58,11 @@
     show-spinner={showSpinner}
     action-config-dev-name={actionConfigDevName}
     lookup-config-dev-name={lookupConfigDevName}
-  ></c-datatable>
+  >
+    <template if:true={showComposedActions}>
+      <div slot="composedActions">
+        <slot name="composedActions"></slot>
+      </div>
+    </template>
+  </c-datatable>
 </template>

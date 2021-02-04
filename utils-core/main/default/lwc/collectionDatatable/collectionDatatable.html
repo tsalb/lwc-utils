@@ -50,5 +50,11 @@
     sorted-direction={sortedDirection}
     onsave={handleSave}
     onrowselection={handleRowSelection}
-  ></c-datatable>
+  >
+    <template if:true={showComposedActions}>
+      <div slot="composedActions">
+        <slot name="composedActions"></slot>
+      </div>
+    </template>
+  </c-datatable>
 </template>

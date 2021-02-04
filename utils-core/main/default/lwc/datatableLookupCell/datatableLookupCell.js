@@ -130,7 +130,7 @@ export default class DatatableLookupCell extends LightningElement {
   }
 
   handleSelected(event) {
-    if (this._editableCell.showMassEdit) {
+    if (this._editableCell && this._editableCell.showMassEdit) {
       return;
     }
     this._selectedRecordId = event.detail.selectedRecordId;

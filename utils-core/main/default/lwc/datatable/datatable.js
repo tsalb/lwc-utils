@@ -176,6 +176,7 @@ export default class Datatable extends LightningElement {
   draftValues = []; // this is to feed into the datatable to clear stuff out
   saveErrors = {};
 
+  showComposedActions = true;
   primaryConfig = {};
   secondaryConfig = {};
   overflowActionConfigs = [];
@@ -185,8 +186,8 @@ export default class Datatable extends LightningElement {
     return this.tableData && this.tableData.length ? `(${this.tableData.length})` : '';
   }
 
-  get hasActions() {
-    return this.showRefreshButton || this.showTableActions;
+  get composedActionSlot() {
+    return this.template.querySelector('slot[name=composedActions]');
   }
 
   get showTableActions() {
@@ -348,6 +349,12 @@ export default class Datatable extends LightningElement {
   }
 
   // Event Handlers
+
+  handleComposedActionSlotChange(event) {
+    this.showComposedActions =
+      (this.composedActionSlot && this.composedActionSlot.assignedElements().length !== 0) ||
+      event.target.assignedElements().length !== 0;
+  }
 
   handleRefresh() {
     this.refreshTable();

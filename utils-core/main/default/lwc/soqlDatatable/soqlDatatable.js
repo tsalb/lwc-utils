@@ -127,8 +127,13 @@ export default class SoqlDatatable extends LightningElement {
     return this._uniqueBoundary;
   }
 
+  get composedActionSlot() {
+    return this.template.querySelector('slot[name=composedActions]');
+  }
+
   isLargeFlow = false;
   showSpinner = false;
+  showComposedActions = true;
 
   // private
   _isRendered;
@@ -190,6 +195,8 @@ export default class SoqlDatatable extends LightningElement {
     }
   }
 
+  // Public Methods
+
   @api
   async refreshTable() {
     const cache = await this.fetchTableCache();
@@ -200,6 +207,16 @@ export default class SoqlDatatable extends LightningElement {
       }
       this.initializeTable(cache);
     }
+  }
+
+  @api
+  async refreshTableWithQueryString(queryString) {
+    this._finalQueryString = queryString
+      .replace(new RegExp('select ', 'ig'), 'SELECT ')
+      .replace(new RegExp(' from ', 'ig'), ' FROM ')
+      .replace(new RegExp(' where ', 'ig'), ' WHERE ')
+      .replace(new RegExp(' limit ', 'ig'), ' LIMIT ');
+    await this.validateQueryStringAndInitialize();
   }
 
   connectedCallback() {
@@ -247,6 +264,7 @@ export default class SoqlDatatable extends LightningElement {
     this._isRendered = true;
     this._messageService = this.template.querySelector('c-message-service');
     this._datatable = this.template.querySelector('c-datatable');
+    this.showComposedActions = this.composedActionSlot && this.composedActionSlot.assignedElements().length !== 0;
   }
 
   async validateQueryStringAndInitialize() {

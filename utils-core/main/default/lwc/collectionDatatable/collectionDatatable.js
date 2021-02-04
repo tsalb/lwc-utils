@@ -80,6 +80,20 @@ export default class CollectionDatatable extends LightningElement {
   // https://salesforce.stackexchange.com/a/270624
   @api useLoadStyleHackForOverflow;
 
+  // MessageService boundary, useful for when multiple instances are on same page
+  get uniqueBoundary() {
+    if (!this._uniqueBoundary) {
+      this._uniqueBoundary = generateUUID();
+    }
+    return this._uniqueBoundary;
+  }
+
+  get composedActionSlot() {
+    return this.template.querySelector('slot[name=composedActions]');
+  }
+
+  showComposedActions = true;
+
   // private
   _isRendered;
   _messageService;
@@ -92,14 +106,6 @@ export default class CollectionDatatable extends LightningElement {
   _objectInfo;
   _objectFieldsMap = new Map();
   _referenceFieldsMap = new Map();
-
-  // MessageService boundary, useful for when multiple instances are on same page
-  get uniqueBoundary() {
-    if (!this._uniqueBoundary) {
-      this._uniqueBoundary = generateUUID();
-    }
-    return this._uniqueBoundary;
-  }
 
   async connectedCallback() {
     if (!this.recordCollection || !this.recordCollection.length) {
@@ -123,6 +129,7 @@ export default class CollectionDatatable extends LightningElement {
     }
     this._isRendered = true;
     this._messageService = this.template.querySelector('c-message-service');
+    this.showComposedActions = this.composedActionSlot && this.composedActionSlot.assignedElements().length !== 0;
   }
 
   async initializeFromRecordId(recordId) {

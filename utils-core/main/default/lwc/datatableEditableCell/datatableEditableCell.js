@@ -60,7 +60,8 @@ export default class DatatableEditableCell extends LightningElement {
   selectedRows;
 
   // private
-  _isCleared;
+  _isRendered = false;
+  _isCleared = false;
   _displayElement;
   _editElement;
 
@@ -97,6 +98,22 @@ export default class DatatableEditableCell extends LightningElement {
 
   get containerSection() {
     return this.template.querySelector('section');
+  }
+
+  renderedCallback() {
+    if (this._isRendered) {
+      return;
+    }
+    this._isRendered = true;
+    // lightning-datatable doesn't have events for when cells are done rendering so we fake it here.
+    // Unfortunately it also means that this event will only fire if a cell data type requires custom data types.
+    // This should be debounced by parent listeners to know when the table is fully rendered.
+    this.dispatchEvent(
+      new CustomEvent('editablecellrendered', {
+        bubbles: true,
+        composed: true
+      })
+    );
   }
 
   // Vanilla editing

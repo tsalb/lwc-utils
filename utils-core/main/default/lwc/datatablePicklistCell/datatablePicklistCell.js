@@ -61,26 +61,6 @@ export default class DatatablePicklistCell extends LightningElement {
   @api columnName;
   @api fieldApiName;
 
-  // Duplicate this wire at the container level to reconcile label / api name mismatches
-  @wire(getPicklistValues, { recordTypeId: '$picklistRecordTypeId', fieldApiName: '$fieldDescribe' })
-  wiredPicklistValues({ error, data }) {
-    if (error) {
-      this._errors.push(error);
-      console.error('Error', error);
-    } else if (data) {
-      this._valueToLabelMap = new Map(data.values.map(({ label, value }) => [value, label]));
-    }
-  }
-
-  // private
-  _isRendered;
-  _editableCell;
-  _isCleared = false;
-  _errors = [];
-  _valueToLabelMap = new Map();
-  _picklistRecordTypeId;
-  _selectedValue;
-
   get cellDisplayValue() {
     if (this._isCleared) {
       return null;
@@ -101,12 +81,26 @@ export default class DatatablePicklistCell extends LightningElement {
     return this.value;
   }
 
-  renderedCallback() {
-    if (this._isRendered) {
-      return;
+  get editableCell() {
+    return this.template.querySelector('c-datatable-editable-cell');
+  }
+
+  // private
+  _isCleared = false;
+  _errors = [];
+  _valueToLabelMap = new Map();
+  _picklistRecordTypeId;
+  _selectedValue;
+
+  // Duplicate this wire at the container level to reconcile label / api name mismatches
+  @wire(getPicklistValues, { recordTypeId: '$picklistRecordTypeId', fieldApiName: '$fieldDescribe' })
+  wiredPicklistValues({ error, data }) {
+    if (error) {
+      this._errors.push(error);
+      console.error('Error', error);
+    } else if (data) {
+      this._valueToLabelMap = new Map(data.values.map(({ label, value }) => [value, label]));
     }
-    this._isRendered = true;
-    this._editableCell = this.template.querySelector('c-datatable-editable-cell');
   }
 
   // Event Handlers
@@ -121,7 +115,7 @@ export default class DatatablePicklistCell extends LightningElement {
   }
 
   handleSelected(event) {
-    if (this._editableCell && this._editableCell.showMassEdit) {
+    if (this.editableCell && this.editableCell.showMassEdit) {
       return;
     }
     this._selectedValue = event.detail.selectedValue;

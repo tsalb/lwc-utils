@@ -38,16 +38,8 @@ export default class DatatableEditRowForm extends LightningElement {
   @api uniqueBoundary;
   showSpinner = true;
 
-  // private
-  _isRendered;
-  _messageService;
-
-  renderedCallback() {
-    if (this._isRendered) {
-      return;
-    }
-    this._isRendered = true;
-    this._messageService = this.template.querySelector('c-message-service');
+  get messageService() {
+    return this.template.querySelector('c-message-service');
   }
 
   handleLoad() {
@@ -55,20 +47,20 @@ export default class DatatableEditRowForm extends LightningElement {
   }
 
   handleCancel() {
-    this._messageService.notifyClose();
+    this.messageService.notifyClose();
   }
 
   handleSuccess() {
-    this._messageService.notifySuccess('Successfully Updated');
-    this._messageService._refreshViewAndClose();
+    this.messageService.notifySuccess('Successfully Updated');
+    this.messageService._refreshViewAndClose();
   }
 
   _refreshViewAndClose() {
     if (this.uniqueBoundary) {
-      this._messageService.publish({ key: 'refreshsoqldatatable' });
+      this.messageService.publish({ key: 'refreshsoqldatatable' });
     } else {
-      this._messageService.forceRefreshView();
+      this.messageService.forceRefreshView();
     }
-    this._messageService.notifyClose();
+    this.messageService.notifyClose();
   }
 }

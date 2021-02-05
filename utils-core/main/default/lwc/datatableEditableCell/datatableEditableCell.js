@@ -59,13 +59,10 @@ export default class DatatableEditableCell extends LightningElement {
   showEditIcon;
   selectedRows;
 
+  // private
+  _isCleared;
   _displayElement;
   _editElement;
-
-  // private
-  _isRendered;
-  _container;
-  _isCleared;
 
   @api
   get showMassEdit() {
@@ -94,13 +91,12 @@ export default class DatatableEditableCell extends LightningElement {
     return this.originalValue;
   }
 
-  renderedCallback() {
-    if (this._isRendered) {
-      return;
-    }
-    this._isRendered = true;
-    this._messageService = this.template.querySelector('c-message-service');
-    this._container = this.template.querySelector('section');
+  get messageService() {
+    return this.template.querySelector('c-message-service');
+  }
+
+  get containerSection() {
+    return this.template.querySelector('section');
   }
 
   // Vanilla editing
@@ -122,12 +118,6 @@ export default class DatatableEditableCell extends LightningElement {
   enableEditMode() {
     this.isEditMode = true;
     this.listenForClickOutside();
-    // // Not perfect, but wait a bit for template to render then focus it
-    // window.clearTimeout(this.focusDelayTimeout);
-    // // eslint-disable-next-line @lwc/lwc/no-async-operation
-    // this.focusDelayTimeout = setTimeout(() => {
-    //     this.template.querySelector('lightning-combobox').focus();
-    // }, 100);
   }
 
   // Mass editing
@@ -157,7 +147,7 @@ export default class DatatableEditableCell extends LightningElement {
       //console.log(rowIdentifierToValues);
 
       // Publishes to all instances of itself
-      this._messageService.publish({
+      this.messageService.publish({
         key: 'setdraftvalue',
         value: { rowIdentifierToValues: rowIdentifierToValues }
       });
@@ -186,7 +176,7 @@ export default class DatatableEditableCell extends LightningElement {
 
     const documentClick = () => {
       clicksInside--;
-      // click was finally outside of _container, i.e. document click
+      // click was finally outside of containerSection, i.e. document click
       if (clicksInside < 0) {
         // eslint-disable-next-line no-use-before-define
         removeAndCloseMenu();
@@ -197,7 +187,7 @@ export default class DatatableEditableCell extends LightningElement {
       this.isEditMode = false;
       this.showEditIcon = false;
       this.notifyCellChanged();
-      this._container.removeEventListener('click', thisClick);
+      this.containerSection.removeEventListener('click', thisClick);
       document.removeEventListener('click', documentClick);
       clicksInside = 0; // reset counter
     };
@@ -205,7 +195,7 @@ export default class DatatableEditableCell extends LightningElement {
     if (isForceClose) {
       removeAndCloseMenu();
     } else {
-      this._container.addEventListener('click', thisClick);
+      this.containerSection.addEventListener('click', thisClick);
       document.addEventListener('click', documentClick);
     }
   }
@@ -225,6 +215,9 @@ export default class DatatableEditableCell extends LightningElement {
   handleEditCellSlotChange(event) {
     if (event.target && event.target.assignedElements().length === 1) {
       this._editElement = event.target.assignedElements()[0];
+      if (this._editElement.name === PICKLIST_EDIT_NAME) {
+        this._editElement.focus();
+      }
       if (this.editCellValueProp) {
         this._editElement[this.editCellValueProp] = this.cellDisplayValue;
       }

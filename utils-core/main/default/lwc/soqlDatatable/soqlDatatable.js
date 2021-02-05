@@ -132,6 +132,14 @@ export default class SoqlDatatable extends LightningElement {
     return this.template.querySelector('slot[name=composedActions]');
   }
 
+  get messageService() {
+    return this.template.querySelector('c-message-service');
+  }
+
+  get baseDatatable() {
+    return this.template.querySelector('c-datatable');
+  }
+
   get showSpinner() {
     return this._isSuppressSpinner ? false : this._showSpinner;
   }
@@ -143,9 +151,7 @@ export default class SoqlDatatable extends LightningElement {
 
   // private
   _isRendered;
-  _messageService;
   _finalQueryString;
-  _datatable;
   _isSuppressSpinner = false;
 
   // supports $CurrentRecord syntax
@@ -238,7 +244,7 @@ export default class SoqlDatatable extends LightningElement {
     this._getRecordFields = [];
     this.selectedRows = undefined;
     this.firstSelectedRow = undefined;
-    this._datatable.resetTable();
+    this.datatable.resetTable();
   }
 
   @api
@@ -289,8 +295,6 @@ export default class SoqlDatatable extends LightningElement {
       return;
     }
     this._isRendered = true;
-    this._messageService = this.template.querySelector('c-message-service');
-    this._datatable = this.template.querySelector('c-datatable');
     this.showComposedActions = this.composedActionSlot && this.composedActionSlot.assignedElements().length !== 0;
   }
 
@@ -316,7 +320,7 @@ export default class SoqlDatatable extends LightningElement {
   }
 
   initializeTable(cache) {
-    this._datatable.initializeTable(cache.objectApiName, cache.tableColumns, cache.tableData);
+    this.datatable.initializeTable(cache.objectApiName, cache.tableColumns, cache.tableData);
   }
 
   // Event Handlers
@@ -352,8 +356,8 @@ export default class SoqlDatatable extends LightningElement {
   // Private toast functions
 
   _notifySingleError(title, error = '') {
-    if (this._messageService) {
-      this._messageService.notifySingleError(title, error);
+    if (this.messageService) {
+      this.messageService.notifySingleError(title, error);
     } else {
       this._notifyError(title, reduceErrors(error)[0]);
     }

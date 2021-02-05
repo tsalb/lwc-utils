@@ -28,7 +28,7 @@ jobs:
         run: npm install
 
       - name: Lint
-        run: npm run eslint
+        run: npm run eslint:validate
 
       - name: Format
-        run: npm run prettier
+        run: npm run prettier:validate

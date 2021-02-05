@@ -92,11 +92,14 @@ export default class CollectionDatatable extends LightningElement {
     return this.template.querySelector('slot[name=composedActions]');
   }
 
+  get messageService() {
+    return this.template.querySelector('c-message-service');
+  }
+
   showComposedActions = true;
 
   // private
   _isRendered;
-  _messageService;
   _displayTypeMap = new Map();
   _initializationType;
   _hasCustomPicklist;
@@ -128,7 +131,6 @@ export default class CollectionDatatable extends LightningElement {
       return;
     }
     this._isRendered = true;
-    this._messageService = this.template.querySelector('c-message-service');
     this.showComposedActions = this.composedActionSlot && this.composedActionSlot.assignedElements().length !== 0;
   }
 
@@ -281,7 +283,7 @@ export default class CollectionDatatable extends LightningElement {
     if (this._recordTypeIdMap.size) {
       // Picklist columns should have been initialized now.
       // If this breaks, we need datatable.js to initiate this instead
-      this._messageService.publish({
+      this.messageService.publish({
         key: 'picklistconfigload',
         value: { recordTypeIdMap: recordTypeIdMap }
       });

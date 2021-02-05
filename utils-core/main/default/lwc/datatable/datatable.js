@@ -232,6 +232,10 @@ export default class Datatable extends LightningElement {
     return this.rowActionConfigs.length;
   }
 
+  get messageService() {
+    return this.template.querySelector('c-message-service');
+  }
+
   // Public APIs
 
   @api
@@ -261,7 +265,6 @@ export default class Datatable extends LightningElement {
 
   // private
   _isRendered;
-  _messageService;
   _objectApiName;
   _objectInfo;
 
@@ -323,7 +326,7 @@ export default class Datatable extends LightningElement {
     } else if (data) {
       //console.log(data);
       // This is ok to use now since this wire is only accessed after the table column set
-      this._messageService.publish({ key: 'lookupconfigload', value: { lookupConfigs: data } });
+      this.messageService.publish({ key: 'lookupconfigload', value: { lookupConfigs: data } });
     }
   }
 
@@ -332,7 +335,7 @@ export default class Datatable extends LightningElement {
       return;
     }
     this._isRendered = true;
-    this._messageService = this.template.querySelector('c-message-service');
+
     // Assists with in-line edit on tables with only a few rows
     if (this.useLoadStyleHackForOverflow) {
       const style = document.createElement('style');
@@ -442,7 +445,7 @@ export default class Datatable extends LightningElement {
       }
     };
     //console.log(flowPayload);
-    this._messageService.dialogService(flowPayload);
+    this.messageService.dialogService(flowPayload);
   }
 
   handleLwcAction(event) {
@@ -479,14 +482,14 @@ export default class Datatable extends LightningElement {
         }
       }
     };
-    this._messageService.dialogService(dialogPayload);
+    this.messageService.dialogService(dialogPayload);
   }
 
   handleRowSelection(event) {
     this.selectedRows = event.detail.selectedRows;
     this._notifyPublicEvent('rowselection');
     // Supports mass inline editing
-    this._messageService.publish({
+    this.messageService.publish({
       key: 'rowselected',
       value: { selectedRows: this.selectedRows }
     });
@@ -511,7 +514,7 @@ export default class Datatable extends LightningElement {
             }
           }
         };
-        this._messageService.dialogService(dialogPayload);
+        this.messageService.dialogService(dialogPayload);
         break;
       }
       case 'edit_row': {
@@ -528,7 +531,7 @@ export default class Datatable extends LightningElement {
             }
           }
         };
-        this._messageService.dialogService(dialogPayload);
+        this.messageService.dialogService(dialogPayload);
         break;
       }
       case 'custom_flow': {
@@ -588,7 +591,7 @@ export default class Datatable extends LightningElement {
     // do not prevent default, but tell every single draft row to clear itself
     this._clearDraftValues([...this._draftValuesMap.keys()]);
     // also tell any custom data type to clear restore itself
-    this._messageService.publish({ key: 'canceldraft' });
+    this.messageService.publish({ key: 'canceldraft' });
   }
 
   // Avoid using the event because the payload doesn't have name compound fields
@@ -808,7 +811,7 @@ export default class Datatable extends LightningElement {
     rowKeysToNull.forEach(key => {
       this._draftValuesMap.delete(key);
     });
-    this._messageService.publish({
+    this.messageService.publish({
       key: 'setdraftvalue',
       value: { rowKeysToNull: rowKeysToNull }
     });
@@ -859,8 +862,8 @@ export default class Datatable extends LightningElement {
   // Private toast functions
 
   _notifySingleError(title, error = '') {
-    if (this._messageService) {
-      this._messageService.notifySingleError(title, error);
+    if (this.messageService) {
+      this.messageService.notifySingleError(title, error);
     } else {
       this._notifyError(title, reduceErrors(error)[0]);
     }

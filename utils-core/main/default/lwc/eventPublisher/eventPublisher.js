@@ -5,18 +5,20 @@ export default class EventPublisher extends LightningElement {
   @api eventKey;
   @api eventValue;
 
+  get messageService() {
+    return this.template.querySelector('c-message-service');
+  }
+
   // private
   _isRendered;
-  _messageService;
 
   renderedCallback() {
     if (this._isRendered) {
       return;
     }
     this._isRendered = true;
-    this._messageService = this.template.querySelector('c-message-service');
     if (this.eventKey) {
-      this._messageService.publish({ key: this.eventKey, value: this.eventValue });
+      this.messageService.publish({ key: this.eventKey, value: this.eventValue });
     }
   }
 }

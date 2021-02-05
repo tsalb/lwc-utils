@@ -48,13 +48,15 @@ export default class DatatableFormulaCell extends LightningElement {
   // private
   _isRendered;
 
+  get container() {
+    return this.template.querySelector('.container');
+  }
+
   renderedCallback() {
     if (this._isRendered) {
       return;
     }
     this._isRendered = true;
-    const container = this.template.querySelector('.container');
-
     if (this.isHtmlFormula && this.value) {
       // We want to specifically target the inner html here, ignore the linter
       // eslint-disable-next-line @lwc/lwc/no-inner-html

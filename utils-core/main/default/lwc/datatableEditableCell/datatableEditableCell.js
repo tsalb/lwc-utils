@@ -32,6 +32,12 @@
 
 import { LightningElement, api } from 'lwc';
 
+const LOOKUP_DISPLAY_NAME = 'lookup-display';
+const LOOKUP_EDIT_NAME = 'lookup-edit';
+const PICKLIST_DISPLAY_NAME = 'picklist-display';
+const PICKLIST_EDIT_NAME = 'picklist-edit';
+const CUSTOM_CELL_DISPLAY_NAMES = [LOOKUP_DISPLAY_NAME, PICKLIST_DISPLAY_NAME];
+
 export default class DatatableEditableCell extends LightningElement {
   @api tableBoundary;
   @api originalValue;
@@ -156,7 +162,7 @@ export default class DatatableEditableCell extends LightningElement {
         value: { rowIdentifierToValues: rowIdentifierToValues }
       });
     } else {
-      if (this._displayElement.name === 'lookup-display' || this._displayElement.name === 'picklist-display') {
+      if (CUSTOM_CELL_DISPLAY_NAMES.includes(this._displayElement.name)) {
         this.dispatchEvent(new CustomEvent('customcellsetdraftvalue', { detail: { draftValue: currentInputValue } }));
       }
       this.draftValue = currentInputValue;
@@ -239,7 +245,7 @@ export default class DatatableEditableCell extends LightningElement {
     if (this.displayCellValueProp) {
       this._displayElement[this.displayCellValueProp] = this.cellDisplayValue;
     }
-    if (this._displayElement.name === 'lookup-display' || this._displayElement.name === 'picklist-display') {
+    if (CUSTOM_CELL_DISPLAY_NAMES.includes(this._displayElement.name)) {
       this.dispatchEvent(new CustomEvent('customcellreset'));
     }
   }
@@ -270,8 +276,7 @@ export default class DatatableEditableCell extends LightningElement {
       const currentCellIdentifier = `${this.rowKeyValue}_${this.objectApiName}_${this.fieldApiName}`;
       if (identifierMap.has(currentCellIdentifier)) {
         const incomingDraftValue = identifierMap.get(currentCellIdentifier);
-        // Special considerations for custom data types
-        if (this._displayElement.name === 'lookup-display' || this._displayElement.name === 'picklist-display') {
+        if (CUSTOM_CELL_DISPLAY_NAMES.includes(this._displayElement.name)) {
           this.dispatchEvent(
             new CustomEvent('customcellsetdraftvalue', { detail: { draftValue: incomingDraftValue } })
           );
@@ -288,6 +293,13 @@ export default class DatatableEditableCell extends LightningElement {
   handleEditCellInputChange = event => {
     this.draftValue = this._getEventValue(event);
     this._isCleared = !this.draftValue;
+    // These align the value selection behavior to native list views
+    if (
+      this._displayElement.name === PICKLIST_DISPLAY_NAME ||
+      (this._displayElement.name === LOOKUP_DISPLAY_NAME && !this._isCleared)
+    ) {
+      this.forceClosePopover();
+    }
   };
 
   // Public Events
@@ -355,10 +367,10 @@ export default class DatatableEditableCell extends LightningElement {
 
   _getEventValue(event) {
     // custom data types
-    if (this._editElement.name === 'lookup-edit') {
+    if (this._editElement.name === LOOKUP_EDIT_NAME) {
       return event.detail.selectedRecordId;
     }
-    if (this._editElement.name === 'picklist-edit') {
+    if (this._editElement.name === PICKLIST_EDIT_NAME) {
       return event.detail.selectedValue;
     }
     // fallbacks

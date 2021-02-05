@@ -31,18 +31,5 @@
         "prettier": "^2.2.1",
         "prettier-plugin-apex": "^1.7.0",
         "rimraf": "^3.0.2"
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
-    },
-    "lint-staged": {
-        "**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}": [
-            "prettier --write"
-        ],
-        "**/{aura|lwc}/**": [
-            "eslint"
-        ]
     }
 }

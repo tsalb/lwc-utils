@@ -832,6 +832,8 @@ export default class Datatable extends LightningElement {
     }
   }
 
+  // Public Events
+
   _notifyPublicEvent(eventName) {
     switch (eventName) {
       case 'columnsload': {

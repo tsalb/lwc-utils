@@ -263,6 +263,17 @@ export default class Datatable extends LightningElement {
     }
   }
 
+  @api
+  resetTable() {
+    this.selectedRows = [];
+    this.tableData = [];
+    this.tableColumns = [];
+    this.draftValues = [];
+    this.saveErrors = {};
+    this.sortableFields = '';
+    this.editableFields = '';
+  }
+
   // private
   _isRendered;
   _objectApiName;
@@ -335,7 +346,6 @@ export default class Datatable extends LightningElement {
       return;
     }
     this._isRendered = true;
-
     // Assists with in-line edit on tables with only a few rows
     if (this.useLoadStyleHackForOverflow) {
       const style = document.createElement('style');

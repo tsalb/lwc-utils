@@ -1,7 +1,7 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: PR Gate - Lint
+name: PR Gate - Lint LWC
 
 on:
   pull_request:
@@ -29,6 +29,3 @@ jobs:
 
       - name: Lint
         run: npm run eslint:validate
-
-      - name: Format
-        run: npm run prettier:validate

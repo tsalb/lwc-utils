@@ -1,14 +1,14 @@
 {
-    "orgName": "lwc-utils",
-    "edition": "Developer",
-    "hasSampleData": true,
-    "features": ["ProcessBuilder", "ForceComPlatform", "LightningServiceConsole"],
-    "settings": {
-        "lightningExperienceSettings": {
-            "enableS1DesktopEnabled": true
-        },
-        "orgPreferenceSettings": {
-            "s1EncryptedStoragePref2": false
-        }
+  "orgName": "lwc-utils",
+  "edition": "Developer",
+  "hasSampleData": true,
+  "features": ["ProcessBuilder", "ForceComPlatform", "LightningServiceConsole"],
+  "settings": {
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    },
+    "orgPreferenceSettings": {
+      "s1EncryptedStoragePref2": false
     }
+  }
 }

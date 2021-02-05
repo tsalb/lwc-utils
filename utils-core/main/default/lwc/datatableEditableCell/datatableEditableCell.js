@@ -223,7 +223,7 @@ export default class DatatableEditableCell extends LightningElement {
         this._editElement[this.editCellValueProp] = this.cellDisplayValue;
       }
       if (!this.showMassEdit) {
-        this._editElement.addEventListener(this.changeEventName, this.handleEditCellInputChange.bind(this));
+        this._editElement.addEventListener(this.changeEventName, this.handleEditCellInputChange);
       }
     }
   }
@@ -256,10 +256,8 @@ export default class DatatableEditableCell extends LightningElement {
     if (!this.isEditable) {
       return;
     }
-    // un-proxify for ease of debugging
-    const payload = JSON.parse(JSON.stringify(event.detail.value));
-    //console.log(payload);
-
+    const payload = event.detail.value;
+    //console.log(JSON.parse(JSON.stringify(payload)));
     if (payload.rowKeysToNull && payload.rowKeysToNull.includes(this.rowKeyValue)) {
       this.draftValue = null;
       this._isCleared = false;
@@ -287,10 +285,10 @@ export default class DatatableEditableCell extends LightningElement {
     }
   }
 
-  handleEditCellInputChange(event) {
+  handleEditCellInputChange = event => {
     this.draftValue = this._getEventValue(event);
     this._isCleared = !this.draftValue;
-  }
+  };
 
   // Public Events
 

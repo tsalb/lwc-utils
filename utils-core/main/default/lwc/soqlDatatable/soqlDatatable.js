@@ -244,7 +244,7 @@ export default class SoqlDatatable extends LightningElement {
     this._getRecordFields = [];
     this.selectedRows = undefined;
     this.firstSelectedRow = undefined;
-    this.datatable.resetTable();
+    this.baseDatatable.resetTable();
   }
 
   @api
@@ -320,7 +320,7 @@ export default class SoqlDatatable extends LightningElement {
   }
 
   initializeTable(cache) {
-    this.datatable.initializeTable(cache.objectApiName, cache.tableColumns, cache.tableData);
+    this.baseDatatable.initializeTable(cache.objectApiName, cache.tableColumns, cache.tableData);
   }
 
   // Event Handlers

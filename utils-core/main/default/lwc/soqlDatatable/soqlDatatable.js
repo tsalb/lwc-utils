@@ -43,9 +43,6 @@ import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { reduceErrors } from 'c/utils';
 
-// TODO: Tackle later
-/* eslint @lwc/lwc/no-api-reassignments: 0 */
-
 const DIRECT_MERGE_DATA_TYPES = [
   'anytype',
   'boolean',
@@ -71,6 +68,9 @@ const STRING_MERGE_DATA_TYPES = [
   'url'
 ];
 
+// TODO: Tackle later
+/* eslint @lwc/lwc/no-api-reassignments: 0 */
+
 export default class SoqlDatatable extends LightningElement {
   @api recordId;
   @api objectApiName;
@@ -87,10 +87,10 @@ export default class SoqlDatatable extends LightningElement {
   set queryString(value) {
     if (value) {
       this._queryString = value
-        .replaceAll(new RegExp('select ', 'ig'), 'SELECT ')
-        .replaceAll(new RegExp(' from ', 'ig'), ' FROM ')
-        .replaceAll(new RegExp(' where ', 'ig'), ' WHERE ')
-        .replaceAll(new RegExp(' limit ', 'ig'), ' LIMIT ');
+        .replace(new RegExp('select ', 'ig'), 'SELECT ')
+        .replace(new RegExp(' from ', 'ig'), ' FROM ')
+        .replace(new RegExp(' where ', 'ig'), ' WHERE ')
+        .replace(new RegExp(' limit ', 'ig'), ' LIMIT ');
     }
   }
   @api checkboxType;
@@ -120,6 +120,7 @@ export default class SoqlDatatable extends LightningElement {
   @api firstSelectedRow = {};
 
   // MessageService boundary, useful for when multiple instances are on same page
+  @api
   get uniqueBoundary() {
     if (!this._uniqueBoundary) {
       this._uniqueBoundary = generateUUID();
@@ -131,16 +132,21 @@ export default class SoqlDatatable extends LightningElement {
     return this.template.querySelector('slot[name=composedActions]');
   }
 
+  get showSpinner() {
+    return this._isSuppressSpinner ? false : this._showSpinner;
+  }
+  set showSpinner(value = false) {
+    this._showSpinner = value;
+  }
   isLargeFlow = false;
-  showSpinner = false;
   showComposedActions = true;
 
   // private
   _isRendered;
   _messageService;
-  _queryString;
   _finalQueryString;
   _datatable;
+  _isSuppressSpinner = false;
 
   // supports $CurrentRecord syntax
   _mergeMap = new Map();
@@ -195,7 +201,7 @@ export default class SoqlDatatable extends LightningElement {
     }
   }
 
-  // Public Methods
+  // Public methods
 
   @api
   async refreshTable() {
@@ -217,6 +223,27 @@ export default class SoqlDatatable extends LightningElement {
       .replace(new RegExp(' where ', 'ig'), ' WHERE ')
       .replace(new RegExp(' limit ', 'ig'), ' LIMIT ');
     await this.validateQueryStringAndInitialize();
+  }
+
+  @api
+  resetTable() {
+    this.objectApiName = undefined;
+    this.sortedBy = undefined;
+    this._queryString = undefined;
+    this._finalQueryString = undefined;
+    this._mergeMap = new Map();
+    this._objectApiName = undefined;
+    this._objectInfo = undefined;
+    this._objectFieldsMap = new Map();
+    this._getRecordFields = [];
+    this.selectedRows = undefined;
+    this.firstSelectedRow = undefined;
+    this._datatable.resetTable();
+  }
+
+  @api
+  suppressSpinner() {
+    this._isSuppressSpinner = true;
   }
 
   connectedCallback() {
@@ -274,7 +301,7 @@ export default class SoqlDatatable extends LightningElement {
       this._notifyError('Invalid SOQL String', queryError);
       return;
     }
-    this.refreshTable();
+    await this.refreshTable();
   }
 
   async fetchTableCache() {

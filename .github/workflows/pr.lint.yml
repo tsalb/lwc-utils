@@ -5,7 +5,7 @@ name: PR Gate - Lint
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   pull-request-gate:
@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [ 12.x ]
+        node-version: [12.x]
 
     steps:
       - name: Checkout

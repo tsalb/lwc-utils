@@ -43,9 +43,6 @@ import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { reduceErrors } from 'c/utils';
 
-// TODO: Tackle later
-/* eslint @lwc/lwc/no-api-reassignments: 0 */
-
 const DIRECT_MERGE_DATA_TYPES = [
   'anytype',
   'boolean',
@@ -71,6 +68,9 @@ const STRING_MERGE_DATA_TYPES = [
   'url'
 ];
 
+// TODO: Tackle later
+/* eslint @lwc/lwc/no-api-reassignments: 0 */
+
 export default class SoqlDatatable extends LightningElement {
   @api recordId;
   @api objectApiName;
@@ -87,10 +87,10 @@ export default class SoqlDatatable extends LightningElement {
   set queryString(value) {
     if (value) {
       this._queryString = value
-        .replaceAll(new RegExp('select ', 'ig'), 'SELECT ')
-        .replaceAll(new RegExp(' from ', 'ig'), ' FROM ')
-        .replaceAll(new RegExp(' where ', 'ig'), ' WHERE ')
-        .replaceAll(new RegExp(' limit ', 'ig'), ' LIMIT ');
+        .replace(new RegExp('select ', 'ig'), 'SELECT ')
+        .replace(new RegExp(' from ', 'ig'), ' FROM ')
+        .replace(new RegExp(' where ', 'ig'), ' WHERE ')
+        .replace(new RegExp(' limit ', 'ig'), ' LIMIT ');
     }
   }
   @api checkboxType;
@@ -120,6 +120,7 @@ export default class SoqlDatatable extends LightningElement {
   @api firstSelectedRow = {};
 
   // MessageService boundary, useful for when multiple instances are on same page
+  @api
   get uniqueBoundary() {
     if (!this._uniqueBoundary) {
       this._uniqueBoundary = generateUUID();
@@ -127,15 +128,31 @@ export default class SoqlDatatable extends LightningElement {
     return this._uniqueBoundary;
   }
 
+  get composedActionSlot() {
+    return this.template.querySelector('slot[name=composedActions]');
+  }
+
+  get messageService() {
+    return this.template.querySelector('c-message-service');
+  }
+
+  get baseDatatable() {
+    return this.template.querySelector('c-datatable');
+  }
+
+  get showSpinner() {
+    return this._isSuppressSpinner ? false : this._showSpinner;
+  }
+  set showSpinner(value = false) {
+    this._showSpinner = value;
+  }
   isLargeFlow = false;
-  showSpinner = false;
+  showComposedActions = true;
 
   // private
   _isRendered;
-  _messageService;
-  _queryString;
   _finalQueryString;
-  _datatable;
+  _isSuppressSpinner = false;
 
   // supports $CurrentRecord syntax
   _mergeMap = new Map();
@@ -190,6 +207,8 @@ export default class SoqlDatatable extends LightningElement {
     }
   }
 
+  // Public methods
+
   @api
   async refreshTable() {
     const cache = await this.fetchTableCache();
@@ -202,43 +221,70 @@ export default class SoqlDatatable extends LightningElement {
     }
   }
 
+  @api
+  async refreshTableWithQueryString(queryString) {
+    this._finalQueryString = queryString
+      .replace(new RegExp('select ', 'ig'), 'SELECT ')
+      .replace(new RegExp(' from ', 'ig'), ' FROM ')
+      .replace(new RegExp(' where ', 'ig'), ' WHERE ')
+      .replace(new RegExp(' limit ', 'ig'), ' LIMIT ');
+    await this.validateQueryStringAndInitialize();
+  }
+
+  @api
+  resetTable() {
+    this.objectApiName = undefined;
+    this.sortedBy = undefined;
+    this._queryString = undefined;
+    this._finalQueryString = undefined;
+    this._mergeMap = new Map();
+    this._objectApiName = undefined;
+    this._objectInfo = undefined;
+    this._objectFieldsMap = new Map();
+    this._getRecordFields = [];
+    this.selectedRows = undefined;
+    this.firstSelectedRow = undefined;
+    this.baseDatatable.resetTable();
+  }
+
+  @api
+  suppressSpinner() {
+    this._isSuppressSpinner = true;
+  }
+
   connectedCallback() {
     if (!this.queryString) {
       return;
     }
-    // Record binding is more complex, so run some validations first
-    if (this.isRecordBind) {
-      if (!tableService.isRecordId(this.recordId)) {
-        this._notifyError('Invalid recordId', 'Must be 15 or 18 digit Salesforce Object recordId');
+    if (this.recordId && !tableService.isRecordId(this.recordId)) {
+      this._notifyError('Invalid Record Id', 'The recordId property must be 15 or 18 digit SObject Id');
+      return;
+    }
+    if (this.queryString.includes('$recordId')) {
+      this.queryString = this.queryString.replace(/\$recordId/g, `'${this.recordId}'`);
+    }
+    // Backwards compat, this needs to go second since syntax above is preferred
+    if (this.queryString.includes('recordId')) {
+      this.queryString = this.queryString.replace(/recordId/g, `'${this.recordId}'`);
+    }
+    if (this.isRecordBind && this.queryString.includes('$CurrentRecord')) {
+      if (!this.objectApiName) {
+        this._notifyError('Missing objectApiName', '$CurrentRecord API can only be used on the Record Flexipage');
         return;
       }
-      if (this.queryString.includes('$recordId')) {
-        this.queryString = this.queryString.replace(/\$recordId/g, `'${this.recordId}'`);
-      }
-      // Backwards compat, this needs to go second since syntax above is preferred
-      if (this.queryString.includes('recordId')) {
-        this.queryString = this.queryString.replace(/recordId/g, `'${this.recordId}'`);
-      }
-      // This one needs some heavier processing via wire
-      if (this.queryString.includes('$CurrentRecord')) {
-        if (!this.objectApiName) {
-          this._notifyError('Missing objectApiName', '$CurrentRecord API can only be used on the Record Flexipage');
-          return;
-        }
-        const matches = this.queryString.match(/(\$[\w.]*)/g);
-        matches.forEach(original => {
-          const config = {
-            objectQualifiedFieldApiName: original.replace('$CurrentRecord', this.objectApiName),
-            fieldApiName: original.replace('$CurrentRecord.', ''),
-            value: null // awaiting LDS
-          };
-          this._mergeMap.set(original, config);
-        });
-        // Allow LDS to finish field merging queryString, starting with objectInfo
-        // Unfortunately since we can't control order of wires, we fake it with assignment of vars
-        this._objectApiName = this.objectApiName;
-        return;
-      }
+      const matches = this.queryString.match(/(\$[\w.]*)/g);
+      matches.forEach(original => {
+        const config = {
+          objectQualifiedFieldApiName: original.replace('$CurrentRecord', this.objectApiName),
+          fieldApiName: original.replace('$CurrentRecord.', ''),
+          value: null // awaiting LDS
+        };
+        this._mergeMap.set(original, config);
+      });
+      // Allow LDS to finish field merging queryString, starting with objectInfo
+      // Unfortunately since we can't control order of wires, we fake it with assignment of vars
+      this._objectApiName = this.objectApiName;
+      return;
     }
     this._finalQueryString = this.queryString;
     this.validateQueryStringAndInitialize();
@@ -249,8 +295,7 @@ export default class SoqlDatatable extends LightningElement {
       return;
     }
     this._isRendered = true;
-    this._messageService = this.template.querySelector('c-message-service');
-    this._datatable = this.template.querySelector('c-datatable');
+    this.showComposedActions = this.composedActionSlot && this.composedActionSlot.assignedElements().length !== 0;
   }
 
   async validateQueryStringAndInitialize() {
@@ -260,7 +305,7 @@ export default class SoqlDatatable extends LightningElement {
       this._notifyError('Invalid SOQL String', queryError);
       return;
     }
-    this.refreshTable();
+    await this.refreshTable();
   }
 
   async fetchTableCache() {
@@ -275,7 +320,7 @@ export default class SoqlDatatable extends LightningElement {
   }
 
   initializeTable(cache) {
-    this._datatable.initializeTable(cache.objectApiName, cache.tableColumns, cache.tableData);
+    this.baseDatatable.initializeTable(cache.objectApiName, cache.tableColumns, cache.tableData);
   }
 
   // Event Handlers
@@ -311,8 +356,8 @@ export default class SoqlDatatable extends LightningElement {
   // Private toast functions
 
   _notifySingleError(title, error = '') {
-    if (this._messageService) {
-      this._messageService.notifySingleError(title, error);
+    if (this.messageService) {
+      this.messageService.notifySingleError(title, error);
     } else {
       this._notifyError(title, reduceErrors(error)[0]);
     }

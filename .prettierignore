@@ -13,3 +13,7 @@ coverage/
 *.xml
 *meta.xml
 sfdx-project.json
+
+# For libs
+**/luxon/**
+**/fuseBasic/**

@@ -44,12 +44,7 @@
     show-record-count={showRecordCount}
     show-refresh-button={showRefreshButton}
     checkbox-type={checkboxType}
-    column-labels={columnLabels}
-    custom-height={customHeight}
-    custom-relative-max-height={customRelativeMaxHeight}
-    use-relative-max-height={useRelativeMaxHeight}
     editable-fields={editableFields}
-    use-load-style-hack-for-overflow={useLoadStyleHackForOverflow}
     sortable-fields={sortableFields}
     sorted-by={sortedBy}
     sorted-direction={sortedDirection}
@@ -58,5 +53,16 @@
     show-spinner={showSpinner}
     action-config-dev-name={actionConfigDevName}
     lookup-config-dev-name={lookupConfigDevName}
-  ></c-datatable>
+    column-labels={columnLabels}
+    custom-height={customHeight}
+    custom-relative-max-height={customRelativeMaxHeight}
+    use-relative-max-height={useRelativeMaxHeight}
+    use-load-style-hack-for-overflow={useLoadStyleHackForOverflow}
+  >
+    <template if:true={showComposedActions}>
+      <div slot="composedActions">
+        <slot name="composedActions"></slot>
+      </div>
+    </template>
+  </c-datatable>
 </template>

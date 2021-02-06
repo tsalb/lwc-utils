@@ -68,7 +68,7 @@
       ></c-datatable-extension>
     </div>
     <div slot="actions">
-      <lightning-layout if:true={hasActions} horizontal-align="end" vertical-align="end" pull-to-boundary="small">
+      <lightning-layout horizontal-align="end" vertical-align="end" pull-to-boundary="small">
         <template if:true={showRefreshButton}>
           <lightning-layout-item class={refreshClass}>
             <lightning-button-icon
@@ -76,6 +76,11 @@
               icon-name="utility:refresh"
               onclick={handleRefresh}
             ></lightning-button-icon>
+          </lightning-layout-item>
+        </template>
+        <template if:true={showComposedActions}>
+          <lightning-layout-item class="slds-p-left_x-small slds-p-right_small">
+            <slot name="composedActions" onslotchange={handleComposedActionSlotChange}></slot>
           </lightning-layout-item>
         </template>
         <template if:true={showTableActions}>

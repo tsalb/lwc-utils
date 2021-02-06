@@ -65,8 +65,17 @@ export default class Picklist extends LightningElement {
   @api disabled = false;
   @api required = false;
 
+  @api
+  focus() {
+    this.combobox.focus();
+  }
+
   @track options;
   selected;
+
+  get combobox() {
+    return this.template.querySelector('lightning-combobox');
+  }
 
   // private
   _errors = [];

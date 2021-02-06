@@ -43,31 +43,23 @@ export default class DatatableDeleteRowForm extends LightningElement {
     return `Are you sure you want to delete "${this.row.Name}"?`;
   }
 
-  // private
-  _isRendered;
-  _messageService;
-
-  renderedCallback() {
-    if (this._isRendered) {
-      return;
-    }
-    this._isRendered = true;
-    this._messageService = this.template.querySelector('c-message-service');
+  get messageService() {
+    return this.template.querySelector('c-message-service');
   }
 
   handleCancel() {
-    this._messageService.notifyClose();
+    this.messageService.notifyClose();
   }
 
   async handleConfirm() {
     this.showSpinner = true;
     try {
       await deleteRecord(this.row.Id);
-      this._messageService.notifySuccess(`Successfully Deleted "${this.row.Name}".`);
+      this.messageService.notifySuccess(`Successfully Deleted "${this.row.Name}".`);
       this._refreshViewAndClose();
     } catch (error) {
       //console.log(error);
-      this._messageService.notifySingleError('Error Deleting Row', error);
+      this.messageService.notifySingleError('Error Deleting Row', error);
     } finally {
       this.showSpinner = false;
     }
@@ -75,10 +67,10 @@ export default class DatatableDeleteRowForm extends LightningElement {
 
   _refreshViewAndClose() {
     if (this.uniqueBoundary) {
-      this._messageService.publish({ key: 'refreshsoqldatatable' });
+      this.messageService.publish({ key: 'refreshsoqldatatable' });
     } else {
-      this._messageService.forceRefreshView();
+      this.messageService.forceRefreshView();
     }
-    this._messageService.notifyClose();
+    this.messageService.notifyClose();
   }
 }

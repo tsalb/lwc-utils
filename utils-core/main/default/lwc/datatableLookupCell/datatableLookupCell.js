@@ -76,9 +76,11 @@ export default class DatatableLookupCell extends LightningElement {
   configTitle;
   configSubtitle;
 
+  get editableCell() {
+    return this.template.querySelector('c-datatable-editable-cell');
+  }
+
   // private
-  _isRendered;
-  _editableCell;
   _isCleared = false;
   _titleField;
   _selectedRecordId;
@@ -99,14 +101,6 @@ export default class DatatableLookupCell extends LightningElement {
 
   get lookupTitleField() {
     return getFieldValue(this.lookupRecord.data, this._titleField);
-  }
-
-  renderedCallback() {
-    if (this._isRendered) {
-      return;
-    }
-    this._isRendered = true;
-    this._editableCell = this.template.querySelector('c-datatable-editable-cell');
   }
 
   // Event Handlers
@@ -130,7 +124,7 @@ export default class DatatableLookupCell extends LightningElement {
   }
 
   handleSelected(event) {
-    if (this._editableCell.showMassEdit) {
+    if (this.editableCell && this.editableCell.showMassEdit) {
       return;
     }
     this._selectedRecordId = event.detail.selectedRecordId;

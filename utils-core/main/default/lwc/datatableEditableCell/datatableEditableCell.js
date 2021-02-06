@@ -32,6 +32,12 @@
 
 import { LightningElement, api } from 'lwc';
 
+const LOOKUP_DISPLAY_NAME = 'lookup-display';
+const LOOKUP_EDIT_NAME = 'lookup-edit';
+const PICKLIST_DISPLAY_NAME = 'picklist-display';
+const PICKLIST_EDIT_NAME = 'picklist-edit';
+const CUSTOM_CELL_DISPLAY_NAMES = [LOOKUP_DISPLAY_NAME, PICKLIST_DISPLAY_NAME];
+
 export default class DatatableEditableCell extends LightningElement {
   @api tableBoundary;
   @api originalValue;
@@ -53,13 +59,11 @@ export default class DatatableEditableCell extends LightningElement {
   showEditIcon;
   selectedRows;
 
+  // private
+  _isRendered = false;
+  _isCleared = false;
   _displayElement;
   _editElement;
-
-  // private
-  _isRendered;
-  _container;
-  _isCleared;
 
   @api
   get showMassEdit() {
@@ -88,13 +92,28 @@ export default class DatatableEditableCell extends LightningElement {
     return this.originalValue;
   }
 
+  get messageService() {
+    return this.template.querySelector('c-message-service');
+  }
+
+  get containerSection() {
+    return this.template.querySelector('section');
+  }
+
   renderedCallback() {
     if (this._isRendered) {
       return;
     }
     this._isRendered = true;
-    this._messageService = this.template.querySelector('c-message-service');
-    this._container = this.template.querySelector('section');
+    // lightning-datatable doesn't have events for when cells are done rendering so we fake it here.
+    // Unfortunately it also means that this event will only fire if a cell data type requires custom data types.
+    // This should be debounced by parent listeners to know when the table is fully rendered.
+    this.dispatchEvent(
+      new CustomEvent('editablecellrendered', {
+        bubbles: true,
+        composed: true
+      })
+    );
   }
 
   // Vanilla editing
@@ -116,12 +135,6 @@ export default class DatatableEditableCell extends LightningElement {
   enableEditMode() {
     this.isEditMode = true;
     this.listenForClickOutside();
-    // // Not perfect, but wait a bit for template to render then focus it
-    // window.clearTimeout(this.focusDelayTimeout);
-    // // eslint-disable-next-line @lwc/lwc/no-async-operation
-    // this.focusDelayTimeout = setTimeout(() => {
-    //     this.template.querySelector('lightning-combobox').focus();
-    // }, 100);
   }
 
   // Mass editing
@@ -151,12 +164,12 @@ export default class DatatableEditableCell extends LightningElement {
       //console.log(rowIdentifierToValues);
 
       // Publishes to all instances of itself
-      this._messageService.publish({
+      this.messageService.publish({
         key: 'setdraftvalue',
         value: { rowIdentifierToValues: rowIdentifierToValues }
       });
     } else {
-      if (this._displayElement.name === 'lookup-display' || this._displayElement.name === 'picklist-display') {
+      if (CUSTOM_CELL_DISPLAY_NAMES.includes(this._displayElement.name)) {
         this.dispatchEvent(new CustomEvent('customcellsetdraftvalue', { detail: { draftValue: currentInputValue } }));
       }
       this.draftValue = currentInputValue;
@@ -180,7 +193,7 @@ export default class DatatableEditableCell extends LightningElement {
 
     const documentClick = () => {
       clicksInside--;
-      // click was finally outside of _container, i.e. document click
+      // click was finally outside of containerSection, i.e. document click
       if (clicksInside < 0) {
         // eslint-disable-next-line no-use-before-define
         removeAndCloseMenu();
@@ -191,7 +204,7 @@ export default class DatatableEditableCell extends LightningElement {
       this.isEditMode = false;
       this.showEditIcon = false;
       this.notifyCellChanged();
-      this._container.removeEventListener('click', thisClick);
+      this.containerSection.removeEventListener('click', thisClick);
       document.removeEventListener('click', documentClick);
       clicksInside = 0; // reset counter
     };
@@ -199,7 +212,7 @@ export default class DatatableEditableCell extends LightningElement {
     if (isForceClose) {
       removeAndCloseMenu();
     } else {
-      this._container.addEventListener('click', thisClick);
+      this.containerSection.addEventListener('click', thisClick);
       document.addEventListener('click', documentClick);
     }
   }
@@ -219,11 +232,14 @@ export default class DatatableEditableCell extends LightningElement {
   handleEditCellSlotChange(event) {
     if (event.target && event.target.assignedElements().length === 1) {
       this._editElement = event.target.assignedElements()[0];
+      if (this._editElement.name === PICKLIST_EDIT_NAME) {
+        this._editElement.focus();
+      }
       if (this.editCellValueProp) {
         this._editElement[this.editCellValueProp] = this.cellDisplayValue;
       }
       if (!this.showMassEdit) {
-        this._editElement.addEventListener(this.changeEventName, this.handleEditCellInputChange.bind(this));
+        this._editElement.addEventListener(this.changeEventName, this.handleEditCellInputChange);
       }
     }
   }
@@ -239,7 +255,7 @@ export default class DatatableEditableCell extends LightningElement {
     if (this.displayCellValueProp) {
       this._displayElement[this.displayCellValueProp] = this.cellDisplayValue;
     }
-    if (this._displayElement.name === 'lookup-display' || this._displayElement.name === 'picklist-display') {
+    if (CUSTOM_CELL_DISPLAY_NAMES.includes(this._displayElement.name)) {
       this.dispatchEvent(new CustomEvent('customcellreset'));
     }
   }
@@ -256,10 +272,8 @@ export default class DatatableEditableCell extends LightningElement {
     if (!this.isEditable) {
       return;
     }
-    // un-proxify for ease of debugging
-    const payload = JSON.parse(JSON.stringify(event.detail.value));
-    //console.log(payload);
-
+    const payload = event.detail.value;
+    //console.log(JSON.parse(JSON.stringify(payload)));
     if (payload.rowKeysToNull && payload.rowKeysToNull.includes(this.rowKeyValue)) {
       this.draftValue = null;
       this._isCleared = false;
@@ -272,8 +286,7 @@ export default class DatatableEditableCell extends LightningElement {
       const currentCellIdentifier = `${this.rowKeyValue}_${this.objectApiName}_${this.fieldApiName}`;
       if (identifierMap.has(currentCellIdentifier)) {
         const incomingDraftValue = identifierMap.get(currentCellIdentifier);
-        // Special considerations for custom data types
-        if (this._displayElement.name === 'lookup-display' || this._displayElement.name === 'picklist-display') {
+        if (CUSTOM_CELL_DISPLAY_NAMES.includes(this._displayElement.name)) {
           this.dispatchEvent(
             new CustomEvent('customcellsetdraftvalue', { detail: { draftValue: incomingDraftValue } })
           );
@@ -287,10 +300,17 @@ export default class DatatableEditableCell extends LightningElement {
     }
   }
 
-  handleEditCellInputChange(event) {
+  handleEditCellInputChange = event => {
     this.draftValue = this._getEventValue(event);
     this._isCleared = !this.draftValue;
-  }
+    // These align the value selection behavior to native list views
+    if (
+      this._displayElement.name === PICKLIST_DISPLAY_NAME ||
+      (this._displayElement.name === LOOKUP_DISPLAY_NAME && !this._isCleared)
+    ) {
+      this.forceClosePopover();
+    }
+  };
 
   // Public Events
 
@@ -357,10 +377,10 @@ export default class DatatableEditableCell extends LightningElement {
 
   _getEventValue(event) {
     // custom data types
-    if (this._editElement.name === 'lookup-edit') {
+    if (this._editElement.name === LOOKUP_EDIT_NAME) {
       return event.detail.selectedRecordId;
     }
-    if (this._editElement.name === 'picklist-edit') {
+    if (this._editElement.name === PICKLIST_EDIT_NAME) {
       return event.detail.selectedValue;
     }
     // fallbacks

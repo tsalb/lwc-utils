@@ -202,11 +202,9 @@ export default class Lookup extends LightningElement {
         this.records = newData.flat().sort((a, b) => this.sortAlpha(a, b));
 
         if (this.records.length === 0) {
-          this.fireToast({
-            title: 'Info',
-            variant: 'info',
+          this.error = {
             message: 'No records found, please refine your search.'
-          });
+          };
         }
       })
       .catch(error => {

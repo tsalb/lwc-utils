@@ -17,3 +17,6 @@ sfdx-project.json
 # For libs
 **/luxon/**
 **/fuseBasic/**
+
+# For recipes
+utils-recipes/**

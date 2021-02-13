@@ -22,6 +22,16 @@ This repo builds on that guidance and pushes data-dense UI design to the next le
 
 I hope they will help you do the same.
 
+## Motivation
+
+The components found in this repo aim to solve these high level problems:
+
+- Complex component communication can be difficult to design with consistency.
+- Datatables are useful but high effort to use.
+- Modals / Dialogs are useful but high effort to use.
+
+More detailed info can be found in the [wiki](https://github.com/tsalb/lwc-utils/wiki/Motivation).
+
 ## Getting Started
 
 1) Take a look at the component [overview](https://github.com/tsalb/lwc-utils/wiki/Component-Library-Overview).

@@ -69,6 +69,10 @@
     </div>
     <div slot="actions">
       <lightning-layout horizontal-align="end" vertical-align="end" pull-to-boundary="small">
+        <!-- TODO create public prop to make this show up -->
+        <lightning-layout-item>
+          <lightning-input variant="label-hidden" placeholder="Search..." onchange={handleSearch}></lightning-input>
+        </lightning-layout-item>
         <template if:true={showRefreshButton}>
           <lightning-layout-item class={refreshClass}>
             <lightning-button-icon

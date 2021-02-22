@@ -286,6 +286,8 @@ export default class Datatable extends LightningElement {
     this._draftValuesMap = new Map();
     this._draftSuccessIds = new Set();
     this._fuseData = undefined;
+    this._hasEditablePicklist = false;
+    this._hasEditableLookup = false;
     this._originalTableData = [];
   }
 
@@ -307,6 +309,8 @@ export default class Datatable extends LightningElement {
 
   // private - global search
   _fuseData;
+  _hasEditablePicklist = false;
+  _hasEditableLookup = false;
   _originalTableData = [];
 
   // For future enhancements
@@ -391,8 +395,12 @@ export default class Datatable extends LightningElement {
     window.clearTimeout(this._delayEditableCellRendered);
     // eslint-disable-next-line @lwc/lwc/no-async-operation
     this._delayEditableCellRendered = setTimeout(() => {
-      this._initializeLookupConfigData();
-      this._initializeRecordTypeIdData();
+      if (this._hasEditableLookup) {
+        this._initializeLookupConfigData();
+      }
+      if (this._hasEditablePicklist) {
+        this._initializeRecordTypeIdData();
+      }
     }, 500);
   };
 
@@ -414,16 +422,18 @@ export default class Datatable extends LightningElement {
       this.tableData = this._originalTableData;
       return;
     }
-    // Debounce the search for better UX
-    window.clearTimeout(this._delaySearch);
-    // eslint-disable-next-line @lwc/lwc/no-async-operation
-    this._delaySearch = setTimeout(() => {
-      const results = this._fuseData.search(searchText);
-      // Not sure why fuse returns hits higher than score, filter it out again here
-      const indexHits = results.filter(obj => obj.score <= SEARCH_THRESHOLD).map(obj => obj.refIndex);
-      // Even if there are no hits, we want that UX feedback to the user
-      this.tableData = this._originalTableData.filter((row, index) => indexHits.includes(index));
-    }, 350);
+    if (searchText.length >= 2) {
+      // Debounce the search for better UX
+      window.clearTimeout(this._delaySearch);
+      // eslint-disable-next-line @lwc/lwc/no-async-operation
+      this._delaySearch = setTimeout(() => {
+        const results = this._fuseData.search(searchText);
+        // Not sure why fuse returns hits higher than score, filter it out again here
+        const indexHits = results.filter(obj => obj.score <= SEARCH_THRESHOLD).map(obj => obj.refIndex);
+        // Even if there are no hits, we want that UX feedback to the user
+        this.tableData = this._originalTableData.filter((row, index) => indexHits.includes(index));
+      }, 350);
+    }
   }
 
   handleRefresh() {
@@ -763,11 +773,19 @@ export default class Datatable extends LightningElement {
         }
       }
       if (col.type === 'customLookup') {
-        // Warm the cache with a variable assignment for each c-datatable-lookup-cell
-        // messageService then publishes this to each one when the edit mode is accessed
+        // Initiate apex wire adapter here before editable cells fully render
         this._lookupConfigDevName = this.lookupConfigDevName || DATATABLE_LOOKUP_CONFIG_DEFAULT;
+        // Supports global search
+        if (col.editable && !this._hasEditableLookup) {
+          this._hasEditableLookup = true;
+        }
       }
-
+      if (col.type === 'customPicklist') {
+        // Supports global search
+        if (col.editable && !this._hasEditablePicklist) {
+          this._hasEditablePicklist = true;
+        }
+      }
       finalColumns.push(col);
     }
     if (this.showRowMenuActions) {
@@ -914,13 +932,11 @@ export default class Datatable extends LightningElement {
   }
 
   _initializeLookupConfigData() {
-    console.log('_initializeLookupConfigData');
     this.messageService.publish({ key: 'lookupconfigload', value: { lookupConfigs: this._lookupConfigData } });
   }
 
   _initializeRecordTypeIdData() {
     // Used for collection datatable
-    console.log('_initializeRecordTypeIdData');
     this.dispatchEvent(new CustomEvent('picklistconfigload'));
   }
 

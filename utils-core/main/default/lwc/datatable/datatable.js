@@ -255,10 +255,10 @@ export default class Datatable extends LightningElement {
     this._objectApiName = objectApiName;
     this._setTableColumns(columns);
     this._setTableData(data);
-    //console.log(this.tableData);
-    //console.log(this.tableColumns);
-    this._prepGlobalSearch();
     this.clearDraftValuesOnSuccess();
+    if (this.showSearch) {
+      this._prepGlobalSearch();
+    }
     this.showSpinner = false;
   }
 

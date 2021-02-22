@@ -54,7 +54,8 @@ import { flattenQueryResult } from 'c/tableServiceUtils';
 export default class CollectionDatatable extends LightningElement {
   @api recordCollection;
   @api title;
-  @api showRecordCount;
+  @api showRecordCount = false;
+  @api showSearch = false;
   @api checkboxType;
   @api
   get shownFields() {

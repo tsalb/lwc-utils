@@ -32,6 +32,10 @@
                     <value>true</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>showSearch</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>sortableFields</name>
                     <value>Name, Email, Phone, LeadSource, AccountId, Account_Type</value>
                 </componentInstanceProperties>

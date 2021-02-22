@@ -41,9 +41,15 @@ import getLookupConfig from '@salesforce/apex/DataTableService.getLookupConfig';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { reduceErrors, createFlattenedSetFromDelimitedString } from 'c/utils';
 
+// Global Search
+import Fuse from 'c/fuseBasic';
+
 const COLUMN_LABEL_DELIMITER = '=>';
 const MAX_ROW_SELECTION = 200;
 const OBJECTS_WITH_COMPOUND_NAMES = ['Contact'];
+
+// Lower is less fuzzy / better hit result
+const SEARCH_THRESHOLD = 0.3;
 
 // Datatable_Action_Config__mdt
 const LEGACY_TABLE_ACTION_ONE_STRING = 'Primary';
@@ -75,6 +81,7 @@ export default class Datatable extends LightningElement {
 
   // Misc
   @api columnWidthsMode = 'auto'; // override salesforce default
+  @api showSearch = false;
   @api showRefreshButton = false;
   @api showSpinner = false;
   @api customHeight;
@@ -246,6 +253,7 @@ export default class Datatable extends LightningElement {
     this._setTableData(data);
     //console.log(this.tableData);
     //console.log(this.tableColumns);
+    this._prepGlobalSearch();
     this.clearDraftValuesOnSuccess();
     this.showSpinner = false;
   }
@@ -270,8 +278,15 @@ export default class Datatable extends LightningElement {
     this.tableColumns = [];
     this.draftValues = [];
     this.saveErrors = {};
-    this.sortableFields = '';
-    this.editableFields = '';
+    this.sortableFields = new Set();
+    this.editableFields = new Set();
+    // private
+    this._objectApiName = undefined;
+    this._objectInfo = undefined;
+    this._draftValuesMap = new Map();
+    this._draftSuccessIds = new Set();
+    this._fuseData = undefined;
+    this._originalTableData = [];
   }
 
   // private
@@ -286,8 +301,12 @@ export default class Datatable extends LightningElement {
   // private - table and lwc actions
   _actionConfigs = [];
 
-  // Datatable_Lookup_Config__mdt
+  // private - Datatable_Lookup_Config__mdt
   _lookupConfigDevName;
+
+  // private - global search
+  _fuseData;
+  _originalTableData = [];
 
   // For future enhancements
   @wire(getObjectInfo, { objectApiName: '$_objectApiName' })
@@ -367,6 +386,28 @@ export default class Datatable extends LightningElement {
     this.showComposedActions =
       (this.composedActionSlot && this.composedActionSlot.assignedElements().length !== 0) ||
       event.target.assignedElements().length !== 0;
+  }
+
+  handleSearch(event) {
+    if (!this.tableData || !this._fuseData) {
+      return;
+    }
+    const searchText = event.detail.value;
+    // User cleared it out
+    if (!searchText) {
+      this.tableData = this._originalTableData;
+      return;
+    }
+    // Debounce the search for better UX
+    window.clearTimeout(this._delaySearch);
+    // eslint-disable-next-line @lwc/lwc/no-async-operation
+    this._delaySearch = setTimeout(() => {
+      const results = this._fuseData.search(searchText);
+      // Not sure why fuse returns hits higher than score, filter it out again here
+      const indexHits = results.filter(obj => obj.score <= SEARCH_THRESHOLD).map(obj => obj.refIndex);
+      // Even if there are no hits, we want that UX feedback to the user
+      this.tableData = this._originalTableData.filter((row, index) => indexHits.includes(index));
+    }, 350);
   }
 
   handleRefresh() {
@@ -751,6 +792,8 @@ export default class Datatable extends LightningElement {
         tableData.find(serverRow => uiRow[this.keyField] === serverRow[this.keyField])
       );
     }
+    // Store the fully initialized rows for global search
+    this._originalTableData = this.tableData;
     this._notifyPublicEvent('rowsload');
   }
 
@@ -830,6 +873,28 @@ export default class Datatable extends LightningElement {
       this.saveErrors = [];
       this._draftSuccessIds = new Set();
     }
+  }
+
+  _prepGlobalSearch() {
+    // Dependency on _setTableData for data
+    if (!this._originalTableData.length) {
+      return;
+    }
+    const firstRow = this._originalTableData[0];
+    const searchKeys = Object.keys(firstRow).filter(
+      fieldName =>
+        // Fuse obj arr search crashes entire result if objects are detected
+        typeof firstRow[fieldName] !== 'object' &&
+        // Remove certain keys from being searched
+        !fieldName.toLowerCase().includes('id')
+    );
+    const options = {
+      includeScore: true,
+      ignoreLocation: true,
+      threshold: SEARCH_THRESHOLD, // default is 0.6, this makes it less fuzzy
+      keys: searchKeys
+    };
+    this._fuseData = new Fuse(this._originalTableData, options);
   }
 
   // Public Events
@@ -924,11 +989,24 @@ export default class Datatable extends LightningElement {
     return '';
   }
 
-  get refreshClass() {
-    let css = 'slds-p-left_x-small ';
-    if (!this.showTableActions) {
-      css += 'slds-p-right_small ';
+  // Always far left
+  get searchClass() {
+    let css = [];
+    if (this.showRefreshButton || this.showComposedActions || this.showTableActions) {
+      css.push('slds-p-right_x-small');
     }
-    return css;
+    if (!this.showRefreshButton && !this.showComposedActions && !this.showTableActions) {
+      css.push('slds-p-right_small');
+    }
+    return css.join(' ');
+  }
+
+  // Always one right from search
+  get refreshClass() {
+    let css = [];
+    if (!this.showComposedActions && !this.showTableActions) {
+      css.push('slds-p-right_small');
+    }
+    return css.join(' ');
   }
 }

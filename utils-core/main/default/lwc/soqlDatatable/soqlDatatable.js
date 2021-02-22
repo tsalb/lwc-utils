@@ -78,6 +78,7 @@ export default class SoqlDatatable extends LightningElement {
   @api isRecordBind = false;
   @api title;
   @api showRecordCount = false;
+  @api showSearch = false;
   @api showRefreshButton = false;
 
   @api

@@ -243,6 +243,10 @@ export default class Datatable extends LightningElement {
     return this.template.querySelector('c-message-service');
   }
 
+  get searchInput() {
+    return this.template.querySelector('.search-input');
+  }
+
   // Public APIs
 
   @api
@@ -914,6 +918,10 @@ export default class Datatable extends LightningElement {
     if (!this._originalTableData.length) {
       return;
     }
+    // When table refreshes, clear out the search input.
+    // Future enhancement here to hold onto the value and pre-filter before a refresh.
+    this.searchInput.value = null;
+
     const firstRow = this._originalTableData[0];
     const searchKeys = Object.keys(firstRow).filter(
       fieldName =>

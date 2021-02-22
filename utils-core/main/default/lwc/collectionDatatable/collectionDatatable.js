@@ -187,26 +187,12 @@ export default class CollectionDatatable extends LightningElement {
         columns.push(this._createBaseColumnAttribute(fieldName));
       });
 
-      // We initialize the table first
+      // We initialize the table first and let its editable cell events do the rest
       this.template.querySelector('c-datatable').initializeTable(this._objectApiName, columns, this.recordCollection);
-
-      // Then check if we need to send some recordTypeId payload to the customPicklist data types
-      if (this._initializationType === 'recordId' && this._hasCustomPicklist) {
-        this._initializeRecordTypeIds();
-      }
     }
   }
 
   // Event Handlers
-
-  handleRowSelection(event) {
-    if (event.detail.selectedRows && event.detail.selectedRows.length) {
-      this.selectedRows = event.detail.selectedRows.map(row => this._getCleanRow(row));
-      this.firstSelectedRow = this._getCleanRow(event.detail.selectedRows[0]);
-      this.dispatchEvent(new FlowAttributeChangeEvent('selectedRows', this.selectedRows));
-      this.dispatchEvent(new FlowAttributeChangeEvent('firstSelectedRow', this.firstSelectedRow));
-    }
-  }
 
   handleSave(event) {
     if (event.detail.editedRows && event.detail.editedRows.length) {
@@ -218,6 +204,21 @@ export default class CollectionDatatable extends LightningElement {
       const allRowsClean = event.detail.allRows.map(row => this._getCleanRow(row));
       //console.log(allRowsClean);
       this.dispatchEvent(new FlowAttributeChangeEvent('allRows', allRowsClean));
+    }
+  }
+
+  handleRowSelection(event) {
+    if (event.detail.selectedRows && event.detail.selectedRows.length) {
+      this.selectedRows = event.detail.selectedRows.map(row => this._getCleanRow(row));
+      this.firstSelectedRow = this._getCleanRow(event.detail.selectedRows[0]);
+      this.dispatchEvent(new FlowAttributeChangeEvent('selectedRows', this.selectedRows));
+      this.dispatchEvent(new FlowAttributeChangeEvent('firstSelectedRow', this.firstSelectedRow));
+    }
+  }
+
+  handlePicklistConfigLoad() {
+    if (this._initializationType === 'recordId' && this._hasCustomPicklist) {
+      this._initializeRecordTypeIds();
     }
   }
 

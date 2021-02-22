@@ -243,6 +243,10 @@ export default class Datatable extends LightningElement {
     return this.template.querySelector('c-message-service');
   }
 
+  get searchInput() {
+    return this.template.querySelector('.search-input');
+  }
+
   // Public APIs
 
   @api
@@ -286,6 +290,8 @@ export default class Datatable extends LightningElement {
     this._draftValuesMap = new Map();
     this._draftSuccessIds = new Set();
     this._fuseData = undefined;
+    this._hasEditablePicklist = false;
+    this._hasEditableLookup = false;
     this._originalTableData = [];
   }
 
@@ -303,9 +309,12 @@ export default class Datatable extends LightningElement {
 
   // private - Datatable_Lookup_Config__mdt
   _lookupConfigDevName;
+  _lookupConfigData;
 
   // private - global search
   _fuseData;
+  _hasEditablePicklist = false;
+  _hasEditableLookup = false;
   _originalTableData = [];
 
   // For future enhancements
@@ -354,10 +363,13 @@ export default class Datatable extends LightningElement {
     if (error) {
       this._notifySingleError('getLookupEditConfig error', error);
     } else if (data) {
-      //console.log(data);
-      // This is ok to use now since this wire is only accessed after the table column set
-      this.messageService.publish({ key: 'lookupconfigload', value: { lookupConfigs: data } });
+      this._lookupConfigData = data;
     }
+  }
+
+  constructor() {
+    super();
+    this.template.addEventListener('editablecellrendered', this.handleEditableCellRendered);
   }
 
   renderedCallback() {
@@ -380,6 +392,22 @@ export default class Datatable extends LightningElement {
     }
   }
 
+  // Dynamic Event Handlers
+
+  // Keeps lexical scope correct
+  handleEditableCellRendered = () => {
+    window.clearTimeout(this._delayEditableCellRendered);
+    // eslint-disable-next-line @lwc/lwc/no-async-operation
+    this._delayEditableCellRendered = setTimeout(() => {
+      if (this._hasEditableLookup) {
+        this._initializeLookupConfigData();
+      }
+      if (this._hasEditablePicklist) {
+        this._initializeRecordTypeIdData();
+      }
+    }, 500);
+  };
+
   // Event Handlers
 
   handleComposedActionSlotChange(event) {
@@ -398,16 +426,18 @@ export default class Datatable extends LightningElement {
       this.tableData = this._originalTableData;
       return;
     }
-    // Debounce the search for better UX
-    window.clearTimeout(this._delaySearch);
-    // eslint-disable-next-line @lwc/lwc/no-async-operation
-    this._delaySearch = setTimeout(() => {
-      const results = this._fuseData.search(searchText);
-      // Not sure why fuse returns hits higher than score, filter it out again here
-      const indexHits = results.filter(obj => obj.score <= SEARCH_THRESHOLD).map(obj => obj.refIndex);
-      // Even if there are no hits, we want that UX feedback to the user
-      this.tableData = this._originalTableData.filter((row, index) => indexHits.includes(index));
-    }, 350);
+    if (searchText.length >= 2) {
+      // Debounce the search for better UX
+      window.clearTimeout(this._delaySearch);
+      // eslint-disable-next-line @lwc/lwc/no-async-operation
+      this._delaySearch = setTimeout(() => {
+        const results = this._fuseData.search(searchText);
+        // Not sure why fuse returns hits higher than score, filter it out again here
+        const indexHits = results.filter(obj => obj.score <= SEARCH_THRESHOLD).map(obj => obj.refIndex);
+        // Even if there are no hits, we want that UX feedback to the user
+        this.tableData = this._originalTableData.filter((row, index) => indexHits.includes(index));
+      }, 350);
+    }
   }
 
   handleRefresh() {
@@ -747,11 +777,19 @@ export default class Datatable extends LightningElement {
         }
       }
       if (col.type === 'customLookup') {
-        // Warm the cache with a variable assignment for each c-datatable-lookup-cell
-        // messageService then publishes this to each one when the edit mode is accessed
+        // Initiate apex wire adapter here before editable cells fully render
         this._lookupConfigDevName = this.lookupConfigDevName || DATATABLE_LOOKUP_CONFIG_DEFAULT;
+        // Supports global search
+        if (col.editable && !this._hasEditableLookup) {
+          this._hasEditableLookup = true;
+        }
       }
-
+      if (col.type === 'customPicklist') {
+        // Supports global search
+        if (col.editable && !this._hasEditablePicklist) {
+          this._hasEditablePicklist = true;
+        }
+      }
       finalColumns.push(col);
     }
     if (this.showRowMenuActions) {
@@ -880,6 +918,10 @@ export default class Datatable extends LightningElement {
     if (!this._originalTableData.length) {
       return;
     }
+    // When table refreshes, clear out the search input.
+    // Future enhancement here to hold onto the value and pre-filter before a refresh.
+    this.searchInput.value = null;
+
     const firstRow = this._originalTableData[0];
     const searchKeys = Object.keys(firstRow).filter(
       fieldName =>
@@ -895,6 +937,15 @@ export default class Datatable extends LightningElement {
       keys: searchKeys
     };
     this._fuseData = new Fuse(this._originalTableData, options);
+  }
+
+  _initializeLookupConfigData() {
+    this.messageService.publish({ key: 'lookupconfigload', value: { lookupConfigs: this._lookupConfigData } });
+  }
+
+  _initializeRecordTypeIdData() {
+    // Used for collection datatable
+    this.dispatchEvent(new CustomEvent('picklistconfigload'));
   }
 
   // Public Events

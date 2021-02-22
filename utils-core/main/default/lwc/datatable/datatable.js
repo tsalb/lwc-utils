@@ -876,10 +876,11 @@ export default class Datatable extends LightningElement {
   }
 
   _prepGlobalSearch() {
-    const firstRow = this.tableData[0];
-    if (!firstRow) {
+    // Dependency on _setTableData for data
+    if (!this._originalTableData.length) {
       return;
     }
+    const firstRow = this._originalTableData[0];
     const searchKeys = Object.keys(firstRow).filter(
       fieldName =>
         // Fuse obj arr search crashes entire result if objects are detected
@@ -893,7 +894,7 @@ export default class Datatable extends LightningElement {
       threshold: SEARCH_THRESHOLD, // default is 0.6, this makes it less fuzzy
       keys: searchKeys
     };
-    this._fuseData = new Fuse(this.tableData, options);
+    this._fuseData = new Fuse(this._originalTableData, options);
   }
 
   // Public Events

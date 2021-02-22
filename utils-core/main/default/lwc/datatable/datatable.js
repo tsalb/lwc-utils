@@ -303,6 +303,7 @@ export default class Datatable extends LightningElement {
 
   // private - Datatable_Lookup_Config__mdt
   _lookupConfigDevName;
+  _lookupConfigData;
 
   // private - global search
   _fuseData;
@@ -354,10 +355,13 @@ export default class Datatable extends LightningElement {
     if (error) {
       this._notifySingleError('getLookupEditConfig error', error);
     } else if (data) {
-      //console.log(data);
-      // This is ok to use now since this wire is only accessed after the table column set
-      this.messageService.publish({ key: 'lookupconfigload', value: { lookupConfigs: data } });
+      this._lookupConfigData = data;
     }
+  }
+
+  constructor() {
+    super();
+    this.template.addEventListener('editablecellrendered', this.handleEditableCellRendered);
   }
 
   renderedCallback() {
@@ -379,6 +383,18 @@ export default class Datatable extends LightningElement {
       this.template.querySelector(`.${this.extensionBoundaryClass}`).appendChild(style);
     }
   }
+
+  // Dynamic Event Handlers
+
+  // Keeps lexical scope correct
+  handleEditableCellRendered = () => {
+    window.clearTimeout(this._delayEditableCellRendered);
+    // eslint-disable-next-line @lwc/lwc/no-async-operation
+    this._delayEditableCellRendered = setTimeout(() => {
+      this._initializeLookupConfigData();
+      this._initializeRecordTypeIdData();
+    }, 500);
+  };
 
   // Event Handlers
 
@@ -895,6 +911,17 @@ export default class Datatable extends LightningElement {
       keys: searchKeys
     };
     this._fuseData = new Fuse(this._originalTableData, options);
+  }
+
+  _initializeLookupConfigData() {
+    console.log('_initializeLookupConfigData');
+    this.messageService.publish({ key: 'lookupconfigload', value: { lookupConfigs: this._lookupConfigData } });
+  }
+
+  _initializeRecordTypeIdData() {
+    // Used for collection datatable
+    console.log('_initializeRecordTypeIdData');
+    this.dispatchEvent(new CustomEvent('picklistconfigload'));
   }
 
   // Public Events

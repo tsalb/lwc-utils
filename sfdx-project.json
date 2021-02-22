@@ -4,8 +4,8 @@
             "path": "utils-core",
             "default": true,
             "package": "LWC Utils",
-            "versionName": "ver 1.5.2",
-            "versionNumber": "1.5.2.NEXT",
+            "versionName": "ver 1.5.3",
+            "versionNumber": "1.5.3.NEXT",
             "postInstallUrl": "https://github.com/tsalb/lwc-utils/releases",
             "releaseNotesUrl": "https://github.com/tsalb/lwc-utils/releases"
         },
@@ -19,7 +19,7 @@
             "releaseNotesUrl": "https://github.com/tsalb/lwc-utils/releases",
             "dependencies": [
                 {
-                    "package": "LWC Utils@1.5.2-1"
+                    "package": "LWC Utils@1.5.3-1"
                 }
             ]
         }
@@ -48,6 +48,7 @@
         "LWC Utils@1.4.0-3": "04t1Q000001QhyDQAS",
         "LWC Utils@1.5.0-1": "04t1Q000001Qi0sQAC",
         "LWC Utils@1.5.1-2": "04t1Q000001Qi2KQAS",
-        "LWC Utils@1.5.2-1": "04t1Q000001Qi2UQAS"
+        "LWC Utils@1.5.2-1": "04t1Q000001Qi2UQAS",
+        "LWC Utils@1.5.3-1": "04t1Q000001Qi2ZQAS"
     }
 }

@@ -16,11 +16,15 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>showRecordCount</name>
-                    <value>false</value>
+                    <value>true</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>showRefreshButton</name>
-                    <value>false</value>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showSearch</name>
+                    <value>true</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>sortedDirection</name>
@@ -28,13 +32,26 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>title</name>
-                    <value>SELECT COUNT(Id) FROM Account</value>
+                    <value>Number of Accounts</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>useRelativeMaxHeight</name>
                     <value>false</value>
                 </componentInstanceProperties>
                 <componentName>soqlDatatable</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>decorate</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>richTextValue</name>
+                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;The above table uses the following SOQL string&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;SELECT COUNT(Id) FROM Account&lt;/p&gt;</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:richText</componentName>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -47,16 +64,23 @@
                     <name>customRelativeMaxHeight</name>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>editableFields</name>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>queryString</name>
                     <value>SELECT SUM(ExpectedRevenue) Max_Revenue, FISCAL_YEAR(CloseDate) Close_Date_Year, FISCAL_MONTH(CloseDate) Close_Date_Month FROM Opportunity GROUP BY CloseDate</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>showRecordCount</name>
-                    <value>false</value>
+                    <value>true</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>showRefreshButton</name>
-                    <value>false</value>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showSearch</name>
+                    <value>true</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>sortedDirection</name>
@@ -64,13 +88,26 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>title</name>
-                    <value>SELECT SUM(ExpectedRevenue) Max_Revenue, FISCAL_YEAR(CloseDate) Close_Date_Year, FISCAL_MONTH(CloseDate) Close_Date_Month FROM Opportunity GROUP BY CloseDate</value>
+                    <value>Sum of Opp Expected Revenue by Close Date</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>useRelativeMaxHeight</name>
                     <value>false</value>
                 </componentInstanceProperties>
                 <componentName>soqlDatatable</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>decorate</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>richTextValue</name>
+                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;The above table uses the following SOQL string&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;font-family: courier;&quot;&gt;SELECT SUM(ExpectedRevenue) Max_Revenue, FISCAL_YEAR(CloseDate) Close_Date_Year, FISCAL_MONTH(CloseDate) Close_Date_Month FROM Opportunity GROUP BY CloseDate&lt;/span&gt;&lt;/p&gt;</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:richText</componentName>
             </componentInstance>
         </itemInstances>
         <name>main</name>

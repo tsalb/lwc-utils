@@ -81,6 +81,7 @@ export default class Datatable extends LightningElement {
 
   // Misc
   @api columnWidthsMode = 'auto'; // override salesforce default
+  @api showSearch = false;
   @api showRefreshButton = false;
   @api showSpinner = false;
   @api customHeight;
@@ -987,11 +988,24 @@ export default class Datatable extends LightningElement {
     return '';
   }
 
-  get refreshClass() {
-    let css = 'slds-p-left_x-small ';
-    if (!this.showTableActions) {
-      css += 'slds-p-right_small ';
+  // Always far left
+  get searchClass() {
+    let css = [];
+    if (this.showRefreshButton || this.showComposedActions || this.showTableActions) {
+      css.push('slds-p-right_x-small');
     }
-    return css;
+    if (!this.showRefreshButton && !this.showComposedActions && !this.showTableActions) {
+      css.push('slds-p-right_small');
+    }
+    return css.join(' ');
+  }
+
+  // Always one right from search
+  get refreshClass() {
+    let css = [];
+    if (!this.showComposedActions && !this.showTableActions) {
+      css.push('slds-p-right_small');
+    }
+    return css.join(' ');
   }
 }

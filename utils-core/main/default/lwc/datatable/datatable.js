@@ -290,8 +290,6 @@ export default class Datatable extends LightningElement {
     this._draftValuesMap = new Map();
     this._draftSuccessIds = new Set();
     this._fuseData = undefined;
-    this._hasEditablePicklist = false;
-    this._hasEditableLookup = false;
     this._originalTableData = [];
   }
 
@@ -313,8 +311,6 @@ export default class Datatable extends LightningElement {
 
   // private - global search
   _fuseData;
-  _hasEditablePicklist = false;
-  _hasEditableLookup = false;
   _originalTableData = [];
 
   // For future enhancements
@@ -324,7 +320,6 @@ export default class Datatable extends LightningElement {
       this._notifySingleError('getObjectInfo error', error);
     } else if (data) {
       this._objectInfo = data;
-      //console.log(this._objectInfo);
     }
   }
 
@@ -335,7 +330,6 @@ export default class Datatable extends LightningElement {
       this._notifySingleError('getActionConfig error', error);
     } else if (data) {
       this._actionConfigs = data;
-      //console.log(this._actionConfigs);
 
       // Table Actions
       this.primaryConfig = this._actionConfigs.find(cfg => cfg.Type__c === TABLE_ACTION_STRING && cfg.Order__c === 1);
@@ -364,6 +358,7 @@ export default class Datatable extends LightningElement {
       this._notifySingleError('getLookupEditConfig error', error);
     } else if (data) {
       this._lookupConfigData = data;
+      this._initializeLookupConfigData();
     }
   }
 
@@ -396,15 +391,13 @@ export default class Datatable extends LightningElement {
 
   // Keeps lexical scope correct
   handleEditableCellRendered = () => {
+    // This event is emitted from every editable cell, which is why needs to be debounced
     window.clearTimeout(this._delayEditableCellRendered);
     // eslint-disable-next-line @lwc/lwc/no-async-operation
     this._delayEditableCellRendered = setTimeout(() => {
-      if (this._hasEditableLookup) {
-        this._initializeLookupConfigData();
-      }
-      if (this._hasEditablePicklist) {
-        this._initializeRecordTypeIdData();
-      }
+      // Editable cells need these even if the pencil icon is not enabled
+      this._initializeLookupConfigData();
+      this._initializeRecordTypeIdData();
     }, 500);
   };
 
@@ -525,7 +518,6 @@ export default class Datatable extends LightningElement {
         }
       }
     };
-    //console.log(flowPayload);
     this.messageService.dialogService(flowPayload);
   }
 
@@ -660,11 +652,8 @@ export default class Datatable extends LightningElement {
       this._draftValuesMap.set(draft[this.keyField], { ...changedData, ...draft });
     });
 
-    //console.log(this._draftValuesMap);
-
     if (this._draftValuesMap.size > 0) {
       this.draftValues = [...this._draftValuesMap.values()];
-      //console.log(this.draftValues);
     }
   }
 
@@ -678,10 +667,8 @@ export default class Datatable extends LightningElement {
   // Avoid using the event because the payload doesn't have name compound fields
   async handleSave() {
     if (!this.isSaveToServer) {
-      //console.log(this.draftValues);
       // For collectionDatatable we just write user values to tableData, regardless of validation
       const rowKeyToDraftValuesMap = new Map(this.draftValues.map(draft => [draft[this.keyField], draft]));
-      //console.log(rowKeyToDraftValuesMap);
       // Sets draft values directly onto tableData
       this.tableData = this.tableData.map(row => {
         const rowDraftValues = rowKeyToDraftValuesMap.get(row[this.keyField]);
@@ -709,14 +696,9 @@ export default class Datatable extends LightningElement {
       ])
     );
 
-    //console.log(rowKeyToRowNumberMap);
-    //console.log(this.draftValues);
-
     // On partial save rows, this helps signal which rows succeeded by clearing them out
     this.showSpinner = true;
     const saveResults = await tableService.updateDraftValues(this.draftValues, rowKeyToRowNumberMap);
-
-    //console.log(saveResults);
 
     if (saveResults.errors.rows && Object.keys(saveResults.errors.rows).length) {
       this.saveErrors = saveResults.errors;
@@ -777,18 +759,8 @@ export default class Datatable extends LightningElement {
         }
       }
       if (col.type === 'customLookup') {
-        // Initiate apex wire adapter here before editable cells fully render
+        // Warm the getLookupConfig wire adapter before editable cells fully render
         this._lookupConfigDevName = this.lookupConfigDevName || DATATABLE_LOOKUP_CONFIG_DEFAULT;
-        // Supports global search
-        if (col.editable && !this._hasEditableLookup) {
-          this._hasEditableLookup = true;
-        }
-      }
-      if (col.type === 'customPicklist') {
-        // Supports global search
-        if (col.editable && !this._hasEditablePicklist) {
-          this._hasEditablePicklist = true;
-        }
       }
       finalColumns.push(col);
     }
@@ -865,7 +837,6 @@ export default class Datatable extends LightningElement {
 
   _getRowActions(row, doneCallback) {
     let actions = [];
-    //console.log(this.rowActionConfigs);
     // These are pre-sorted by order by server
     this.rowActionConfigs.forEach(cfg => {
       // "Native" actions
@@ -940,6 +911,7 @@ export default class Datatable extends LightningElement {
   }
 
   _initializeLookupConfigData() {
+    // Calling function assumes this._lookupConfigData is populated
     this.messageService.publish({ key: 'lookupconfigload', value: { lookupConfigs: this._lookupConfigData } });
   }
 

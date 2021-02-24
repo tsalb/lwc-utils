@@ -4,8 +4,8 @@
             "path": "utils-core",
             "default": true,
             "package": "LWC Utils",
-            "versionName": "ver 1.5.3",
-            "versionNumber": "1.5.3.NEXT",
+            "versionName": "ver 1.5.4",
+            "versionNumber": "1.5.4.NEXT",
             "postInstallUrl": "https://github.com/tsalb/lwc-utils/releases",
             "releaseNotesUrl": "https://github.com/tsalb/lwc-utils/releases"
         },
@@ -13,13 +13,13 @@
             "path": "utils-recipes",
             "default": false,
             "package": "LWC Utils Recipes",
-            "versionName": "ver 1.5.1",
-            "versionNumber": "1.5.1.NEXT",
+            "versionName": "ver 1.5.4",
+            "versionNumber": "1.5.4.NEXT",
             "postInstallUrl": "https://github.com/tsalb/lwc-utils/releases",
             "releaseNotesUrl": "https://github.com/tsalb/lwc-utils/releases",
             "dependencies": [
                 {
-                    "package": "LWC Utils@1.5.3-1"
+                    "package": "LWC Utils@1.5.4-1"
                 }
             ]
         }
@@ -29,26 +29,10 @@
     "sourceApiVersion": "51.0",
     "packageAliases": {
         "LWC Utils Recipes": "0Ho1Q000000blJnSAI",
-        "LWC Utils Recipes@1.0.0-0": "04t1Q000001QhP3QAK",
-        "LWC Utils Recipes@1.0.1-1": "04t1Q000001QhTFQA0",
-        "LWC Utils Recipes@1.1.0-2": "04t1Q000001QhWnQAK",
-        "LWC Utils Recipes@1.2.0-1": "04t1Q000001QhvYQAS",
-        "LWC Utils Recipes@1.4.0-1": "04t1Q000001Qhy3QAC",
-        "LWC Utils Recipes@1.5.0-1": "04t1Q000001Qi0xQAC",
-        "LWC Utils Recipes@1.5.1-1": "04t1Q000001Qi2PQAS",
+        "LWC Utils Recipes@1.5.4-1": "04t1Q000001Qi2jQAC",
         "LWC Utils": "0Ho1Q000000blJiSAI",
-        "LWC Utils@1.0.0-0": "04t1Q000001QhOyQAK",
-        "LWC Utils@1.0.1-1": "04t1Q000001QhRsQAK",
-        "LWC Utils@1.0.2-1": "04t1Q000001QhTAQA0",
-        "LWC Utils@1.1.0-1": "04t1Q000001QhWdQAK",
-        "LWC Utils@1.1.1-2": "04t1Q000001QhnjQAC",
-        "LWC Utils@1.2.0-1": "04t1Q000001QhtwQAC",
-        "LWC Utils@1.2.1-1": "04t1Q000001QhvEQAS",
-        "LWC Utils@1.3.0-1": "04t1Q000001QhvTQAS",
         "LWC Utils@1.4.0-3": "04t1Q000001QhyDQAS",
         "LWC Utils@1.5.0-1": "04t1Q000001Qi0sQAC",
-        "LWC Utils@1.5.1-2": "04t1Q000001Qi2KQAS",
-        "LWC Utils@1.5.2-1": "04t1Q000001Qi2UQAS",
-        "LWC Utils@1.5.3-1": "04t1Q000001Qi2ZQAS"
+        "LWC Utils@1.5.4-1": "04t1Q000001Qi2eQAC"
     }
 }

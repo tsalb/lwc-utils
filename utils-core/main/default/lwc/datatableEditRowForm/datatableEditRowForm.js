@@ -52,7 +52,7 @@ export default class DatatableEditRowForm extends LightningElement {
 
   handleSuccess() {
     this.messageService.notifySuccess('Successfully Updated');
-    this.messageService._refreshViewAndClose();
+    this._refreshViewAndClose();
   }
 
   _refreshViewAndClose() {

@@ -310,7 +310,6 @@ export default class SoqlDatatable extends LightningElement {
   }
 
   async fetchTableCache() {
-    this.showSpinner = true;
     let cache;
     try {
       cache = await tableService.fetchTableCache({ queryString: this._finalQueryString });
@@ -336,7 +335,13 @@ export default class SoqlDatatable extends LightningElement {
     }
   }
 
+  handleMessageRefresh() {
+    // This event is through messageService, so we need to mimic the actual button click
+    this.baseDatatable.refreshTable();
+  }
+
   handleRefresh() {
+    // This event is bubbled from playDatatable, so spinner was set there
     this.refreshTable();
   }
 

@@ -414,23 +414,23 @@ export default class Datatable extends LightningElement {
       return;
     }
     const searchText = event.detail.value;
-    // User cleared it out
-    if (!searchText) {
-      this.tableData = this._originalTableData;
-      return;
-    }
-    if (searchText.length >= 2) {
-      // Debounce the search for better UX
-      window.clearTimeout(this._delaySearch);
-      // eslint-disable-next-line @lwc/lwc/no-async-operation
-      this._delaySearch = setTimeout(() => {
+
+    // Debounce the entire search key enter process, guards against rapid filtering and clearing of input
+    window.clearTimeout(this._delaySearch);
+    // eslint-disable-next-line @lwc/lwc/no-async-operation
+    this._delaySearch = setTimeout(() => {
+      if (!searchText) {
+        this.tableData = this._originalTableData;
+        return;
+      }
+      if (searchText.length >= 2) {
         const results = this._fuseData.search(searchText);
         // Not sure why fuse returns hits higher than score, filter it out again here
         const indexHits = results.filter(obj => obj.score <= SEARCH_THRESHOLD).map(obj => obj.refIndex);
         // Even if there are no hits, we want that UX feedback to the user
         this.tableData = this._originalTableData.filter((row, index) => indexHits.includes(index));
-      }, 350);
-    }
+      }
+    }, 350);
   }
 
   handleRefresh() {

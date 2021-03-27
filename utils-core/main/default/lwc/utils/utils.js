@@ -38,6 +38,11 @@ const generateUUID = () => {
   });
 };
 
+const isRecordId = string => {
+  const re = new RegExp('[a-zA-Z0-9]{15}|[a-zA-Z0-9]{18}');
+  return !!string?.match(re);
+};
+
 const removeWhiteSpace = function () {
   return this.replaceAll(new RegExp('\\s+', 'g'), '');
 };
@@ -139,4 +144,4 @@ const reduceErrors = errors => {
   );
 };
 
-export { generateUUID, createFlattenedSetFromDelimitedString, convertToSingleLineString, reduceErrors };
+export { generateUUID, isRecordId, createFlattenedSetFromDelimitedString, convertToSingleLineString, reduceErrors };

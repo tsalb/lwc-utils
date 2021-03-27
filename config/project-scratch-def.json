@@ -2,13 +2,14 @@
   "orgName": "lwc-utils",
   "edition": "Developer",
   "hasSampleData": true,
-  "features": ["ProcessBuilder", "ForceComPlatform", "LightningServiceConsole"],
+  "features": ["ForceComPlatform", "LightningServiceConsole"],
   "settings": {
     "lightningExperienceSettings": {
-      "enableS1DesktopEnabled": true
+      "enableS1DesktopEnabled": true,
+      "enableAuraCDNPref": false
     },
-    "orgPreferenceSettings": {
-      "s1EncryptedStoragePref2": false
+    "mobileSettings": {
+      "enableS1EncryptedStoragePref2": false
     }
   }
 }

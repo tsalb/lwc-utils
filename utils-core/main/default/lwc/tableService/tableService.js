@@ -34,10 +34,7 @@ import getTableCache from '@salesforce/apex/DataTableService.getTableCache';
 import getQueryExceptionMessage from '@salesforce/apex/DataTableService.getQueryExceptionMessage';
 import { updateRecord } from 'lightning/uiRecordApi';
 import * as tableUtils from 'c/tableServiceUtils';
-
-const isRecordId = str => {
-  return str.length === 18 || str.length === 15;
-};
+import { isRecordId } from 'c/utils';
 
 const checkQueryException = async queryString => {
   // Here, we actually want to use await to denote a thenable value

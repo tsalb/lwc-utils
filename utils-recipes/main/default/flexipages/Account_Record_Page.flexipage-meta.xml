@@ -80,6 +80,10 @@
                     <value>true</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>showSearch</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>sortedDirection</name>
                     <value>asc</value>
                 </componentInstanceProperties>
@@ -132,6 +136,10 @@
                 <componentInstanceProperties>
                     <name>showRefreshButton</name>
                     <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showSearch</name>
+                    <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>sortedDirection</name>
@@ -188,6 +196,10 @@
                     <value>true</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>showSearch</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>sortedDirection</name>
                     <value>asc</value>
                 </componentInstanceProperties>
@@ -242,6 +254,10 @@
                     <value>true</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>showSearch</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>sortedDirection</name>
                     <value>asc</value>
                 </componentInstanceProperties>
@@ -262,10 +278,19 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>lwcContactDatatable</componentName>
+                <componentName>recordPagePublisher</componentName>
             </componentInstance>
         </itemInstances>
-        <name>Facet-867b732e-beb2-4844-a53f-833078ef1afa</name>
+        <name>Facet-ecc1ac3a-5aef-4e01-b56a-4bb2ffe005b0</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentName>recordPageSubscriber</componentName>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-wfm6nxgoplf</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -290,11 +315,24 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>body</name>
-                    <value>Facet-867b732e-beb2-4844-a53f-833078ef1afa</value>
+                    <value>Facet-ecc1ac3a-5aef-4e01-b56a-4bb2ffe005b0</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>title</name>
-                    <value>lwcContactDatatable</value>
+                    <value>MessageService Publish</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:tab</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-wfm6nxgoplf</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>title</name>
+                    <value>MessageService Sub</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
             </componentInstance>
@@ -310,24 +348,6 @@
                     <value>Facet-08499d5d-be1a-491f-860b-b89791c7d41f</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tabset</componentName>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>decorate</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>richTextValue</name>
-                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;MessageServiceHandler is placed below on the flexipage directly to handle any LMS events.&lt;/p&gt;</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:richText</componentName>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentName>MessageServiceHandler</componentName>
             </componentInstance>
         </itemInstances>
         <mode>Replace</mode>
@@ -387,6 +407,28 @@
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>decorate</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>richTextValue</name>
+                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;b&gt;MessageServiceHandler&lt;/b&gt; is below to handle messageService events. &lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;This one is using &lt;b&gt;$recordId&lt;/b&gt; as its boundary.&lt;/p&gt;</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:richText</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>customBoundary</name>
+                    <value>$recordId</value>
+                </componentInstanceProperties>
+                <componentName>MessageServiceHandler</componentName>
+            </componentInstance>
+        </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>

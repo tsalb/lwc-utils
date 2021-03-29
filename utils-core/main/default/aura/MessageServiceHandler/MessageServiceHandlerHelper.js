@@ -31,11 +31,14 @@
  */
 
 ({
+  messageService: function (component) {
+    return component.find('messageService');
+  },
   dialogService: function (component) {
     return component.find('dialogService');
   },
-  messageService: function (component) {
-    return component.find('messageService');
+  workspaceService: function (component) {
+    return component.find('workspaceService');
   },
   singleton: function (component) {
     return component.find('singleton');
@@ -73,14 +76,13 @@
       // nothing
     }
   },
-  // mainActionReference only works for aura components
   modal: function (component, config) {
     this.dialogService(component).modal(
       config.auraId,
       config.headerLabel,
       config.component,
       config.componentParams,
-      config.mainActionReference,
+      config.mainActionReference, // mainActionReference only works for aura components
       config.mainActionLabel
     );
   },
@@ -99,5 +101,34 @@
       config.component,
       config.componentParams
     );
+  },
+  executeWorkspaceApi: function (component, payload) {
+    switch (payload.method) {
+      case 'openTab':
+        this.workspaceService(component).openTab(payload.config);
+        break;
+      case 'openSubtab':
+        this.workspaceService(component).openSubtab(payload.config);
+        break;
+      case 'closeTabByTitle':
+        this.workspaceService(component).closeTabByTitle(payload.config);
+        break;
+      default:
+      // nothing
+    }
+  },
+  fireRecordEdit: function (component, payload) {
+    $A.get('e.force:editRecord').setParams({ recordId: payload.recordId }).fire();
+    this.singleton(component).setIsMessaging(false);
+  },
+  fireRecordCreate: function (component, payload) {
+    $A.get('e.force:createRecord')
+      .setParams({
+        entityApiName: payload.entityApiName,
+        recordTypeId: payload.recordTypeId,
+        defaultFieldValues: payload.defaultFieldValues
+      })
+      .fire();
+    this.singleton(component).setIsMessaging(false);
   }
 });

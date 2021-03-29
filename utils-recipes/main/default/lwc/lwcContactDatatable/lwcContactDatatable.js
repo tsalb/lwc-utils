@@ -32,8 +32,8 @@
 
 import { LightningElement, api, wire } from 'lwc';
 import { updateRecord } from 'lightning/uiRecordApi';
+import { refreshApex } from '@salesforce/apex';
 import wireContactsByAccountId from '@salesforce/apex/DataServiceCtrl.wireContactsByAccountId';
-import getContactsByAccountId from '@salesforce/apex/DataServiceCtrl.getContactsByAccountId';
 
 const TABLE_COLUMNS = [
   { label: 'Name', fieldName: 'Name', type: 'text', initialWidth: 110 },
@@ -152,7 +152,7 @@ export default class LwcContactDatatable extends LightningElement {
 
   async reloadTable() {
     try {
-      this.contacts.data = await getContactsByAccountId({ accountId: this._accountId });
+      await refreshApex(this.contacts);
     } catch (error) {
       this._messageService.notifySingleError('Error Reloading Table', error);
     }

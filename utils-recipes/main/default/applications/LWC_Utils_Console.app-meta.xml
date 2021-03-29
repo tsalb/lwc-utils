@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <content>LWC_Utils_Console_Home</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+        <pageOrSobjectType>standard-home</pageOrSobjectType>
+    </actionOverrides>
     <brand>
         <headerColor>#0070D2</headerColor>
         <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
     </brand>
-    <description>Samples using Record Flexipages</description>
+    <description>Examples with console tabs and record flexipages</description>
     <formFactors>Large</formFactors>
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
-    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavPersonalizationDisabled>true</isNavPersonalizationDisabled>
     <label>LWC Utils Console</label>
     <navType>Console</navType>
+    <setupExperience>all</setupExperience>
+    <tabs>standard-home</tabs>
     <tabs>standard-Account</tabs>
     <tabs>standard-Contact</tabs>
-    <tabs>standard-Opportunity</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>LWC_Utils_Console_UtilityBar</utilityBar>
     <workspaceConfig>
@@ -24,8 +33,7 @@
             <tab>standard-Contact</tab>
         </mappings>
         <mappings>
-            <fieldName>AccountId</fieldName>
-            <tab>standard-Opportunity</tab>
+            <tab>standard-home</tab>
         </mappings>
     </workspaceConfig>
 </CustomApplication>

@@ -49,7 +49,7 @@ const MAX_ROW_SELECTION = 200;
 const OBJECTS_WITH_COMPOUND_NAMES = ['Contact'];
 
 // Lower is less fuzzy / better hit result
-const SEARCH_THRESHOLD = 0.3;
+const SEARCH_THRESHOLD = 0.1;
 
 // Datatable_Action_Config__mdt
 const LEGACY_TABLE_ACTION_ONE_STRING = 'Primary';

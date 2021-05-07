@@ -4,8 +4,8 @@
             "path": "utils-core",
             "default": true,
             "package": "LWC Utils",
-            "versionName": "ver 1.5.4",
-            "versionNumber": "1.5.4.NEXT",
+            "versionName": "ver 1.6.0",
+            "versionNumber": "1.6.0.NEXT",
             "postInstallUrl": "https://github.com/tsalb/lwc-utils/releases",
             "releaseNotesUrl": "https://github.com/tsalb/lwc-utils/releases"
         },
@@ -13,13 +13,14 @@
             "path": "utils-recipes",
             "default": false,
             "package": "LWC Utils Recipes",
-            "versionName": "ver 1.5.4",
-            "versionNumber": "1.5.4.NEXT",
+            "versionName": "ver 1.6.0",
+            "versionNumber": "1.6.0.NEXT",
             "postInstallUrl": "https://github.com/tsalb/lwc-utils/releases",
             "releaseNotesUrl": "https://github.com/tsalb/lwc-utils/releases",
             "dependencies": [
                 {
-                    "package": "LWC Utils@1.5.4-1"
+                    "package": "LWC Utils",
+                    "versionNumber": "1.6.0.LATEST"
                 }
             ]
         }
@@ -29,10 +30,9 @@
     "sourceApiVersion": "51.0",
     "packageAliases": {
         "LWC Utils Recipes": "0Ho1Q000000blJnSAI",
-        "LWC Utils Recipes@1.5.4-1": "04t1Q000001Qi2jQAC",
+        "LWC Utils Recipes@1.6.0-1": "04t1Q000001MRpjQAG",
         "LWC Utils": "0Ho1Q000000blJiSAI",
-        "LWC Utils@1.4.0-3": "04t1Q000001QhyDQAS",
-        "LWC Utils@1.5.0-1": "04t1Q000001Qi0sQAC",
-        "LWC Utils@1.5.4-1": "04t1Q000001Qi2eQAC"
+        "LWC Utils@1.5.4-1": "04t1Q000001Qi2eQAC",
+        "LWC Utils@1.6.0-2": "04t1Q000001MRpeQAG"
     }
 }

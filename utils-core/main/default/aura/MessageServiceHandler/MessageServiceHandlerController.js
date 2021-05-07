@@ -37,8 +37,12 @@
       const messageService = helper.messageService(component);
       const recordId = component.get('v.recordId');
       const isRecordIdRequested = customBoundary === '$recordId';
-      const finalBoundary = isRecordIdRequested && recordId ? recordId : customBoundary;
-      messageService.set('v.useRecordIdAsBoundary', customBoundary === '$recordId');
+      // When recordId context is not available but was requested, leave messageService to its defaults
+      if (!recordId && isRecordIdRequested) {
+        return;
+      }
+      const finalBoundary = recordId && isRecordIdRequested ? recordId : customBoundary;
+      messageService.set('v.useRecordIdAsBoundary', recordId && isRecordIdRequested);
       messageService.set('v.boundary', finalBoundary);
     }
   },

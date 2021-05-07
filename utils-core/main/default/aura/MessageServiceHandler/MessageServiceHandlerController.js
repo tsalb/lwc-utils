@@ -31,6 +31,21 @@
  */
 
 ({
+  doInit: function (component, event, helper) {
+    const customBoundary = component.get('v.customBoundary');
+    if (!!customBoundary) {
+      const messageService = helper.messageService(component);
+      const recordId = component.get('v.recordId');
+      const isRecordIdRequested = customBoundary === '$recordId';
+      // When recordId context is not available but was requested, leave messageService to its defaults
+      if (!recordId && isRecordIdRequested) {
+        return;
+      }
+      const finalBoundary = recordId && isRecordIdRequested ? recordId : customBoundary;
+      messageService.set('v.useRecordIdAsBoundary', recordId && isRecordIdRequested);
+      messageService.set('v.boundary', finalBoundary);
+    }
+  },
   handleDialogService: function (component, event, helper) {
     const payload = event.getParam('value');
     const singleton = helper.singleton(component);
@@ -42,5 +57,38 @@
     singleton.setIsCreatingModal(true);
 
     helper.executeDialogService(component, payload);
+  },
+  handleWorkspaceApi: function (component, event, helper) {
+    const payload = event.getParam('value');
+    const singleton = helper.singleton(component);
+
+    if (singleton.getIsMessaging()) {
+      return;
+    }
+    singleton.setIsMessaging(true);
+
+    helper.executeWorkspaceApi(component, payload);
+  },
+  handleRecordEdit: function (component, event, helper) {
+    const payload = event.getParam('value');
+    const singleton = helper.singleton(component);
+
+    if (singleton.getIsMessaging()) {
+      return;
+    }
+    singleton.setIsMessaging(true);
+
+    helper.fireRecordEdit(component, payload);
+  },
+  handleRecordCreate: function (component, event, helper) {
+    const payload = event.getParam('value');
+    const singleton = helper.singleton(component);
+
+    if (singleton.getIsMessaging()) {
+      return;
+    }
+    singleton.setIsMessaging(true);
+
+    helper.fireRecordCreate(component, payload);
   }
 });

@@ -36,23 +36,36 @@ import OPEN_CHANNEL from '@salesforce/messageChannel/OpenChannel__c';
 
 // Toast
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { reduceErrors } from 'c/utils';
+import { reduceErrors, isRecordId } from 'c/utils';
 
 export default class MessageService extends LightningElement {
   @api boundary;
+  @api
+  get useRecordIdAsBoundary() {
+    return this._useRecordIdAsBoundary;
+  }
+  set useRecordIdAsBoundary(value = false) {
+    this._useRecordIdAsBoundary = value;
+  }
+
   subscription = null;
-  @wire(MessageContext) messageContext;
+
+  @wire(MessageContext)
+  messageContext;
 
   connectedCallback() {
     if (this.subscription) {
       return;
     }
-    this.subscription = subscribe(this.messageContext, OPEN_CHANNEL, payload => {
-      if (Object.prototype.hasOwnProperty.call(payload, 'boundary') && payload.boundary !== this.boundary) {
-        return;
-      }
-      this.dispatchEvent(new CustomEvent(payload.key, { detail: { value: payload.value } }));
-    });
+    // Always run this unless user configures MessageServiceHandler with customBoundary.
+    // Helps with adding some definition to backwards compatible usage of recordId as boundary.
+    if (!this.useRecordIdAsBoundary) {
+      this._useRecordIdAsBoundary = this.boundary && this._isBoundaryRecordId(this.boundary);
+    }
+    // Then, listen to subscriptions so long as they pass the dispatch conditions
+    this.subscription = subscribe(this.messageContext, OPEN_CHANNEL, payload =>
+      this._handleOpenChannelPayload(payload)
+    );
   }
 
   disconnectedCallback() {
@@ -63,6 +76,11 @@ export default class MessageService extends LightningElement {
   @api
   dialogService(payload) {
     this._messageServicePublish({ key: 'opendialog', value: payload });
+  }
+
+  @api
+  workspaceApi(payload) {
+    this.publish({ key: 'workspaceapi', value: payload });
   }
 
   @api
@@ -88,6 +106,16 @@ export default class MessageService extends LightningElement {
   forceRefreshView() {
     // eslint-disable-next-line no-eval
     eval("$A.get('e.force:refreshView').fire();");
+  }
+
+  @api
+  forceRecordEdit(recordIdPayload) {
+    this.publish({ key: 'recordedit', value: recordIdPayload });
+  }
+
+  @api
+  forceCreateRecord(entityApiName) {
+    this.publish({ key: 'recordcreate', value: entityApiName });
   }
 
   @api
@@ -124,7 +152,25 @@ export default class MessageService extends LightningElement {
     );
   }
 
-  // private
+  // private funcs
+
+  _handleOpenChannelPayload(payload) {
+    if (!this._hasBoundaryProp(payload)) {
+      this._dispatchKeyValueEvent(payload);
+    } else {
+      if (!this.useRecordIdAsBoundary && payload.boundary === this.boundary) {
+        this._dispatchKeyValueEvent(payload);
+      }
+      if (
+        this.useRecordIdAsBoundary &&
+        this._isBoundaryRecordId(this.boundary) &&
+        this._isBoundaryRecordId(payload.boundary) &&
+        payload.boundary === this.boundary
+      ) {
+        this._dispatchKeyValueEvent(payload);
+      }
+    }
+  }
 
   _messageServicePublish(payload) {
     publish(this.messageContext, OPEN_CHANNEL, { key: payload.key, value: payload.value });
@@ -132,5 +178,17 @@ export default class MessageService extends LightningElement {
 
   _messageServicePublishWithBoundary(payload) {
     publish(this.messageContext, OPEN_CHANNEL, { boundary: this.boundary, key: payload.key, value: payload.value });
+  }
+
+  _dispatchKeyValueEvent(payload) {
+    this.dispatchEvent(new CustomEvent(payload.key, { detail: { value: payload.value } }));
+  }
+
+  _hasBoundaryProp(payload) {
+    return Object.prototype.hasOwnProperty.call(payload, 'boundary');
+  }
+
+  _isBoundaryRecordId(boundary) {
+    return isRecordId(boundary);
   }
 }

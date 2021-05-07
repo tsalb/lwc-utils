@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-  <masterLabel>Contact Datatable (LWC)</masterLabel>
+  <masterLabel>Worksapce API Examples</masterLabel>
   <apiVersion>51.0</apiVersion>
   <isExposed>true</isExposed>
   <targets>
-    <target>lightning__AppPage</target>
+    <target>lightning__HomePage</target>
   </targets>
 </LightningComponentBundle>

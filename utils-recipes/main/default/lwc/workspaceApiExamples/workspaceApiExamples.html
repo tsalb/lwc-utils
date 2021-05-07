@@ -1,0 +1,40 @@
+<template>
+  <c-message-service
+    boundary="workspace_api_example"
+    onopentabresolve={handleOpenTabResolve}
+    onopensubtabresolve={handleOpenSubtabResolve}
+  ></c-message-service>
+
+  <lightning-card>
+    <lightning-layout horizontal-align="spread">
+      <lightning-layout-item padding="horizontal-small">
+        <lightning-button
+          label="Open Account as Primary Tab (no focus)"
+          onclick={handleOpenAccount}
+          disabled={isAccountIdNull}
+        ></lightning-button>
+      </lightning-layout-item>
+      <lightning-layout-item padding="horizontal-small">
+        <lightning-button
+          label="Open Contact as Secondary Tab (with focus)"
+          onclick={handleOpenContact}
+          disabled={isContactIdNull}
+        ></lightning-button>
+      </lightning-layout-item>
+      <lightning-layout-item padding="horizontal-small">
+        <lightning-layout vertical-align="end">
+          <lightning-input
+            variant="label-hidden"
+            class="tab-title-input slds-p-right_small"
+            onchange={handleInputChange}
+          ></lightning-input>
+          <lightning-button
+            label="Close Tab by Title"
+            onclick={handleCloseTab}
+            disabled={isInputEmpty}
+          ></lightning-button>
+        </lightning-layout>
+      </lightning-layout-item>
+    </lightning-layout>
+  </lightning-card>
+</template>

@@ -1,0 +1,7 @@
+<design:component label="Message Service Handler">
+  <design:attribute
+    name="customBoundary"
+    label="Custom Boundary"
+    description="Use any String or $recordId (if available, otherwise it will be null). Useful if you want granular control of which boundaries this handler can listen to."
+  />
+</design:component>

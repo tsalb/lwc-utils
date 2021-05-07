@@ -38,17 +38,22 @@ const generateUUID = () => {
   });
 };
 
-const removeWhiteSpace = function () {
-  return this.replaceAll(new RegExp('\\s+', 'g'), '');
+const isRecordId = string => {
+  const re = new RegExp('[a-zA-Z0-9]{15}|[a-zA-Z0-9]{18}');
+  return !!string?.match(re);
 };
 
-const flatten = function () {
-  return this.replaceAll(new RegExp('\\.', 'g'), '_');
+const removeWhiteSpace = value => {
+  return value ? value.replaceAll(new RegExp('\\s+', 'g'), '') : '';
+};
+
+const flatten = value => {
+  return value ? value.replaceAll(new RegExp('\\.', 'g'), '_') : '';
 };
 
 const createFlattenedSetFromDelimitedString = (string, delimiter) => {
-  const cleanString = removeWhiteSpace.call(string);
-  const flatString = flatten.call(cleanString);
+  const cleanString = removeWhiteSpace(string);
+  const flatString = flatten(cleanString);
   return new Set(flatString.split(delimiter));
 };
 
@@ -139,4 +144,4 @@ const reduceErrors = errors => {
   );
 };
 
-export { generateUUID, createFlattenedSetFromDelimitedString, convertToSingleLineString, reduceErrors };
+export { generateUUID, isRecordId, createFlattenedSetFromDelimitedString, convertToSingleLineString, reduceErrors };

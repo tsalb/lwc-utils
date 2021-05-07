@@ -1,7 +1,7 @@
 /**
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, james@sparkworks.io
+ * Copyright (c) 2021, james@sparkworks.io
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,17 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-let isCreating = false;
-let isMessaging = false;
-
-export const setIsCreatingModal = value => {
-  isCreating = value;
-};
-
-export const getIsCreatingModal = () => isCreating;
-
-export const setIsMessaging = value => {
-  isMessaging = value;
-};
-
-export const getIsMessaging = () => isMessaging;
+({
+  messageService: function (component) {
+    return component.find('messageService');
+  },
+  singleton: function (component) {
+    return component.find('singleton');
+  },
+  workspaceApi: function (component) {
+    return component.find('workspaceApi');
+  }
+});

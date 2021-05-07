@@ -1,0 +1,17 @@
+<aura:component>
+  <c:messageService aura:id="messageService"></c:messageService>
+  <c:singleton aura:id="singleton" />
+  <lightning:workspaceAPI aura:id="workspaceApi" />
+
+  <aura:method name="openTab" action="{! c.handleOpenTab }">
+    <aura:attribute name="config" type="Object" />
+  </aura:method>
+
+  <aura:method name="openSubtab" action="{! c.handleOpenSubtab }">
+    <aura:attribute name="config" type="Object" />
+  </aura:method>
+
+  <aura:method name="closeTabByTitle" action="{! c.handleCloseTabByTitle }">
+    <aura:attribute name="config" type="Object" />
+  </aura:method>
+</aura:component>

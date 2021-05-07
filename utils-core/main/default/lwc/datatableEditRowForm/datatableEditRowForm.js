@@ -46,11 +46,13 @@ export default class DatatableEditRowForm extends LightningElement {
     this.showSpinner = false;
   }
 
-  handleCancel() {
+  handleCancel(event) {
+    event.preventDefault();
     this.messageService.notifyClose();
   }
 
-  handleSuccess() {
+  handleSuccess(event) {
+    event.preventDefault();
     this.messageService.notifySuccess('Successfully Updated');
     this._refreshViewAndClose();
   }

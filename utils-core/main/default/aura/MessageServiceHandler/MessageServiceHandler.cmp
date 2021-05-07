@@ -1,5 +1,19 @@
-<aura:component implements="flexipage:availableForAllPageTypes, lightning:utilityItem" access="global">
-  <c:DialogService aura:id="dialogService" />
-  <c:messageService aura:id="messageService" onopendialog="{! c.handleDialogService }" />
+<aura:component
+  implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,lightning:utilityItem,force:hasRecordId"
+  access="global"
+>
+  <c:messageService
+    aura:id="messageService"
+    onopendialog="{! c.handleDialogService }"
+    onworkspaceapi="{! c.handleWorkspaceApi }"
+    onrecordedit="{! c.handleRecordEdit }"
+    onrecordcreate="{! c.handleRecordCreate }"
+  />
+
   <c:singleton aura:id="singleton" />
+  <c:dialogService aura:id="dialogService" />
+  <c:workspaceService aura:id="workspaceService" />
+
+  <aura:attribute name="customBoundary" type="String" />
+  <aura:handler name="init" value="{! this }" action="{! c.doInit }" />
 </aura:component>

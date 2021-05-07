@@ -33,6 +33,7 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import { getRecord } from 'lightning/uiRecordApi';
+import Id from '@salesforce/user/Id';
 import * as tableService from 'c/tableService';
 import { generateUUID } from 'c/utils';
 
@@ -263,6 +264,9 @@ export default class SoqlDatatable extends LightningElement {
     }
     if (this.queryString.includes('$recordId')) {
       this.queryString = this.queryString.replace(/\$recordId/g, `'${this.recordId}'`);
+    }
+    if (this.queryString.includes('$CurrentUserId')) {
+      this.queryString = this.queryString.replace(/\$CurrentUserId/g, `'${Id}'`);
     }
     // Backwards compat, this needs to go second since syntax above is preferred
     if (this.queryString.includes('recordId')) {

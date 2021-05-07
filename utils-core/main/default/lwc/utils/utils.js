@@ -43,17 +43,17 @@ const isRecordId = string => {
   return !!string?.match(re);
 };
 
-const removeWhiteSpace = function () {
-  return this.replaceAll(new RegExp('\\s+', 'g'), '');
+const removeWhiteSpace = value => {
+  return value ? value.replaceAll(new RegExp('\\s+', 'g'), '') : '';
 };
 
-const flatten = function () {
-  return this.replaceAll(new RegExp('\\.', 'g'), '_');
+const flatten = value => {
+  return value ? value.replaceAll(new RegExp('\\.', 'g'), '_') : '';
 };
 
 const createFlattenedSetFromDelimitedString = (string, delimiter) => {
-  const cleanString = removeWhiteSpace.call(string);
-  const flatString = flatten.call(cleanString);
+  const cleanString = removeWhiteSpace(string);
+  const flatString = flatten(cleanString);
   return new Set(flatString.split(delimiter));
 };
 

@@ -40,7 +40,7 @@
         </inputParameters>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
-    <apiVersion>51.0</apiVersion>
+    <apiVersion>52.0</apiVersion>
     <assignments>
         <name>Check_Count</name>
         <label>Check Count</label>

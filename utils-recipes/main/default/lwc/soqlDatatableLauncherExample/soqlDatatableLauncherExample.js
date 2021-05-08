@@ -31,7 +31,7 @@
  */
 
 import { LightningElement } from 'lwc';
-import { convertToSingleLineString } from 'c/utils';
+import { convertToSingleLineString } from 'c/baseUtils';
 
 export default class SoqlDatatableLauncherExample extends LightningElement {
   handleOpenDialog() {

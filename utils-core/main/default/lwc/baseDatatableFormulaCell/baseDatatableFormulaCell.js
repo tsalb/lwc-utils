@@ -1,4 +1,3 @@
-<!--
 /**
  * BSD 3-Clause License
  *
@@ -30,40 +29,38 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
--->
 
-<template>
-  <c-message-service boundary={uniqueBoundary} onrefreshsoqldatatable={handleMessageRefresh}></c-message-service>
+import { LightningElement, api } from 'lwc';
 
-  <c-base-datatable
-    unique-boundary={uniqueBoundary}
-    is-save-to-server
-    key-field="Id"
-    title={title}
-    record-id={recordId}
-    show-record-count={showRecordCount}
-    show-search={showSearch}
-    show-refresh-button={showRefreshButton}
-    checkbox-type={checkboxType}
-    editable-fields={editableFields}
-    sortable-fields={sortableFields}
-    sorted-by={sortedBy}
-    sorted-direction={sortedDirection}
-    onrowselection={handleRowSelection}
-    onrefresh={handleRefresh}
-    show-spinner={showSpinner}
-    action-config-dev-name={actionConfigDevName}
-    lookup-config-dev-name={lookupConfigDevName}
-    column-labels={columnLabels}
-    custom-height={customHeight}
-    custom-relative-max-height={customRelativeMaxHeight}
-    use-relative-max-height={useRelativeMaxHeight}
-    use-load-style-hack-for-overflow={useLoadStyleHackForOverflow}
-  >
-    <template if:true={showComposedActions}>
-      <div slot="composedActions">
-        <slot name="composedActions"></slot>
-      </div>
-    </template>
-  </c-base-datatable>
-</template>
+export default class BaseDatatableFormulaCell extends LightningElement {
+  // LWC specific
+  @api isHtmlFormula;
+
+  // Defaults for custom data type
+  @api value; // comes in from datatable as the value of the name field
+  @api tableBoundary;
+  @api rowKeyAttribute;
+  @api rowKeyValue;
+  @api objectApiName;
+  @api columnName;
+  @api fieldApiName;
+
+  // private
+  _isRendered;
+
+  get container() {
+    return this.template.querySelector('.container');
+  }
+
+  renderedCallback() {
+    if (this._isRendered) {
+      return;
+    }
+    this._isRendered = true;
+    if (this.isHtmlFormula && this.value) {
+      // We want to specifically target the inner html here, ignore the linter
+      // eslint-disable-next-line @lwc/lwc/no-inner-html
+      this.container.innerHTML = this.value;
+    }
+  }
+}

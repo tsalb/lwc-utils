@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import { reduceErrors } from 'c/utils';
+import { reduceErrors } from 'c/baseUtils';
 
 const flattenObject = (propName, obj) => {
   let flatObject = {};

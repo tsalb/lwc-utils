@@ -1,4 +1,3 @@
-<!--
 /**
  * BSD 3-Clause License
  *
@@ -30,40 +29,37 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
--->
 
-<template>
-  <c-message-service boundary={uniqueBoundary} onrefreshsoqldatatable={handleMessageRefresh}></c-message-service>
+import { LightningElement, api } from 'lwc';
 
-  <c-base-datatable
-    unique-boundary={uniqueBoundary}
-    is-save-to-server
-    key-field="Id"
-    title={title}
-    record-id={recordId}
-    show-record-count={showRecordCount}
-    show-search={showSearch}
-    show-refresh-button={showRefreshButton}
-    checkbox-type={checkboxType}
-    editable-fields={editableFields}
-    sortable-fields={sortableFields}
-    sorted-by={sortedBy}
-    sorted-direction={sortedDirection}
-    onrowselection={handleRowSelection}
-    onrefresh={handleRefresh}
-    show-spinner={showSpinner}
-    action-config-dev-name={actionConfigDevName}
-    lookup-config-dev-name={lookupConfigDevName}
-    column-labels={columnLabels}
-    custom-height={customHeight}
-    custom-relative-max-height={customRelativeMaxHeight}
-    use-relative-max-height={useRelativeMaxHeight}
-    use-load-style-hack-for-overflow={useLoadStyleHackForOverflow}
-  >
-    <template if:true={showComposedActions}>
-      <div slot="composedActions">
-        <slot name="composedActions"></slot>
-      </div>
-    </template>
-  </c-base-datatable>
-</template>
+export default class BaseDatatableNameCell extends LightningElement {
+  // Properties specific to this cell type
+  @api
+  get href() {
+    if (!this.value) {
+      return null;
+    }
+    if (this._href) {
+      return this._href;
+    }
+    if (this.value.startsWith('/')) {
+      return this.value;
+    }
+    return `/${this.value}`;
+  }
+  set href(value) {
+    this._href = value && value.startsWith('/') ? value : `/${value}`;
+  }
+  @api target = '_parent';
+
+  // Required properties for datatable-edit-cell
+  @api value; // comes in from datatable as the value of the name field
+  @api tableBoundary;
+  @api rowKeyAttribute;
+  @api rowKeyValue;
+  @api isEditable;
+  @api objectApiName;
+  @api columnName;
+  @api fieldApiName;
+  @api isCompoundName;
+}

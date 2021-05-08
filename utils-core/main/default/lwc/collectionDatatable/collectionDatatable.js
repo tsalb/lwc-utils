@@ -33,7 +33,7 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord } from 'lightning/uiRecordApi';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
-import { generateUUID, reduceErrors, createFlattenedSetFromDelimitedString } from 'c/utils';
+import { generateUUID, reduceErrors, createFlattenedSetFromDelimitedString } from 'c/baseUtils';
 
 // Background services from apex
 import getDisplayTypeMap from '@salesforce/apex/DataTableService.getDisplayTypeMap';
@@ -188,7 +188,9 @@ export default class CollectionDatatable extends LightningElement {
       });
 
       // We initialize the table first and let its editable cell events do the rest
-      this.template.querySelector('c-datatable').initializeTable(this._objectApiName, columns, this.recordCollection);
+      this.template
+        .querySelector('c-base-datatable')
+        .initializeTable(this._objectApiName, columns, this.recordCollection);
     }
   }
 

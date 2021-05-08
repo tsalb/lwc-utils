@@ -33,37 +33,20 @@
 -->
 
 <template>
-  <c-message-service boundary={uniqueBoundary} onrefreshsoqldatatable={handleMessageRefresh}></c-message-service>
-
-  <c-base-datatable
-    unique-boundary={uniqueBoundary}
-    is-save-to-server
-    key-field="Id"
-    title={title}
-    record-id={recordId}
-    show-record-count={showRecordCount}
-    show-search={showSearch}
-    show-refresh-button={showRefreshButton}
-    checkbox-type={checkboxType}
-    editable-fields={editableFields}
-    sortable-fields={sortableFields}
-    sorted-by={sortedBy}
-    sorted-direction={sortedDirection}
-    onrowselection={handleRowSelection}
-    onrefresh={handleRefresh}
-    show-spinner={showSpinner}
-    action-config-dev-name={actionConfigDevName}
-    lookup-config-dev-name={lookupConfigDevName}
-    column-labels={columnLabels}
-    custom-height={customHeight}
-    custom-relative-max-height={customRelativeMaxHeight}
-    use-relative-max-height={useRelativeMaxHeight}
-    use-load-style-hack-for-overflow={useLoadStyleHackForOverflow}
+  <c-base-datatable-editable-cell
+    table-boundary={tableBoundary}
+    original-value={value}
+    display-cell-value-prop="label"
+    edit-cell-value-prop="value"
+    is-editable={isEditable}
+    row-key-attribute={rowKeyAttribute}
+    row-key-value={rowKeyValue}
+    object-api-name={objectApiName}
+    column-name={columnName}
+    field-api-name={fieldApiName}
+    is-compound-name={isCompoundName}
   >
-    <template if:true={showComposedActions}>
-      <div slot="composedActions">
-        <slot name="composedActions"></slot>
-      </div>
-    </template>
-  </c-base-datatable>
+    <lightning-formatted-url slot="displayCell" value={href} label={value} target={target}></lightning-formatted-url>
+    <lightning-input slot="editCell" variant="label-hidden" value={value}></lightning-input>
+  </c-base-datatable-editable-cell>
 </template>

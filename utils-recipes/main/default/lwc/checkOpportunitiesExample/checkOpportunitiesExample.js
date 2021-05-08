@@ -31,7 +31,7 @@
  */
 
 import { LightningElement, api } from 'lwc';
-import { convertToSingleLineString } from 'c/utils';
+import { convertToSingleLineString } from 'c/baseUtils';
 
 export default class CheckOpportunitiesExample extends LightningElement {
   // These should always be included when creating LWCs from the LWC Table Action

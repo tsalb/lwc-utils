@@ -15,7 +15,6 @@
     <tabs>SOQL_Datatable</tabs>
     <tabs>Aggregate_SOQL_Datatable</tabs>
     <tabs>Collection_Datatable</tabs>
-    <tabs>LWC_Launching_Flow</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>LWC_Utils_UtilityBar</utilityBar>
 </CustomApplication>

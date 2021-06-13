@@ -323,6 +323,7 @@ export default class SoqlDatatable extends LightningElement {
   }
 
   initializeTable(cache) {
+    // console.log(JSON.parse(JSON.stringify(cache)));
     this.baseDatatable.initializeTable(cache.objectApiName, cache.tableColumns, cache.tableData);
   }
 

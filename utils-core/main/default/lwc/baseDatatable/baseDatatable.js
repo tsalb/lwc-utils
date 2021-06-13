@@ -48,8 +48,10 @@ const COLUMN_LABEL_DELIMITER = '=>';
 const MAX_ROW_SELECTION = 200;
 const OBJECTS_WITH_COMPOUND_NAMES = ['Contact'];
 
-// Lower is less fuzzy / better hit result
-const SEARCH_THRESHOLD = 0.1;
+// Fuse Config
+const INCLUDE_SCORE = true;
+const IGNORE_LOCATION = true;
+const SEARCH_THRESHOLD = 0.2; // Lower is less fuzzy
 
 // Datatable_Action_Config__mdt
 const LEGACY_TABLE_ACTION_ONE_STRING = 'Primary';
@@ -902,8 +904,8 @@ export default class BaseDatatable extends LightningElement {
         !fieldName.toLowerCase().includes('id')
     );
     const options = {
-      includeScore: true,
-      ignoreLocation: true,
+      includeScore: INCLUDE_SCORE,
+      ignoreLocation: IGNORE_LOCATION,
       threshold: SEARCH_THRESHOLD, // default is 0.6, this makes it less fuzzy
       keys: searchKeys
     };

@@ -58,10 +58,6 @@
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
-        <tab>LWC_Launching_Flow</tab>
-        <visibility>DefaultOn</visibility>
-    </tabVisibilities>
-    <tabVisibilities>
         <tab>Aggregate_SOQL_Datatable</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>

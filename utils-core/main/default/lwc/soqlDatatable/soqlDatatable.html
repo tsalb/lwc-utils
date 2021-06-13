@@ -35,7 +35,7 @@
 <template>
   <c-message-service boundary={uniqueBoundary} onrefreshsoqldatatable={handleMessageRefresh}></c-message-service>
 
-  <c-datatable
+  <c-base-datatable
     unique-boundary={uniqueBoundary}
     is-save-to-server
     key-field="Id"
@@ -65,5 +65,5 @@
         <slot name="composedActions"></slot>
       </div>
     </template>
-  </c-datatable>
+  </c-base-datatable>
 </template>

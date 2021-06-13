@@ -35,14 +35,13 @@ import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import { getRecord } from 'lightning/uiRecordApi';
 import Id from '@salesforce/user/Id';
 import * as tableService from 'c/tableService';
-import { generateUUID } from 'c/utils';
+import { reduceErrors, generateUUID } from 'c/baseUtils';
 
 // Flow specific imports
 import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
 
 // Toast and Errors
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { reduceErrors } from 'c/utils';
 
 const DIRECT_MERGE_DATA_TYPES = [
   'anytype',
@@ -139,7 +138,7 @@ export default class SoqlDatatable extends LightningElement {
   }
 
   get baseDatatable() {
-    return this.template.querySelector('c-datatable');
+    return this.template.querySelector('c-base-datatable');
   }
 
   get showSpinner() {
@@ -324,6 +323,7 @@ export default class SoqlDatatable extends LightningElement {
   }
 
   initializeTable(cache) {
+    // console.log(JSON.parse(JSON.stringify(cache)));
     this.baseDatatable.initializeTable(cache.objectApiName, cache.tableColumns, cache.tableData);
   }
 

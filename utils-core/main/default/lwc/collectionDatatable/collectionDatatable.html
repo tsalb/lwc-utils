@@ -35,7 +35,7 @@
 <template>
   <c-message-service boundary={uniqueBoundary}></c-message-service>
 
-  <c-datatable
+  <c-base-datatable
     unique-boundary={uniqueBoundary}
     key-field="Id"
     title={title}
@@ -58,5 +58,5 @@
         <slot name="composedActions"></slot>
       </div>
     </template>
-  </c-datatable>
+  </c-base-datatable>
 </template>

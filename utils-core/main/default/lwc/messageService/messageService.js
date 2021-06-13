@@ -36,7 +36,7 @@ import OPEN_CHANNEL from '@salesforce/messageChannel/OpenChannel__c';
 
 // Toast
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { reduceErrors, isRecordId } from 'c/utils';
+import { reduceErrors, isRecordId } from 'c/baseUtils';
 
 export default class MessageService extends LightningElement {
   @api boundary;

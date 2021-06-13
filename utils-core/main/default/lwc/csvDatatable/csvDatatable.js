@@ -34,7 +34,7 @@ import { LightningElement, api, wire } from 'lwc';
 import { getRecord } from 'lightning/uiRecordApi';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { reduceErrors, convertToSingleLineString } from 'c/utils';
+import { reduceErrors, convertToSingleLineString } from 'c/baseUtils';
 
 import Fuse from 'c/fuseBasic';
 import papaParseLib from '@salesforce/resourceUrl/papa_parse_5_0_2';

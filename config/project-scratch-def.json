@@ -1,7 +1,6 @@
 {
   "orgName": "lwc-utils",
   "edition": "Developer",
-  "release": "Preview",
   "hasSampleData": true,
   "features": ["ForceComPlatform", "LightningServiceConsole"],
   "settings": {

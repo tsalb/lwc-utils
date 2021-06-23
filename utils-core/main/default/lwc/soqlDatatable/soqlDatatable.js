@@ -171,13 +171,13 @@ export default class SoqlDatatable extends LightningElement {
     } else if (data) {
       this._objectInfo = data;
 
-      // Salesforce already returns the object icon URL in objectInfo, but lwc needs it in a different format, so parse the URL
-      // Example: objectInfo returns 'https://fun-momentum-3772-dev-ed.cs43.my.salesforce.com/img/icon/t4v35/standard/account_120.png';
-      //          but lightning-card expects the icon to be specified as 'standard:account'
-      let iconUrlFragments = this._objectInfo.themeInfo.iconUrl.split('/');
-      let iconType = iconUrlFragments[iconUrlFragments.length - 2];
-      let icon = iconUrlFragments[iconUrlFragments.length - 1].replace('_120.png', '');
       if (!this.iconName) {
+        // Salesforce already returns the object icon URL in objectInfo, but lwc needs it in a different format, so parse the URL
+        // Example: objectInfo returns 'https://fun-momentum-3772-dev-ed.cs43.my.salesforce.com/img/icon/t4v35/standard/account_120.png';
+        //          but lightning-card expects the icon to be specified as 'standard:account'
+        let iconUrlFragments = this._objectInfo.themeInfo.iconUrl.split('/');
+        let iconType = iconUrlFragments[iconUrlFragments.length - 2];
+        let icon = iconUrlFragments[iconUrlFragments.length - 1].replace('_120.png', '');
         this.iconName = iconType + ':' + icon;
       }
 

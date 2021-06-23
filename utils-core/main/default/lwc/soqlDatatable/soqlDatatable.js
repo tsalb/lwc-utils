@@ -77,6 +77,7 @@ export default class SoqlDatatable extends LightningElement {
 
   @api isRecordBind = false;
   @api title;
+  @api iconName;
   @api showRecordCount = false;
   @api showSearch = false;
   @api showRefreshButton = false;
@@ -169,7 +170,16 @@ export default class SoqlDatatable extends LightningElement {
       this._notifySingleError('getObjectInfo error', error);
     } else if (data) {
       this._objectInfo = data;
-      //console.log(this._objectInfo);
+
+      // Salesforce already returns the object icon URL in objectInfo, but lwc needs it in a different format, so parse the URL
+      // Example: objectInfo returns 'https://fun-momentum-3772-dev-ed.cs43.my.salesforce.com/img/icon/t4v35/standard/account_120.png';
+      //          but lightning-card expects the icon to be specified as 'standard:account'
+      let iconUrlFragments = this._objectInfo.themeInfo.iconUrl.split('/');
+      let iconType = iconUrlFragments[iconUrlFragments.length - 2];
+      let icon = iconUrlFragments[iconUrlFragments.length - 1].replace('_120.png', '');
+      if (!this.iconName) {
+        this.iconName = iconType + ':' + icon;
+      }
 
       // For cleaning columns on output
       this._objectFieldsMap = new Map(Object.entries(this._objectInfo.fields));

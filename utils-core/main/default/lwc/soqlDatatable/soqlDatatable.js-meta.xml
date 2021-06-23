@@ -13,6 +13,7 @@
   <targetConfigs>
     <targetConfig targets="lightning__AppPage, lightning__HomePage">
       <property name="title" label="Title" type="String"/>
+      <property name="iconName" label="Icon" type="String"/>
       <property name="showRecordCount" label="Show Record Count" type="Boolean" default="false"/>
       <property name="showSearch" label="Show Search" type="Boolean" default="false"/>
       <property name="showRefreshButton" label="Show Refresh" type="Boolean" default="false"/>
@@ -32,6 +33,7 @@
     <targetConfig targets="lightning__RecordPage">
       <property name="isRecordBind" label="Enable $CurrentRecord API" type="Boolean" description="Allows merge of current record field values directly to SOQL. User must have FLS access." default="true"/>
       <property name="title" label="Title" type="String"/>
+      <property name="iconName" label="Icon" type="String"/>
       <property name="showRecordCount" label="Show Record Count" type="Boolean" default="false"/>
       <property name="showSearch" label="Show Search" type="Boolean" default="false"/>
       <property name="showRefreshButton" label="Show Refresh" type="Boolean" default="false"/>
@@ -52,6 +54,7 @@
       <propertyType name="sObj" extends="SObject" label="Object"/>
       <property name="recordId" label="Record Id" description="Must be a 15 or 18 digit SObject Id. Allows use of $recordId in your SOQL to merge to this value." type="String" role="inputOnly"/>
       <property name="title" label="Title" type="String" role="inputOnly"/>
+      <property name="iconName" label="Icon" type="String" role="inputOnly"/>
       <property name="showRecordCount" label="Show Record Count" type="Boolean" role="inputOnly" default="false"/>
       <property name="showSearch" label="Show Search" type="Boolean" default="false"/>
       <property name="queryString" label="SOQL String" type="String" default="SELECT ... FROM ..." description="Use $recordId in your SOQL to bind to the Record Id given. Alternatively, use a String Formula to merge flow variables to create Dynamic SOQL. $CurrentRecord API is not supported in Screen Flows." required="true" role="inputOnly"/>

@@ -77,6 +77,7 @@ export default class SoqlDatatable extends LightningElement {
 
   @api isRecordBind = false;
   @api title;
+  @api iconName;
   @api showRecordCount = false;
   @api showSearch = false;
   @api showRefreshButton = false;
@@ -169,7 +170,10 @@ export default class SoqlDatatable extends LightningElement {
       this._notifySingleError('getObjectInfo error', error);
     } else if (data) {
       this._objectInfo = data;
-      //console.log(this._objectInfo);
+
+      if (!this.iconName) {
+        this.iconName = this._extractCardIconNameFromObjectInfo(); // outputs 'standard:account'
+      }
 
       // For cleaning columns on output
       this._objectFieldsMap = new Map(Object.entries(this._objectInfo.fields));
@@ -350,6 +354,16 @@ export default class SoqlDatatable extends LightningElement {
   }
 
   // Private functions
+
+  _extractCardIconNameFromObjectInfo() {
+    // objectInfo iconUrl example: 'https://fun-momentum-3772-dev-ed.cs43.my.salesforce.com/img/icon/t4v35/standard/account_120.png';
+    if (this._objectInfo.themeInfo.iconUrl) {
+      let iconUrlFragments = this._objectInfo.themeInfo.iconUrl.split('/');
+      let iconType = iconUrlFragments[iconUrlFragments.length - 2]; // outputs 'standard'
+      let icon = iconUrlFragments[iconUrlFragments.length - 1].replace('_120.png', ''); // outputs 'account'
+      this.iconName = iconType + ':' + icon;
+    }
+  }
 
   _getCleanRow(row) {
     for (let fieldName in row) {

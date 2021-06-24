@@ -76,6 +76,7 @@ export default class BaseDatatable extends LightningElement {
     this._keyField = value;
   }
   @api title;
+  @api iconName;
   @api showRecordCount = false;
 
   // MessageService boundary, for when multiple instances are on same page

@@ -61,6 +61,11 @@
     use-relative-max-height={useRelativeMaxHeight}
     use-load-style-hack-for-overflow={useLoadStyleHackForOverflow}
   >
+    <template if:true={showComposedTitle}>
+      <div slot="composedTitle">
+        <slot name="composedTitle"></slot>
+      </div>
+    </template>
     <template if:true={showComposedActions}>
       <div slot="composedActions">
         <slot name="composedActions"></slot>

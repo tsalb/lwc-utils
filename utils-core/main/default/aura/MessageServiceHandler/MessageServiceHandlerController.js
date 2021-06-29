@@ -90,5 +90,8 @@
     singleton.setIsMessaging(true);
 
     helper.fireRecordCreate(component, payload);
+  },
+  handleFlowForceRefreshView: function (component, event, helper) {
+    helper.messageService(component).forceRefreshView();
   }
 });

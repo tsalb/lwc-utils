@@ -8,6 +8,7 @@
     onworkspaceapi="{! c.handleWorkspaceApi }"
     onrecordedit="{! c.handleRecordEdit }"
     onrecordcreate="{! c.handleRecordCreate }"
+    onflowforcerefreshview="{! c.handleFlowForceRefreshView }"
   />
 
   <c:singleton aura:id="singleton" />

@@ -130,6 +130,10 @@ export default class SoqlDatatable extends LightningElement {
     return this._uniqueBoundary;
   }
 
+  get composedTitleSlot() {
+    return this.template.querySelector('slot[name=composedTitle]');
+  }
+
   get composedActionSlot() {
     return this.template.querySelector('slot[name=composedActions]');
   }
@@ -149,6 +153,7 @@ export default class SoqlDatatable extends LightningElement {
     this._showSpinner = value;
   }
   isLargeFlow = false;
+  showComposedTitle = true;
   showComposedActions = true;
 
   // private
@@ -170,15 +175,8 @@ export default class SoqlDatatable extends LightningElement {
       this._notifySingleError('getObjectInfo error', error);
     } else if (data) {
       this._objectInfo = data;
-
-      if (!this.iconName) {
-        this.iconName = this._extractCardIconNameFromObjectInfo(); // outputs 'standard:account'
-      }
-
       // For cleaning columns on output
       this._objectFieldsMap = new Map(Object.entries(this._objectInfo.fields));
-      //console.log(this._objectFieldsMap);
-
       // For merge values in the queryString
       if (this.isRecordBind && this.queryString.includes('$CurrentRecord')) {
         this._getRecordFields = Array.from(this._mergeMap.values()).map(config => config.objectQualifiedFieldApiName);
@@ -216,6 +214,7 @@ export default class SoqlDatatable extends LightningElement {
 
   @api
   async refreshTable() {
+    this.baseDatatable.forceShowSpinner();
     const cache = await this.fetchTableCache();
     if (cache) {
       // Currently on App flexipage or $CurrentRecord API not enabled
@@ -228,6 +227,7 @@ export default class SoqlDatatable extends LightningElement {
 
   @api
   async refreshTableWithQueryString(queryString) {
+    this.baseDatatable.forceShowSpinner();
     this._finalQueryString = queryString
       .replace(new RegExp('select ', 'ig'), 'SELECT ')
       .replace(new RegExp(' from ', 'ig'), ' FROM ')
@@ -303,6 +303,7 @@ export default class SoqlDatatable extends LightningElement {
       return;
     }
     this._isRendered = true;
+    this.showComposedTitle = this.composedTitleSlot && this.composedTitleSlot.assignedElements().length !== 0;
     this.showComposedActions = this.composedActionSlot && this.composedActionSlot.assignedElements().length !== 0;
   }
 
@@ -354,16 +355,6 @@ export default class SoqlDatatable extends LightningElement {
   }
 
   // Private functions
-
-  _extractCardIconNameFromObjectInfo() {
-    // objectInfo iconUrl example: 'https://fun-momentum-3772-dev-ed.cs43.my.salesforce.com/img/icon/t4v35/standard/account_120.png';
-    if (this._objectInfo.themeInfo.iconUrl) {
-      let iconUrlFragments = this._objectInfo.themeInfo.iconUrl.split('/');
-      let iconType = iconUrlFragments[iconUrlFragments.length - 2]; // outputs 'standard'
-      let icon = iconUrlFragments[iconUrlFragments.length - 1].replace('_120.png', ''); // outputs 'account'
-      this.iconName = iconType + ':' + icon;
-    }
-  }
 
   _getCleanRow(row) {
     for (let fieldName in row) {

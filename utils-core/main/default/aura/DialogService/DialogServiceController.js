@@ -140,6 +140,8 @@
   },
   createOverlayModalWithEventFooter: function (component, event, helper) {
     let params = event.getParam('arguments');
+    let singleton = component.find('singleton');
+
     helper.createBody(
       component,
       params,
@@ -150,6 +152,8 @@
         }
         if (modalBody.isValid() && !$A.util.isEmpty(modalBody)) {
           helper.createEventFooter(
+            // Helps scope messageService events from body to footer
+            params.bodyParams.uniqueBoundary || null,
             $A.getCallback((error, eventFooter) => {
               helper
                 .overlayLib(component)
@@ -178,6 +182,7 @@
             })
           );
         } else {
+          singleton.setIsCreatingModal(false);
           console.error('modalBody error is: ' + error[0].message);
         }
       })

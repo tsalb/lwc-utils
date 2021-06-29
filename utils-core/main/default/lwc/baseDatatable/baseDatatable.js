@@ -75,8 +75,20 @@ export default class BaseDatatable extends LightningElement {
   set keyField(value = 'Id') {
     this._keyField = value;
   }
+  @api
+  get iconName() {
+    if (this._iconName && this._iconName.toLowerCase() === 'auto') {
+      if (this._objectInfo) {
+        return this._extractCardIconNameFromObjectInfo();
+      }
+      this._extractIconName = true; // objectInfo hasn't returned yet
+    }
+    return this._iconName;
+  }
+  set iconName(value) {
+    this._iconName = value;
+  }
   @api title;
-  @api iconName;
   @api showRecordCount = false;
 
   // MessageService boundary, for when multiple instances are on same page
@@ -138,15 +150,15 @@ export default class BaseDatatable extends LightningElement {
   get checkboxType() {
     return this._checkboxType;
   }
-  set checkboxType(value = 'None') {
-    this._checkboxType = value;
-    switch (value) {
-      case 'Multi':
+  set checkboxType(value = 'none') {
+    this._checkboxType = value.toLowerCase();
+    switch (this._checkboxType) {
+      case 'multi':
         this.maxRowSelection = MAX_ROW_SELECTION;
         this.isHideCheckbox = false;
         this.isShowRowNumber = true;
         break;
-      case 'Single':
+      case 'single':
         this.maxRowSelection = 1;
         this.isHideCheckbox = false;
         this.isShowRowNumber = true;
@@ -266,6 +278,11 @@ export default class BaseDatatable extends LightningElement {
   }
 
   @api
+  forceShowSpinner() {
+    this.showSpinner = true;
+  }
+
+  @api
   refreshTable() {
     this.showSpinner = true;
     this.dispatchEvent(new CustomEvent('refresh'));
@@ -285,10 +302,11 @@ export default class BaseDatatable extends LightningElement {
     this.tableColumns = [];
     this.draftValues = [];
     this.saveErrors = {};
-    this.sortableFields = new Set();
-    this.editableFields = new Set();
+    this.sortableFields = '';
+    this.editableFields = '';
     // private
     this._objectApiName = undefined;
+    this._objectFieldsMap = new Map();
     this._objectInfo = undefined;
     this._draftValuesMap = new Map();
     this._draftSuccessIds = new Set();
@@ -300,12 +318,14 @@ export default class BaseDatatable extends LightningElement {
   _isRendered;
   _objectApiName;
   _objectInfo;
+  _objectFieldsMap = new Map();
 
   // private - inline edit
   _draftValuesMap = new Map();
   _draftSuccessIds = new Set();
 
   // private - table and lwc actions
+  _extractIconName = false;
   _actionConfigs = [];
 
   // private - Datatable_Lookup_Config__mdt
@@ -323,6 +343,14 @@ export default class BaseDatatable extends LightningElement {
       this._notifySingleError('getObjectInfo error', error);
     } else if (data) {
       this._objectInfo = data;
+
+      // For cleaning columns on output
+      this._objectFieldsMap = new Map(Object.entries(this._objectInfo.fields));
+
+      // For lightning-card icon setting
+      if (this._extractIconName) {
+        this.iconName = this._extractCardIconNameFromObjectInfo();
+      }
     }
   }
 
@@ -472,13 +500,13 @@ export default class BaseDatatable extends LightningElement {
     if (event.target) {
       flowMethod = event.target.dataset.dialogSize === 'Large' ? 'flowLarge' : 'flow';
       flowApiName = event.target.name;
-      selectedRows = this.selectedRows;
+      selectedRows = this.selectedRows.map(row => this._getCleanRow(row));
     }
     // Row Menu Action
     if (event.rowMenuAction) {
       flowMethod = event.rowMenuAction.dialogSize === 'Large' ? 'flowLarge' : 'flow';
       flowApiName = event.rowMenuAction.flowApiName;
-      selectedRows.push(event.rowMenuAction.row);
+      selectedRows.push(this._getCleanRow(event.rowMenuAction.row));
     }
 
     if (!flowApiName || !flowMethod) {
@@ -516,12 +544,13 @@ export default class BaseDatatable extends LightningElement {
       method: flowMethod,
       config: {
         componentParams: {
+          uniqueBoundary: this.uniqueBoundary, // For now, align with lwc action as being part of component params
           flowApiName: flowApiName,
           inputVariables: flowInputVars
         }
       }
     };
-    this.messageService.dialogService(flowPayload);
+    this.messageService.dialogServiceOpen(flowPayload);
   }
 
   handleLwcAction(event) {
@@ -558,7 +587,7 @@ export default class BaseDatatable extends LightningElement {
         }
       }
     };
-    this.messageService.dialogService(dialogPayload);
+    this.messageService.dialogServiceOpen(dialogPayload);
   }
 
   handleRowSelection(event) {
@@ -590,7 +619,7 @@ export default class BaseDatatable extends LightningElement {
             }
           }
         };
-        this.messageService.dialogService(dialogPayload);
+        this.messageService.dialogServiceOpen(dialogPayload);
         break;
       }
       case 'edit_row': {
@@ -607,7 +636,7 @@ export default class BaseDatatable extends LightningElement {
             }
           }
         };
-        this.messageService.dialogService(dialogPayload);
+        this.messageService.dialogServiceOpen(dialogPayload);
         break;
       }
       case 'custom_flow': {
@@ -981,6 +1010,32 @@ export default class BaseDatatable extends LightningElement {
         mode: 'sticky'
       })
     );
+  }
+
+  // Private functions
+
+  _getCleanRow(row) {
+    for (let fieldName in row) {
+      if (typeof row[fieldName] === 'object') {
+        continue;
+      }
+      if (!this._objectFieldsMap.has(fieldName)) {
+        delete row[fieldName];
+      }
+    }
+    return row;
+  }
+
+  _extractCardIconNameFromObjectInfo() {
+    let extractedIconName;
+    // iconUrl example: 'https://my-domain.instance.my.salesforce.com/img/icon/t4v35/standard/account_120.png';
+    if (this._objectInfo.themeInfo.iconUrl) {
+      let iconUrlFragments = this._objectInfo.themeInfo.iconUrl.split('/');
+      let iconType = iconUrlFragments[iconUrlFragments.length - 2]; // outputs 'standard'
+      let icon = iconUrlFragments[iconUrlFragments.length - 1].replace('_120.png', ''); // outputs 'account'
+      extractedIconName = `${iconType}:${icon}`;
+    }
+    return extractedIconName;
   }
 
   // Class expressions

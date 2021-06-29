@@ -278,6 +278,11 @@ export default class BaseDatatable extends LightningElement {
   }
 
   @api
+  forceShowSpinner() {
+    this.showSpinner = true;
+  }
+
+  @api
   refreshTable() {
     this.showSpinner = true;
     this.dispatchEvent(new CustomEvent('refresh'));

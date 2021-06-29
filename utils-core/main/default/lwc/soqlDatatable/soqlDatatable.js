@@ -209,6 +209,7 @@ export default class SoqlDatatable extends LightningElement {
 
   @api
   async refreshTable() {
+    this.baseDatatable.forceShowSpinner();
     const cache = await this.fetchTableCache();
     if (cache) {
       // Currently on App flexipage or $CurrentRecord API not enabled
@@ -221,6 +222,7 @@ export default class SoqlDatatable extends LightningElement {
 
   @api
   async refreshTableWithQueryString(queryString) {
+    this.baseDatatable.forceShowSpinner();
     this._finalQueryString = queryString
       .replace(new RegExp('select ', 'ig'), 'SELECT ')
       .replace(new RegExp(' from ', 'ig'), ' FROM ')

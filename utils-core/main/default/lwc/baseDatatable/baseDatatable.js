@@ -150,15 +150,15 @@ export default class BaseDatatable extends LightningElement {
   get checkboxType() {
     return this._checkboxType;
   }
-  set checkboxType(value = 'None') {
-    this._checkboxType = value;
-    switch (value) {
-      case 'Multi':
+  set checkboxType(value = 'none') {
+    this._checkboxType = value.toLowerCase();
+    switch (this._checkboxType) {
+      case 'multi':
         this.maxRowSelection = MAX_ROW_SELECTION;
         this.isHideCheckbox = false;
         this.isShowRowNumber = true;
         break;
-      case 'Single':
+      case 'single':
         this.maxRowSelection = 1;
         this.isHideCheckbox = false;
         this.isShowRowNumber = true;

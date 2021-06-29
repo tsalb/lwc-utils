@@ -306,6 +306,7 @@ export default class BaseDatatable extends LightningElement {
     this.editableFields = '';
     // private
     this._objectApiName = undefined;
+    this._objectFieldsMap = new Map();
     this._objectInfo = undefined;
     this._draftValuesMap = new Map();
     this._draftSuccessIds = new Set();
@@ -317,6 +318,7 @@ export default class BaseDatatable extends LightningElement {
   _isRendered;
   _objectApiName;
   _objectInfo;
+  _objectFieldsMap = new Map();
 
   // private - inline edit
   _draftValuesMap = new Map();
@@ -341,6 +343,11 @@ export default class BaseDatatable extends LightningElement {
       this._notifySingleError('getObjectInfo error', error);
     } else if (data) {
       this._objectInfo = data;
+
+      // For cleaning columns on output
+      this._objectFieldsMap = new Map(Object.entries(this._objectInfo.fields));
+
+      // For lightning-card icon setting
       if (this._extractIconName) {
         this.iconName = this._extractCardIconNameFromObjectInfo();
       }
@@ -493,13 +500,13 @@ export default class BaseDatatable extends LightningElement {
     if (event.target) {
       flowMethod = event.target.dataset.dialogSize === 'Large' ? 'flowLarge' : 'flow';
       flowApiName = event.target.name;
-      selectedRows = this.selectedRows;
+      selectedRows = this.selectedRows.map(row => this._getCleanRow(row));
     }
     // Row Menu Action
     if (event.rowMenuAction) {
       flowMethod = event.rowMenuAction.dialogSize === 'Large' ? 'flowLarge' : 'flow';
       flowApiName = event.rowMenuAction.flowApiName;
-      selectedRows.push(event.rowMenuAction.row);
+      selectedRows.push(this._getCleanRow(event.rowMenuAction.row));
     }
 
     if (!flowApiName || !flowMethod) {
@@ -1005,6 +1012,18 @@ export default class BaseDatatable extends LightningElement {
   }
 
   // Private functions
+
+  _getCleanRow(row) {
+    for (let fieldName in row) {
+      if (typeof row[fieldName] === 'object') {
+        continue;
+      }
+      if (!this._objectFieldsMap.has(fieldName)) {
+        delete row[fieldName];
+      }
+    }
+    return row;
+  }
 
   _extractCardIconNameFromObjectInfo() {
     let extractedIconName;

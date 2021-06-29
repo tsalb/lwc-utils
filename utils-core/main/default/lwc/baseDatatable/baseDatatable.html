@@ -37,7 +37,7 @@
 
   <lightning-card icon-name={iconName}>
     <div slot="title">
-      <slot name="title">
+      <slot name="composedTitle">
         <template if:true={showRecordCount}> {title} {recordCountDisplay} </template>
         <template if:false={showRecordCount}> {title} </template>
       </slot>

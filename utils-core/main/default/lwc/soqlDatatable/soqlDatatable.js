@@ -130,6 +130,10 @@ export default class SoqlDatatable extends LightningElement {
     return this._uniqueBoundary;
   }
 
+  get composedTitleSlot() {
+    return this.template.querySelector('slot[name=composedTitle]');
+  }
+
   get composedActionSlot() {
     return this.template.querySelector('slot[name=composedActions]');
   }
@@ -149,6 +153,7 @@ export default class SoqlDatatable extends LightningElement {
     this._showSpinner = value;
   }
   isLargeFlow = false;
+  showComposedTitle = true;
   showComposedActions = true;
 
   // private
@@ -298,6 +303,7 @@ export default class SoqlDatatable extends LightningElement {
       return;
     }
     this._isRendered = true;
+    this.showComposedTitle = this.composedTitleSlot && this.composedTitleSlot.assignedElements().length !== 0;
     this.showComposedActions = this.composedActionSlot && this.composedActionSlot.assignedElements().length !== 0;
   }
 

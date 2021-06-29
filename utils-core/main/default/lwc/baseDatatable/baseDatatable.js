@@ -544,6 +544,7 @@ export default class BaseDatatable extends LightningElement {
       method: flowMethod,
       config: {
         componentParams: {
+          uniqueBoundary: this.uniqueBoundary, // For now, align with lwc action as being part of component params
           flowApiName: flowApiName,
           inputVariables: flowInputVars
         }

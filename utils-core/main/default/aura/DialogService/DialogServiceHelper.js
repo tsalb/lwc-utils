@@ -98,14 +98,20 @@
       }
     );
   },
-  createEventFooter: function (ctrlCallback) {
-    $A.createComponent('c:EventFooter', {}, (eventFooter, status, errorMessage) => {
-      if (status === 'SUCCESS') {
-        ctrlCallback(null, eventFooter);
-      } else {
-        ctrlCallback(errorMessage);
+  createEventFooter: function (uniqueBoundary, ctrlCallback) {
+    $A.createComponent(
+      'c:EventFooter',
+      {
+        uniqueBoundary: uniqueBoundary
+      },
+      (eventFooter, status, errorMessage) => {
+        if (status === 'SUCCESS') {
+          ctrlCallback(null, eventFooter);
+        } else {
+          ctrlCallback(errorMessage);
+        }
       }
-    });
+    );
   },
   defineLargeModalAttribute: function (isLargeModalVal) {
     if ($A.util.isUndefinedOrNull(isLargeModalVal)) {

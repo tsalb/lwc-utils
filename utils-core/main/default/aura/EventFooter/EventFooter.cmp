@@ -1,4 +1,10 @@
 <aura:component>
+  <c:messageService
+    aura:id="messageService"
+    boundary="{! v.uniqueBoundary }"
+    onflowfinish="{! c.handleCancel }"
+    onclosedialog="{! c.handleCancel }"
+  />
+  <aura:attribute name="uniqueBoundary" type="String" access="PUBLIC" />
   <lightning:overlayLibrary aura:id="overlayLib" />
-  <c:messageService aura:id="messageService" onclosedialog="{! c.handleCancel }" />
 </aura:component>

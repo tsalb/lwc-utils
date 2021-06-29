@@ -33,5 +33,6 @@
 ({
   handleCancel: function (component) {
     component.find('overlayLib').notifyClose();
+    component.destroy();
   }
 });

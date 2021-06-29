@@ -51,6 +51,7 @@
         headerLabel: payload.config.flowHeaderLabel,
         component: 'c:FlowWrapper',
         componentParams: {
+          uniqueBoundary: payload.config.componentParams.uniqueBoundary,
           flowApiName: payload.config.componentParams.flowApiName,
           inputVariables: payload.config.componentParams.inputVariables
         }

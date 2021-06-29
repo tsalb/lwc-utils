@@ -542,7 +542,7 @@ export default class BaseDatatable extends LightningElement {
         }
       }
     };
-    this.messageService.dialogService(flowPayload);
+    this.messageService.dialogServiceOpen(flowPayload);
   }
 
   handleLwcAction(event) {
@@ -579,7 +579,7 @@ export default class BaseDatatable extends LightningElement {
         }
       }
     };
-    this.messageService.dialogService(dialogPayload);
+    this.messageService.dialogServiceOpen(dialogPayload);
   }
 
   handleRowSelection(event) {
@@ -611,7 +611,7 @@ export default class BaseDatatable extends LightningElement {
             }
           }
         };
-        this.messageService.dialogService(dialogPayload);
+        this.messageService.dialogServiceOpen(dialogPayload);
         break;
       }
       case 'edit_row': {
@@ -628,7 +628,7 @@ export default class BaseDatatable extends LightningElement {
             }
           }
         };
-        this.messageService.dialogService(dialogPayload);
+        this.messageService.dialogServiceOpen(dialogPayload);
         break;
       }
       case 'custom_flow': {

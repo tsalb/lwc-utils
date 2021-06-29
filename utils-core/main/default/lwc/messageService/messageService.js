@@ -75,7 +75,12 @@ export default class MessageService extends LightningElement {
 
   @api
   dialogService(payload) {
-    this._messageServicePublish({ key: 'opendialog', value: payload });
+    this.publish({ key: 'opendialog', value: payload });
+  }
+
+  @api
+  dialogServiceOpen(payload) {
+    this._messageServicePublishOpen({ key: 'opendialog', value: payload });
   }
 
   @api
@@ -84,8 +89,18 @@ export default class MessageService extends LightningElement {
   }
 
   @api
+  workspaceApiOpen(payload) {
+    this._messageServicePublishOpen({ key: 'workspaceapi', value: payload });
+  }
+
+  @api
   notifyClose() {
-    this._messageServicePublish({ key: 'closedialog' });
+    this._messageServicePublishOpen({ key: 'closedialog' });
+  }
+
+  @api
+  notifyBoundaryClose() {
+    this._messageServicePublishWithBoundary({ key: 'closedialog' });
   }
 
   @api
@@ -93,13 +108,13 @@ export default class MessageService extends LightningElement {
     if (this.boundary) {
       this._messageServicePublishWithBoundary(payload);
     } else {
-      this._messageServicePublish(payload);
+      this._messageServicePublishOpen(payload);
     }
   }
 
   @api
   publishOpen(payload) {
-    this._messageServicePublish(payload);
+    this._messageServicePublishOpen(payload);
   }
 
   @api
@@ -172,7 +187,7 @@ export default class MessageService extends LightningElement {
     }
   }
 
-  _messageServicePublish(payload) {
+  _messageServicePublishOpen(payload) {
     publish(this.messageContext, OPEN_CHANNEL, { key: payload.key, value: payload.value });
   }
 

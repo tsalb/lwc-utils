@@ -75,8 +75,20 @@ export default class BaseDatatable extends LightningElement {
   set keyField(value = 'Id') {
     this._keyField = value;
   }
+  @api
+  get iconName() {
+    if (this._iconName && this._iconName.toLowerCase() === 'auto') {
+      if (this._objectInfo) {
+        return this._extractCardIconNameFromObjectInfo();
+      }
+      this._extractIconName = true; // objectInfo hasn't returned yet
+    }
+    return this._iconName;
+  }
+  set iconName(value) {
+    this._iconName = value;
+  }
   @api title;
-  @api iconName;
   @api showRecordCount = false;
 
   // MessageService boundary, for when multiple instances are on same page
@@ -306,6 +318,7 @@ export default class BaseDatatable extends LightningElement {
   _draftSuccessIds = new Set();
 
   // private - table and lwc actions
+  _extractIconName = false;
   _actionConfigs = [];
 
   // private - Datatable_Lookup_Config__mdt
@@ -323,6 +336,9 @@ export default class BaseDatatable extends LightningElement {
       this._notifySingleError('getObjectInfo error', error);
     } else if (data) {
       this._objectInfo = data;
+      if (this._extractIconName) {
+        this.iconName = this._extractCardIconNameFromObjectInfo();
+      }
     }
   }
 
@@ -981,6 +997,20 @@ export default class BaseDatatable extends LightningElement {
         mode: 'sticky'
       })
     );
+  }
+
+  // Private functions
+
+  _extractCardIconNameFromObjectInfo() {
+    let extractedIconName;
+    // iconUrl example: 'https://my-domain.instance.my.salesforce.com/img/icon/t4v35/standard/account_120.png';
+    if (this._objectInfo.themeInfo.iconUrl) {
+      let iconUrlFragments = this._objectInfo.themeInfo.iconUrl.split('/');
+      let iconType = iconUrlFragments[iconUrlFragments.length - 2]; // outputs 'standard'
+      let icon = iconUrlFragments[iconUrlFragments.length - 1].replace('_120.png', ''); // outputs 'account'
+      extractedIconName = `${iconType}:${icon}`;
+    }
+    return extractedIconName;
   }
 
   // Class expressions

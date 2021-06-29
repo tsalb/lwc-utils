@@ -2,7 +2,7 @@
   "orgName": "lwc-utils",
   "edition": "Developer",
   "hasSampleData": true,
-  "features": ["ForceComPlatform", "LightningServiceConsole"],
+  "features": ["LightningServiceConsole"],
   "settings": {
     "lightningExperienceSettings": {
       "enableS1DesktopEnabled": true,

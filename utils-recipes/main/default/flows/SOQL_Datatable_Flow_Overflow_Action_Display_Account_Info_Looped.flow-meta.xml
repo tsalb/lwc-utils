@@ -5,13 +5,20 @@
         <name>Close_Dialog</name>
         <label>Close Dialog</label>
         <locationX>50</locationX>
-        <locationY>854</locationY>
+        <locationY>974</locationY>
         <actionName>c:EventPublisher_LFA</actionName>
         <actionType>component</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>eventKey</name>
             <value>
                 <stringValue>closedialog</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>uniqueBoundary</name>
+            <value>
+                <elementReference>UniqueBoundary</elementReference>
             </value>
         </inputParameters>
         <storeOutputAutomatically>true</storeOutputAutomatically>
@@ -20,12 +27,13 @@
         <name>Refresh_SOQL_Datatable</name>
         <label>Refresh SOQL Datatable</label>
         <locationX>50</locationX>
-        <locationY>734</locationY>
+        <locationY>854</locationY>
         <actionName>c:EventPublisher_LFA</actionName>
         <actionType>component</actionType>
         <connector>
             <targetReference>Close_Dialog</targetReference>
         </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>eventKey</name>
             <value>
@@ -99,7 +107,7 @@
         <collectionReference>SelectedRows</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
-            <targetReference>Account_Info</targetReference>
+            <targetReference>Get_Account_Data</targetReference>
         </nextValueConnector>
         <noMoreValuesConnector>
             <targetReference>Refresh_SOQL_Datatable</targetReference>
@@ -124,11 +132,33 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordLookups>
+        <name>Get_Account_Data</name>
+        <label>Get Account Data</label>
+        <locationX>138</locationX>
+        <locationY>518</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Account_Info</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Loop_Contacts.AccountId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Account</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <runInMode>DefaultMode</runInMode>
     <screens>
         <name>Account_Info</name>
         <label>Account Info</label>
         <locationX>138</locationX>
-        <locationY>518</locationY>
+        <locationY>638</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -137,7 +167,7 @@
         </connector>
         <fields>
             <name>Account_Info_Text</name>
-            <fieldText>&lt;p&gt;Account Name: {!Loop_Contacts.Account.Name}&lt;/p&gt;&lt;p&gt;Account Type: {!Loop_Contacts.Account.Type}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Account Name: {!Get_Account_Data.Name}&lt;/p&gt;&lt;p&gt;Account Type: {!Get_Account_Data.Type}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>

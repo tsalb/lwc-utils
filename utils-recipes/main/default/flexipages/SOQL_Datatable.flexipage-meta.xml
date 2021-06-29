@@ -16,6 +16,9 @@
                     <value>Name, Email, Phone, LeadSource, AccountId</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>iconName</name>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>lookupConfigDevName</name>
                     <value>LWC_Utils_SOQL_Datatable_tab</value>
                 </componentInstanceProperties>

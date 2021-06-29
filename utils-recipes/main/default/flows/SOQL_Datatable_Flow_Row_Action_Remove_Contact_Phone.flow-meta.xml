@@ -5,13 +5,20 @@
         <name>Close_Dialog</name>
         <label>Close Dialog</label>
         <locationX>731</locationX>
-        <locationY>211</locationY>
+        <locationY>210</locationY>
         <actionName>c:EventPublisher_LFA</actionName>
         <actionType>component</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>eventKey</name>
             <value>
                 <stringValue>closedialog</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>uniqueBoundary</name>
+            <value>
+                <elementReference>UniqueBoundary</elementReference>
             </value>
         </inputParameters>
         <storeOutputAutomatically>true</storeOutputAutomatically>
@@ -26,6 +33,7 @@
         <connector>
             <targetReference>Close_Dialog</targetReference>
         </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>eventKey</name>
             <value>
@@ -40,7 +48,7 @@
         </inputParameters>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
-    <apiVersion>49.0</apiVersion>
+    <apiVersion>52.0</apiVersion>
     <assignments>
         <name>Clear_Contact_Phone</name>
         <label>Clear Contact Phone</label>
@@ -98,6 +106,7 @@
         </faultConnector>
         <inputReference>ContactToUpdate</inputReference>
     </recordUpdates>
+    <runInMode>DefaultMode</runInMode>
     <screens>
         <name>Confirm</name>
         <label>Confirm</label>

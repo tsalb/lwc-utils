@@ -56,6 +56,9 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
+                    <name>actionConfigDevName</name>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>checkboxType</name>
                     <value>Multi</value>
                 </componentInstanceProperties>
@@ -114,6 +117,10 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
+                    <name>actionConfigDevName</name>
+                    <value>LWC_Utils_SOQL_Datatable_tab</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>checkboxType</name>
                     <value>Multi</value>
                 </componentInstanceProperties>
@@ -127,7 +134,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>queryString</name>
-                    <value>SELECT Name, Email, Title, Phone, MailingState FROM Contact WHERE AccountId = $recordId</value>
+                    <value>SELECT AccountId, Name, Email, Title, Phone, MailingState FROM Contact WHERE AccountId = $recordId</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>showRecordCount</name>

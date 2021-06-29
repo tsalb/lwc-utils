@@ -297,8 +297,8 @@ export default class BaseDatatable extends LightningElement {
     this.tableColumns = [];
     this.draftValues = [];
     this.saveErrors = {};
-    this.sortableFields = new Set();
-    this.editableFields = new Set();
+    this.sortableFields = '';
+    this.editableFields = '';
     // private
     this._objectApiName = undefined;
     this._objectInfo = undefined;

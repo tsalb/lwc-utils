@@ -38,7 +38,7 @@ More detailed info can be found in the [wiki](https://github.com/tsalb/lwc-utils
 
 2) Install [core](https://github.com/tsalb/lwc-utils/wiki/Installation#core).
 
-3) For first time users, install [recipes](https://github.com/tsalb/lwc-utils/wiki/Installation#recipes) in a scratch org (recommended) or a sandbox.
+3) For first time users, install [recipes](https://github.com/tsalb/lwc-utils/wiki/Installation#recipes) in a [scratch org](https://github.com/trailheadapps/lwc-recipes#installing-the-app-using-a-scratch-org).
 
 4) Read the [Configuration](https://github.com/tsalb/lwc-utils/wiki/Configuration).
 

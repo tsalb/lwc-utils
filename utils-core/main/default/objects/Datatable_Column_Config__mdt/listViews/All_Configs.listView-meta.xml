@@ -3,10 +3,9 @@
     <fullName>All_Configs</fullName>
     <columns>MasterLabel</columns>
     <columns>DeveloperName</columns>
-    <columns>Has_Actions_Config__c</columns>
-    <columns>Has_Lookups_Config__c</columns>
-    <columns>Has_Columns_Config__c</columns>
-    <columns>Type__c</columns>
+    <columns>Datatable_Config__c</columns>
+    <columns>Column_Field_Name__c</columns>
+    <columns>Column_Properties_JSON__c</columns>
     <filterScope>Everything</filterScope>
     <label>All Configs</label>
 </ListView>

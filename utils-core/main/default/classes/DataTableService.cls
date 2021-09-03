@@ -101,6 +101,7 @@ public inherited sharing class DataTableService {
 
   private static final String DATATABLE_ACTION_CONFIG_TYPE = 'Actions';
   private static final String DATATABLE_LOOKUP_CONFIG_TYPE = 'Lookups';
+  private static final String DATATABLE_COLUMN_CONFIG_TYPE = 'Columns';
 
   // TODO move to custom metadata config later for performance tuning
   private static final Integer ROW_LIMITER = 500;
@@ -155,22 +156,26 @@ public inherited sharing class DataTableService {
   public static List<Datatable_Action_Config__mdt> getActionConfig(String configName) {
     // No multi-selects for custom metadata, so semicolon delimited string field
     String configType = '%' + DATATABLE_ACTION_CONFIG_TYPE + '%';
+    // prettier-ignore
     return [
       SELECT
-        DeveloperName,
-        Datatable_Config__c,
-        Type__c,
-        Button_Label__c,
         Order__c,
-        Table_Action_Name__c,
-        Overflow_Action_Name__c,
         Row_Action_Name__c,
-        LWC_Name__c,
+        Button_Label__c,
+        Type__c,
+        Datatable_Config__c,
         Flow_API_Name__c,
+        LWC_Name__c,
         Dialog_Size__c
       FROM Datatable_Action_Config__mdt
-      WHERE Datatable_Config__r.DeveloperName = :configName AND Datatable_Config__r.Type__c LIKE :configType
-      ORDER BY Type__c ASC, Order__c ASC
+      WHERE
+        Datatable_Config__r.DeveloperName = :configName
+        AND (
+          Datatable_Config__r.Type__c LIKE :configType
+          OR
+          Datatable_Config__r.Has_Actions_Config__c = TRUE
+        )
+      ORDER BY Order__c ASC
     ];
   }
 
@@ -178,10 +183,29 @@ public inherited sharing class DataTableService {
   public static List<Datatable_Lookup_Config__mdt> getLookupConfig(String configName) {
     // No multi-selects for custom metadata, so semicolon delimited string field
     String configType = '%' + DATATABLE_LOOKUP_CONFIG_TYPE + '%';
+    // prettier-ignore
     return [
       SELECT Datatable_Config__c, Object_API_Name__c, Title_Field__c, Subtitle_Field__c, Icon_Name__c
       FROM Datatable_Lookup_Config__mdt
-      WHERE Datatable_Config__r.DeveloperName = :configName AND Datatable_Config__r.Type__c LIKE :configType
+      WHERE
+        Datatable_Config__r.DeveloperName = :configName
+        AND (
+          Datatable_Config__r.Type__c LIKE :configType
+          OR
+          Datatable_Config__r.Has_Lookups_Config__c = TRUE
+        )
+    ];
+  }
+
+  @AuraEnabled(cacheable=true)
+  public static List<Datatable_Column_Config__mdt> getColumnConfig(String configName) {
+    //Note, column config is only available on the new Has_XXXX_Config__c format
+    return [
+      SELECT Datatable_Config__c, Column_Field_Name__c, Column_Properties_JSON__c
+      FROM Datatable_Column_Config__mdt
+      WHERE
+        Datatable_Config__r.DeveloperName = :configName
+        AND Datatable_Config__r.Has_Columns_Config__c = TRUE
     ];
   }
 

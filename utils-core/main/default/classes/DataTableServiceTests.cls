@@ -231,6 +231,15 @@ private class DataTableServiceTests {
     System.assert(!lookupConfig.isEmpty());
   }
 
+  @IsTest
+  static void test_get_column_config_should_return_no_defaults() {
+    Test.startTest();
+    List<Datatable_Column_Config__mdt> columnConfig = DataTableService.getColumnConfig('No_OOTB_Defaults');
+    Test.stopTest();
+
+    System.assert(columnConfig.isEmpty());
+  }
+
   @isTest
   static void test_relationship_query_from_user_to_manager_should_return_multiple_columns() {
     Map<String, Object> tableServiceRequest = new Map<String, Object>();

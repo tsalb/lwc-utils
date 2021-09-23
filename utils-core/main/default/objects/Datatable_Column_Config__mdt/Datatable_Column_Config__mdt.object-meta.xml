@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Column property fine tuning for Datatable_Config__mdt. This overrides all other column properties set in other ways.</description>
+    <label>Datatable Column Config</label>
+    <pluralLabel>Datatable Column Config</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

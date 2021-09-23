@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Column_Properties_JSON__c</fullName>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>Must be in the following sample format:
+
+{
+  &quot;typeAttributes&quot;: {
+    &quot;currencyCode&quot;: {
+      &quot;fieldName&quot;: &quot;CurrencyISO__c&quot;
+    },
+    &quot;step&quot;: 0.0001
+  },
+  &quot;initialWidth&quot;: 100
+}</inlineHelpText>
+    <label>Column Properties JSON</label>
+    <length>131072</length>
+    <type>LongTextArea</type>
+    <visibleLines>50</visibleLines>
+</CustomField>

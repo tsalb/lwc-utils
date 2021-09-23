@@ -12,21 +12,13 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Required</behavior>
-                <field>DeveloperName</field>
+                <field>Datatable_Config__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Has_Actions_Config__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Has_Lookups_Config__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Has_Columns_Config__c</field>
+                <behavior>Required</behavior>
+                <field>DeveloperName</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -35,15 +27,18 @@
         <customLabel>true</customLabel>
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
-        <label>Deprecated - Migrate to above</label>
+        <label>Column Config</label>
         <layoutColumns>
             <layoutItems>
+                <behavior>Required</behavior>
+                <field>Column_Field_Name__c</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Type__c</field>
+                <field>Column_Properties_JSON__c</field>
             </layoutItems>
         </layoutColumns>
-        <layoutColumns/>
-        <style>TwoColumnsLeftToRight</style>
+        <style>OneColumn</style>
     </layoutSections>
     <layoutSections>
         <customLabel>false</customLabel>
@@ -82,47 +77,13 @@
         <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
-    <relatedLists>
-        <fields>MasterLabel</fields>
-        <fields>DeveloperName</fields>
-        <fields>Type__c</fields>
-        <fields>Order__c</fields>
-        <fields>Button_Label__c</fields>
-        <fields>Row_Action_Name__c</fields>
-        <fields>Flow_API_Name__c</fields>
-        <fields>LWC_Name__c</fields>
-        <fields>Dialog_Size__c</fields>
-        <relatedList>Datatable_Action_Config__mdt.Datatable_Config__c</relatedList>
-        <sortField>Order__c</sortField>
-        <sortOrder>Asc</sortOrder>
-    </relatedLists>
-    <relatedLists>
-        <fields>MasterLabel</fields>
-        <fields>DeveloperName</fields>
-        <fields>Object_API_Name__c</fields>
-        <fields>Title_Field__c</fields>
-        <fields>Subtitle_Field__c</fields>
-        <fields>Icon_Name__c</fields>
-        <relatedList>Datatable_Lookup_Config__mdt.Datatable_Config__c</relatedList>
-        <sortField>Object_API_Name__c</sortField>
-        <sortOrder>Asc</sortOrder>
-    </relatedLists>
-    <relatedLists>
-        <fields>MasterLabel</fields>
-        <fields>DeveloperName</fields>
-        <fields>Column_Field_Name__c</fields>
-        <fields>Column_Properties_JSON__c</fields>
-        <relatedList>Datatable_Column_Config__mdt.Datatable_Config__c</relatedList>
-        <sortField>Column_Field_Name__c</sortField>
-        <sortOrder>Asc</sortOrder>
-    </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>
     <showInteractionLogPanel>false</showInteractionLogPanel>
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1D0000048s6b</masterLabel>
+        <masterLabel>00hS0000004SVj3</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

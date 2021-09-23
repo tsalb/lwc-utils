@@ -110,8 +110,11 @@ export default class SoqlDatatable extends LightningElement {
   // Table and Row Actions
   @api actionConfigDevName;
 
-  /// For inline edit lookup search behavior
+  // For inline edit lookup search behavior
   @api lookupConfigDevName;
+
+  // For column typeAttribute fine tuning
+  @api columnConfigDevName;
 
   // LWC loadStyle hack - to help with picklist and lookup menu overflows
   // https://salesforce.stackexchange.com/a/270624

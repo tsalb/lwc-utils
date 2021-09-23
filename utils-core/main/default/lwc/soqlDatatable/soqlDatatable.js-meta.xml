@@ -26,6 +26,7 @@
       <property name="sortedDirection" label="Default Sort Direction" type="String" datasource="asc,desc" default="asc"/>
       <property name="actionConfigDevName" label="Action Configuration" type="String" description="Configure table and row actions with a record in Datatable_Config__mdt"/>
       <property name="lookupConfigDevName" label="Lookup Configuration" type="String" description="Configure inline edit lookup search behavior with a record in Datatable_Config__mdt"/>
+      <property name="columnConfigDevName" label="Column Configuration" type="String" description="Configure column typeAttribute behavior with a record in Datatable_Config__mdt"/>
       <property name="useRelativeMaxHeight" label="Limit Height (Relative to screen)" type="Boolean" description="Force table height to 60% of the vertical screen space. To set a custom percentage, use this in conjunction with Custom Relative Max Height" default="false"/>
       <property name="customRelativeMaxHeight" label="Custom Relative Max Height" type="String" description="Set custom max height (0-100) relative to the vertical screen space. Limit Height must first be enabled." default=""/>
       <property name="useLoadStyleHackForOverflow" label=".Allow Overflow (EXPERIMENTAL)" type="Boolean" description="Enable this when your datatable has a small number of rows but you need in-line edit. This will override any custom table heights and allow for picklist and lookup edit menus to display on top of th edatatable. However, you may experience some weird CSS issues."/>
@@ -46,6 +47,7 @@
       <property name="sortedDirection" label="Default Sort Direction" type="String" datasource="asc,desc" default="asc"/>
       <property name="actionConfigDevName" label="Action Configuration" type="String" description="Configure table and row actions with a record in Datatable_Config__mdt"/>
       <property name="lookupConfigDevName" label="Lookup Configuration" type="String" description="Configure inline edit lookup search behavior with a record in Datatable_Config__mdt"/>
+      <property name="columnConfigDevName" label="Column Configuration" type="String" description="Configure column typeAttribute behavior with a record in Datatable_Config__mdt"/>
       <property name="useRelativeMaxHeight" label="Limit Height (Relative to screen)" type="Boolean" description="Force table height to 60% of the vertical screen space. To set a custom percentage, use this in conjunction with Custom Relative Max Height" default="false"/>
       <property name="customRelativeMaxHeight" label="Custom Relative Max Height" type="String" description="Set custom max height (0-100) relative to the vertical screen space. Limit Height must first be enabled." default=""/>
       <property name="useLoadStyleHackForOverflow" label=".Allow Overflow (EXPERIMENTAL)" type="Boolean" description="Enable this when your datatable has a small number of rows but you need in-line edit. This will override any custom table heights and allow for picklist and lookup edit menus to display on top of th edatatable. However, you may experience some weird CSS issues."/>
@@ -64,6 +66,8 @@
       <property name="sortableFields" label="Sortable Fields" type="String" description="Comma separated list of Field API names. Parent relationship is supported (e.g. Account.Type)." role="inputOnly"/>
       <property name="sortedBy" label="Default Sort Field" type="String" description="Single Field API Name. Parent relationship is supported (e.g. Account.Type)." role="inputOnly"/>
       <property name="sortedDirection" label="Default Sort Direction" type="String" default="asc" description="asc or desc" role="inputOnly"/>
+      <property name="lookupConfigDevName" label="Lookup Configuration" type="String" description="Configure inline edit lookup search behavior with a record in Datatable_Config__mdt"/>
+      <property name="columnConfigDevName" label="Column Configuration" type="String" description="Configure column typeAttribute behavior with a record in Datatable_Config__mdt"/>
       <property name="customHeight" label="Table Height (px)" type="String" description="Sets a table height in pixels. Leave blank for default." role="inputOnly"/>
       <property name="useLoadStyleHackForOverflow" label="z - Allow Overflow (EXPERIMENTAL)" type="Boolean" description="WARNING: Removes scrolling within datatable, only use for small number of rows. Enable this for a small number of rows that require in-line edit. This overrides any custom table heights and allow for picklist and lookup edit menus to display on top of th edatatable. However, you may experience some weird CSS issues." role="inputOnly"/>
       <!-- OUTPUTS -->

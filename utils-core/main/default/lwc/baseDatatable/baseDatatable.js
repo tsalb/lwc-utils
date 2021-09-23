@@ -36,6 +36,7 @@ import * as tableService from 'c/tableService'; // Data, columns, mass update
 
 import getActionConfig from '@salesforce/apex/DataTableService.getActionConfig';
 import getLookupConfig from '@salesforce/apex/DataTableService.getLookupConfig';
+import getColumnConfig from '@salesforce/apex/DataTableService.getColumnConfig';
 
 // Toast and Errors
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -183,6 +184,7 @@ export default class BaseDatatable extends LightningElement {
   // Datatable_Config__mdt configs
   @api actionConfigDevName;
   @api lookupConfigDevName;
+  @api columnConfigDevName;
 
   // LWC loadStyle hack - to help with picklist and lookup menu overflows
   // https://salesforce.stackexchange.com/a/270624
@@ -392,6 +394,11 @@ export default class BaseDatatable extends LightningElement {
       this._initializeLookupConfigData();
     }
   }
+
+  // For column properties overrides, if configured for this table
+  // Note these will be the final values, as these properties are added last and overwrite all other column configs
+  @wire(getColumnConfig, { configName: '$columnConfigDevName' })
+  columnConfigs;
 
   constructor() {
     super();
@@ -753,6 +760,18 @@ export default class BaseDatatable extends LightningElement {
       return;
     }
     const finalColumns = [];
+
+    // Low chance columnConfig wire hasn't returned by now.
+    // If that happens, fix this later by forcing an imperative call here
+    const hasCustomColumnConfig = this.columnConfigs.data?.length;
+    const fieldNameToPropMap = new Map();
+    if (hasCustomColumnConfig) {
+      this.columnConfigs.data.forEach(config => {
+        const columnPropsClean = config.Column_Properties_JSON__c.replace('/\r?\n|\r/g', '');
+        fieldNameToPropMap.set(config.Column_Field_Name__c, JSON.parse(columnPropsClean));
+      });
+    }
+
     for (let col of tableColumns) {
       // Never show the auto-queried RecordTypeId
       if (col.fieldName.toLowerCase() === 'recordtypeid') {
@@ -793,6 +812,13 @@ export default class BaseDatatable extends LightningElement {
       if (col.type === 'customLookup') {
         // Warm the getLookupConfig wire adapter before editable cells fully render
         this._lookupConfigDevName = this.lookupConfigDevName || DATATABLE_LOOKUP_CONFIG_DEFAULT;
+      }
+      // This goes last as to override anything above
+      if (hasCustomColumnConfig && fieldNameToPropMap.has(col.fieldName)) {
+        const columnProps = fieldNameToPropMap.get(col.fieldName);
+        for (const [prop, value] of Object.entries(columnProps)) {
+          col[prop] = value;
+        }
       }
       finalColumns.push(col);
     }

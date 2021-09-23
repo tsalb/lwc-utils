@@ -203,9 +203,7 @@ public inherited sharing class DataTableService {
     return [
       SELECT Datatable_Config__c, Column_Field_Name__c, Column_Properties_JSON__c
       FROM Datatable_Column_Config__mdt
-      WHERE
-        Datatable_Config__r.DeveloperName = :configName
-        AND Datatable_Config__r.Has_Columns_Config__c = TRUE
+      WHERE Datatable_Config__r.DeveloperName = :configName AND Datatable_Config__r.Has_Columns_Config__c = TRUE
     ];
   }
 

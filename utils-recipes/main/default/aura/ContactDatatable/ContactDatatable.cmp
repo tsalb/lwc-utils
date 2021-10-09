@@ -5,7 +5,6 @@
   <!-- Unified messaging API -->
   <c:messageService
     aura:id="messageService"
-    boundary="sample_app_aura"
     oncontactsupdated="{! c.handleAccountSelected }"
     onaccountselected="{! c.handleAccountSelected }"
     oncleartable="{! c.handleClearTable }"

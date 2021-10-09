@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>52.0</apiVersion>
+    <apiVersion>53.0</apiVersion>
     <isExposed>true</isExposed>
     <masterLabel>Event Publisher</masterLabel>
     <description>Send an event via MessageService when this component loads into a Flow Screen</description>
@@ -24,7 +24,7 @@
               role="inputOnly"
               required="true"
             ></property>
-            <property 
+            <property
               name="eventValue"
               label="Event Value (Payload)"
               type="String"

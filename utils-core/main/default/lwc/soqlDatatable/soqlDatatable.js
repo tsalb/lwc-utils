@@ -61,12 +61,15 @@ const STRING_MERGE_DATA_TYPES = [
   'multipicklist',
   'phone',
   'picklist',
-  'reference',
   'string',
   'text',
   'textarea',
   'url'
 ];
+const LOOKUP_MERGE_DATA_TYPES = [
+  'reference'
+];
+
 
 // TODO: Tackle later
 /* eslint @lwc/lwc/no-api-reassignments: 0 */
@@ -206,6 +209,10 @@ export default class SoqlDatatable extends LightningElement {
         if (STRING_MERGE_DATA_TYPES.includes(dataType)) {
           this.queryString = this.queryString.replace(key, `'${config.value}'`);
         }
+        if (LOOKUP_MERGE_DATA_TYPES.includes(dataType)) {
+          this.queryString = this.queryString.replace(key, `'${config.value ?? ''}'`);
+        }
+
       }
       this._finalQueryString = this.queryString;
       //console.log(this._finalQueryString);

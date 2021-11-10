@@ -4,11 +4,13 @@
         <itemInstances>
             <componentInstance>
                 <componentName>lwcAccountSelector</componentName>
+                <identifier>c_lwcAccountSelector1</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentName>lwcContactDatatable</componentName>
+                <identifier>c_lwcContactDatatable1</identifier>
             </componentInstance>
         </itemInstances>
         <name>main</name>

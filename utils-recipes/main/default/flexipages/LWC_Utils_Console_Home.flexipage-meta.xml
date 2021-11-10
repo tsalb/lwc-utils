@@ -11,6 +11,7 @@
                     <name>richTextValue</name>
                     <value>&lt;p style=&quot;text-align: center;&quot;&gt;Message Service Handler is placed here on the Home Page.&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;It is also placed on each Record Flexipage that is opened by the tab controls here.&lt;/p&gt;</value>
                 </componentInstanceProperties>
+                <identifier>flexipage_richText1</identifier>
                 <componentName>flexipage:richText</componentName>
             </componentInstance>
         </itemInstances>
@@ -20,11 +21,13 @@
                     <name>customBoundary</name>
                     <value>workspace_api_example</value>
                 </componentInstanceProperties>
+                <identifier>MessageServiceHandler1</identifier>
                 <componentName>MessageServiceHandler</componentName>
             </componentInstance>
         </itemInstances>
         <itemInstances>
             <componentInstance>
+              <identifier>workspaceApiExamples1</identifier>
                 <componentName>workspaceApiExamples</componentName>
             </componentInstance>
         </itemInstances>

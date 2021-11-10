@@ -4,11 +4,13 @@
         <itemInstances>
             <componentInstance>
                 <componentName>AccountSelector</componentName>
+                <identifier>c_AccountSelector1</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentName>ContactDatatable</componentName>
+                <identifier>c_ContactDatatable1</identifier>
             </componentInstance>
         </itemInstances>
         <name>region1</name>

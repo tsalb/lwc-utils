@@ -12,6 +12,7 @@
                     <value>Collection_Datatable_Manipulate_a_Record_Collection</value>
                 </componentInstanceProperties>
                 <componentName>flowruntime:interview</componentName>
+                <identifier>flowruntime_interview1</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -22,9 +23,10 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>richTextValue</name>
-                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;The above Collection Datatable is now using the Allow Overflow (EXPERIMENTAL) boolean to allow for in-line edit lookup to overflow outside its container.&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;This causes some minor CSS issues but is the only way to get interactive in-line edit menus to show up nicely when there are only a few rows!&lt;/p&gt;</value>
+                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;The above Collection Datatable is now using the Allow Overflow (EXPERIMENTAL) boolean to allow for in-line edit lookup to overflow outside its container.&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;This causes some minor CSS issues but is the only way to get interactive in-line edit menus to show up nicely when there are only a few rows!&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:richText</componentName>
+                <identifier>flexipage_richText1</identifier>
             </componentInstance>
         </itemInstances>
         <name>region1</name>
@@ -42,6 +44,7 @@
                     <value>SOQL_Datatable_Show_Selection_in_Collection_Datatable</value>
                 </componentInstanceProperties>
                 <componentName>flowruntime:interview</componentName>
+                <identifier>flowruntime_interview2</identifier>
             </componentInstance>
         </itemInstances>
         <name>region2</name>
@@ -59,6 +62,7 @@
                     <value>SOQL_Datatable_With_Flow_Inputs_and_Collection_Datatable</value>
                 </componentInstanceProperties>
                 <componentName>flowruntime:interview</componentName>
+                <identifier>flowruntime_interview3</identifier>
             </componentInstance>
         </itemInstances>
         <name>region3</name>

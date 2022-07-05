@@ -33,8 +33,9 @@
     }
   },
   handleAccountSelected: function (component, event, helper) {
-    const value = event.getParam('value');
-    helper.loadContactTable(component, value);
+    let value = event.getParam('value');
+    let accountId = (value.accountId)? value.accountId:value;
+    helper.loadContactTable(component, accountId);
   },
   handleClearTable: function (component, event, helper) {
     component.set('v.tableData', null);

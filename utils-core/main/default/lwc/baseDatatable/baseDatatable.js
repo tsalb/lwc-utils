@@ -104,6 +104,8 @@ export default class BaseDatatable extends LightningElement {
   @api customRelativeMaxHeight;
   @api useRelativeMaxHeight = false;
 
+  @api suppressErrorMessage = false; // Suppresses error toast Andy 2023-01-13
+
   // Sorting
   @api
   get sortedBy() {
@@ -1020,10 +1022,12 @@ export default class BaseDatatable extends LightningElement {
   // Private toast functions
 
   _notifySingleError(title, error = '') {
-    if (this.messageService) {
-      this.messageService.notifySingleError(title, error);
-    } else {
-      this._notifyError(title, reduceErrors(error)[0]);
+    if (!this.suppressErrorMessage) {
+      if (this.messageService) {
+        this.messageService.notifySingleError(title, error);
+      } else {
+        this._notifyError(title, reduceErrors(error)[0]);
+      }
     }
   }
 
